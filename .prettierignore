@@ -1,0 +1,13 @@
+**/.next
+**/.vscode
+**/node_modules
+**/.husky
+**/coverage
+**/dist
+**/build
+**/.turbo
+pnpm-lock.yaml
+*.log
+.env*
+public/
+

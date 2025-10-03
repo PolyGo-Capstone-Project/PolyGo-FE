@@ -1,0 +1,26 @@
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+REGEX="^(feature|bugfix|hotfix|release|chore)\/([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*)$|^(main|develop|staging)$"
+
+echo
+echo "🔍 Checking branch name..."
+echo "Branch name: $BRANCH"
+
+if ! echo "$BRANCH" | grep -qE "$REGEX"; then
+  echo "❌ Invalid branch name!"
+  echo "Please use: feature/*, bugfix/*, hotfix/*, release/*, chore/* or main/develop/staging"
+  exit 1
+fi
+
+echo
+echo "🧹 Running lint-staged..."
+pnpm lint-staged
+
+echo
+echo "🔍 Type checking..."
+pnpm type-check
+
+echo "🤖 Building..."
+pnpm build
+
+echo "✅ Pre-commit checks passed!"
+echo
