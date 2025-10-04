@@ -8,36 +8,10 @@ import {
   IconMapPin,
   IconPhone,
 } from "@tabler/icons-react";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { Button, Separator } from "@/components/ui";
-
-const footerLinks = {
-  product: [
-    { name: "Tính năng", href: "/#features" },
-    { name: "Bảng giá", href: "/#pricing" },
-    { name: "Đánh giá", href: "/testimonials" },
-    { name: "Demo", href: "/demo" },
-  ],
-  support: [
-    { name: "Trung tâm hỗ trợ", href: "/support" },
-    { name: "Tài liệu API", href: "/docs" },
-    { name: "Hướng dẫn", href: "/guides" },
-    { name: "Liên hệ", href: "/contact" },
-  ],
-  company: [
-    { name: "Về chúng tôi", href: "/about" },
-    { name: "Blog", href: "/blog" },
-    { name: "Tuyển dụng", href: "/careers" },
-    { name: "Đối tác", href: "/partners" },
-  ],
-  legal: [
-    { name: "Điều khoản dịch vụ", href: "/terms-of-service" },
-    { name: "Chính sách bảo mật", href: "/privacy-policy" },
-    { name: "Chính sách cookie", href: "/cookies" },
-    { name: "GDPR", href: "/gdpr" },
-  ],
-};
 
 const socialLinks = [
   { name: "GitHub", href: "#", icon: IconBrandGithub },
@@ -46,14 +20,61 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const locale = useLocale();
+  const t = useTranslations("footer");
+
+  const footerLinks = {
+    product: [
+      {
+        name: t("features"),
+        href: `/${locale === "en" ? "" : locale}#features`,
+      },
+      { name: t("pricing"), href: `/${locale === "en" ? "" : locale}#pricing` },
+      {
+        name: "Testimonials",
+        href: `/${locale === "en" ? "" : locale}/testimonials`,
+      },
+      { name: "Demo", href: `/${locale === "en" ? "" : locale}/demo` },
+    ],
+    support: [
+      {
+        name: t("supportCenter"),
+        href: `/${locale === "en" ? "" : locale}/support`,
+      },
+      { name: "API Docs", href: `/${locale === "en" ? "" : locale}/docs` },
+      { name: "Guides", href: `/${locale === "en" ? "" : locale}/guides` },
+      { name: t("contact"), href: `/${locale === "en" ? "" : locale}/contact` },
+    ],
+    company: [
+      { name: t("about"), href: `/${locale === "en" ? "" : locale}/about` },
+      { name: "Blog", href: `/${locale === "en" ? "" : locale}/blog` },
+      { name: "Careers", href: `/${locale === "en" ? "" : locale}/careers` },
+      { name: "Partners", href: `/${locale === "en" ? "" : locale}/partners` },
+    ],
+    legal: [
+      {
+        name: t("terms"),
+        href: `/${locale === "en" ? "" : locale}/terms-of-service`,
+      },
+      {
+        name: t("privacy"),
+        href: `/${locale === "en" ? "" : locale}/privacy-policy`,
+      },
+      { name: "Cookies", href: `/${locale === "en" ? "" : locale}/cookies` },
+      { name: "GDPR", href: `/${locale === "en" ? "" : locale}/gdpr` },
+    ],
+  };
+
   return (
     <footer className="border-t bg-gradient-to-b from-background to-muted/20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Mobile-optimized layout */}
         <div className="py-12 lg:py-16">
-          {/* Brand section - prominent on mobile */}
+          {/* Mobile Brand Section */}
           <div className="text-center mb-12 lg:hidden">
-            <Link href="/" className="inline-flex items-center space-x-3 mb-6">
+            <Link
+              href={`/${locale === "en" ? "" : locale}`}
+              className="inline-flex items-center space-x-3 mb-6"
+            >
               <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 shadow-lg">
                 <svg
                   viewBox="0 0 24 24"
@@ -64,21 +85,20 @@ export function Footer() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                  <path d="m2 17 10 5 10-5" />
-                  <path d="m2 12 10 5 10-5" />
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M2 12h20" />
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                 </svg>
               </div>
               <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                Hẹn Dễ
+                PolyGo
               </span>
             </Link>
 
             <p className="text-muted-foreground max-w-xs mx-auto leading-relaxed mb-8">
-              Giải pháp quản lý nhà hàng thông minh cho ngành F&B Việt Nam
+              {t("description")}
             </p>
 
-            {/* Social links - centered on mobile */}
             <div className="flex justify-center items-center gap-3 mb-8">
               {socialLinks.map((social) => {
                 const IconComponent = social.icon;
@@ -100,11 +120,13 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Desktop layout */}
+          {/* Desktop Layout */}
           <div className="hidden lg:grid lg:grid-cols-5 lg:gap-8">
-            {/* Brand & Contact - Desktop */}
             <div className="lg:col-span-2">
-              <Link href="/" className="flex items-center space-x-2 mb-6">
+              <Link
+                href={`/${locale === "en" ? "" : locale}`}
+                className="flex items-center space-x-2 mb-6"
+              >
                 <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                   <svg
                     viewBox="0 0 24 24"
@@ -115,38 +137,33 @@ export function Footer() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="m2 17 10 5 10-5" />
-                    <path d="m2 12 10 5 10-5" />
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M2 12h20" />
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                   </svg>
                 </div>
-                <span className="text-xl font-bold">Hẹn Dễ</span>
+                <span className="text-xl font-bold">PolyGo</span>
               </Link>
 
               <p className="text-sm text-muted-foreground max-w-sm mb-6">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut,
-                non? Eos dolorem sapiente earum sint, dignissimos minima nobis
-                numquam natus expedita, minus dicta maiores eius rerum vel
-                exercitationem itaque aperiam.
+                {t("description")}
               </p>
 
-              {/* Contact info */}
               <div className="space-y-3 mb-6">
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <IconMail className="size-4 flex-shrink-0" />
-                  <span>scanorderly196@gmail.com</span>
+                  <span>contact@polygo.com</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <IconPhone className="size-4 flex-shrink-0" />
-                  <span>0834564869</span>
+                  <span>+84 834 564 869</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <IconMapPin className="size-4 flex-shrink-0" />
-                  <span>Thủ Đức, TP. Hồ Chí Minh</span>
+                  <span>Thu Duc, Ho Chi Minh City, Vietnam</span>
                 </div>
               </div>
 
-              {/* Social links */}
               <div className="flex items-center gap-2">
                 {socialLinks.map((social) => {
                   const IconComponent = social.icon;
@@ -168,9 +185,8 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Links columns */}
             <div>
-              <h3 className="text-sm font-semibold mb-4">Sản phẩm</h3>
+              <h3 className="text-sm font-semibold mb-4">{t("product")}</h3>
               <ul className="space-y-3">
                 {footerLinks.product.map((link) => (
                   <li key={link.name}>
@@ -186,7 +202,7 @@ export function Footer() {
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold mb-4">Hỗ trợ</h3>
+              <h3 className="text-sm font-semibold mb-4">{t("support")}</h3>
               <ul className="space-y-3">
                 {footerLinks.support.map((link) => (
                   <li key={link.name}>
@@ -203,7 +219,7 @@ export function Footer() {
 
             <div>
               <div className="mb-8">
-                <h3 className="text-sm font-semibold mb-4">Công ty</h3>
+                <h3 className="text-sm font-semibold mb-4">{t("company")}</h3>
                 <ul className="space-y-3">
                   {footerLinks.company.map((link) => (
                     <li key={link.name}>
@@ -219,7 +235,7 @@ export function Footer() {
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold mb-4">Pháp lý</h3>
+                <h3 className="text-sm font-semibold mb-4">{t("legal")}</h3>
                 <ul className="space-y-3">
                   {footerLinks.legal.map((link) => (
                     <li key={link.name}>
@@ -236,15 +252,14 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Mobile links - Accordion style */}
+          {/* Mobile Links */}
           <div className="lg:hidden">
             <div className="grid grid-cols-2 gap-8">
-              {/* Left column */}
               <div className="space-y-8">
                 <div>
                   <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center">
                     <span className="w-1 h-4 bg-primary rounded-full mr-2"></span>
-                    Sản phẩm
+                    {t("product")}
                   </h3>
                   <ul className="space-y-3">
                     {footerLinks.product.map((link) => (
@@ -263,7 +278,7 @@ export function Footer() {
                 <div>
                   <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center">
                     <span className="w-1 h-4 bg-primary rounded-full mr-2"></span>
-                    Công ty
+                    {t("company")}
                   </h3>
                   <ul className="space-y-3">
                     {footerLinks.company.map((link) => (
@@ -280,12 +295,11 @@ export function Footer() {
                 </div>
               </div>
 
-              {/* Right column */}
               <div className="space-y-8">
                 <div>
                   <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center">
                     <span className="w-1 h-4 bg-primary rounded-full mr-2"></span>
-                    Hỗ trợ
+                    {t("support")}
                   </h3>
                   <ul className="space-y-3">
                     {footerLinks.support.map((link) => (
@@ -304,7 +318,7 @@ export function Footer() {
                 <div>
                   <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center">
                     <span className="w-1 h-4 bg-primary rounded-full mr-2"></span>
-                    Pháp lý
+                    {t("legal")}
                   </h3>
                   <ul className="space-y-3">
                     {footerLinks.legal.map((link) => (
@@ -322,30 +336,29 @@ export function Footer() {
               </div>
             </div>
 
-            {/* Contact info - Mobile */}
             <div className="mt-12 pt-8 border-t border-border/50">
               <h3 className="text-sm font-semibold text-foreground mb-6 text-center flex items-center justify-center">
                 <span className="w-1 h-4 bg-primary rounded-full mr-2"></span>
-                Liên hệ
+                {t("contact")}
               </h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground">
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
                     <IconMail className="size-4 text-primary" />
                   </div>
-                  <span>scanorderly196@gmail.com</span>
+                  <span>contact@polygo.com</span>
                 </div>
                 <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground">
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
                     <IconPhone className="size-4 text-primary" />
                   </div>
-                  <span>0834564869</span>
+                  <span>+84 834 564 869</span>
                 </div>
                 <div className="flex items-center justify-center gap-3 text-sm text-muted-foreground">
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
                     <IconMapPin className="size-4 text-primary" />
                   </div>
-                  <span>Thủ Đức, TP. HCM</span>
+                  <span>Thu Duc, Ho Chi Minh City</span>
                 </div>
               </div>
             </div>
@@ -354,14 +367,11 @@ export function Footer() {
 
         <Separator className="opacity-50" />
 
-        {/* Bottom section */}
         <div className="py-6">
           <div className="flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
-            <p className="text-sm text-muted-foreground">
-              © 2025 Hẹn Dễ. Tất cả quyền được bảo lưu.
-            </p>
+            <p className="text-sm text-muted-foreground">{t("copyright")}</p>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <span>Proudly made in Vietnam</span>
+              <span>{t("madeInVietnam")}</span>
               <span className="text-base">🇻🇳</span>
             </div>
           </div>

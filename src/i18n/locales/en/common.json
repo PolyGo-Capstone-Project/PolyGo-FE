@@ -1,0 +1,45 @@
+{
+  "header": {
+    "products": "Products",
+    "features": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "login": "Log in",
+    "getStarted": "Get Started",
+    "dashboard": "Dashboard"
+  },
+  "footer": {
+    "description": "Smart language & cultural exchange platform for learners worldwide",
+    "product": "Product",
+    "support": "Support",
+    "company": "Company",
+    "legal": "Legal",
+    "contact": "Contact",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "supportCenter": "Support Center",
+    "features": "Features",
+    "pricing": "Pricing",
+    "about": "About Us",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "copyright": "© 2025 PolyGo. All rights reserved.",
+    "madeInVietnam": "Proudly made in Vietnam"
+  },
+  "home": {
+    "title": "PolyGo",
+    "clickMe": "Click Me"
+  },
+  "languageSwitcher": {
+    "label": "Language",
+    "description": "Select the language you prefer"
+  },
+  "theme": {
+    "toggle": "Toggle theme",
+    "description": "Choose how the site looks",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  }
+}

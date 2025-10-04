@@ -1,3 +1,4 @@
+import { useLocale } from "next-intl";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
@@ -8,6 +9,8 @@ interface LogoProps {
 }
 
 export function Logo({ className, size = "default" }: LogoProps) {
+  const locale = useLocale();
+
   const sizes = {
     sm: "text-lg",
     default: "text-xl",
@@ -17,7 +20,7 @@ export function Logo({ className, size = "default" }: LogoProps) {
   return (
     <div className="flex items-center justify-between">
       <Link
-        href="/"
+        href={`/${locale}`}
         className={cn(
           "font-bold text-primary flex items-center space-x-2",
           sizes[size],
@@ -34,9 +37,9 @@ export function Logo({ className, size = "default" }: LogoProps) {
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path d="M12 2L2 7l10 5 10-5-10-5z" />
-            <path d="m2 17 10 5 10-5" />
-            <path d="m2 12 10 5 10-5" />
+            <circle cx="12" cy="12" r="10" />
+            <path d="M2 12h20" />
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
           </svg>
         </div>
         <span className="font-bold">PolyGo</span>
