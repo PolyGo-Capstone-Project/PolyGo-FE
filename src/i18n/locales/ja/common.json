@@ -1,0 +1,45 @@
+{
+  "header": {
+    "products": "製品",
+    "features": "機能",
+    "pricing": "料金",
+    "contact": "お問い合わせ",
+    "login": "ログイン",
+    "getStarted": "始める",
+    "dashboard": "ダッシュボード"
+  },
+  "footer": {
+    "description": "世界中の学習者のためのスマート言語・文化交流プラットフォーム",
+    "product": "製品",
+    "support": "サポート",
+    "company": "会社",
+    "legal": "法的情報",
+    "contact": "お問い合わせ",
+    "email": "メール",
+    "phone": "電話",
+    "address": "住所",
+    "supportCenter": "サポートセンター",
+    "features": "機能",
+    "pricing": "料金",
+    "about": "会社概要",
+    "terms": "利用規約",
+    "privacy": "プライバシーポリシー",
+    "copyright": "© 2025 PolyGo. 全著作権所有。",
+    "madeInVietnam": "ベトナム製"
+  },
+  "home": {
+    "title": "PolyGo",
+    "clickMe": "クリック"
+  },
+  "languageSwitcher": {
+    "label": "言語",
+    "description": "使用する言語を選択してください"
+  },
+  "theme": {
+    "toggle": "テーマを切り替える",
+    "description": "サイトの表示テーマを選択",
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム"
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -14,16 +15,20 @@ import {
 } from "@/components/ui";
 import { useAuthStore } from "@/hooks";
 
-const navigation = [
-  { name: "Sản phẩm", href: "/product" },
-  { name: "Tính năng", href: "/#features" },
-  { name: "Bảng giá", href: "/#pricing" },
-  { name: "Liên hệ", href: "/contact" },
-];
+import { LanguageSwitcher } from "./language-switcher";
 
 export function Header() {
   const isAuthenticated = useAuthStore((state) => state.isAuth);
   const [isOpen, setIsOpen] = useState(false);
+  const locale = useLocale();
+  const t = useTranslations("header");
+
+  const navigation = [
+    { name: t("products"), href: `/${locale === "en" ? "" : locale}/product` },
+    { name: t("features"), href: `/${locale === "en" ? "" : locale}#features` },
+    { name: t("pricing"), href: `/${locale === "en" ? "" : locale}#pricing` },
+    { name: t("contact"), href: `/${locale === "en" ? "" : locale}/contact` },
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -52,29 +57,39 @@ export function Header() {
             {!isAuthenticated ? (
               <>
                 <Button variant="ghost" asChild>
-                  <Link href="/login">Đăng nhập</Link>
+                  <Link href={`/${locale === "en" ? "" : locale}/login`}>
+                    {t("login")}
+                  </Link>
                 </Button>
                 <Button asChild>
-                  <Link href="/register">Bắt đầu ngay</Link>
+                  <Link href={`/${locale === "en" ? "" : locale}/register`}>
+                    {t("getStarted")}
+                  </Link>
                 </Button>
               </>
             ) : (
               <>
                 <Button variant="outline" asChild>
-                  <Link href="/manage/dashboard">Bảng điều khiển</Link>
+                  <Link
+                    href={`/${locale === "en" ? "" : locale}/manage/dashboard`}
+                  >
+                    {t("dashboard")}
+                  </Link>
                 </Button>
               </>
             )}
+            <LanguageSwitcher />
             <ModeToggle />
           </div>
 
           {/* Mobile Menu */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center gap-2">
+            <LanguageSwitcher />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
                   <Menu className="size-5" />
-                  <span className="sr-only">Mở menu</span>
+                  <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px] p-0">
@@ -112,18 +127,18 @@ export function Header() {
                             asChild
                           >
                             <Link
-                              href="/login"
+                              href={`/${locale === "en" ? "" : locale}/login`}
                               onClick={() => setIsOpen(false)}
                             >
-                              Đăng nhập
+                              {t("login")}
                             </Link>
                           </Button>
                           <Button className="w-full" asChild>
                             <Link
-                              href="/register"
+                              href={`/${locale === "en" ? "" : locale}/register`}
                               onClick={() => setIsOpen(false)}
                             >
-                              Bắt đầu ngay
+                              {t("getStarted")}
                             </Link>
                           </Button>
                         </>
@@ -133,8 +148,11 @@ export function Header() {
                           className="w-full justify-center"
                           asChild
                         >
-                          <Link href="/admin" onClick={() => setIsOpen(false)}>
-                            Bảng điều khiển
+                          <Link
+                            href={`/${locale === "en" ? "" : locale}/manage/dashboard`}
+                            onClick={() => setIsOpen(false)}
+                          >
+                            {t("dashboard")}
                           </Link>
                         </Button>
                       )}
