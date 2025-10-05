@@ -57,14 +57,10 @@ export function Header() {
             {!isAuthenticated ? (
               <>
                 <Button variant="ghost" asChild>
-                  <Link href={`/${locale === "en" ? "" : locale}/login`}>
-                    {t("login")}
-                  </Link>
+                  <Link href={`/${locale}/login`}>{t("login")}</Link>
                 </Button>
                 <Button asChild>
-                  <Link href={`/${locale === "en" ? "" : locale}/register`}>
-                    {t("getStarted")}
-                  </Link>
+                  <Link href={`/${locale}/register`}>{t("getStarted")}</Link>
                 </Button>
               </>
             ) : (
@@ -127,7 +123,7 @@ export function Header() {
                             asChild
                           >
                             <Link
-                              href={`/${locale === "en" ? "" : locale}/login`}
+                              href={`/${locale}/login`}
                               onClick={() => setIsOpen(false)}
                             >
                               {t("login")}
@@ -135,7 +131,7 @@ export function Header() {
                           </Button>
                           <Button className="w-full" asChild>
                             <Link
-                              href={`/${locale === "en" ? "" : locale}/register`}
+                              href={`/${locale}/register`}
                               onClick={() => setIsOpen(false)}
                             >
                               {t("getStarted")}

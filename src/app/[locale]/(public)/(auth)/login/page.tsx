@@ -1,3 +1,13 @@
+import { useTranslations } from "next-intl";
+
+import { AuthCard, LoginForm } from "@/components";
+
 export default function LoginPage() {
-  return <div>Login Page</div>;
+  const t = useTranslations("auth.login");
+
+  return (
+    <AuthCard title={t("title")} description={t("description")}>
+      <LoginForm />
+    </AuthCard>
+  );
 }
