@@ -27,9 +27,98 @@
     "copyright": "© 2025 PolyGo. Bản quyền thuộc về chúng tôi.",
     "madeInVietnam": "Được phát triển tại Việt Nam"
   },
+  "guideline": {
+    "title": "Quy định cộng đồng",
+    "intro": "Bộ quy tắc ứng xử để giữ môi trường học tập an toàn, tôn trọng và giàu văn hoá.",
+    "conduct": {
+      "title": "Ứng xử",
+      "items": {
+        "respect": "Tôn trọng khác biệt ngôn ngữ, văn hoá; không quấy rối hay phân biệt đối xử.",
+        "safety": "Không chia sẻ thông tin nhạy cảm; thận trọng khi tương tác ngoài nền tảng.",
+        "prohibited": "Cấm nội dung bạo lực, khiêu dâm, thù ghét, gian lận, spam."
+      }
+    },
+    "enforcement": {
+      "title": "Xử lý vi phạm",
+      "items": {
+        "warnings": "Cảnh cáo, tắt micro/chat, giới hạn tính năng tuỳ mức độ.",
+        "bans": "Khoá tạm thời/vĩnh viễn khi tái phạm hoặc vi phạm nghiêm trọng.",
+        "appeals": "Quy trình khiếu nại minh bạch qua kênh hỗ trợ."
+      }
+    }
+  },
+  "policy": {
+    "title": "Chính sách PolyGo",
+    "intro": "Các chính sách cốt lõi nhằm bảo vệ quyền riêng tư, thanh toán an toàn và trải nghiệm học tập công bằng.",
+    "privacy": {
+      "title": "Quyền riêng tư & Bảo mật",
+      "items": {
+        "dataProtection": "Bảo vệ dữ liệu cá nhân, đặc biệt với thanh toán & thông tin nhạy cảm.",
+        "aiLogs": "Dùng AI cho dịch/chỉnh sửa; nhật ký sự kiện phục vụ an toàn & chất lượng.",
+        "compliance": "Tuân thủ pháp luật hiện hành và yêu cầu gỡ nội dung khi cần."
+      }
+    },
+    "payments": {
+      "title": "Gói & Thanh toán",
+      "items": {
+        "tiers": "Tài khoản Free giới hạn; Plus mở toàn bộ tính năng và ưu đãi.",
+        "refunds": "Nguyên tắc hoàn tiền/ghi có khi sự cố được xác minh.",
+        "security": "Cổng thanh toán bảo mật; không lưu thông tin thẻ trên máy chủ ứng dụng."
+      }
+    },
+    "safety": {
+      "title": "An toàn cộng đồng",
+      "items": {
+        "moderation": "Admin có thể cảnh cáo, khoá tài khoản, đóng phòng, gỡ nội dung vi phạm.",
+        "reports": "Cơ chế báo cáo, xử lý tranh chấp và hỗ trợ người dùng.",
+        "events": "Sự kiện phải tuân thủ quy định nền tảng và pháp luật sở tại."
+      }
+    }
+  },
   "home": {
     "title": "PolyGo",
-    "clickMe": "Nhấn vào tôi"
+    "clickMe": "Nhấn vào tôi",
+    "heroTitle": "Học ngôn ngữ qua trải nghiệm thực tế",
+    "heroSubtitle": "Kết nối với người bản ngữ, tham gia các sự kiện văn hóa thú vị và cải thiện kỹ năng ngôn ngữ của bạn một cách tự nhiên nhất.",
+    "Demo": "Xem demo",
+    "getStarted": "Bắt đầu miễn phí",
+    "usersCount": "50K+",
+    "users": "Người học",
+    "languageCount": "30+",
+    "language": "Ngôn ngữ",
+    "eventsCount": "100+",
+    "events": "Sự kiện/Tháng",
+    "whyTitle": "Tại sao chọn PolyGo?",
+    "whySubtitle": "Nền tảng học ngôn ngữ toàn diện với công nghệ AI và cộng đồng toàn cầu",
+    "bannerTitle": "Sẵn sàng bắt đầu hành trình học ngôn ngữ?",
+    "bannerSubtitle": "Tham gia cộng đồng hơn 50,000 người học trên toàn thế giới",
+    "bannerButtonOne": "Đăng ký miễn phí",
+    "bannerButtonTwo": "Đã có tài khoản? Đăng nhập",
+    "live": "Live với Anna",
+    "firstCard": {
+      "name": "Trò chuyện thông minh",
+      "description": "AI tự động sửa lỗi và gợi ý câu văn tự nhiên trong khi bạn chat"
+    },
+    "secondCard": {
+      "name": "Video call 1:1",
+      "description": "Luyện nói trực tiếp với người bản ngữ qua video call chất lượng cao"
+    },
+    "thirdCard": {
+      "name": "Sự kiện văn hóa",
+      "description": "Tham gia workshops, movie nights và các hoạt động thú vị"
+    },
+    "fourthCard": {
+      "name": "Matching thông minh",
+      "description": "Thuật toán tìm kiếm partner phù hợp dựa trên sở thích và mục tiêu"
+    },
+    "fifthCard": {
+      "name": "30+ ngôn ngữ",
+      "description": "Từ tiếng Anh, Pháp, Nhật, Hàn đến các ngôn ngữ ít phổ biến"
+    },
+    "sixthCard": {
+      "name": "Chơi game",
+      "description": "Hệ thống XP, badges và leaderboard để duy trì động lực học tập"
+    }
   },
   "languageSwitcher": {
     "label": "Ngôn ngữ",
