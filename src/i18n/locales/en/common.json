@@ -109,5 +109,113 @@
       "otpRequired": "Please enter email",
       "otpSentSuccess": "Verification code has been sent to your email!"
     }
+  },
+  "setupProfile": {
+    "steps": {
+      "targetLanguage": {
+        "title": "Target Languages",
+        "description": "What do you want to learn?",
+        "heading": "Choose your target languages",
+        "subheading": "Select up to 3 languages you want to learn with PolyGo",
+        "selected": "Selected: {count} language",
+        "maxReached": "Maximum 3 languages"
+      },
+      "knownLanguages": {
+        "title": "Known Languages",
+        "description": "Languages you already speak",
+        "heading": "Languages you already know",
+        "subheading": "Select all languages you can speak. This helps us find better conversation partners.",
+        "selected": "Selected: {count} language"
+      },
+      "proficiency": {
+        "title": "Level & Interests",
+        "description": "Your proficiency and interests",
+        "proficiencyHeading": "What's your proficiency level?",
+        "proficiencySubheading": "Select your current level in the target language",
+        "interestsHeading": "What are your interests?",
+        "interestsSubheading": "Choose topics you'd like to talk about (select at least one)",
+        "selected": "Selected: {count} interest"
+      },
+      "availability": {
+        "title": "Availability",
+        "description": "When can you practice?",
+        "timezoneHeading": "Your timezone",
+        "timezoneSubheading": "We'll use this to match you with partners at convenient times",
+        "timezoneLabel": "Select your timezone",
+        "currentTime": "Current time",
+        "timeSlotsHeading": "When are you usually available?",
+        "timeSlotsSubheading": "Select the time slots when you can practice",
+        "weeklyHoursHeading": "How much time can you dedicate?",
+        "weeklyHoursSubheading": "Choose how many hours per week you want to practice",
+        "weeklyHoursLabel": "Weekly hours",
+        "selected": "Selected: {count} time slot"
+      }
+    },
+    "navigation": {
+      "back": "Back",
+      "continue": "Continue",
+      "complete": "Complete Setup",
+      "step": "Step {current} of {total}"
+    },
+    "proficiencyLevels": {
+      "beginner": {
+        "label": "Beginner",
+        "description": "Just starting out"
+      },
+      "elementary": {
+        "label": "Elementary",
+        "description": "Basic understanding"
+      },
+      "intermediate": {
+        "label": "Intermediate",
+        "description": "Can have conversations"
+      },
+      "advanced": {
+        "label": "Advanced",
+        "description": "Fluent speaker"
+      },
+      "native": {
+        "label": "Native",
+        "description": "Native speaker"
+      }
+    },
+    "interests": {
+      "travel": "Travel",
+      "food": "Food & Cooking",
+      "music": "Music",
+      "sports": "Sports",
+      "movies": "Movies & TV",
+      "books": "Books & Reading",
+      "technology": "Technology",
+      "art": "Art & Design",
+      "business": "Business",
+      "science": "Science",
+      "gaming": "Gaming",
+      "fashion": "Fashion"
+    },
+    "availability": {
+      "morning": {
+        "label": "Morning",
+        "time": "6:00 - 12:00"
+      },
+      "afternoon": {
+        "label": "Afternoon",
+        "time": "12:00 - 18:00"
+      },
+      "evening": {
+        "label": "Evening",
+        "time": "18:00 - 22:00"
+      },
+      "night": {
+        "label": "Night",
+        "time": "22:00 - 6:00"
+      }
+    },
+    "weeklyHours": {
+      "1": "1-2 hours per week",
+      "3": "3-5 hours per week",
+      "6": "6-10 hours per week",
+      "11": "10+ hours per week"
+    }
   }
 }
