@@ -5,11 +5,11 @@
     "pricing": "Bảng giá",
     "contact": "Liên hệ",
     "login": "Đăng nhập",
-    "getStarted": "Bắt đầu",
+    "getStarted": "Bắt đầu ngay",
     "dashboard": "Bảng điều khiển"
   },
   "footer": {
-    "description": "Nền tảng trao đổi ngôn ngữ và văn hóa thông minh cho người học trên toàn thế giới",
+    "description": "Nền tảng giao lưu ngôn ngữ & văn hóa thông minh cho người học toàn cầu",
     "product": "Sản phẩm",
     "support": "Hỗ trợ",
     "company": "Công ty",
@@ -22,10 +22,10 @@
     "features": "Tính năng",
     "pricing": "Bảng giá",
     "about": "Về chúng tôi",
-    "terms": "Điều khoản dịch vụ",
-    "privacy": "Chính sách bảo mật",
-    "copyright": "© 2025 PolyGo. Bản quyền thuộc về chúng tôi.",
-    "madeInVietnam": "Được phát triển tại Việt Nam"
+    "terms": "Quy định",
+    "privacy": "Chính sách",
+    "copyright": "© 2025 PolyGo. Tất cả quyền được bảo lưu.",
+    "madeInVietnam": "Tự hào sản xuất tại Việt Nam"
   },
   "guideline": {
     "title": "Quy định cộng đồng",
@@ -125,16 +125,16 @@
     "description": "Chọn ngôn ngữ bạn muốn sử dụng"
   },
   "theme": {
-    "toggle": "Chuyển đổi giao diện",
-    "description": "Chọn giao diện bạn muốn",
+    "toggle": "Chuyển chế độ giao diện",
+    "description": "Chọn phong cách hiển thị bạn yêu thích",
     "light": "Sáng",
     "dark": "Tối",
     "system": "Hệ thống"
   },
   "auth": {
     "login": {
-      "title": "Đăng nhập PolyGo",
-      "description": "Đăng nhập để truy cập tài khoản",
+      "title": "Đăng nhập vào PolyGo",
+      "description": "Đăng nhập để truy cập vào tài khoản của bạn",
       "emailLabel": "Email",
       "emailPlaceholder": "user@example.com",
       "passwordLabel": "Mật khẩu",
@@ -151,26 +151,26 @@
       "loginSuccess": "Đăng nhập thành công!"
     },
     "register": {
-      "title": "Đăng ký PolyGo",
-      "description": "Đăng ký để bắt đầu hành trình của bạn",
+      "title": "Đăng ký vào PolyGo",
+      "description": "Đăng ký để bắt đầu hành trình của bạn với chúng tôi",
       "nameLabel": "Họ và tên",
       "namePlaceholder": "Nguyễn Văn A",
       "emailLabel": "Email",
       "emailPlaceholder": "user@example.com",
-      "sendOTP": "Gửi mã OTP",
+      "sendOTP": "Gửi OTP",
       "otpLabel": "Mã xác thực OTP",
-      "otpPlaceholder": "Nhập mã 6 chữ số",
-      "otpHint": "Kiểm tra email và nhập mã 6 chữ số để xác thực tài khoản",
+      "otpPlaceholder": "Nhập mã 6 số",
+      "otpHint": "Kiểm tra email và nhập mã 6 số để xác thực tài khoản",
       "otpSent": "Mã OTP đã được gửi đến email của bạn",
       "passwordLabel": "Mật khẩu",
       "passwordPlaceholder": "Tối thiểu 6 ký tự",
       "confirmPasswordLabel": "Xác nhận mật khẩu",
       "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
-      "agreeToTerms": "Tôi đồng ý với Điều khoản dịch vụ và Chính sách bảo mật",
+      "agreeToTerms": "Tôi đồng ý với Điều khoản sử dụng và Chính sách bảo mật",
       "registerButton": "Tạo tài khoản",
       "registering": "Đang tạo tài khoản...",
       "orContinueWith": "Hoặc tiếp tục với",
-      "googleRegister": "Đăng ký với Google",
+      "googleRegister": "Đăng ký bằng Google",
       "haveAccount": "Đã có tài khoản?",
       "loginNow": "Đăng nhập ngay",
       "registerSuccess": "Đăng ký thành công!",
@@ -179,13 +179,13 @@
     },
     "forgotPassword": {
       "title": "Đặt lại mật khẩu",
-      "description": "Nhập email để nhận mã đặt lại mật khẩu",
+      "description": "Nhập email của bạn để nhận mã đặt lại mật khẩu",
       "emailLabel": "Email",
       "emailPlaceholder": "user@example.com",
-      "sendOTP": "Gửi mã OTP",
+      "sendOTP": "Gửi OTP",
       "otpLabel": "Mã xác thực",
-      "otpPlaceholder": "Nhập mã 6 chữ số",
-      "otpHint": "Kiểm tra email và nhập mã xác thực 6 chữ số",
+      "otpPlaceholder": "Nhập mã 6 số",
+      "otpHint": "Kiểm tra email và nhập mã xác thực 6 số",
       "otpSent": "Mã xác thực đã được gửi đến email của bạn",
       "newPasswordLabel": "Mật khẩu mới",
       "newPasswordPlaceholder": "Tối thiểu 6 ký tự",
@@ -197,114 +197,6 @@
       "resetSuccess": "Đặt lại mật khẩu thành công!",
       "otpRequired": "Vui lòng nhập email",
       "otpSentSuccess": "Mã xác thực đã được gửi đến email của bạn!"
-    }
-  },
-  "setupProfile": {
-    "steps": {
-      "targetLanguage": {
-        "title": "Ngôn ngữ mục tiêu",
-        "description": "Bạn muốn học gì?",
-        "heading": "Chọn ngôn ngữ bạn muốn học",
-        "subheading": "Chọn tối đa 3 ngôn ngữ bạn muốn học với PolyGo",
-        "selected": "Đã chọn: {count} ngôn ngữ",
-        "maxReached": "Tối đa 3 ngôn ngữ"
-      },
-      "knownLanguages": {
-        "title": "Ngôn ngữ đã biết",
-        "description": "Ngôn ngữ bạn đã biết",
-        "heading": "Ngôn ngữ bạn đã biết",
-        "subheading": "Chọn tất cả ngôn ngữ bạn có thể nói. Điều này giúp chúng tôi tìm đối tác trò chuyện phù hợp hơn.",
-        "selected": "Đã chọn: {count} ngôn ngữ"
-      },
-      "proficiency": {
-        "title": "Trình độ & Sở thích",
-        "description": "Trình độ và sở thích của bạn",
-        "proficiencyHeading": "Trình độ của bạn là gì?",
-        "proficiencySubheading": "Chọn trình độ hiện tại của bạn với ngôn ngữ mục tiêu",
-        "interestsHeading": "Sở thích của bạn là gì?",
-        "interestsSubheading": "Chọn chủ đề bạn muốn trò chuyện (chọn ít nhất một)",
-        "selected": "Đã chọn: {count} sở thích"
-      },
-      "availability": {
-        "title": "Thời gian rảnh",
-        "description": "Khi nào bạn có thể luyện tập?",
-        "timezoneHeading": "Múi giờ của bạn",
-        "timezoneSubheading": "Chúng tôi sẽ dùng thông tin này để ghép bạn với đối tác phù hợp",
-        "timezoneLabel": "Chọn múi giờ",
-        "currentTime": "Giờ hiện tại",
-        "timeSlotsHeading": "Bạn thường rảnh khi nào?",
-        "timeSlotsSubheading": "Chọn khung giờ khi bạn có thể luyện tập",
-        "weeklyHoursHeading": "Bạn có thể dành bao nhiêu thời gian?",
-        "weeklyHoursSubheading": "Chọn số giờ mỗi tuần bạn muốn luyện tập",
-        "weeklyHoursLabel": "Số giờ mỗi tuần",
-        "selected": "Đã chọn: {count} khung giờ"
-      }
-    },
-    "navigation": {
-      "back": "Quay lại",
-      "continue": "Tiếp tục",
-      "complete": "Hoàn thành",
-      "step": "Bước {current} / {total}"
-    },
-    "proficiencyLevels": {
-      "beginner": {
-        "label": "Người mới bắt đầu",
-        "description": "Mới bắt đầu học"
-      },
-      "elementary": {
-        "label": "Cơ bản",
-        "description": "Hiểu biết cơ bản"
-      },
-      "intermediate": {
-        "label": "Trung cấp",
-        "description": "Có thể trò chuyện"
-      },
-      "advanced": {
-        "label": "Nâng cao",
-        "description": "Nói lưu loát"
-      },
-      "native": {
-        "label": "Người bản ngữ",
-        "description": "Người bản xứ"
-      }
-    },
-    "interests": {
-      "travel": "Du lịch",
-      "food": "Ẩm thực & Nấu ăn",
-      "music": "Âm nhạc",
-      "sports": "Thể thao",
-      "movies": "Phim & TV",
-      "books": "Sách & Đọc",
-      "technology": "Công nghệ",
-      "art": "Nghệ thuật & Thiết kế",
-      "business": "Kinh doanh",
-      "science": "Khoa học",
-      "gaming": "Game",
-      "fashion": "Thời trang"
-    },
-    "availability": {
-      "morning": {
-        "label": "Buổi sáng",
-        "time": "6:00 - 12:00"
-      },
-      "afternoon": {
-        "label": "Buổi chiều",
-        "time": "12:00 - 18:00"
-      },
-      "evening": {
-        "label": "Buổi tối",
-        "time": "18:00 - 22:00"
-      },
-      "night": {
-        "label": "Đêm khuya",
-        "time": "22:00 - 6:00"
-      }
-    },
-    "weeklyHours": {
-      "1": "1-2 giờ mỗi tuần",
-      "3": "3-5 giờ mỗi tuần",
-      "6": "6-10 giờ mỗi tuần",
-      "11": "Hơn 10 giờ mỗi tuần"
     }
   }
 }

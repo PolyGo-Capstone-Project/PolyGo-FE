@@ -389,7 +389,7 @@ export function Footer() {
   const t = useTranslations("footer");
   const locale = useLocale();
   const year = new Date().getFullYear();
-  const prefix = locale === "en" ? "en" : `/${locale}`;
+  const prefix = locale === "" ? "" : `/${locale}`;
 
   // const navigation = [
   //   { name: t("about"), href: `/${locale === "en" ? "" : locale}about` },
