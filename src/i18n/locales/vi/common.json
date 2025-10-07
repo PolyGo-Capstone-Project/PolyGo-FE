@@ -38,8 +38,13 @@
     "pricing": "Bảng giá",
     "contact": "Liên hệ",
     "login": "Đăng nhập",
-    "getStarted": "Bắt đầu",
-    "dashboard": "Bảng điều khiển"
+    "getStarted": "Bắt đầu ngay",
+    "dashboard": "Bảng điều khiển",
+    "userdashboard": "Trang chủ",
+    "chat": "Trò chuyện",
+    "event": "Sự kiện",
+    "matching": "Ghép đôi",
+    "social": "Mạng xã hội"
   },
   "footer": {
     "description": "Nền tảng trao đổi ngôn ngữ và văn hóa thông minh cho người học trên toàn thế giới",

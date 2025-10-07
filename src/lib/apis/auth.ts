@@ -8,6 +8,8 @@ const authApiRequest = {
     http.post<LoginResType>("/api/auth/login", body, {
       baseUrl: "",
     }),
+  //send otp
+  sendOTP: () => http.post("/api/auth/send-otp", {}, { baseUrl: "" }),
 };
 
 export default authApiRequest;

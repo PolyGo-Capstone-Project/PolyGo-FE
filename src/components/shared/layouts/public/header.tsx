@@ -14,149 +14,107 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui";
+import { Role } from "@/constants";
 import { useAuthStore } from "@/hooks";
 
 export function Header() {
   const isAuthenticated = useAuthStore((state) => state.isAuth);
+  const role = useAuthStore((state) => state.role);
   const [isOpen, setIsOpen] = useState(false);
   const locale = useLocale();
   const t = useTranslations("header");
 
-  const navigation = [
-    { name: t("products"), href: `/${locale === "en" ? "" : locale}/product` },
-    { name: t("features"), href: `/${locale === "en" ? "" : locale}#features` },
-    { name: t("pricing"), href: `/${locale === "en" ? "" : locale}#pricing` },
-    { name: t("contact"), href: `/${locale === "en" ? "" : locale}/contact` },
-  ];
+  const dashboardLink =
+    role === Role.Admin
+      ? `/${locale}/manage/dashboard`
+      : `/${locale}/dashboard`;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Logo />
-          </div>
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Logo */}
+        <Logo />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex md:items-center md:space-x-8">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-4">
+          <LanguageSwitcher />
+          <ModeToggle />
+          {!isAuthenticated ? (
+            <>
+              <Button variant="ghost" asChild>
+                <Link href={`/${locale}/login`}>{t("login")}</Link>
+              </Button>
+              <Button asChild>
+                <Link href={`/${locale}/register`}>{t("getStarted")}</Link>
+              </Button>
+            </>
+          ) : (
+            <Button variant="outline" asChild>
+              <Link href={dashboardLink}>{t("dashboard")}</Link>
+            </Button>
+          )}
+        </div>
 
-          {/* Desktop CTA */}
-          <div className="hidden md:flex md:items-center md:space-x-4">
-            {!isAuthenticated ? (
-              <>
-                <Button variant="ghost" asChild>
-                  <Link href={`/${locale}/login`}>{t("login")}</Link>
-                </Button>
-                <Button asChild>
-                  <Link href={`/${locale}/register`}>{t("getStarted")}</Link>
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="outline" asChild>
-                  <Link
-                    href={`/${locale === "en" ? "" : locale}/manage/dashboard`}
-                  >
-                    {t("dashboard")}
-                  </Link>
-                </Button>
-              </>
-            )}
-            <LanguageSwitcher />
-            <ModeToggle />
-          </div>
+        {/* Mobile Navigation */}
+        <div className="flex items-center gap-2 md:hidden">
+          <LanguageSwitcher />
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label="Open menu">
+                <Menu className="size-5" />
+              </Button>
+            </SheetTrigger>
 
-          {/* Mobile Menu */}
-          <div className="md:hidden flex items-center gap-2">
-            <LanguageSwitcher />
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="size-5" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px] p-0">
-                <div className="flex h-full flex-col">
-                  {/* Header */}
-                  <div className="flex items-center justify-between border-b p-6">
-                    <Logo size="sm" />
-                    <ModeToggle />
-                  </div>
+            <SheetContent side="right" className="w-[80vw] max-w-sm p-0">
+              <div className="flex h-full flex-col">
+                {/* Header */}
+                <div className="flex items-center justify-between border-b px-6 py-4">
+                  <Logo size="sm" />
+                  <ModeToggle />
+                </div>
 
-                  {/* Navigation */}
-                  <div className="flex-1 py-6">
-                    <nav className="px-6 space-y-2">
-                      {navigation.map((item) => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          className="block rounded-lg px-3 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {item.name}
-                        </Link>
-                      ))}
-                    </nav>
-                  </div>
-
-                  {/* Bottom Actions */}
-                  <div className="border-t p-6 space-y-4">
-                    <div className="space-y-2">
-                      {!isAuthenticated ? (
-                        <>
-                          <Button
-                            variant="outline"
-                            className="w-full justify-center"
-                            asChild
-                          >
-                            <Link
-                              href={`/${locale}/login`}
-                              onClick={() => setIsOpen(false)}
-                            >
-                              {t("login")}
-                            </Link>
-                          </Button>
-                          <Button className="w-full" asChild>
-                            <Link
-                              href={`/${locale}/register`}
-                              onClick={() => setIsOpen(false)}
-                            >
-                              {t("getStarted")}
-                            </Link>
-                          </Button>
-                        </>
-                      ) : (
+                {/* Menu content */}
+                <div className="flex flex-1 flex-col justify-between">
+                  <div className="flex flex-col gap-3 px-6 py-6">
+                    {!isAuthenticated ? (
+                      <>
                         <Button
                           variant="outline"
-                          className="w-full justify-center"
+                          className="w-full"
                           asChild
+                          onClick={() => setIsOpen(false)}
                         >
-                          <Link
-                            href={`/${locale === "en" ? "" : locale}/manage/dashboard`}
-                            onClick={() => setIsOpen(false)}
-                          >
-                            {t("dashboard")}
+                          <Link href={`/${locale}/login`}>{t("login")}</Link>
+                        </Button>
+                        <Button
+                          className="w-full"
+                          asChild
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <Link href={`/${locale}/register`}>
+                            {t("getStarted")}
                           </Link>
                         </Button>
-                      )}
-                    </div>
+                      </>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        asChild
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <Link href={dashboardLink}>{t("dashboard")}</Link>
+                      </Button>
+                    )}
+                  </div>
+
+                  <div className="border-t px-6 py-4 text-sm text-muted-foreground">
+                    <p>© 2025 PolyGo. All rights reserved.</p>
                   </div>
                 </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>

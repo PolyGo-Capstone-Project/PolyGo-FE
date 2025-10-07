@@ -39,7 +39,12 @@
     "contact": "Contact",
     "login": "Log in",
     "getStarted": "Get Started",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "userdashboard": "Home",
+    "chat": "Chat",
+    "event": "Event",
+    "matching": "Matching",
+    "social": "Social"
   },
   "footer": {
     "description": "Smart language & cultural exchange platform for learners worldwide",
