@@ -30,7 +30,7 @@ export function Logo({ className, size = "default" }: LogoProps) {
         <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
           <span className="text-lg font-extrabold">P</span>
         </div>
-        <span className="font-bold text-black">PolyGo</span>
+        <span className="font-bold text-black dark:text-white">PolyGo</span>
       </Link>
     </div>
   );

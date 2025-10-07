@@ -20,4 +20,12 @@ export const UserSchema = z.object({
   updatedAt: z.iso.datetime(),
 });
 
+export const GetUserProfileResSchema = z.object({
+  data: UserSchema.omit({
+    password: true,
+    totpSecret: true,
+  }),
+});
+
 export type UserType = z.infer<typeof UserSchema>;
+export type GetUserProfileResType = z.infer<typeof GetUserProfileResSchema>;

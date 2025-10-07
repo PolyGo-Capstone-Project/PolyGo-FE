@@ -1,11 +1,15 @@
 "use client";
 
 import {
+  Calendar,
   CalendarDays,
+  Globe,
   Home,
+  LogOut,
   Menu,
   MessageSquare,
   Sparkles,
+  Users,
   Users2,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -14,7 +18,12 @@ import { useState } from "react";
 
 import { ModeToggle } from "@/components/modules";
 import { LanguageSwitcher } from "@/components/shared/layouts/language-switcher";
+import { NotificationBell } from "@/components/shared/layouts/user/notification";
+import { UserMenu } from "@/components/shared/layouts/user/user-menu";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
   Button,
   Logo,
   Sheet,
@@ -66,45 +75,84 @@ export function UserHeader() {
           <div className="hidden md:flex md:items-center md:space-x-4">
             <LanguageSwitcher />
             <ModeToggle />
+            <NotificationBell />
+            <UserMenu />
           </div>
 
           {/* Mobile Menu */}
           <div className="md:hidden flex items-center gap-2">
-            <LanguageSwitcher />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="size-5" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
+                <button
+                  className="p-2 rounded-md hover:bg-accent/60 transition-colors"
+                  aria-label="Open menu"
+                >
+                  <Menu className="h-5 w-5" />
+                </button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px] p-0">
-                <div className="flex h-full flex-col">
-                  {/* Header */}
-                  <div className="flex items-center justify-between border-b p-6">
-                    <Logo size="sm" />
+
+              <SheetContent
+                side="left"
+                className="flex flex-col justify-between h-full p-0"
+              >
+                {/* Top navigation items */}
+                <div className="flex flex-col overflow-y-auto">
+                  {/* logo + close */}
+                  <div className="flex items-center gap-2 p-4 border-b">
+                    <Logo />
+                  </div>
+
+                  {/* menu items */}
+                  <div className="flex flex-col gap-5 p-6">
+                    <Button variant="ghost" className="justify-start gap-4">
+                      <Home className="h-4 w-4" /> Home
+                    </Button>
+                    <Button variant="ghost" className="justify-start gap-4">
+                      <MessageSquare className="h-4 w-4" /> Chat
+                    </Button>
+                    <Button variant="ghost" className="justify-start gap-4">
+                      <Calendar className="h-4 w-4" /> Event
+                    </Button>
+                    <Button variant="ghost" className="justify-start gap-4">
+                      <Users className="h-4 w-4" /> Matching
+                    </Button>
+                    <Button variant="ghost" className="justify-start gap-4">
+                      <Globe className="h-4 w-4" /> Social
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Bottom fixed actions */}
+                <div className="p-3 flex flex-col gap-3 border-t bg-background">
+                  {/* Bottom actions: Notification + Mode + Language */}
+                  <div className="flex items-center justify-between gap-2 rounded-xl border border-border/50 bg-background/80 p-2">
+                    <NotificationBell />
                     <ModeToggle />
+                    <LanguageSwitcher />
                   </div>
 
-                  {/* Navigation */}
-                  <div className="flex-1 py-6">
-                    <nav className="px-6 space-y-2">
-                      {navigation.map((item) => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          className="block rounded-lg px-3 py-3 text-base font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {item.name}
-                        </Link>
-                      ))}
-                    </nav>
-                  </div>
+                  {/* User info */}
+                  <div className="flex items-center gap-3 rounded-xl bg-muted/50 p-3">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src="/avatars/user.jpg" alt="@user" />
+                      <AvatarFallback>U</AvatarFallback>
+                    </Avatar>
 
-                  {/* Bottom Actions */}
-                  <div className="border-t p-6 space-y-4">
-                    <div className="space-y-2"></div>
+                    <div className="flex flex-col flex-1">
+                      <p className="text-sm font-medium">Lê Quang Huy</p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        huy@example.com
+                      </p>
+                    </div>
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => console.log("Logout clicked")}
+                    >
+                      <LogOut className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               </SheetContent>

@@ -15,8 +15,9 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button, Input, Label, Separator } from "@/components/ui";
-import { useAuthStore, useSearchParamsLoader } from "@/hooks";
 // import { useLoginMutation } from "@/hooks/query/use-auth";
+import { Role } from "@/constants";
+import { useAuthStore, useSearchParamsLoader } from "@/hooks";
 import { useLoginMutation } from "@/hooks/query";
 import { decodeToken, handleErrorApi } from "@/lib/utils";
 import { LoginBodySchema, LoginBodyType } from "@/models";
@@ -66,9 +67,14 @@ export default function LoginForm() {
       toast.success(
         getLoginSuccessMessage(result.payload?.message, toastMessages)
       );
-      setRole(decodeToken(result.payload.data).Role);
+      const role = decodeToken(result.payload.data).Role;
+      setRole(role);
       // setSocket(generateSocketInstance(result.payload.data.accessToken));
-      router.push(`/${locale}/manage`);
+      if (role === Role.Admin) {
+        router.push(`/${locale}/manage/dashboard`);
+      } else if (role === Role.User) {
+        router.push(`/${locale}/dashboard`);
+      }
     } catch (error: any) {
       handleErrorApi({
         error,
