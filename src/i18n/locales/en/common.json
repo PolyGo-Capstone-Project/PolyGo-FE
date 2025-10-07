@@ -1,4 +1,54 @@
 {
+  "Success": {
+    "default": "Operation successful!",
+    "GetAll": "Data retrieved successfully!",
+    "GetOne": "Data retrieved successfully!",
+    "Create": "Created successfully!",
+    "Update": "Updated successfully!",
+    "Delete": "Deleted successfully!",
+    "Login": "Login successful!",
+    "Register": "Registration successful!",
+    "Logout": "Logout successful!",
+    "ForgotPassword": "Password reset successful!",
+    "ResetPassword": "Password reset successful!",
+    "VerifyEmail": "Email verified successfully!",
+    "ResendVerification": "Verification email sent!",
+    "ProfileUpdate": "Profile updated successfully!",
+    "AvatarUpdate": "Avatar updated successfully!",
+    "PasswordChange": "Password changed successfully!",
+    "Save": "Saved successfully!",
+    "Upload": "Uploaded successfully!",
+    "Download": "Downloaded successfully!",
+    "Send": "Sent successfully!",
+    "Submit": "Submitted successfully!"
+  },
+  "Error": {
+    "default": "An error occurred. Please try again.",
+    "GetAll": "Failed to retrieve data. Please try again.",
+    "GetOne": "Failed to retrieve data. Please try again.",
+    "Create": "Creation failed. Please check your information and try again.",
+    "Update": "Update failed. Please check your information and try again.",
+    "Delete": "Deletion failed. Please try again.",
+    "NotFound": "Not found.",
+    "Unauthorized": "Unauthorized access.",
+    "Forbidden": "Action forbidden.",
+    "UnprocessableEntity": "Invalid data. Please check and try again.",
+    "TooManyRequests": "Too many requests. Please try again later.",
+    "BadRequest": "Invalid request. Please check and try again.",
+    "ServerError": "Server error. Please try again later.",
+    "NetworkError": "Network error. Please check your connection.",
+    "InvalidCredentials": "Invalid email or password.",
+    "EmailAlreadyExists": "Email already exists.",
+    "AccountLocked": "Account has been locked.",
+    "SessionExpired": "Session expired. Please login again.",
+    "InvalidToken": "Invalid or expired token.",
+    "RequiredField": "This field is required.",
+    "InvalidEmail": "Invalid email address.",
+    "InvalidPassword": "Invalid password format.",
+    "PasswordMismatch": "Passwords do not match.",
+    "InvalidFormat": "Invalid format.",
+    "InvalidMailOrPassword": "Invalid email or password."
+  },
   "header": {
     "products": "Products",
     "features": "Features",
@@ -6,7 +56,19 @@
     "contact": "Contact",
     "login": "Log in",
     "getStarted": "Get Started",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "userdashboard": "Home",
+    "chat": "Chat",
+    "event": "Event",
+    "matching": "Matching",
+    "social": "Social",
+    "account": "Account",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "loggingOut": "Logging out...",
+    "events": "My Events",
+    "wallet": "Wallet"
   },
   "footer": {
     "description": "Smart language & cultural exchange platform for learners worldwide",
@@ -15,7 +77,7 @@
     "company": "Company",
     "legal": "Legal",
     "contact": "Contact",
-    "email": "Email",
+    "mail": "Mail",
     "phone": "Phone",
     "address": "Address",
     "supportCenter": "Support Center",
@@ -135,8 +197,8 @@
     "login": {
       "title": "Login to PolyGo",
       "description": "Sign in to access your account",
-      "emailLabel": "Email",
-      "emailPlaceholder": "user@example.com",
+      "mailLabel": "Mail",
+      "mailPlaceholder": "user@example.com",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter your password",
       "rememberMe": "Remember me",
@@ -148,20 +210,42 @@
       "connecting": "Connecting...",
       "noAccount": "Don't have an account?",
       "registerNow": "Sign up now",
-      "loginSuccess": "Login successful!"
+      "loginSuccess": "Login successful!",
+      "errors": {
+        "default": "Please check this field.",
+        "mail": {
+          "required": "Mail is required.",
+          "invalid": "Please enter a valid mail address.",
+          "max": "Mail must be at most {length} characters."
+        },
+        "password": {
+          "required": "Password is required.",
+          "min": "Password must be at least {length} characters.",
+          "max": "Password must be at most {length} characters.",
+          "format": "Password must include uppercase, lowercase, number, and special character."
+        },
+        "code": {
+          "length": "OTP code must be exactly {length} digits.",
+          "conflict": "Please use either the OTP code or the authenticator code, not both."
+        },
+        "totpCode": {
+          "length": "Authenticator code must be exactly {length} digits.",
+          "conflict": "Please use either the OTP code or the authenticator code, not both."
+        }
+      }
     },
     "register": {
       "title": "Sign up for PolyGo",
       "description": "Register to start your journey with us",
       "nameLabel": "Full name",
       "namePlaceholder": "John Doe",
-      "emailLabel": "Email",
-      "emailPlaceholder": "user@example.com",
+      "mailLabel": "Mail",
+      "mailPlaceholder": "user@example.com",
       "sendOTP": "Send OTP",
       "otpLabel": "OTP Verification Code",
       "otpPlaceholder": "Enter 6-digit code",
-      "otpHint": "Check your email and enter the 6-digit code to verify your account",
-      "otpSent": "OTP code has been sent to your email",
+      "otpHint": "Check your mail and enter the 6-digit code to verify your account",
+      "otpSent": "OTP code has been sent to your mail",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Minimum 6 characters",
       "confirmPasswordLabel": "Confirm password",
@@ -174,19 +258,19 @@
       "haveAccount": "Already have an account?",
       "loginNow": "Log in now",
       "registerSuccess": "Registration successful!",
-      "otpRequired": "Please enter email",
-      "otpSentSuccess": "OTP code has been sent to your email!"
+      "otpRequired": "Please enter mail",
+      "otpSentSuccess": "OTP code has been sent to your mail!"
     },
     "forgotPassword": {
       "title": "Reset Password",
-      "description": "Enter your email to receive a password reset code",
-      "emailLabel": "Email",
-      "emailPlaceholder": "user@example.com",
+      "description": "Enter your mail to receive a password reset code",
+      "mailLabel": "Mail",
+      "mailPlaceholder": "user@example.com",
       "sendOTP": "Send OTP",
       "otpLabel": "Verification Code",
       "otpPlaceholder": "Enter 6-digit code",
-      "otpHint": "Check your email and enter the 6-digit verification code",
-      "otpSent": "Verification code has been sent to your email",
+      "otpHint": "Check your mail and enter the 6-digit verification code",
+      "otpSent": "Verification code has been sent to your mail",
       "newPasswordLabel": "New Password",
       "newPasswordPlaceholder": "Minimum 6 characters",
       "confirmPasswordLabel": "Confirm Password",
@@ -195,8 +279,8 @@
       "resetting": "Resetting...",
       "backToLogin": "Back to login",
       "resetSuccess": "Password reset successful!",
-      "otpRequired": "Please enter email",
-      "otpSentSuccess": "Verification code has been sent to your email!"
+      "otpRequired": "Please enter mail",
+      "otpSentSuccess": "Verification code has been sent to your mail!"
     }
   },
   "setupProfile": {

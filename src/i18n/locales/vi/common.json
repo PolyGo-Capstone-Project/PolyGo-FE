@@ -1,12 +1,74 @@
 {
+  "Success": {
+    "default": "Thao tác thành công!",
+    "GetAll": "Lấy dữ liệu thành công!",
+    "GetOne": "Lấy dữ liệu thành công!",
+    "Create": "Tạo mới thành công!",
+    "Update": "Cập nhật thành công!",
+    "Delete": "Xoá thành công!",
+    "Login": "Đăng nhập thành công!",
+    "Register": "Đăng ký thành công!",
+    "Logout": "Đăng xuất thành công!",
+    "ForgotPassword": "Đặt lại mật khẩu thành công!",
+    "ResetPassword": "Đặt lại mật khẩu thành công!",
+    "VerifyEmail": "Xác thực email thành công!",
+    "ResendVerification": "Đã gửi email xác thực!",
+    "ProfileUpdate": "Cập nhật hồ sơ thành công!",
+    "AvatarUpdate": "Cập nhật avatar thành công!",
+    "PasswordChange": "Đổi mật khẩu thành công!",
+    "Save": "Lưu thành công!",
+    "Upload": "Tải lên thành công!",
+    "Download": "Tải xuống thành công!",
+    "Send": "Gửi thành công!",
+    "Submit": "Gửi thành công!"
+  },
+  "Error": {
+    "default": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "GetAll": "Lấy dữ liệu thất bại. Vui lòng thử lại.",
+    "GetOne": "Lấy dữ liệu thất bại. Vui lòng thử lại.",
+    "Create": "Tạo mới thất bại. Vui lòng kiểm tra thông tin và thử lại.",
+    "Update": "Cập nhật thất bại. Vui lòng kiểm tra thông tin và thử lại.",
+    "Delete": "Xoá thất bại. Vui lòng thử lại.",
+    "NotFound": "Không tìm thấy.",
+    "Unauthorized": "Không có quyền truy cập.",
+    "Forbidden": "Hành động bị cấm.",
+    "UnprocessableEntity": "Dữ liệu không hợp lệ. Vui lòng kiểm tra và thử lại.",
+    "TooManyRequests": "Quá nhiều yêu cầu. Vui lòng thử lại sau.",
+    "BadRequest": "Yêu cầu không hợp lệ. Vui lòng kiểm tra và thử lại.",
+    "ServerError": "Lỗi máy chủ. Vui lòng thử lại sau.",
+    "NetworkError": "Lỗi kết nối. Vui lòng kiểm tra kết nối mạng.",
+    "InvalidCredentials": "Email hoặc mật khẩu không đúng.",
+    "EmailAlreadyExists": "Email đã tồn tại.",
+    "AccountLocked": "Tài khoản đã bị khóa.",
+    "SessionExpired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+    "InvalidToken": "Token không hợp lệ hoặc đã hết hạn.",
+    "RequiredField": "Trường này là bắt buộc.",
+    "InvalidEmail": "Email không hợp lệ.",
+    "InvalidPassword": "Mật khẩu không đúng định dạng.",
+    "PasswordMismatch": "Mật khẩu không khớp.",
+    "InvalidFormat": "Định dạng không hợp lệ.",
+    "InvalidMailOrPassword": "Email hoặc mật khẩu không đúng."
+  },
   "header": {
     "products": "Sản phẩm",
     "features": "Tính năng",
     "pricing": "Bảng giá",
     "contact": "Liên hệ",
     "login": "Đăng nhập",
-    "getStarted": "Bắt đầu",
-    "dashboard": "Bảng điều khiển"
+    "getStarted": "Bắt đầu ngay",
+    "dashboard": "Bảng điều khiển",
+    "userdashboard": "Trang chủ",
+    "chat": "Trò chuyện",
+    "event": "Sự kiện",
+    "matching": "Ghép đôi",
+    "social": "Mạng xã hội",
+    "account": "Tài khoản",
+    "profile": "Hồ sơ",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất",
+    "loggingOut": "Đang đăng xuất...",
+    "events": "Sự kiện của tôi",
+    "wallet": "Ví"
   },
   "footer": {
     "description": "Nền tảng trao đổi ngôn ngữ và văn hóa thông minh cho người học trên toàn thế giới",
@@ -15,7 +77,7 @@
     "company": "Công ty",
     "legal": "Pháp lý",
     "contact": "Liên hệ",
-    "email": "Email",
+    "mail": "Mail",
     "phone": "Điện thoại",
     "address": "Địa chỉ",
     "supportCenter": "Trung tâm hỗ trợ",
@@ -135,8 +197,8 @@
     "login": {
       "title": "Đăng nhập PolyGo",
       "description": "Đăng nhập để truy cập tài khoản",
-      "emailLabel": "Email",
-      "emailPlaceholder": "user@example.com",
+      "mailLabel": "Mail",
+      "mailPlaceholder": "user@example.com",
       "passwordLabel": "Mật khẩu",
       "passwordPlaceholder": "Nhập mật khẩu",
       "rememberMe": "Ghi nhớ đăng nhập",
@@ -148,20 +210,42 @@
       "connecting": "Đang kết nối...",
       "noAccount": "Chưa có tài khoản?",
       "registerNow": "Đăng ký ngay",
-      "loginSuccess": "Đăng nhập thành công!"
+      "loginSuccess": "Đăng nhập thành công!",
+      "errors": {
+        "default": "Vui lòng kiểm tra lại trường này.",
+        "mail": {
+          "required": "Vui lòng nhập mail.",
+          "invalid": "Mail không hợp lệ.",
+          "max": "Mail không được vượt quá {length} ký tự."
+        },
+        "password": {
+          "required": "Vui lòng nhập mật khẩu.",
+          "min": "Mật khẩu phải có ít nhất {length} ký tự.",
+          "max": "Mật khẩu không được vượt quá {length} ký tự.",
+          "format": "Mật khẩu phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt."
+        },
+        "code": {
+          "length": "Mã OTP phải gồm {length} chữ số.",
+          "conflict": "Chỉ sử dụng một trong hai: mã OTP hoặc mã xác thực 2FA."
+        },
+        "totpCode": {
+          "length": "Mã xác thực 2FA phải gồm {length} chữ số.",
+          "conflict": "Chỉ sử dụng một trong hai: mã OTP hoặc mã xác thực 2FA."
+        }
+      }
     },
     "register": {
       "title": "Đăng ký PolyGo",
       "description": "Đăng ký để bắt đầu hành trình của bạn",
       "nameLabel": "Họ và tên",
       "namePlaceholder": "Nguyễn Văn A",
-      "emailLabel": "Email",
-      "emailPlaceholder": "user@example.com",
+      "mailLabel": "Mail",
+      "mailPlaceholder": "user@example.com",
       "sendOTP": "Gửi mã OTP",
       "otpLabel": "Mã xác thực OTP",
       "otpPlaceholder": "Nhập mã 6 chữ số",
-      "otpHint": "Kiểm tra email và nhập mã 6 chữ số để xác thực tài khoản",
-      "otpSent": "Mã OTP đã được gửi đến email của bạn",
+      "otpHint": "Kiểm tra mail và nhập mã 6 chữ số để xác thực tài khoản",
+      "otpSent": "Mã OTP đã được gửi đến mail của bạn",
       "passwordLabel": "Mật khẩu",
       "passwordPlaceholder": "Tối thiểu 6 ký tự",
       "confirmPasswordLabel": "Xác nhận mật khẩu",
@@ -174,19 +258,19 @@
       "haveAccount": "Đã có tài khoản?",
       "loginNow": "Đăng nhập ngay",
       "registerSuccess": "Đăng ký thành công!",
-      "otpRequired": "Vui lòng nhập email",
-      "otpSentSuccess": "Mã OTP đã được gửi đến email của bạn!"
+      "otpRequired": "Vui lòng nhập mail",
+      "otpSentSuccess": "Mã OTP đã được gửi đến mail của bạn!"
     },
     "forgotPassword": {
       "title": "Đặt lại mật khẩu",
-      "description": "Nhập email để nhận mã đặt lại mật khẩu",
-      "emailLabel": "Email",
-      "emailPlaceholder": "user@example.com",
+      "description": "Nhập mail để nhận mã đặt lại mật khẩu",
+      "mailLabel": "Mail",
+      "mailPlaceholder": "user@example.com",
       "sendOTP": "Gửi mã OTP",
       "otpLabel": "Mã xác thực",
       "otpPlaceholder": "Nhập mã 6 chữ số",
-      "otpHint": "Kiểm tra email và nhập mã xác thực 6 chữ số",
-      "otpSent": "Mã xác thực đã được gửi đến email của bạn",
+      "otpHint": "Kiểm tra mail và nhập mã xác thực 6 chữ số",
+      "otpSent": "Mã xác thực đã được gửi đến mail của bạn",
       "newPasswordLabel": "Mật khẩu mới",
       "newPasswordPlaceholder": "Tối thiểu 6 ký tự",
       "confirmPasswordLabel": "Xác nhận mật khẩu",
@@ -195,8 +279,8 @@
       "resetting": "Đang đặt lại...",
       "backToLogin": "Quay lại đăng nhập",
       "resetSuccess": "Đặt lại mật khẩu thành công!",
-      "otpRequired": "Vui lòng nhập email",
-      "otpSentSuccess": "Mã xác thực đã được gửi đến email của bạn!"
+      "otpRequired": "Vui lòng nhập mail",
+      "otpSentSuccess": "Mã xác thực đã được gửi đến mail của bạn!"
     }
   },
   "setupProfile": {
