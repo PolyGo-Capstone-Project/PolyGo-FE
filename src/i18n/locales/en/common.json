@@ -1,24 +1,29 @@
 {
   "Success": {
     "default": "Operation successful!",
-    "Login": "Login successful!",
-    "Register": "Registration successful!",
-    "Logout": "Logout successful!",
-    "ForgotPassword": "Password reset successful!",
-    "ProfileUpdate": "Profile updated successfully!",
     "GetAll": "Data retrieved successfully!",
     "GetOne": "Data retrieved successfully!",
     "Create": "Created successfully!",
     "Update": "Updated successfully!",
-    "Delete": "Deleted successfully!"
+    "Delete": "Deleted successfully!",
+    "Login": "Login successful!",
+    "Register": "Registration successful!",
+    "Logout": "Logout successful!",
+    "ForgotPassword": "Password reset successful!",
+    "ResetPassword": "Password reset successful!",
+    "VerifyEmail": "Email verified successfully!",
+    "ResendVerification": "Verification email sent!",
+    "ProfileUpdate": "Profile updated successfully!",
+    "AvatarUpdate": "Avatar updated successfully!",
+    "PasswordChange": "Password changed successfully!",
+    "Save": "Saved successfully!",
+    "Upload": "Uploaded successfully!",
+    "Download": "Downloaded successfully!",
+    "Send": "Sent successfully!",
+    "Submit": "Submitted successfully!"
   },
   "Error": {
     "default": "An error occurred. Please try again.",
-    "Login": "Login failed. Please check your information and try again.",
-    "Register": "Registration failed. Please check your information and try again.",
-    "Logout": "Logout failed. Please try again.",
-    "ForgotPassword": "Password reset failed. Please check your information and try again.",
-    "ProfileUpdate": "Profile update failed. Please try again.",
     "GetAll": "Failed to retrieve data. Please try again.",
     "GetOne": "Failed to retrieve data. Please try again.",
     "Create": "Creation failed. Please check your information and try again.",
@@ -30,7 +35,19 @@
     "UnprocessableEntity": "Invalid data. Please check and try again.",
     "TooManyRequests": "Too many requests. Please try again later.",
     "BadRequest": "Invalid request. Please check and try again.",
-    "ServerError": "Server error. Please try again later."
+    "ServerError": "Server error. Please try again later.",
+    "NetworkError": "Network error. Please check your connection.",
+    "InvalidCredentials": "Invalid email or password.",
+    "EmailAlreadyExists": "Email already exists.",
+    "AccountLocked": "Account has been locked.",
+    "SessionExpired": "Session expired. Please login again.",
+    "InvalidToken": "Invalid or expired token.",
+    "RequiredField": "This field is required.",
+    "InvalidEmail": "Invalid email address.",
+    "InvalidPassword": "Invalid password format.",
+    "PasswordMismatch": "Passwords do not match.",
+    "InvalidFormat": "Invalid format.",
+    "InvalidMailOrPassword": "Invalid email or password."
   },
   "header": {
     "products": "Products",
@@ -44,7 +61,14 @@
     "chat": "Chat",
     "event": "Event",
     "matching": "Matching",
-    "social": "Social"
+    "social": "Social",
+    "account": "Account",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "loggingOut": "Logging out...",
+    "events": "My Events",
+    "wallet": "Wallet"
   },
   "footer": {
     "description": "Smart language & cultural exchange platform for learners worldwide",
@@ -197,7 +221,8 @@
         "password": {
           "required": "Password is required.",
           "min": "Password must be at least {length} characters.",
-          "max": "Password must be at most {length} characters."
+          "max": "Password must be at most {length} characters.",
+          "format": "Password must include uppercase, lowercase, number, and special character."
         },
         "code": {
           "length": "OTP code must be exactly {length} digits.",

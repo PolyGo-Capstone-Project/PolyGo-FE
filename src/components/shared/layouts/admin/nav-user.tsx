@@ -6,6 +6,7 @@ import {
   IconSettings,
   IconUserCircle,
 } from "@tabler/icons-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -24,18 +25,15 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useAuthStore } from "@/hooks";
+import { useLogout } from "@/hooks";
 
 // export function NavUser({ user }: { user: GetUserProfileResType }) {
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const reset = useAuthStore((state) => state.reset);
-  const setRole = useAuthStore((state) => state.setRole);
-  // const logoutMutation = useLogoutMutation();
-  const logoutMutation = {
-    isPending: false,
-    mutateAsync: async () => {},
-  };
+  const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations("header");
+  const { logout, isLoggingOut } = useLogout();
 
   const user = {
     data: {
@@ -45,28 +43,16 @@ export function NavUser() {
     },
   };
 
-  const router = useRouter();
-
-  const logout = async () => {
-    if (logoutMutation.isPending) return;
-    // try {
-    //   const result = await logoutMutation.mutateAsync();
-    //   const message = (result.payload as any)?.message || "";
-    //   toast.success(message, {
-    //     duration: 3000,
-    //   });
-    //   reset();
-    //   setRole();
-    //   router.push("/");
-    // } catch (error: any) {
-    //   handleErrorApi({
-    //     error,
-    //   });
-    // }
+  const handleLogout = () => {
+    logout();
   };
 
-  const settings = async () => {
-    router.push("/manage/setting");
+  const handleSettings = () => {
+    router.push(`/${locale}/manage/setting`);
+  };
+
+  const handleAccount = () => {
+    router.push(`/${locale}/manage/profile`);
   };
 
   return (
@@ -123,19 +109,21 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleAccount}>
                 <IconUserCircle />
-                Tài khoản
+                {t("account") || "Tài khoản"}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={settings}>
+              <DropdownMenuItem onClick={handleSettings}>
                 <IconSettings />
-                Cài đặt
+                {t("settings") || "Cài đặt"}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout}>
+            <DropdownMenuItem onClick={handleLogout} disabled={isLoggingOut}>
               <IconLogout />
-              Đăng xuất
+              {isLoggingOut
+                ? t("loggingOut") || "Đang đăng xuất..."
+                : t("logout") || "Đăng xuất"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

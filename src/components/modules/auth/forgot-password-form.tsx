@@ -18,11 +18,13 @@ import { toast } from "sonner";
 import { Button, Input, Label, Separator } from "@/components/ui";
 import { TypeOfVerificationCode } from "@/constants";
 // import { useForgotPasswordMutation, useSendOTPMutation } from "@/hooks";
-import { handleErrorApi } from "@/lib/utils";
+import { handleErrorApi, showSuccessToast } from "@/lib/utils";
 import { ForgotPasswordBodyType, SendOTPBodyType } from "@/models";
 
 export default function ForgotPasswordForm() {
   const t = useTranslations("auth.forgotPassword");
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
   const locale = useLocale();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -90,6 +92,7 @@ export default function ForgotPasswordForm() {
       handleErrorApi({
         error,
         setError: form.setError,
+        tError,
       });
     }
   };
@@ -99,12 +102,13 @@ export default function ForgotPasswordForm() {
 
     try {
       const response = await forgotPasswordMutation.mutateAsync(data);
-      toast.success(response.payload.message || t("resetSuccess"));
+      showSuccessToast(response.payload.message, tSuccess);
       router.push(`/${locale}/login`);
     } catch (error) {
       handleErrorApi({
         error,
         setError: form.setError,
+        tError,
       });
     }
   };

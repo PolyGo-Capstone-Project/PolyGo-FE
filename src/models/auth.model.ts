@@ -3,11 +3,23 @@ import z from "zod";
 import { TypeOfVerificationCode } from "@/constants";
 import { UserSchema } from "@/models/user.model";
 
+// Password validation regex
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
 export const LoginBodySchema = UserSchema.pick({
   mail: true,
-  password: true,
 })
   .extend({
+    // Custom password validation for login
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(100, "Password must not exceed 100 characters")
+      .regex(
+        passwordRegex,
+        "Password must include uppercase, lowercase, number, and special character"
+      ),
     totpCode: z.string().length(6).optional(), // 2FA code
     code: z.string().length(6).optional(), // Mail OTP code
   })
@@ -42,11 +54,21 @@ export const GetAuthorizationUrlResSchema = z.object({
 export const RegisterBodySchema = UserSchema.pick({
   name: true,
   mail: true,
-  password: true,
   avatar: true,
 })
   .extend({
-    confirmPassword: z.string().min(6).max(100),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(100, "Password must not exceed 100 characters")
+      .regex(
+        passwordRegex,
+        "Password must include uppercase, lowercase, number, and special character"
+      ),
+    confirmPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(100, "Password must not exceed 100 characters"),
     code: z.string().length(6),
   })
   .strict()
@@ -85,8 +107,18 @@ export const ForgotPasswordBodySchema = z
   .object({
     mail: z.email(),
     code: z.string().length(6),
-    newPassword: z.string().min(6).max(100),
-    confirmNewPassword: z.string().min(6).max(100),
+    newPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(100, "Password must not exceed 100 characters")
+      .regex(
+        passwordRegex,
+        "Password must include uppercase, lowercase, number, and special character"
+      ),
+    confirmNewPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(100, "Password must not exceed 100 characters"),
   })
   .strict()
   .superRefine(({ confirmNewPassword, newPassword }, ctx) => {

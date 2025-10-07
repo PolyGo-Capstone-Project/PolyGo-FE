@@ -17,11 +17,13 @@ import { toast } from "sonner";
 import { Button, Input, Label, Separator } from "@/components/ui";
 import { TypeOfVerificationCode } from "@/constants";
 // import { useRegisterMutation, useSendOTPMutation } from "@/hooks";
-import { handleErrorApi } from "@/lib/utils";
+import { handleErrorApi, showSuccessToast } from "@/lib/utils";
 import { RegisterBodyType, SendOTPBodyType } from "@/models";
 
 export default function RegisterForm() {
   const t = useTranslations("auth.register");
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
   const locale = useLocale();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -92,6 +94,7 @@ export default function RegisterForm() {
       handleErrorApi({
         error,
         setError: form.setError,
+        tError,
       });
     }
   };
@@ -101,12 +104,13 @@ export default function RegisterForm() {
 
     try {
       const response = await registerMutation.mutateAsync(data);
-      toast.success(response.payload.message || t("registerSuccess"));
+      showSuccessToast(response.payload.message, tSuccess);
       router.push("/login");
     } catch (error) {
       handleErrorApi({
         error,
         setError: form.setError,
+        tError,
       });
     }
   };

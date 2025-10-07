@@ -5,11 +5,21 @@ export async function POST() {
   try {
     const cookieStore = await cookies();
     cookieStore.delete("sessionToken");
-    return NextResponse.json({ message: "Đăng xuất thành công" });
-  } catch (error: any) {
+
     return NextResponse.json(
       {
-        message: error?.message ?? "Có lỗi xảy ra",
+        message: "Logout",
+        success: true,
+      },
+      { status: 200 }
+    );
+  } catch (error: any) {
+    console.error("Logout API error:", error);
+
+    return NextResponse.json(
+      {
+        message: "ServerError",
+        success: false,
       },
       { status: 500 }
     );

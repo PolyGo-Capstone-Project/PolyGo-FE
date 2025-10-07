@@ -1,4 +1,5 @@
 import { ModeToggle } from "@/components/modules";
+import { LanguageSwitcher } from "@/components/shared/layouts/language-switcher";
 import { Separator, SidebarTrigger } from "@/components/ui";
 
 export function SiteHeader() {
@@ -12,6 +13,7 @@ export function SiteHeader() {
         />
         <h1 className="text-base font-medium">PolyGo</h1>
         <div className="ml-auto flex items-center gap-2">
+          <LanguageSwitcher />
           <ModeToggle />
         </div>
       </div>

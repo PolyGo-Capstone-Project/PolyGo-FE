@@ -2,6 +2,7 @@
 
 import { IconCalendarEvent } from "@tabler/icons-react";
 import { LogOut, Settings, User, Wallet } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import {
@@ -16,13 +17,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui";
+import { useLogout } from "@/hooks";
 
 export function UserMenu() {
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations("header");
+  const { logout, isLoggingOut } = useLogout();
 
   const handleLogout = () => {
-    console.log("Logout clicked");
-    router.push("/login");
+    logout();
   };
 
   return (
@@ -53,31 +57,36 @@ export function UserMenu() {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={() => router.push("/profile")}>
+        <DropdownMenuItem onClick={() => router.push(`/${locale}/profile`)}>
           <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
+          <span>{t("profile") || "Profile"}</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/events")}>
+        <DropdownMenuItem onClick={() => router.push(`/${locale}/events`)}>
           <IconCalendarEvent className="mr-2 h-4 w-4" />
-          <span>My Events</span>
+          <span>{t("events") || "My Events"}</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/wallet")}>
+        <DropdownMenuItem onClick={() => router.push(`/${locale}/wallet`)}>
           <Wallet className="mr-2 h-4 w-4" />
-          <span>Wallet</span>
+          <span>{t("wallet") || "Wallet"}</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push("/settings")}>
+        <DropdownMenuItem onClick={() => router.push(`/${locale}/settings`)}>
           <Settings className="mr-2 h-4 w-4" />
-          <span>Settings</span>
+          <span>{t("settings") || "Settings"}</span>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
           onClick={handleLogout}
+          disabled={isLoggingOut}
           className="text-red-500 focus:text-red-600"
         >
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Logout</span>
+          <span>
+            {isLoggingOut
+              ? t("loggingOut") || "Logging out..."
+              : t("logout") || "Logout"}
+          </span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

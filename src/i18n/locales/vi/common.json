@@ -1,24 +1,29 @@
 {
   "Success": {
     "default": "Thao tác thành công!",
-    "Login": "Đăng nhập thành công!",
-    "Register": "Đăng ký thành công!",
-    "Logout": "Đăng xuất thành công!",
-    "ForgotPassword": "Đặt lại mật khẩu thành công!",
-    "ProfileUpdate": "Cập nhật hồ sơ thành công!",
     "GetAll": "Lấy dữ liệu thành công!",
     "GetOne": "Lấy dữ liệu thành công!",
     "Create": "Tạo mới thành công!",
     "Update": "Cập nhật thành công!",
-    "Delete": "Xoá thành công!"
+    "Delete": "Xoá thành công!",
+    "Login": "Đăng nhập thành công!",
+    "Register": "Đăng ký thành công!",
+    "Logout": "Đăng xuất thành công!",
+    "ForgotPassword": "Đặt lại mật khẩu thành công!",
+    "ResetPassword": "Đặt lại mật khẩu thành công!",
+    "VerifyEmail": "Xác thực email thành công!",
+    "ResendVerification": "Đã gửi email xác thực!",
+    "ProfileUpdate": "Cập nhật hồ sơ thành công!",
+    "AvatarUpdate": "Cập nhật avatar thành công!",
+    "PasswordChange": "Đổi mật khẩu thành công!",
+    "Save": "Lưu thành công!",
+    "Upload": "Tải lên thành công!",
+    "Download": "Tải xuống thành công!",
+    "Send": "Gửi thành công!",
+    "Submit": "Gửi thành công!"
   },
   "Error": {
     "default": "Đã xảy ra lỗi. Vui lòng thử lại.",
-    "Login": "Đăng nhập thất bại. Vui lòng kiểm tra thông tin và thử lại.",
-    "Register": "Đăng ký thất bại. Vui lòng kiểm tra thông tin và thử lại.",
-    "Logout": "Đăng xuất thất bại. Vui lòng thử lại.",
-    "ForgotPassword": "Đặt lại mật khẩu thất bại. Vui lòng kiểm tra thông tin và thử lại.",
-    "ProfileUpdate": "Cập nhật hồ sơ thất bại. Vui lòng thử lại.",
     "GetAll": "Lấy dữ liệu thất bại. Vui lòng thử lại.",
     "GetOne": "Lấy dữ liệu thất bại. Vui lòng thử lại.",
     "Create": "Tạo mới thất bại. Vui lòng kiểm tra thông tin và thử lại.",
@@ -30,7 +35,19 @@
     "UnprocessableEntity": "Dữ liệu không hợp lệ. Vui lòng kiểm tra và thử lại.",
     "TooManyRequests": "Quá nhiều yêu cầu. Vui lòng thử lại sau.",
     "BadRequest": "Yêu cầu không hợp lệ. Vui lòng kiểm tra và thử lại.",
-    "ServerError": "Lỗi máy chủ. Vui lòng thử lại sau."
+    "ServerError": "Lỗi máy chủ. Vui lòng thử lại sau.",
+    "NetworkError": "Lỗi kết nối. Vui lòng kiểm tra kết nối mạng.",
+    "InvalidCredentials": "Email hoặc mật khẩu không đúng.",
+    "EmailAlreadyExists": "Email đã tồn tại.",
+    "AccountLocked": "Tài khoản đã bị khóa.",
+    "SessionExpired": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+    "InvalidToken": "Token không hợp lệ hoặc đã hết hạn.",
+    "RequiredField": "Trường này là bắt buộc.",
+    "InvalidEmail": "Email không hợp lệ.",
+    "InvalidPassword": "Mật khẩu không đúng định dạng.",
+    "PasswordMismatch": "Mật khẩu không khớp.",
+    "InvalidFormat": "Định dạng không hợp lệ.",
+    "InvalidMailOrPassword": "Email hoặc mật khẩu không đúng."
   },
   "header": {
     "products": "Sản phẩm",
@@ -44,7 +61,14 @@
     "chat": "Trò chuyện",
     "event": "Sự kiện",
     "matching": "Ghép đôi",
-    "social": "Mạng xã hội"
+    "social": "Mạng xã hội",
+    "account": "Tài khoản",
+    "profile": "Hồ sơ",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất",
+    "loggingOut": "Đang đăng xuất...",
+    "events": "Sự kiện của tôi",
+    "wallet": "Ví"
   },
   "footer": {
     "description": "Nền tảng trao đổi ngôn ngữ và văn hóa thông minh cho người học trên toàn thế giới",
@@ -197,7 +221,8 @@
         "password": {
           "required": "Vui lòng nhập mật khẩu.",
           "min": "Mật khẩu phải có ít nhất {length} ký tự.",
-          "max": "Mật khẩu không được vượt quá {length} ký tự."
+          "max": "Mật khẩu không được vượt quá {length} ký tự.",
+          "format": "Mật khẩu phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt."
         },
         "code": {
           "length": "Mã OTP phải gồm {length} chữ số.",

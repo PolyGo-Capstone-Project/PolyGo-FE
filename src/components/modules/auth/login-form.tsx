@@ -12,14 +12,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 import { Button, Input, Label, Separator } from "@/components/ui";
 // import { useLoginMutation } from "@/hooks/query/use-auth";
 import { Role } from "@/constants";
 import { useAuthStore, useSearchParamsLoader } from "@/hooks";
 import { useLoginMutation } from "@/hooks/query";
-import { decodeToken, handleErrorApi } from "@/lib/utils";
+import { decodeToken, handleErrorApi, showSuccessToast } from "@/lib/utils";
 import { LoginBodySchema, LoginBodyType } from "@/models";
 
 export default function LoginForm() {
@@ -34,7 +33,8 @@ export default function LoginForm() {
   const setRole = useAuthStore((state) => state.setRole);
   // const setSocket = useAuthStore((state) => state.setSocket);
   const errorMessages = useTranslations("auth.login.errors");
-  const toastMessages = useTranslations("Success.Login");
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
 
   const resolver = useMemo(
     () =>
@@ -64,9 +64,7 @@ export default function LoginForm() {
     if (loginMutation.isPending) return;
     try {
       const result = await loginMutation.mutateAsync(data);
-      toast.success(
-        getLoginSuccessMessage(result.payload?.message, toastMessages)
-      );
+      showSuccessToast(result.payload?.message, tSuccess);
       const role = decodeToken(result.payload.data).Role;
       setRole(role);
       // setSocket(generateSocketInstance(result.payload.data.accessToken));
@@ -79,6 +77,7 @@ export default function LoginForm() {
       handleErrorApi({
         error,
         setError: form.setError,
+        tError,
       });
     }
   };
@@ -132,6 +131,11 @@ export default function LoginForm() {
         {form.formState.errors.password && (
           <p className="text-sm text-destructive">
             {form.formState.errors.password.message}
+          </p>
+        )}
+        {!form.formState.errors.password && form.watch("password") && (
+          <p className="text-xs text-muted-foreground">
+            Must include uppercase, lowercase, number, and special character
           </p>
         )}
       </div>
@@ -277,6 +281,11 @@ const translateLoginError = (
         return t("password.max", { length: detail.maximum ?? 100 });
       }
 
+      // Handle regex validation error
+      if (issue.code === "invalid_string" && detail.validation === "regex") {
+        return t("password.format");
+      }
+
       break;
     }
     case "code":
@@ -305,15 +314,4 @@ const translateLoginError = (
   }
 
   return t("default");
-};
-
-const getLoginSuccessMessage = (
-  serverMessage: string | undefined,
-  t: Translator
-) => {
-  if (serverMessage === "Login.Success") {
-    return t("Login.Success");
-  }
-
-  return t("defaultSuccess");
 };
