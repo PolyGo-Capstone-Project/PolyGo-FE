@@ -1,11 +1,12 @@
 "use client";
 
 import { Menu } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { ModeToggle } from "@/components/modules";
+import { LanguageSwitcher } from "@/components/shared/layouts/language-switcher";
 import {
   Button,
   Logo,
@@ -14,8 +15,6 @@ import {
   SheetTrigger,
 } from "@/components/ui";
 import { useAuthStore } from "@/hooks";
-
-import { LanguageSwitcher } from "./language-switcher";
 
 export function Header() {
   const isAuthenticated = useAuthStore((state) => state.isAuth);
