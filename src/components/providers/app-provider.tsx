@@ -5,7 +5,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect, useRef } from "react";
 
 import { useAuthStore } from "@/hooks";
-import { decodeToken, getAccessTokenFromLocalStorage } from "@/lib/utils";
+import { decodeToken, getSessionTokenFromLocalStorage } from "@/lib/utils";
 
 // Default
 // staleTime: 0
@@ -30,10 +30,9 @@ export default function AppProvider({
 
   useEffect(() => {
     if (count.current === 0) {
-      const accessToken = getAccessTokenFromLocalStorage();
-      if (accessToken) {
-        const role = decodeToken(accessToken).roleName;
-        setRole(role);
+      const sessionToken = getSessionTokenFromLocalStorage();
+      if (sessionToken) {
+        setRole(decodeToken(sessionToken).Role);
         // setSocket(generateSocketInstance(accessToken));
       }
       count.current++;

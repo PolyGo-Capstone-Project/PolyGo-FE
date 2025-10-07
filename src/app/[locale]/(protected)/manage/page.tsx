@@ -1,12 +1,14 @@
 "use client";
 
+import { useAuthStore } from "@/hooks";
+
 export default function Page() {
+  const role = useAuthStore((state) => state.role);
   return (
     <div>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Earum ex culpa
-      nobis dolorum, molestias dicta repudiandae deleniti harum minus, similique
-      rerum quibusdam veritatis debitis libero voluptate, nam enim dolore
-      possimus.
+      <h1>Protected Manage Page</h1>
+      <h1>Admin Page</h1>
+      <p>Your role: {role}</p>
     </div>
   );
 }

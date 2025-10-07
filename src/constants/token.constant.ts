@@ -1,5 +1,3 @@
 export const TokenType = {
-  ForgotPasswordToken: "ForgotPasswordToken",
-  AccessToken: "AccessToken",
-  RefreshToken: "RefreshToken",
+  SessionToken: "SessionToken",
 } as const;

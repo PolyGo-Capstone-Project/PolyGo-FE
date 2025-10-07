@@ -51,21 +51,14 @@ export const decodeToken = (token: string) => {
 
 const isBrowser = typeof window !== "undefined";
 
-export const getAccessTokenFromLocalStorage = () =>
-  isBrowser ? localStorage.getItem("accessToken") : null;
+export const getSessionTokenFromLocalStorage = () =>
+  isBrowser ? localStorage.getItem("sessionToken") : null;
 
-export const getRefreshTokenFromLocalStorage = () =>
-  isBrowser ? localStorage.getItem("refreshToken") : null;
-
-export const setAccessTokenToLocalStorage = (value: string) =>
-  isBrowser && localStorage.setItem("accessToken", value);
-
-export const setRefreshTokenToLocalStorage = (value: string) =>
-  isBrowser && localStorage.setItem("refreshToken", value);
+export const setSessionTokenToLocalStorage = (value: string) =>
+  isBrowser && localStorage.setItem("sessionToken", value);
 
 export const removeTokensFromLocalStorage = () => {
-  isBrowser && localStorage.removeItem("accessToken");
-  isBrowser && localStorage.removeItem("refreshToken");
+  isBrowser && localStorage.removeItem("sessionToken");
 };
 
 export const clearLocalStorage = () => {

@@ -11,10 +11,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { Button, Input, Label, Separator } from "@/components/ui";
 import { useAuthStore, useSearchParamsLoader } from "@/hooks";
 // import { useLoginMutation } from "@/hooks/query/use-auth";
+import { useLoginMutation } from "@/hooks/query";
+import { decodeToken, handleErrorApi } from "@/lib/utils";
 import { LoginBodyType } from "@/models";
 
 export default function LoginForm() {
@@ -24,14 +27,13 @@ export default function LoginForm() {
   const router = useRouter();
   const { searchParams, setSearchParams } = useSearchParamsLoader();
   const clearTokens = searchParams?.get("clearTokens");
-  // const loginMutation = useLoginMutation();
-  const [loginMutation] = [{ isPending: false }]; // Placeholder for loginMutation
+  const loginMutation = useLoginMutation();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const setRole = useAuthStore((state) => state.setRole);
   // const setSocket = useAuthStore((state) => state.setSocket);
   const form = useForm<LoginBodyType>({
     defaultValues: {
-      email: "",
+      mail: "",
       password: "",
     },
   });
@@ -43,39 +45,38 @@ export default function LoginForm() {
   }, [clearTokens, setRole]);
 
   const onSubmit = async (data: LoginBodyType) => {
-    // if (loginMutation.isPending) return;
-    // try {
-    //   const result = await loginMutation.mutateAsync(data);
-    //   toast.success("Đăng nhập thành công!");
-    //   const role = decodeToken(result.payload.data.accessToken).roleName;
-    //   setRole(role);
-    //   // setSocket(generateSocketInstance(result.payload.data.accessToken));
-    //   router.push("/manage/dashboard");
-    // } catch (error: any) {
-    //   handleErrorApi({
-    //     error,
-    //     setError: form.setError,
-    //   });
-    // }
+    if (loginMutation.isPending) return;
+    try {
+      const result = await loginMutation.mutateAsync(data);
+      toast.success("Đăng nhập thành công!");
+      setRole(decodeToken(result.payload.data).Role);
+      // setSocket(generateSocketInstance(result.payload.data.accessToken));
+      router.push(`/${locale}/manage`);
+    } catch (error: any) {
+      handleErrorApi({
+        error,
+        setError: form.setError,
+      });
+    }
   };
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="email">{t("emailLabel")}</Label>
+        <Label htmlFor="mail">{t("mailLabel")}</Label>
         <div className="relative">
           <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            id="email"
-            type="email"
-            placeholder={t("emailPlaceholder")}
+            id="mail"
+            type="mail"
+            placeholder={t("mailPlaceholder")}
             className="pl-10"
-            {...form.register("email")}
+            {...form.register("mail")}
           />
         </div>
-        {form.formState.errors.email && (
+        {form.formState.errors.mail && (
           <p className="text-sm text-destructive">
-            {form.formState.errors.email.message}
+            {form.formState.errors.mail.message}
           </p>
         )}
       </div>

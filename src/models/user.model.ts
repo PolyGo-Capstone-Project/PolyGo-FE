@@ -4,9 +4,9 @@ import { UserStatus } from "@/constants";
 
 export const UserSchema = z.object({
   id: z.number(),
-  email: z.email(),
+  mail: z.email().nonempty().max(100),
   name: z.string().min(1).max(100),
-  password: z.string().min(6).max(100),
+  password: z.string().min(6).max(100).nonempty(),
   phoneNumber: z.string().min(9).max(15),
   avatar: z.string().nullable(),
   totpSecret: z.string().nullable(),
