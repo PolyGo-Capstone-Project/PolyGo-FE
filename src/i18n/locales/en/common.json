@@ -27,9 +27,98 @@
     "copyright": "© 2025 PolyGo. All rights reserved.",
     "madeInVietnam": "Proudly made in Vietnam"
   },
+  "guideline": {
+    "title": "Community Guidelines",
+    "intro": "A code of conduct to maintain a safe, respectful, and culturally rich learning environment.",
+    "conduct": {
+      "title": "Conduct",
+      "items": {
+        "respect": "Respect linguistic and cultural differences; no harassment or discrimination.",
+        "safety": "Do not share sensitive information; be cautious when interacting outside the platform.",
+        "prohibited": "Prohibited content includes violence, pornography, hate speech, cheating, and spam."
+      }
+    },
+    "enforcement": {
+      "title": "Violation Enforcement",
+      "items": {
+        "warnings": "Warnings, muting microphone/chat, or feature limitations based on severity.",
+        "bans": "Temporary/permanent bans for repeat or serious violations.",
+        "appeals": "Transparent appeal process through support channels."
+      }
+    }
+  },
+  "policy": {
+    "title": "PolyGo Policies",
+    "intro": "Core policies to protect privacy, ensure secure payments, and promote a fair learning experience.",
+    "privacy": {
+      "title": "Privacy & Security",
+      "items": {
+        "dataProtection": "Protection of personal data, especially sensitive and payment information.",
+        "aiLogs": "AI is used for translation/editing; event logs are kept for safety and quality control.",
+        "compliance": "Compliance with current laws and requirements for content removal when necessary."
+      }
+    },
+    "payments": {
+      "title": "Plans & Payments",
+      "items": {
+        "tiers": "Free account has limitations; Plus unlocks all features and benefits.",
+        "refunds": "Principles for refunds/credits when issues are verified.",
+        "security": "Secure payment gateway; card information is not stored on the application server."
+      }
+    },
+    "safety": {
+      "title": "Community Safety",
+      "items": {
+        "moderation": "Admins may issue warnings, ban accounts, close rooms, or remove violating content.",
+        "reports": "Mechanism for reporting, dispute resolution, and user support.",
+        "events": "Events must comply with platform regulations and local laws."
+      }
+    }
+  },
   "home": {
     "title": "PolyGo",
-    "clickMe": "Click Me"
+    "clickMe": "Click Me",
+    "heroTitle": "Learn Languages through Real-World Experience",
+    "heroSubtitle": "Connect with native speakers, participate in exciting cultural events, and improve your language skills in the most natural way.",
+    "Demo": "Watch Demo",
+    "getStarted": "Get Started for Free",
+    "usersCount": "50K+",
+    "users": "Learners",
+    "languageCount": "30+",
+    "language": "Languages",
+    "eventsCount": "100+",
+    "events": "Events/Month",
+    "whyTitle": "Why Choose PolyGo?",
+    "whySubtitle": "A comprehensive language learning platform with AI technology and a global community",
+    "bannerTitle": "Ready to Start Your Language Learning Journey?",
+    "bannerSubtitle": "Join a community of over 50,000 learners worldwide",
+    "bannerButtonOne": "Sign Up for Free",
+    "bannerButtonTwo": "Already have an account? Log In",
+    "live": "Live with Anna",
+    "firstCard": {
+      "name": "Smart Chat",
+      "description": "AI automatically corrects errors and suggests natural sentences while you chat"
+    },
+    "secondCard": {
+      "name": "1:1 Video Call",
+      "description": "Practice speaking directly with native speakers via high-quality video calls"
+    },
+    "thirdCard": {
+      "name": "Cultural Events",
+      "description": "Participate in workshops, movie nights, and exciting activities"
+    },
+    "fourthCard": {
+      "name": "Smart Matching",
+      "description": "Algorithm finds a suitable partner based on your interests and goals"
+    },
+    "fifthCard": {
+      "name": "30+ Languages",
+      "description": "From English, French, Japanese, Korean to less common languages"
+    },
+    "sixthCard": {
+      "name": "Gamification",
+      "description": "XP system, badges, and leaderboard to maintain learning motivation"
+    }
   },
   "languageSwitcher": {
     "label": "Language",
