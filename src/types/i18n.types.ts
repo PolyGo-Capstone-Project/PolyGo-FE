@@ -5,10 +5,10 @@ export interface LocaleParams {
 }
 
 export interface LocalePageProps {
-  params: Promise<LocaleParams>; // 🔥 Changed to Promise
+  params: Promise<LocaleParams>;
 }
 
 export interface LocaleLayoutProps {
   children: React.ReactNode;
-  params: Promise<LocaleParams>; // 🔥 Changed to Promise
+  params: Promise<LocaleParams>;
 }

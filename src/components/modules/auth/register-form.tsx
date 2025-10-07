@@ -17,11 +17,13 @@ import { toast } from "sonner";
 import { Button, Input, Label, Separator } from "@/components/ui";
 import { TypeOfVerificationCode } from "@/constants";
 // import { useRegisterMutation, useSendOTPMutation } from "@/hooks";
-import { handleErrorApi } from "@/lib/utils";
+import { handleErrorApi, showSuccessToast } from "@/lib/utils";
 import { RegisterBodyType, SendOTPBodyType } from "@/models";
 
 export default function RegisterForm() {
   const t = useTranslations("auth.register");
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
   const locale = useLocale();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -46,7 +48,7 @@ export default function RegisterForm() {
   const form = useForm<RegisterBodyType>({
     defaultValues: {
       name: "",
-      email: "",
+      mail: "",
       avatar: "",
       password: "",
       confirmPassword: "",
@@ -54,11 +56,11 @@ export default function RegisterForm() {
     },
   });
 
-  const watchedEmail = form.watch("email");
+  const watchedMail = form.watch("mail");
 
   const handleSendOTP = async () => {
-    if (!watchedEmail) {
-      form.setError("email", {
+    if (!watchedMail) {
+      form.setError("mail", {
         type: "manual",
         message: t("otpRequired"),
       });
@@ -69,7 +71,7 @@ export default function RegisterForm() {
 
     try {
       const otpData: SendOTPBodyType = {
-        email: watchedEmail,
+        mail: watchedMail,
         type: TypeOfVerificationCode.REGISTER,
       };
 
@@ -92,6 +94,7 @@ export default function RegisterForm() {
       handleErrorApi({
         error,
         setError: form.setError,
+        tError,
       });
     }
   };
@@ -101,12 +104,13 @@ export default function RegisterForm() {
 
     try {
       const response = await registerMutation.mutateAsync(data);
-      toast.success(response.payload.message || t("registerSuccess"));
+      showSuccessToast(response.payload.message, tSuccess);
       router.push("/login");
     } catch (error) {
       handleErrorApi({
         error,
         setError: form.setError,
+        tError,
       });
     }
   };
@@ -129,18 +133,18 @@ export default function RegisterForm() {
           )}
         </div>
       </div>
-      {/* Email Field with OTP */}
+      {/* Mail Field with OTP */}
       <div className="space-y-2">
-        <Label htmlFor="email">{t("emailLabel")}</Label>
+        <Label htmlFor="mail">{t("mailLabel")}</Label>
         <div className="flex gap-2">
           <div className="relative flex-1">
             <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <Input
-              id="email"
-              type="email"
-              placeholder={t("emailPlaceholder")}
+              id="mail"
+              type="mail"
+              placeholder={t("mailPlaceholder")}
               className="pl-10"
-              {...form.register("email")}
+              {...form.register("mail")}
             />
           </div>
           <Button
@@ -148,7 +152,7 @@ export default function RegisterForm() {
             variant="outline"
             onClick={handleSendOTP}
             disabled={
-              sendOTPMutation.isPending || countdown > 0 || !watchedEmail
+              sendOTPMutation.isPending || countdown > 0 || !watchedMail
             }
             className="shrink-0"
           >
@@ -161,12 +165,12 @@ export default function RegisterForm() {
             )}
           </Button>
         </div>
-        {form.formState.errors.email && (
+        {form.formState.errors.mail && (
           <p className="text-sm text-destructive">
-            {form.formState.errors.email.message}
+            {form.formState.errors.mail.message}
           </p>
         )}
-        {otpSent && !form.formState.errors.email && (
+        {otpSent && !form.formState.errors.mail && (
           <div className="flex items-center gap-2 text-sm text-green-600">
             <IconCheck className="size-4" />
             <span>{t("otpSent")}</span>

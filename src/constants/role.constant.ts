@@ -1,8 +1,8 @@
 export const Role = {
-  Guest: "GUEST",
-  User: "USER",
-  Admin: "ADMIN",
-  AiModule: "AI_MODULE",
+  Guest: "Guest",
+  User: "User",
+  Admin: "Admin",
+  AiModule: "AiModule",
 } as const;
 
 export const RoleValues = [

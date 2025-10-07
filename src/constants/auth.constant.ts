@@ -5,11 +5,11 @@ export const UserStatus = {
 } as const;
 
 export const TypeOfVerificationCode = {
-  REGISTER: "REGISTER",
-  FORGOT_PASSWORD: "FORGOT_PASSWORD",
-  LOGIN: "LOGIN",
-  DISABLE_2FA: "DISABLE_2FA",
-  WITHDRAW_MONEY: "WITHDRAW_MONEY",
+  REGISTER: "0",
+  FORGOT_PASSWORD: "1",
+  LOGIN: "2",
+  DISABLE_2FA: "3",
+  WITHDRAW_MONEY: "4",
 } as const;
 
 export type TypeOfVerificationCodeType =

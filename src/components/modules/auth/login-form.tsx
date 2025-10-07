@@ -1,5 +1,6 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   IconEye,
   IconEyeOff,
@@ -9,13 +10,16 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button, Input, Label, Separator } from "@/components/ui";
-import { useAuthStore, useSearchParamsLoader } from "@/hooks";
 // import { useLoginMutation } from "@/hooks/query/use-auth";
-import { LoginBodyType } from "@/models";
+import { Role } from "@/constants";
+import { useAuthStore, useSearchParamsLoader } from "@/hooks";
+import { useLoginMutation } from "@/hooks/query";
+import { decodeToken, handleErrorApi, showSuccessToast } from "@/lib/utils";
+import { LoginBodySchema, LoginBodyType } from "@/models";
 
 export default function LoginForm() {
   const t = useTranslations("auth.login");
@@ -24,14 +28,28 @@ export default function LoginForm() {
   const router = useRouter();
   const { searchParams, setSearchParams } = useSearchParamsLoader();
   const clearTokens = searchParams?.get("clearTokens");
-  // const loginMutation = useLoginMutation();
-  const [loginMutation] = [{ isPending: false }]; // Placeholder for loginMutation
+  const loginMutation = useLoginMutation();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const setRole = useAuthStore((state) => state.setRole);
   // const setSocket = useAuthStore((state) => state.setSocket);
+  const errorMessages = useTranslations("auth.login.errors");
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
+
+  const resolver = useMemo(
+    () =>
+      zodResolver(LoginBodySchema, {
+        error: (issue) => ({
+          message: translateLoginError(issue, errorMessages),
+        }),
+      }),
+    [errorMessages]
+  );
+
   const form = useForm<LoginBodyType>({
+    resolver,
     defaultValues: {
-      email: "",
+      mail: "",
       password: "",
     },
   });
@@ -43,39 +61,44 @@ export default function LoginForm() {
   }, [clearTokens, setRole]);
 
   const onSubmit = async (data: LoginBodyType) => {
-    // if (loginMutation.isPending) return;
-    // try {
-    //   const result = await loginMutation.mutateAsync(data);
-    //   toast.success("Đăng nhập thành công!");
-    //   const role = decodeToken(result.payload.data.accessToken).roleName;
-    //   setRole(role);
-    //   // setSocket(generateSocketInstance(result.payload.data.accessToken));
-    //   router.push("/manage/dashboard");
-    // } catch (error: any) {
-    //   handleErrorApi({
-    //     error,
-    //     setError: form.setError,
-    //   });
-    // }
+    if (loginMutation.isPending) return;
+    try {
+      const result = await loginMutation.mutateAsync(data);
+      showSuccessToast(result.payload?.message, tSuccess);
+      const role = decodeToken(result.payload.data).Role;
+      setRole(role);
+      // setSocket(generateSocketInstance(result.payload.data.accessToken));
+      if (role === Role.Admin) {
+        router.push(`/${locale}/manage/dashboard`);
+      } else if (role === Role.User) {
+        router.push(`/${locale}/dashboard`);
+      }
+    } catch (error: any) {
+      handleErrorApi({
+        error,
+        setError: form.setError,
+        tError,
+      });
+    }
   };
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="email">{t("emailLabel")}</Label>
+        <Label htmlFor="mail">{t("mailLabel")}</Label>
         <div className="relative">
           <IconMail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            id="email"
-            type="email"
-            placeholder={t("emailPlaceholder")}
+            id="mail"
+            type="mail"
+            placeholder={t("mailPlaceholder")}
             className="pl-10"
-            {...form.register("email")}
+            {...form.register("mail")}
           />
         </div>
-        {form.formState.errors.email && (
+        {form.formState.errors.mail && (
           <p className="text-sm text-destructive">
-            {form.formState.errors.email.message}
+            {form.formState.errors.mail.message}
           </p>
         )}
       </div>
@@ -108,6 +131,11 @@ export default function LoginForm() {
         {form.formState.errors.password && (
           <p className="text-sm text-destructive">
             {form.formState.errors.password.message}
+          </p>
+        )}
+        {!form.formState.errors.password && form.watch("password") && (
+          <p className="text-xs text-muted-foreground">
+            Must include uppercase, lowercase, number, and special character
           </p>
         )}
       </div>
@@ -196,3 +224,94 @@ export default function LoginForm() {
     </form>
   );
 }
+
+type Translator = (key: string, values?: Record<string, any>) => string;
+
+type ZodIssueForLogin = {
+  code: string;
+  message?: string;
+  path?: PropertyKey[];
+  [key: string]: unknown;
+};
+
+const translateLoginError = (
+  issue: ZodIssueForLogin,
+  t: Translator
+): string => {
+  const field = issue.path?.[0];
+  const detail = issue as Record<string, any>;
+
+  if (typeof field !== "string") {
+    return t("default");
+  }
+
+  switch (field) {
+    case "mail": {
+      if (issue.code === "invalid_type") {
+        return t("mail.required");
+      }
+
+      if (issue.code === "invalid_string" && detail.validation === "email") {
+        return t("mail.invalid");
+      }
+
+      if (issue.code === "too_small") {
+        return t("mail.required");
+      }
+
+      if (issue.code === "too_big") {
+        return t("mail.max", { length: detail.maximum ?? 100 });
+      }
+
+      break;
+    }
+    case "password": {
+      if (issue.code === "invalid_type") {
+        return t("password.required");
+      }
+
+      if (issue.code === "too_small") {
+        if (detail.minimum && detail.minimum > 1) {
+          return t("password.min", { length: detail.minimum });
+        }
+        return t("password.required");
+      }
+
+      if (issue.code === "too_big") {
+        return t("password.max", { length: detail.maximum ?? 100 });
+      }
+
+      // Handle regex validation error
+      if (issue.code === "invalid_string" && detail.validation === "regex") {
+        return t("password.format");
+      }
+
+      break;
+    }
+    case "code":
+    case "totpCode": {
+      if (issue.code === "invalid_type") {
+        return t(`${field}.length`, { length: 6 });
+      }
+
+      if (issue.code === "too_small" || issue.code === "too_big") {
+        const expectedLength =
+          typeof detail.minimum === "number" &&
+          typeof detail.maximum === "number"
+            ? Math.max(detail.minimum, detail.maximum)
+            : (detail.minimum ?? detail.maximum ?? 6);
+        return t(`${field}.length`, { length: expectedLength });
+      }
+
+      if (issue.code === "custom") {
+        return t(`${field}.conflict`);
+      }
+
+      break;
+    }
+    default:
+      break;
+  }
+
+  return t("default");
+};

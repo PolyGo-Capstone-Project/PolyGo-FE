@@ -20,7 +20,7 @@ export default function AuthCard({
   children,
 }: AuthCardProps) {
   return (
-    <div className="w-full max-w-lg">
+    <div className="w-full max-w-xl">
       <Card className="shadow-xl border-border/50">
         <CardHeader className="text-center space-y-3">
           <div className="mx-auto w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">

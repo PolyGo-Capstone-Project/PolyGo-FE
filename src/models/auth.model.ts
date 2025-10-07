@@ -3,13 +3,25 @@ import z from "zod";
 import { TypeOfVerificationCode } from "@/constants";
 import { UserSchema } from "@/models/user.model";
 
+// Password validation regex
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
 export const LoginBodySchema = UserSchema.pick({
-  email: true,
-  password: true,
+  mail: true,
 })
   .extend({
+    // Custom password validation for login
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(100, "Password must not exceed 100 characters")
+      .regex(
+        passwordRegex,
+        "Password must include uppercase, lowercase, number, and special character"
+      ),
     totpCode: z.string().length(6).optional(), // 2FA code
-    code: z.string().length(6).optional(), // Email OTP code
+    code: z.string().length(6).optional(), // Mail OTP code
   })
   .strict()
   .superRefine(({ totpCode, code }, ctx) => {
@@ -31,10 +43,7 @@ export const LoginBodySchema = UserSchema.pick({
   });
 
 export const LoginResSchema = z.object({
-  data: z.object({
-    accessToken: z.string(),
-    refreshToken: z.string(),
-  }),
+  data: z.string(), // JWT token
   message: z.string(),
 });
 
@@ -44,12 +53,22 @@ export const GetAuthorizationUrlResSchema = z.object({
 
 export const RegisterBodySchema = UserSchema.pick({
   name: true,
-  email: true,
-  password: true,
+  mail: true,
   avatar: true,
 })
   .extend({
-    confirmPassword: z.string().min(6).max(100),
+    password: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(100, "Password must not exceed 100 characters")
+      .regex(
+        passwordRegex,
+        "Password must include uppercase, lowercase, number, and special character"
+      ),
+    confirmPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(100, "Password must not exceed 100 characters"),
     code: z.string().length(6),
   })
   .strict()
@@ -66,7 +85,7 @@ export const RegisterBodySchema = UserSchema.pick({
 //otp
 export const VerificationCodeSchema = z.object({
   id: z.number(),
-  email: z.email(),
+  mail: z.email(),
   code: z.string().length(6),
   type: z.enum([
     TypeOfVerificationCode.REGISTER,
@@ -80,16 +99,26 @@ export const VerificationCodeSchema = z.object({
 });
 
 export const SendOTPBodySchema = VerificationCodeSchema.pick({
-  email: true,
+  mail: true,
   type: true,
 }).strict();
 
 export const ForgotPasswordBodySchema = z
   .object({
-    email: z.email(),
+    mail: z.email(),
     code: z.string().length(6),
-    newPassword: z.string().min(6).max(100),
-    confirmNewPassword: z.string().min(6).max(100),
+    newPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(100, "Password must not exceed 100 characters")
+      .regex(
+        passwordRegex,
+        "Password must include uppercase, lowercase, number, and special character"
+      ),
+    confirmNewPassword: z
+      .string()
+      .min(6, "Password must be at least 6 characters")
+      .max(100, "Password must not exceed 100 characters"),
   })
   .strict()
   .superRefine(({ confirmNewPassword, newPassword }, ctx) => {

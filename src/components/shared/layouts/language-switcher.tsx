@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown, Globe2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -10,6 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -51,7 +52,7 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="h-9 gap-2 px-3">
+        <Button variant="outline" size="sm" className="h-9 gap-1 px-2">
           <span className="text-lg leading-none">
             {localeFlags[activeLocale]}
           </span>
@@ -60,6 +61,11 @@ export function LanguageSwitcher() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 p-2">
+        <div className="px-3 py-2 flex items-center gap-2 text-sm text-muted-foreground font-medium">
+          <Globe2 className="size-4" />
+          {t("label") || "Language"}
+        </div>
+        <DropdownMenuSeparator />
         <DropdownMenuRadioGroup
           value={activeLocale}
           onValueChange={(value) => switchLocale(value as Locale)}

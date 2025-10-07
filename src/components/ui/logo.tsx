@@ -28,21 +28,9 @@ export function Logo({ className, size = "default" }: LogoProps) {
         )}
       >
         <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <svg
-            viewBox="0 0 24 24"
-            className="size-5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M2 12h20" />
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-          </svg>
+          <span className="text-lg font-extrabold">P</span>
         </div>
-        <span className="font-bold">PolyGo</span>
+        <span className="font-bold text-black dark:text-white">PolyGo</span>
       </Link>
     </div>
   );

@@ -7,19 +7,40 @@ import { twMerge } from "tailwind-merge";
 import { EntityError } from "@/lib/http";
 import { TokenPayload } from "@/types";
 
+import { getTranslatedMessage } from "./message-handler";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * Handle API errors với đa ngôn ngữ support
+ *
+ * @param error - Error object từ API
+ * @param setError - React Hook Form setError function (optional)
+ * @param duration - Toast duration in ms (optional)
+ * @param tError - Translator function từ useTranslations("Error") (optional)
+ *
+ * @example
+ * const tError = useTranslations("Error");
+ * try {
+ *   await apiCall();
+ * } catch (error) {
+ *   handleErrorApi({ error, setError: form.setError, tError });
+ * }
+ */
 export const handleErrorApi = ({
   error,
   setError,
   duration,
+  tError,
 }: {
   error: any;
   setError?: UseFormSetError<any>;
   duration?: number;
+  tError?: (key: string, values?: Record<string, any>) => string;
 }) => {
+  // Handle form validation errors
   if (error instanceof EntityError && setError) {
     error.payload.message.forEach((item) => {
       setError(item.path, {
@@ -27,18 +48,36 @@ export const handleErrorApi = ({
         message: item.message,
       });
     });
-  } else {
-    const errorMessage = Array.isArray(error?.payload?.message)
-      ? error.payload.message.map((err: any) => err.message).join(", ")
-      : (error?.payload?.message ??
-        error?.payload?.error ??
-        "Lỗi không xác định");
-
-    toast.error("Lỗi", {
-      description: errorMessage,
-      duration: duration ?? 5000,
-    });
+    return;
   }
+
+  // Extract error message
+  let errorMessage: string;
+
+  if (Array.isArray(error?.payload?.message)) {
+    errorMessage = error.payload.message
+      .map((err: any) => err.message)
+      .join(", ");
+  } else if (error?.payload?.message) {
+    errorMessage = error.payload.message;
+  } else if (error?.payload?.error) {
+    errorMessage = error.payload.error;
+  } else {
+    errorMessage = "default";
+  }
+
+  // Translate error message if translator provided
+  const translatedMessage = tError
+    ? getTranslatedMessage(errorMessage, tError)
+    : errorMessage;
+
+  // Default title
+  const title = tError ? tError("default") : "Lỗi";
+
+  toast.error(title, {
+    description: translatedMessage,
+    duration: duration ?? 5000,
+  });
 };
 
 export const normalizePath = (path: string) => {
@@ -51,23 +90,35 @@ export const decodeToken = (token: string) => {
 
 const isBrowser = typeof window !== "undefined";
 
-export const getAccessTokenFromLocalStorage = () =>
-  isBrowser ? localStorage.getItem("accessToken") : null;
+export const getSessionTokenFromLocalStorage = () =>
+  isBrowser ? localStorage.getItem("sessionToken") : null;
 
-export const getRefreshTokenFromLocalStorage = () =>
-  isBrowser ? localStorage.getItem("refreshToken") : null;
-
-export const setAccessTokenToLocalStorage = (value: string) =>
-  isBrowser && localStorage.setItem("accessToken", value);
-
-export const setRefreshTokenToLocalStorage = (value: string) =>
-  isBrowser && localStorage.setItem("refreshToken", value);
+export const setSessionTokenToLocalStorage = (value: string) =>
+  isBrowser && localStorage.setItem("sessionToken", value);
 
 export const removeTokensFromLocalStorage = () => {
-  isBrowser && localStorage.removeItem("accessToken");
-  isBrowser && localStorage.removeItem("refreshToken");
+  isBrowser && localStorage.removeItem("sessionToken");
 };
 
 export const clearLocalStorage = () => {
   isBrowser && localStorage.clear();
 };
+
+// Export message handler utilities
+export {
+  createMessageHandler,
+  getAuthMessage,
+  getCrudMessage,
+  getMappedMessage,
+  getTranslatedMessage,
+} from "./message-handler";
+
+// Export toast helpers
+export {
+  showErrorToast,
+  showInfoToast,
+  showLoadingToast,
+  showPromiseToast,
+  showSuccessToast,
+  showWarningToast,
+} from "./toast-helper";

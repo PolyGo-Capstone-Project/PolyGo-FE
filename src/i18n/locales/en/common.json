@@ -1,4 +1,54 @@
 {
+  "Success": {
+    "default": "Operation successful!",
+    "GetAll": "Data retrieved successfully!",
+    "GetOne": "Data retrieved successfully!",
+    "Create": "Created successfully!",
+    "Update": "Updated successfully!",
+    "Delete": "Deleted successfully!",
+    "Login": "Login successful!",
+    "Register": "Registration successful!",
+    "Logout": "Logout successful!",
+    "ForgotPassword": "Password reset successful!",
+    "ResetPassword": "Password reset successful!",
+    "VerifyEmail": "Email verified successfully!",
+    "ResendVerification": "Verification email sent!",
+    "ProfileUpdate": "Profile updated successfully!",
+    "AvatarUpdate": "Avatar updated successfully!",
+    "PasswordChange": "Password changed successfully!",
+    "Save": "Saved successfully!",
+    "Upload": "Uploaded successfully!",
+    "Download": "Downloaded successfully!",
+    "Send": "Sent successfully!",
+    "Submit": "Submitted successfully!"
+  },
+  "Error": {
+    "default": "An error occurred. Please try again.",
+    "GetAll": "Failed to retrieve data. Please try again.",
+    "GetOne": "Failed to retrieve data. Please try again.",
+    "Create": "Creation failed. Please check your information and try again.",
+    "Update": "Update failed. Please check your information and try again.",
+    "Delete": "Deletion failed. Please try again.",
+    "NotFound": "Not found.",
+    "Unauthorized": "Unauthorized access.",
+    "Forbidden": "Action forbidden.",
+    "UnprocessableEntity": "Invalid data. Please check and try again.",
+    "TooManyRequests": "Too many requests. Please try again later.",
+    "BadRequest": "Invalid request. Please check and try again.",
+    "ServerError": "Server error. Please try again later.",
+    "NetworkError": "Network error. Please check your connection.",
+    "InvalidCredentials": "Invalid email or password.",
+    "EmailAlreadyExists": "Email already exists.",
+    "AccountLocked": "Account has been locked.",
+    "SessionExpired": "Session expired. Please login again.",
+    "InvalidToken": "Invalid or expired token.",
+    "RequiredField": "This field is required.",
+    "InvalidEmail": "Invalid email address.",
+    "InvalidPassword": "Invalid password format.",
+    "PasswordMismatch": "Passwords do not match.",
+    "InvalidFormat": "Invalid format.",
+    "InvalidMailOrPassword": "Invalid email or password."
+  },
   "header": {
     "products": "Products",
     "features": "Features",
@@ -6,7 +56,19 @@
     "contact": "Contact",
     "login": "Log in",
     "getStarted": "Get Started",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "userdashboard": "Home",
+    "chat": "Chat",
+    "event": "Event",
+    "matching": "Matching",
+    "social": "Social",
+    "account": "Account",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "loggingOut": "Logging out...",
+    "events": "My Events",
+    "wallet": "Wallet"
   },
   "footer": {
     "description": "Smart language & cultural exchange platform for learners worldwide",
@@ -15,7 +77,7 @@
     "company": "Company",
     "legal": "Legal",
     "contact": "Contact",
-    "email": "Email",
+    "mail": "Mail",
     "phone": "Phone",
     "address": "Address",
     "supportCenter": "Support Center",
@@ -27,9 +89,98 @@
     "copyright": "© 2025 PolyGo. All rights reserved.",
     "madeInVietnam": "Proudly made in Vietnam"
   },
+  "guideline": {
+    "title": "Community Guidelines",
+    "intro": "A code of conduct to maintain a safe, respectful, and culturally rich learning environment.",
+    "conduct": {
+      "title": "Conduct",
+      "items": {
+        "respect": "Respect linguistic and cultural differences; no harassment or discrimination.",
+        "safety": "Do not share sensitive information; be cautious when interacting outside the platform.",
+        "prohibited": "Prohibited content includes violence, pornography, hate speech, cheating, and spam."
+      }
+    },
+    "enforcement": {
+      "title": "Violation Enforcement",
+      "items": {
+        "warnings": "Warnings, muting microphone/chat, or feature limitations based on severity.",
+        "bans": "Temporary/permanent bans for repeat or serious violations.",
+        "appeals": "Transparent appeal process through support channels."
+      }
+    }
+  },
+  "policy": {
+    "title": "PolyGo Policies",
+    "intro": "Core policies to protect privacy, ensure secure payments, and promote a fair learning experience.",
+    "privacy": {
+      "title": "Privacy & Security",
+      "items": {
+        "dataProtection": "Protection of personal data, especially sensitive and payment information.",
+        "aiLogs": "AI is used for translation/editing; event logs are kept for safety and quality control.",
+        "compliance": "Compliance with current laws and requirements for content removal when necessary."
+      }
+    },
+    "payments": {
+      "title": "Plans & Payments",
+      "items": {
+        "tiers": "Free account has limitations; Plus unlocks all features and benefits.",
+        "refunds": "Principles for refunds/credits when issues are verified.",
+        "security": "Secure payment gateway; card information is not stored on the application server."
+      }
+    },
+    "safety": {
+      "title": "Community Safety",
+      "items": {
+        "moderation": "Admins may issue warnings, ban accounts, close rooms, or remove violating content.",
+        "reports": "Mechanism for reporting, dispute resolution, and user support.",
+        "events": "Events must comply with platform regulations and local laws."
+      }
+    }
+  },
   "home": {
     "title": "PolyGo",
-    "clickMe": "Click Me"
+    "clickMe": "Click Me",
+    "heroTitle": "Learn Languages through Real-World Experience",
+    "heroSubtitle": "Connect with native speakers, participate in exciting cultural events, and improve your language skills in the most natural way.",
+    "Demo": "Watch Demo",
+    "getStarted": "Get Started for Free",
+    "usersCount": "50K+",
+    "users": "Learners",
+    "languageCount": "30+",
+    "language": "Languages",
+    "eventsCount": "100+",
+    "events": "Events/Month",
+    "whyTitle": "Why Choose PolyGo?",
+    "whySubtitle": "A comprehensive language learning platform with AI technology and a global community",
+    "bannerTitle": "Ready to Start Your Language Learning Journey?",
+    "bannerSubtitle": "Join a community of over 50,000 learners worldwide",
+    "bannerButtonOne": "Sign Up for Free",
+    "bannerButtonTwo": "Already have an account? Log In",
+    "live": "Live with Anna",
+    "firstCard": {
+      "name": "Smart Chat",
+      "description": "AI automatically corrects errors and suggests natural sentences while you chat"
+    },
+    "secondCard": {
+      "name": "1:1 Video Call",
+      "description": "Practice speaking directly with native speakers via high-quality video calls"
+    },
+    "thirdCard": {
+      "name": "Cultural Events",
+      "description": "Participate in workshops, movie nights, and exciting activities"
+    },
+    "fourthCard": {
+      "name": "Smart Matching",
+      "description": "Algorithm finds a suitable partner based on your interests and goals"
+    },
+    "fifthCard": {
+      "name": "30+ Languages",
+      "description": "From English, French, Japanese, Korean to less common languages"
+    },
+    "sixthCard": {
+      "name": "Gamification",
+      "description": "XP system, badges, and leaderboard to maintain learning motivation"
+    }
   },
   "languageSwitcher": {
     "label": "Language",
@@ -46,8 +197,8 @@
     "login": {
       "title": "Login to PolyGo",
       "description": "Sign in to access your account",
-      "emailLabel": "Email",
-      "emailPlaceholder": "user@example.com",
+      "mailLabel": "Mail",
+      "mailPlaceholder": "user@example.com",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter your password",
       "rememberMe": "Remember me",
@@ -59,20 +210,42 @@
       "connecting": "Connecting...",
       "noAccount": "Don't have an account?",
       "registerNow": "Sign up now",
-      "loginSuccess": "Login successful!"
+      "loginSuccess": "Login successful!",
+      "errors": {
+        "default": "Please check this field.",
+        "mail": {
+          "required": "Mail is required.",
+          "invalid": "Please enter a valid mail address.",
+          "max": "Mail must be at most {length} characters."
+        },
+        "password": {
+          "required": "Password is required.",
+          "min": "Password must be at least {length} characters.",
+          "max": "Password must be at most {length} characters.",
+          "format": "Password must include uppercase, lowercase, number, and special character."
+        },
+        "code": {
+          "length": "OTP code must be exactly {length} digits.",
+          "conflict": "Please use either the OTP code or the authenticator code, not both."
+        },
+        "totpCode": {
+          "length": "Authenticator code must be exactly {length} digits.",
+          "conflict": "Please use either the OTP code or the authenticator code, not both."
+        }
+      }
     },
     "register": {
       "title": "Sign up for PolyGo",
       "description": "Register to start your journey with us",
       "nameLabel": "Full name",
       "namePlaceholder": "John Doe",
-      "emailLabel": "Email",
-      "emailPlaceholder": "user@example.com",
+      "mailLabel": "Mail",
+      "mailPlaceholder": "user@example.com",
       "sendOTP": "Send OTP",
       "otpLabel": "OTP Verification Code",
       "otpPlaceholder": "Enter 6-digit code",
-      "otpHint": "Check your email and enter the 6-digit code to verify your account",
-      "otpSent": "OTP code has been sent to your email",
+      "otpHint": "Check your mail and enter the 6-digit code to verify your account",
+      "otpSent": "OTP code has been sent to your mail",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Minimum 6 characters",
       "confirmPasswordLabel": "Confirm password",
@@ -85,19 +258,19 @@
       "haveAccount": "Already have an account?",
       "loginNow": "Log in now",
       "registerSuccess": "Registration successful!",
-      "otpRequired": "Please enter email",
-      "otpSentSuccess": "OTP code has been sent to your email!"
+      "otpRequired": "Please enter mail",
+      "otpSentSuccess": "OTP code has been sent to your mail!"
     },
     "forgotPassword": {
       "title": "Reset Password",
-      "description": "Enter your email to receive a password reset code",
-      "emailLabel": "Email",
-      "emailPlaceholder": "user@example.com",
+      "description": "Enter your mail to receive a password reset code",
+      "mailLabel": "Mail",
+      "mailPlaceholder": "user@example.com",
       "sendOTP": "Send OTP",
       "otpLabel": "Verification Code",
       "otpPlaceholder": "Enter 6-digit code",
-      "otpHint": "Check your email and enter the 6-digit verification code",
-      "otpSent": "Verification code has been sent to your email",
+      "otpHint": "Check your mail and enter the 6-digit verification code",
+      "otpSent": "Verification code has been sent to your mail",
       "newPasswordLabel": "New Password",
       "newPasswordPlaceholder": "Minimum 6 characters",
       "confirmPasswordLabel": "Confirm Password",
@@ -106,8 +279,116 @@
       "resetting": "Resetting...",
       "backToLogin": "Back to login",
       "resetSuccess": "Password reset successful!",
-      "otpRequired": "Please enter email",
-      "otpSentSuccess": "Verification code has been sent to your email!"
+      "otpRequired": "Please enter mail",
+      "otpSentSuccess": "Verification code has been sent to your mail!"
+    }
+  },
+  "setupProfile": {
+    "steps": {
+      "targetLanguage": {
+        "title": "Target Languages",
+        "description": "What do you want to learn?",
+        "heading": "Choose your target languages",
+        "subheading": "Select up to 3 languages you want to learn with PolyGo",
+        "selected": "Selected: {count} language",
+        "maxReached": "Maximum 3 languages"
+      },
+      "knownLanguages": {
+        "title": "Known Languages",
+        "description": "Languages you already speak",
+        "heading": "Languages you already know",
+        "subheading": "Select all languages you can speak. This helps us find better conversation partners.",
+        "selected": "Selected: {count} language"
+      },
+      "proficiency": {
+        "title": "Level & Interests",
+        "description": "Your proficiency and interests",
+        "proficiencyHeading": "What's your proficiency level?",
+        "proficiencySubheading": "Select your current level in the target language",
+        "interestsHeading": "What are your interests?",
+        "interestsSubheading": "Choose topics you'd like to talk about (select at least one)",
+        "selected": "Selected: {count} interest"
+      },
+      "availability": {
+        "title": "Availability",
+        "description": "When can you practice?",
+        "timezoneHeading": "Your timezone",
+        "timezoneSubheading": "We'll use this to match you with partners at convenient times",
+        "timezoneLabel": "Select your timezone",
+        "currentTime": "Current time",
+        "timeSlotsHeading": "When are you usually available?",
+        "timeSlotsSubheading": "Select the time slots when you can practice",
+        "weeklyHoursHeading": "How much time can you dedicate?",
+        "weeklyHoursSubheading": "Choose how many hours per week you want to practice",
+        "weeklyHoursLabel": "Weekly hours",
+        "selected": "Selected: {count} time slot"
+      }
+    },
+    "navigation": {
+      "back": "Back",
+      "continue": "Continue",
+      "complete": "Complete Setup",
+      "step": "Step {current} of {total}"
+    },
+    "proficiencyLevels": {
+      "beginner": {
+        "label": "Beginner",
+        "description": "Just starting out"
+      },
+      "elementary": {
+        "label": "Elementary",
+        "description": "Basic understanding"
+      },
+      "intermediate": {
+        "label": "Intermediate",
+        "description": "Can have conversations"
+      },
+      "advanced": {
+        "label": "Advanced",
+        "description": "Fluent speaker"
+      },
+      "native": {
+        "label": "Native",
+        "description": "Native speaker"
+      }
+    },
+    "interests": {
+      "travel": "Travel",
+      "food": "Food & Cooking",
+      "music": "Music",
+      "sports": "Sports",
+      "movies": "Movies & TV",
+      "books": "Books & Reading",
+      "technology": "Technology",
+      "art": "Art & Design",
+      "business": "Business",
+      "science": "Science",
+      "gaming": "Gaming",
+      "fashion": "Fashion"
+    },
+    "availability": {
+      "morning": {
+        "label": "Morning",
+        "time": "6:00 - 12:00"
+      },
+      "afternoon": {
+        "label": "Afternoon",
+        "time": "12:00 - 18:00"
+      },
+      "evening": {
+        "label": "Evening",
+        "time": "18:00 - 22:00"
+      },
+      "night": {
+        "label": "Night",
+        "time": "22:00 - 6:00"
+      }
+    },
+    "weeklyHours": {
+      "1": "1-2 hours per week",
+      "3": "3-5 hours per week",
+      "6": "6-10 hours per week",
+      "11": "10+ hours per week"
     }
   }
 }
