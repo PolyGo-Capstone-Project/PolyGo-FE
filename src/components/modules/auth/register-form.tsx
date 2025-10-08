@@ -16,7 +16,7 @@ import { toast } from "sonner";
 
 import { Button, Input, Label, Separator } from "@/components/ui";
 import { TypeOfVerificationCode } from "@/constants";
-// import { useRegisterMutation, useSendOTPMutation } from "@/hooks";
+import { useRegisterMutation, useSendOTPMutation } from "@/hooks";
 import { handleErrorApi, showSuccessToast } from "@/lib/utils";
 import { RegisterBodyType, SendOTPBodyType } from "@/models";
 
@@ -31,28 +31,17 @@ export default function RegisterForm() {
   const [countdown, setCountdown] = useState(0);
   const router = useRouter();
 
-  // const registerMutation = useRegisterMutation();
-  // const sendOTPMutation = useSendOTPMutation();
-  const registerMutation = {
-    isPending: false,
-    mutateAsync: async (data: any) => ({
-      payload: { message: "Mock register success" },
-    }),
-  };
-  const sendOTPMutation = {
-    isPending: false,
-    mutateAsync: async (data: any) => ({}),
-  };
+  const registerMutation = useRegisterMutation();
+  const sendOTPMutation = useSendOTPMutation();
   //   const { initiateGoogleLogin, isLoading: isGoogleLoading } = useGoogleAuth();
 
   const form = useForm<RegisterBodyType>({
     defaultValues: {
       name: "",
       mail: "",
-      avatar: "",
       password: "",
       confirmPassword: "",
-      code: "",
+      otp: "",
     },
   });
 
@@ -72,9 +61,8 @@ export default function RegisterForm() {
     try {
       const otpData: SendOTPBodyType = {
         mail: watchedMail,
-        type: TypeOfVerificationCode.REGISTER,
+        verificationType: TypeOfVerificationCode.REGISTER,
       };
-
       await sendOTPMutation.mutateAsync(otpData);
       toast.success(t("otpSentSuccess"));
       setOtpSent(true);
@@ -105,7 +93,7 @@ export default function RegisterForm() {
     try {
       const response = await registerMutation.mutateAsync(data);
       showSuccessToast(response.payload.message, tSuccess);
-      router.push("/login");
+      router.push(`/${locale}/login`);
     } catch (error) {
       handleErrorApi({
         error,
@@ -180,21 +168,21 @@ export default function RegisterForm() {
 
       {/* OTP Field */}
       <div className="space-y-2">
-        <Label htmlFor="code">{t("otpLabel")}</Label>
+        <Label htmlFor="otp">{t("otpLabel")}</Label>
         <div className="relative">
           <IconShield className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            id="code"
+            id="otp"
             type="text"
             placeholder={t("otpPlaceholder")}
             maxLength={6}
             className="pl-10"
-            {...form.register("code")}
+            {...form.register("otp")}
           />
         </div>
-        {form.formState.errors.code && (
+        {form.formState.errors.otp && (
           <p className="text-sm text-destructive">
-            {form.formState.errors.code.message}
+            {form.formState.errors.otp.message}
           </p>
         )}
         <p className="text-xs text-muted-foreground">{t("otpHint")}</p>

@@ -54,7 +54,6 @@ export const GetAuthorizationUrlResSchema = z.object({
 export const RegisterBodySchema = UserSchema.pick({
   name: true,
   mail: true,
-  avatar: true,
 })
   .extend({
     password: z
@@ -69,7 +68,7 @@ export const RegisterBodySchema = UserSchema.pick({
       .string()
       .min(6, "Password must be at least 6 characters")
       .max(100, "Password must not exceed 100 characters"),
-    code: z.string().length(6),
+    otp: z.string().length(6),
   })
   .strict()
   .superRefine(({ confirmPassword, password }, ctx) => {
@@ -87,7 +86,7 @@ export const VerificationCodeSchema = z.object({
   id: z.number(),
   mail: z.email(),
   code: z.string().length(6),
-  type: z.enum([
+  verificationType: z.enum([
     TypeOfVerificationCode.REGISTER,
     TypeOfVerificationCode.FORGOT_PASSWORD,
     TypeOfVerificationCode.LOGIN,
@@ -100,7 +99,7 @@ export const VerificationCodeSchema = z.object({
 
 export const SendOTPBodySchema = VerificationCodeSchema.pick({
   mail: true,
-  type: true,
+  verificationType: true,
 }).strict();
 
 export const ForgotPasswordBodySchema = z

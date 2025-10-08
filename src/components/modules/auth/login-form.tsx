@@ -16,8 +16,7 @@ import { useForm } from "react-hook-form";
 import { Button, Input, Label, Separator } from "@/components/ui";
 // import { useLoginMutation } from "@/hooks/query/use-auth";
 import { Role } from "@/constants";
-import { useAuthStore, useSearchParamsLoader } from "@/hooks";
-import { useLoginMutation } from "@/hooks/query";
+import { useAuthStore, useLoginMutation, useSearchParamsLoader } from "@/hooks";
 import { decodeToken, handleErrorApi, showSuccessToast } from "@/lib/utils";
 import { LoginBodySchema, LoginBodyType } from "@/models";
 
