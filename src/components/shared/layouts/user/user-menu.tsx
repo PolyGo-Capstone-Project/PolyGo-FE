@@ -18,8 +18,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui";
 import { useLogout } from "@/hooks";
+import { GetUserProfileResType } from "@/models";
 
-export function UserMenu() {
+export function UserMenu({ user }: { user: GetUserProfileResType }) {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("header");
@@ -37,8 +38,13 @@ export function UserMenu() {
           className="relative h-9 w-9 rounded-full p-0 hover:bg-accent/60"
         >
           <Avatar className="h-9 w-9">
-            <AvatarImage src="/avatar.png" alt="@QuangHuy" />
-            <AvatarFallback>QH</AvatarFallback>
+            <AvatarImage
+              src={user?.data.avatarUrl ?? undefined}
+              alt={user?.data.name}
+            />
+            <AvatarFallback>
+              {user?.data.name.slice(0, 2).toUpperCase()}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -49,9 +55,9 @@ export function UserMenu() {
         sideOffset={8}
       >
         <DropdownMenuLabel className="flex flex-col">
-          <span className="font-semibold">Quang Huy</span>
+          <span className="font-semibold">{user?.data.name}</span>
           <span className="text-xs text-muted-foreground">
-            huyq09@gmail.com
+            {user?.data.mail}
           </span>
         </DropdownMenuLabel>
 
