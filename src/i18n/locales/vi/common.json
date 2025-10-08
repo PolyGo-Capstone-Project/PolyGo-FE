@@ -248,6 +248,7 @@
       "otpSent": "Mã OTP đã được gửi đến mail của bạn",
       "passwordLabel": "Mật khẩu",
       "passwordPlaceholder": "Tối thiểu 6 ký tự",
+      "passwordHint": "Phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt",
       "confirmPasswordLabel": "Xác nhận mật khẩu",
       "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
       "agreeToTerms": "Tôi đồng ý với Điều khoản dịch vụ và Chính sách bảo mật",
@@ -259,7 +260,36 @@
       "loginNow": "Đăng nhập ngay",
       "registerSuccess": "Đăng ký thành công!",
       "otpRequired": "Vui lòng nhập mail",
-      "otpSentSuccess": "Mã OTP đã được gửi đến mail của bạn!"
+      "otpSentSuccess": "Mã OTP đã được gửi đến mail của bạn!",
+      "errors": {
+        "default": "Vui lòng kiểm tra lại trường này.",
+        "name": {
+          "required": "Vui lòng nhập họ và tên.",
+          "min": "Họ và tên phải có ít nhất {length} ký tự.",
+          "max": "Họ và tên không được vượt quá {length} ký tự."
+        },
+        "mail": {
+          "required": "Vui lòng nhập mail.",
+          "invalid": "Mail không hợp lệ.",
+          "max": "Mail không được vượt quá {length} ký tự."
+        },
+        "password": {
+          "required": "Vui lòng nhập mật khẩu.",
+          "min": "Mật khẩu phải có ít nhất {length} ký tự.",
+          "max": "Mật khẩu không được vượt quá {length} ký tự.",
+          "format": "Mật khẩu phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt."
+        },
+        "confirmPassword": {
+          "required": "Vui lòng nhập xác nhận mật khẩu.",
+          "min": "Xác nhận mật khẩu phải có ít nhất {length} ký tự.",
+          "max": "Xác nhận mật khẩu không được vượt quá {length} ký tự.",
+          "mismatch": "Mật khẩu và xác nhận mật khẩu phải giống nhau."
+        },
+        "otp": {
+          "required": "Vui lòng nhập mã OTP.",
+          "length": "Mã OTP phải gồm {length} chữ số."
+        }
+      }
     },
     "forgotPassword": {
       "title": "Đặt lại mật khẩu",
@@ -273,6 +303,7 @@
       "otpSent": "Mã xác thực đã được gửi đến mail của bạn",
       "newPasswordLabel": "Mật khẩu mới",
       "newPasswordPlaceholder": "Tối thiểu 6 ký tự",
+      "newPasswordHint": "Phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt",
       "confirmPasswordLabel": "Xác nhận mật khẩu",
       "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
       "resetButton": "Đặt lại mật khẩu",
@@ -280,7 +311,31 @@
       "backToLogin": "Quay lại đăng nhập",
       "resetSuccess": "Đặt lại mật khẩu thành công!",
       "otpRequired": "Vui lòng nhập mail",
-      "otpSentSuccess": "Mã xác thực đã được gửi đến mail của bạn!"
+      "otpSentSuccess": "Mã xác thực đã được gửi đến mail của bạn!",
+      "errors": {
+        "default": "Vui lòng kiểm tra lại trường này.",
+        "mail": {
+          "required": "Vui lòng nhập mail.",
+          "invalid": "Mail không hợp lệ.",
+          "max": "Mail không được vượt quá {length} ký tự."
+        },
+        "code": {
+          "required": "Vui lòng nhập mã xác thực.",
+          "length": "Mã xác thực phải gồm {length} chữ số."
+        },
+        "newPassword": {
+          "required": "Vui lòng nhập mật khẩu mới.",
+          "min": "Mật khẩu mới phải có ít nhất {length} ký tự.",
+          "max": "Mật khẩu mới không được vượt quá {length} ký tự.",
+          "format": "Mật khẩu mới phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt."
+        },
+        "confirmNewPassword": {
+          "required": "Vui lòng nhập xác nhận mật khẩu.",
+          "min": "Xác nhận mật khẩu phải có ít nhất {length} ký tự.",
+          "max": "Xác nhận mật khẩu không được vượt quá {length} ký tự.",
+          "mismatch": "Mật khẩu mới và xác nhận mật khẩu phải giống nhau."
+        }
+      }
     }
   },
   "setupProfile": {

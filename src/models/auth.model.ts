@@ -12,14 +12,7 @@ export const LoginBodySchema = UserSchema.pick({
 })
   .extend({
     // Custom password validation for login
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters")
-      .max(100, "Password must not exceed 100 characters")
-      .regex(
-        passwordRegex,
-        "Password must include uppercase, lowercase, number, and special character"
-      ),
+    password: z.string().min(6).max(100).regex(passwordRegex),
     totpCode: z.string().length(6).optional(), // 2FA code
     code: z.string().length(6).optional(), // Mail OTP code
   })
@@ -56,18 +49,8 @@ export const RegisterBodySchema = UserSchema.pick({
   mail: true,
 })
   .extend({
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters")
-      .max(100, "Password must not exceed 100 characters")
-      .regex(
-        passwordRegex,
-        "Password must include uppercase, lowercase, number, and special character"
-      ),
-    confirmPassword: z
-      .string()
-      .min(6, "Password must be at least 6 characters")
-      .max(100, "Password must not exceed 100 characters"),
+    password: z.string().min(6).max(100).regex(passwordRegex),
+    confirmPassword: z.string().min(6).max(100).regex(passwordRegex),
     otp: z.string().length(6),
   })
   .strict()
@@ -105,23 +88,13 @@ export const SendOTPBodySchema = VerificationCodeSchema.pick({
 export const ForgotPasswordBodySchema = z
   .object({
     mail: z.email(),
-    code: z.string().length(6),
-    newPassword: z
-      .string()
-      .min(6, "Password must be at least 6 characters")
-      .max(100, "Password must not exceed 100 characters")
-      .regex(
-        passwordRegex,
-        "Password must include uppercase, lowercase, number, and special character"
-      ),
-    confirmNewPassword: z
-      .string()
-      .min(6, "Password must be at least 6 characters")
-      .max(100, "Password must not exceed 100 characters"),
+    otp: z.string().length(6),
+    password: z.string().min(6).max(100).regex(passwordRegex),
+    confirmNewPassword: z.string().min(6).max(100).regex(passwordRegex),
   })
   .strict()
-  .superRefine(({ confirmNewPassword, newPassword }, ctx) => {
-    if (confirmNewPassword !== newPassword) {
+  .superRefine(({ confirmNewPassword, password }, ctx) => {
+    if (confirmNewPassword !== password) {
       ctx.addIssue({
         code: "custom",
         message: "Mật khẩu và mật khẩu xác nhận phải giống nhau",

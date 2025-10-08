@@ -19,3 +19,9 @@ export const useRegisterMutation = () => {
     mutationFn: authApiRequest.register,
   });
 };
+
+export const useForgotPasswordMutation = () => {
+  return useMutation({
+    mutationFn: authApiRequest.forgotPassword,
+  });
+};

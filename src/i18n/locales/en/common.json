@@ -248,6 +248,7 @@
       "otpSent": "OTP code has been sent to your mail",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Minimum 6 characters",
+      "passwordHint": "Must include uppercase, lowercase, number, and special character",
       "confirmPasswordLabel": "Confirm password",
       "confirmPasswordPlaceholder": "Re-enter password",
       "agreeToTerms": "I agree to the Terms of Service and Privacy Policy",
@@ -259,7 +260,36 @@
       "loginNow": "Log in now",
       "registerSuccess": "Registration successful!",
       "otpRequired": "Please enter mail",
-      "otpSentSuccess": "OTP code has been sent to your mail!"
+      "otpSentSuccess": "OTP code has been sent to your mail!",
+      "errors": {
+        "default": "Please check this field.",
+        "name": {
+          "required": "Full name is required.",
+          "min": "Full name must be at least {length} character.",
+          "max": "Full name must be at most {length} characters."
+        },
+        "mail": {
+          "required": "Mail is required.",
+          "invalid": "Please enter a valid mail address.",
+          "max": "Mail must be at most {length} characters."
+        },
+        "password": {
+          "required": "Password is required.",
+          "min": "Password must be at least {length} characters.",
+          "max": "Password must be at most {length} characters.",
+          "format": "Password must include uppercase, lowercase, number, and special character."
+        },
+        "confirmPassword": {
+          "required": "Confirm password is required.",
+          "min": "Confirm password must be at least {length} characters.",
+          "max": "Confirm password must be at most {length} characters.",
+          "mismatch": "Password and confirm password must match."
+        },
+        "otp": {
+          "required": "OTP code is required.",
+          "length": "OTP code must be exactly {length} digits."
+        }
+      }
     },
     "forgotPassword": {
       "title": "Reset Password",
@@ -273,6 +303,7 @@
       "otpSent": "Verification code has been sent to your mail",
       "newPasswordLabel": "New Password",
       "newPasswordPlaceholder": "Minimum 6 characters",
+      "newPasswordHint": "Must include uppercase, lowercase, number, and special character",
       "confirmPasswordLabel": "Confirm Password",
       "confirmPasswordPlaceholder": "Re-enter new password",
       "resetButton": "Reset Password",
@@ -280,7 +311,31 @@
       "backToLogin": "Back to login",
       "resetSuccess": "Password reset successful!",
       "otpRequired": "Please enter mail",
-      "otpSentSuccess": "Verification code has been sent to your mail!"
+      "otpSentSuccess": "Verification code has been sent to your mail!",
+      "errors": {
+        "default": "Please check this field.",
+        "mail": {
+          "required": "Mail is required.",
+          "invalid": "Please enter a valid mail address.",
+          "max": "Mail must be at most {length} characters."
+        },
+        "code": {
+          "required": "Verification code is required.",
+          "length": "Verification code must be exactly {length} digits."
+        },
+        "newPassword": {
+          "required": "New password is required.",
+          "min": "New password must be at least {length} characters.",
+          "max": "New password must be at most {length} characters.",
+          "format": "New password must include uppercase, lowercase, number, and special character."
+        },
+        "confirmNewPassword": {
+          "required": "Confirm password is required.",
+          "min": "Confirm password must be at least {length} characters.",
+          "max": "Confirm password must be at most {length} characters.",
+          "mismatch": "New password and confirm password must match."
+        }
+      }
     }
   },
   "setupProfile": {

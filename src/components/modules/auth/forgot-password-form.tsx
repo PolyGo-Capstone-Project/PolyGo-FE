@@ -1,5 +1,6 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   IconCheck,
   IconEye,
@@ -11,20 +12,25 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button, Input, Label, Separator } from "@/components/ui";
 import { TypeOfVerificationCode } from "@/constants";
-// import { useForgotPasswordMutation, useSendOTPMutation } from "@/hooks";
+import { useForgotPasswordMutation, useSendOTPMutation } from "@/hooks";
 import { handleErrorApi, showSuccessToast } from "@/lib/utils";
-import { ForgotPasswordBodyType, SendOTPBodyType } from "@/models";
+import {
+  ForgotPasswordBodySchema,
+  ForgotPasswordBodyType,
+  SendOTPBodyType,
+} from "@/models";
 
 export default function ForgotPasswordForm() {
   const t = useTranslations("auth.forgotPassword");
   const tSuccess = useTranslations("Success");
   const tError = useTranslations("Error");
+  const errorMessages = useTranslations("auth.forgotPassword.errors");
   const locale = useLocale();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -32,24 +38,25 @@ export default function ForgotPasswordForm() {
   const [countdown, setCountdown] = useState(0);
   const router = useRouter();
 
-  // const forgotPasswordMutation = useForgotPasswordMutation();
-  // const sendOTPMutation = useSendOTPMutation();
-  const forgotPasswordMutation = {
-    isPending: false,
-    mutateAsync: async (data: any) => ({
-      payload: { message: "Mock forgot password success" },
-    }),
-  };
-  const sendOTPMutation = {
-    isPending: false,
-    mutateAsync: async (data: any) => ({}),
-  };
+  const forgotPasswordMutation = useForgotPasswordMutation();
+  const sendOTPMutation = useSendOTPMutation();
+
+  const resolver = useMemo(
+    () =>
+      zodResolver(ForgotPasswordBodySchema, {
+        error: (issue) => ({
+          message: translateForgotPasswordError(issue, errorMessages),
+        }),
+      }),
+    [errorMessages]
+  );
 
   const form = useForm<ForgotPasswordBodyType>({
+    resolver,
     defaultValues: {
       mail: "",
-      code: "",
-      newPassword: "",
+      otp: "",
+      password: "",
       confirmNewPassword: "",
     },
   });
@@ -162,21 +169,21 @@ export default function ForgotPasswordForm() {
 
       {/* OTP Field */}
       <div className="space-y-2">
-        <Label htmlFor="code">{t("otpLabel")}</Label>
+        <Label htmlFor="otp">{t("otpLabel")}</Label>
         <div className="relative">
           <IconShield className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
-            id="code"
+            id="otp"
             type="text"
             placeholder={t("otpPlaceholder")}
             maxLength={6}
             className="pl-10"
-            {...form.register("code")}
+            {...form.register("otp")}
           />
         </div>
-        {form.formState.errors.code && (
+        {form.formState.errors.otp && (
           <p className="text-sm text-destructive">
-            {form.formState.errors.code.message}
+            {form.formState.errors.otp.message}
           </p>
         )}
         <p className="text-xs text-muted-foreground">{t("otpHint")}</p>
@@ -184,14 +191,14 @@ export default function ForgotPasswordForm() {
 
       {/* New Password Field */}
       <div className="space-y-2">
-        <Label htmlFor="newPassword">{t("newPasswordLabel")}</Label>
+        <Label htmlFor="password">{t("newPasswordLabel")}</Label>
         <div className="relative">
           <Input
-            id="newPassword"
+            id="password"
             type={showPassword ? "text" : "password"}
             placeholder={t("newPasswordPlaceholder")}
             className="pr-10"
-            {...form.register("newPassword")}
+            {...form.register("password")}
           />
           <Button
             type="button"
@@ -207,9 +214,14 @@ export default function ForgotPasswordForm() {
             )}
           </Button>
         </div>
-        {form.formState.errors.newPassword && (
+        {form.formState.errors.password && (
           <p className="text-sm text-destructive">
-            {form.formState.errors.newPassword.message}
+            {form.formState.errors.password.message}
+          </p>
+        )}
+        {!form.formState.errors.password && form.watch("password") && (
+          <p className="text-xs text-muted-foreground">
+            {t("newPasswordHint")}
           </p>
         )}
       </div>
@@ -293,3 +305,124 @@ export default function ForgotPasswordForm() {
     </form>
   );
 }
+
+type Translator = (key: string, values?: Record<string, any>) => string;
+
+type ZodIssueForForgotPassword = {
+  code: string;
+  message?: string;
+  path?: PropertyKey[];
+  [key: string]: unknown;
+};
+
+const translateForgotPasswordError = (
+  issue: ZodIssueForForgotPassword,
+  t: Translator
+): string => {
+  const field = issue.path?.[0];
+  const detail = issue as Record<string, any>;
+
+  if (typeof field !== "string") {
+    return t("default");
+  }
+
+  switch (field) {
+    case "mail": {
+      if (issue.code === "invalid_type") {
+        return t("mail.required");
+      }
+
+      // Handle email format validation
+      if (issue.code === "invalid_format" && detail.format === "email") {
+        return t("mail.invalid");
+      }
+
+      // Backward compatibility
+      if (issue.code === "invalid_string" && detail.validation === "email") {
+        return t("mail.invalid");
+      }
+
+      if (issue.code === "too_small") {
+        return t("mail.required");
+      }
+
+      if (issue.code === "too_big") {
+        return t("mail.max", { length: detail.maximum ?? 100 });
+      }
+
+      break;
+    }
+    case "code": {
+      if (issue.code === "invalid_type") {
+        return t("code.required");
+      }
+
+      if (issue.code === "too_small" || issue.code === "too_big") {
+        const expectedLength =
+          typeof detail.minimum === "number" &&
+          typeof detail.maximum === "number"
+            ? Math.max(detail.minimum, detail.maximum)
+            : (detail.minimum ?? detail.maximum ?? 6);
+        return t("code.length", { length: expectedLength });
+      }
+
+      break;
+    }
+    case "password": {
+      if (issue.code === "invalid_type") {
+        return t("password.required");
+      }
+
+      if (issue.code === "too_small") {
+        if (detail.minimum && detail.minimum > 1) {
+          return t("password.min", { length: detail.minimum });
+        }
+        return t("password.required");
+      }
+
+      if (issue.code === "too_big") {
+        return t("password.max", { length: detail.maximum ?? 100 });
+      }
+
+      // Handle regex validation error
+      // Zod trả về code: "invalid_format" và format: "regex" khi regex fail
+      if (issue.code === "invalid_format" && detail.format === "regex") {
+        return t("password.format");
+      }
+
+      // Backward compatibility: check invalid_string
+      if (issue.code === "invalid_string") {
+        return t("password.format");
+      }
+
+      break;
+    }
+    case "confirmNewPassword": {
+      if (issue.code === "invalid_type") {
+        return t("confirmNewPassword.required");
+      }
+
+      if (issue.code === "too_small") {
+        if (detail.minimum && detail.minimum > 1) {
+          return t("confirmNewPassword.min", { length: detail.minimum });
+        }
+        return t("confirmNewPassword.required");
+      }
+
+      if (issue.code === "too_big") {
+        return t("confirmNewPassword.max", { length: detail.maximum ?? 100 });
+      }
+
+      // Handle custom validation error (password mismatch)
+      if (issue.code === "custom") {
+        return t("confirmNewPassword.mismatch");
+      }
+
+      break;
+    }
+    default:
+      break;
+  }
+
+  return t("default");
+};

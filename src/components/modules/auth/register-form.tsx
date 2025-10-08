@@ -1,4 +1,5 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   IconCheck,
   IconEye,
@@ -10,7 +11,7 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -18,12 +19,17 @@ import { Button, Input, Label, Separator } from "@/components/ui";
 import { TypeOfVerificationCode } from "@/constants";
 import { useRegisterMutation, useSendOTPMutation } from "@/hooks";
 import { handleErrorApi, showSuccessToast } from "@/lib/utils";
-import { RegisterBodyType, SendOTPBodyType } from "@/models";
+import {
+  RegisterBodySchema,
+  RegisterBodyType,
+  SendOTPBodyType,
+} from "@/models";
 
 export default function RegisterForm() {
   const t = useTranslations("auth.register");
   const tSuccess = useTranslations("Success");
   const tError = useTranslations("Error");
+  const errorMessages = useTranslations("auth.register.errors");
   const locale = useLocale();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -35,7 +41,18 @@ export default function RegisterForm() {
   const sendOTPMutation = useSendOTPMutation();
   //   const { initiateGoogleLogin, isLoading: isGoogleLoading } = useGoogleAuth();
 
+  const resolver = useMemo(
+    () =>
+      zodResolver(RegisterBodySchema, {
+        error: (issue) => ({
+          message: translateRegisterError(issue, errorMessages),
+        }),
+      }),
+    [errorMessages]
+  );
+
   const form = useForm<RegisterBodyType>({
+    resolver,
     defaultValues: {
       name: "",
       mail: "",
@@ -218,6 +235,9 @@ export default function RegisterForm() {
             {form.formState.errors.password.message}
           </p>
         )}
+        {!form.formState.errors.password && form.watch("password") && (
+          <p className="text-xs text-muted-foreground">{t("passwordHint")}</p>
+        )}
       </div>
 
       {/* Confirm Password Field */}
@@ -345,3 +365,142 @@ export default function RegisterForm() {
     </form>
   );
 }
+
+type Translator = (key: string, values?: Record<string, any>) => string;
+
+type ZodIssueForRegister = {
+  code: string;
+  message?: string;
+  path?: PropertyKey[];
+  [key: string]: unknown;
+};
+
+const translateRegisterError = (
+  issue: ZodIssueForRegister,
+  t: Translator
+): string => {
+  const field = issue.path?.[0];
+  const detail = issue as Record<string, any>;
+
+  if (typeof field !== "string") {
+    return t("default");
+  }
+
+  switch (field) {
+    case "name": {
+      if (issue.code === "invalid_type") {
+        return t("name.required");
+      }
+
+      if (issue.code === "too_small") {
+        if (detail.minimum && detail.minimum > 1) {
+          return t("name.min", { length: detail.minimum });
+        }
+        return t("name.required");
+      }
+
+      if (issue.code === "too_big") {
+        return t("name.max", { length: detail.maximum ?? 100 });
+      }
+
+      break;
+    }
+    case "mail": {
+      if (issue.code === "invalid_type") {
+        return t("mail.required");
+      }
+
+      // Handle email format validation
+      if (issue.code === "invalid_format" && detail.format === "email") {
+        return t("mail.invalid");
+      }
+
+      // Backward compatibility
+      if (issue.code === "invalid_string" && detail.validation === "email") {
+        return t("mail.invalid");
+      }
+
+      if (issue.code === "too_small") {
+        return t("mail.required");
+      }
+
+      if (issue.code === "too_big") {
+        return t("mail.max", { length: detail.maximum ?? 100 });
+      }
+
+      break;
+    }
+    case "password": {
+      if (issue.code === "invalid_type") {
+        return t("password.required");
+      }
+
+      if (issue.code === "too_small") {
+        if (detail.minimum && detail.minimum > 1) {
+          return t("password.min", { length: detail.minimum });
+        }
+        return t("password.required");
+      }
+
+      if (issue.code === "too_big") {
+        return t("password.max", { length: detail.maximum ?? 100 });
+      }
+
+      // Handle regex validation error
+      // Zod trả về code: "invalid_format" và format: "regex" khi regex fail
+      if (issue.code === "invalid_format" && detail.format === "regex") {
+        return t("password.format");
+      }
+
+      // Backward compatibility: check invalid_string
+      if (issue.code === "invalid_string") {
+        return t("password.format");
+      }
+
+      break;
+    }
+    case "confirmPassword": {
+      if (issue.code === "invalid_type") {
+        return t("confirmPassword.required");
+      }
+
+      if (issue.code === "too_small") {
+        if (detail.minimum && detail.minimum > 1) {
+          return t("confirmPassword.min", { length: detail.minimum });
+        }
+        return t("confirmPassword.required");
+      }
+
+      if (issue.code === "too_big") {
+        return t("confirmPassword.max", { length: detail.maximum ?? 100 });
+      }
+
+      // Handle custom validation error (password mismatch)
+      if (issue.code === "custom") {
+        return t("confirmPassword.mismatch");
+      }
+
+      break;
+    }
+    case "otp": {
+      if (issue.code === "invalid_type") {
+        return t("otp.required");
+      }
+
+      if (issue.code === "too_small" || issue.code === "too_big") {
+        const expectedLength =
+          typeof detail.minimum === "number" &&
+          typeof detail.maximum === "number"
+            ? Math.max(detail.minimum, detail.maximum)
+            : (detail.minimum ?? detail.maximum ?? 6);
+        return t("otp.length", { length: expectedLength });
+      }
+
+      break;
+    }
+    default:
+      break;
+  }
+
+  return t("default");
+};

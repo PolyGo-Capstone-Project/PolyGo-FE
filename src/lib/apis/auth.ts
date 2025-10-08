@@ -1,5 +1,6 @@
 import http from "@/lib/http";
 import {
+  ForgotPasswordBodyType,
   LoginBodyType,
   LoginResType,
   MessageResType,
@@ -26,6 +27,9 @@ const authApiRequest = {
   //register
   register: (body: RegisterBodyType) =>
     http.post<MessageResType>("/auth/register", body),
+  //forgot password
+  forgotPassword: (body: ForgotPasswordBodyType) =>
+    http.post<MessageResType>("/auth/reset-password", body),
 };
 
 export default authApiRequest;

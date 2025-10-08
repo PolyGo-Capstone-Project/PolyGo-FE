@@ -250,6 +250,12 @@ const translateLoginError = (
         return t("mail.required");
       }
 
+      // Handle email format validation
+      if (issue.code === "invalid_format" && detail.format === "email") {
+        return t("mail.invalid");
+      }
+
+      // Backward compatibility
       if (issue.code === "invalid_string" && detail.validation === "email") {
         return t("mail.invalid");
       }
@@ -281,7 +287,13 @@ const translateLoginError = (
       }
 
       // Handle regex validation error
-      if (issue.code === "invalid_string" && detail.validation === "regex") {
+      // Zod trả về code: "invalid_format" và format: "regex" khi regex fail
+      if (issue.code === "invalid_format" && detail.format === "regex") {
+        return t("password.format");
+      }
+
+      // Backward compatibility: check invalid_string
+      if (issue.code === "invalid_string") {
         return t("password.format");
       }
 
