@@ -16,8 +16,7 @@ import { useForm } from "react-hook-form";
 import { Button, Input, Label, Separator } from "@/components/ui";
 // import { useLoginMutation } from "@/hooks/query/use-auth";
 import { Role } from "@/constants";
-import { useAuthStore, useSearchParamsLoader } from "@/hooks";
-import { useLoginMutation } from "@/hooks/query";
+import { useAuthStore, useLoginMutation, useSearchParamsLoader } from "@/hooks";
 import { decodeToken, handleErrorApi, showSuccessToast } from "@/lib/utils";
 import { LoginBodySchema, LoginBodyType } from "@/models";
 
@@ -251,6 +250,12 @@ const translateLoginError = (
         return t("mail.required");
       }
 
+      // Handle email format validation
+      if (issue.code === "invalid_format" && detail.format === "email") {
+        return t("mail.invalid");
+      }
+
+      // Backward compatibility
       if (issue.code === "invalid_string" && detail.validation === "email") {
         return t("mail.invalid");
       }
@@ -282,7 +287,13 @@ const translateLoginError = (
       }
 
       // Handle regex validation error
-      if (issue.code === "invalid_string" && detail.validation === "regex") {
+      // Zod trả về code: "invalid_format" và format: "regex" khi regex fail
+      if (issue.code === "invalid_format" && detail.format === "regex") {
+        return t("password.format");
+      }
+
+      // Backward compatibility: check invalid_string
+      if (issue.code === "invalid_string") {
         return t("password.format");
       }
 

@@ -1,5 +1,12 @@
 import http from "@/lib/http";
-import { LoginBodyType, LoginResType } from "@/models";
+import {
+  ForgotPasswordBodyType,
+  LoginBodyType,
+  LoginResType,
+  MessageResType,
+  RegisterBodyType,
+  SendOTPBodyType,
+} from "@/models";
 
 const authApiRequest = {
   //login
@@ -9,7 +16,20 @@ const authApiRequest = {
       baseUrl: "",
     }),
   //send otp
-  sendOTP: () => http.post("/api/auth/send-otp", {}, { baseUrl: "" }),
+  sendOTP: ({ mail, verificationType }: SendOTPBodyType) => {
+    const searchParams = new URLSearchParams({
+      verificationType,
+      mail,
+    });
+
+    return http.post(`/auth/otp?${searchParams.toString()}`, null);
+  },
+  //register
+  register: (body: RegisterBodyType) =>
+    http.post<MessageResType>("/auth/register", body),
+  //forgot password
+  forgotPassword: (body: ForgotPasswordBodyType) =>
+    http.post<MessageResType>("/auth/reset-password", body),
 };
 
 export default authApiRequest;

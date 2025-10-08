@@ -7,3 +7,21 @@ export const useLoginMutation = () => {
     mutationFn: authApiRequest.login,
   });
 };
+
+export const useSendOTPMutation = () => {
+  return useMutation({
+    mutationFn: authApiRequest.sendOTP,
+  });
+};
+
+export const useRegisterMutation = () => {
+  return useMutation({
+    mutationFn: authApiRequest.register,
+  });
+};
+
+export const useForgotPasswordMutation = () => {
+  return useMutation({
+    mutationFn: authApiRequest.forgotPassword,
+  });
+};

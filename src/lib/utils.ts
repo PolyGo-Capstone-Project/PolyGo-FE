@@ -40,21 +40,31 @@ export const handleErrorApi = ({
   duration?: number;
   tError?: (key: string, values?: Record<string, any>) => string;
 }) => {
-  // Handle form validation errors
+  // Handle form validation errors (422)
+  // Backend format: { error: [{path: string, message: string, ...}], message: string }
   if (error instanceof EntityError && setError) {
-    error.payload.message.forEach((item) => {
-      setError(item.path, {
-        type: "server",
-        message: item.message,
+    const validationErrors = error.payload?.error || error.payload?.message;
+
+    if (Array.isArray(validationErrors)) {
+      validationErrors.forEach((item: any) => {
+        setError(item.path, {
+          type: "server",
+          message: item.message,
+        });
       });
-    });
-    return;
+      return;
+    }
   }
 
   // Extract error message
   let errorMessage: string;
 
-  if (Array.isArray(error?.payload?.message)) {
+  // Check for array of errors first (new backend format)
+  if (Array.isArray(error?.payload?.error)) {
+    errorMessage = error.payload.error
+      .map((err: any) => err.message)
+      .join(", ");
+  } else if (Array.isArray(error?.payload?.message)) {
     errorMessage = error.payload.message
       .map((err: any) => err.message)
       .join(", ");
