@@ -30,12 +30,14 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui";
+import { useAuthMe } from "@/hooks";
 
 export function UserHeader() {
   const [isOpen, setIsOpen] = useState(false);
   const locale = useLocale();
   const t = useTranslations("header");
-
+  const { data: userData } = useAuthMe();
+  const user = userData?.payload;
   const navigation = [
     {
       name: t("userdashboard"),
@@ -76,7 +78,7 @@ export function UserHeader() {
             <LanguageSwitcher />
             <ModeToggle />
             <NotificationBell />
-            <UserMenu />
+            {user && <UserMenu user={user} />}
           </div>
 
           {/* Mobile Menu */}

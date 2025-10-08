@@ -26,22 +26,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useLogout } from "@/hooks";
+import { GetUserProfileResType } from "@/models";
 
-// export function NavUser({ user }: { user: GetUserProfileResType }) {
-export function NavUser() {
+export function NavUser({ user }: { user: GetUserProfileResType }) {
   const { isMobile } = useSidebar();
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("header");
   const { logout, isLoggingOut } = useLogout();
-
-  const user = {
-    data: {
-      name: "Admin",
-      mail: "admin@gmail.com",
-      avatar: "",
-    },
-  };
 
   const handleLogout = () => {
     logout();
@@ -66,7 +58,7 @@ export function NavUser() {
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage
-                  src={user?.data.avatar ?? undefined}
+                  src={user?.data.avatarUrl ?? undefined}
                   alt={user?.data.name}
                 />
                 <AvatarFallback className="rounded-lg">
@@ -92,7 +84,7 @@ export function NavUser() {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
-                    src={user?.data.avatar ?? undefined}
+                    src={user?.data.avatarUrl ?? undefined}
                     alt={user?.data.name}
                   />
                   <AvatarFallback className="rounded-lg">

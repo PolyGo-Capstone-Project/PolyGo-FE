@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import authApiRequest from "@/lib/apis/auth";
 
@@ -23,5 +23,12 @@ export const useRegisterMutation = () => {
 export const useForgotPasswordMutation = () => {
   return useMutation({
     mutationFn: authApiRequest.forgotPassword,
+  });
+};
+
+export const useAuthMe = () => {
+  return useQuery({
+    queryKey: ["auth-me"],
+    queryFn: authApiRequest.me,
   });
 };
