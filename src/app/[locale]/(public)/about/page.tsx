@@ -188,6 +188,24 @@ export default function AboutPage() {
         </Accordion>
       </section>
 
+      {/* Contact Section */}
+      <Separator />
+
+      <section className="container mx-auto px-4 py-10 sm:py-14">
+        <h2 className="text-2xl sm:text-3xl font-semibold">
+          {t("contact.title")}
+        </h2>
+        <p className="mt-2 text-muted-foreground max-w-2xl">
+          {t("contact.desc")}{" "}
+          <Link
+            href="mailto:polygocorp@gmail.com"
+            className="text-blue-600 hover:underline"
+          >
+            polygocorp@gmail.com
+          </Link>
+        </p>
+      </section>
+
       <Separator />
 
       <section className="container mx-auto px-4 py-10 sm:py-14">

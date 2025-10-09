@@ -211,7 +211,11 @@
     "teamData": "{\"title\": \"Meet the Team\", \"badge\": \"Global & Multicultural\", \"desc\": \"We are a small, multinational team united by a passion for breaking down language barriers and connecting people.\", \"members\": [{\"name\": \"Alex Nguyen\", \"role\": \"CEO & Founder\", \"image\": \"https://www.misa.vn/wp-content/uploads/2020/06/70-nhung-doanh-nhan-viet-dang-lam-ceo.jpg\", \"initials\": \"AN\"}, {\"name\": \"Maria Lopez\", \"role\": \"Head of Community\", \"image\": \"https://forbes.vn/wp-content/uploads/2024/10/VD-596-Copy-1620x1080.jpg\", \"initials\": \"ML\"}, {\"name\": \"Kenji Tanaka\", \"role\": \"Lead AI Engineer\", \"image\": \"https://nhaquanly.vn/uploads/images/blog/dangbinh/2024/06/07/ceo-nguyen-van-thanh-1717734282.webp\", \"initials\": \"KT\"}]}",
     "faqTitle": "Frequently Asked Questions",
     "faqItemsData": "[{\"q\": \"How is PolyGo different from HelloTalk or Tandem?\", \"a\": \"PolyGo focuses on **contextual AI Correction/Translation** and **online Cultural Events (workshops)**, creating a 'language immersion' experience rather than just simple chat.\"}, {\"q\": \"How does the AI correction work?\", \"a\": \"The system uses advanced NLP models to analyze your message in real-time, suggesting more natural phrasing or correcting grammar/vocabulary errors, helping you build confidence.\"}, {\"q\": \"What are **Language Mini-Games** and why are they important?\", \"a\": \"Language Mini-Games are short, interactive games designed to challenge your vocabulary and grammar in a fun way, helping to convert passive knowledge into active use.\"}]",
-    "ctaData": "{\"title\": \"Ready to connect with the world?\", \"subtitle\": \"Join the PolyGo community now and start your language learning journey in the most exciting way.\", \"primary\": \"Get Started for Free\", \"secondary\": \"View Event Schedule\"}"
+    "ctaData": "{\"title\": \"Ready to connect with the world?\", \"subtitle\": \"Join the PolyGo community now and start your language learning journey in the most exciting way.\", \"primary\": \"Get Started for Free\", \"secondary\": \"View Event Schedule\"}",
+    "contact": {
+      "title": "Contact Us",
+      "desc": "Have questions or need support? Our team is always ready to assist you."
+    }
   },
   "supportSonner": {
     "metaTitle": "Customer Support - PolyGo",
