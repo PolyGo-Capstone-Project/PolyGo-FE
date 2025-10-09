@@ -213,6 +213,40 @@
     "faqItemsData": "[{\"q\": \"How is PolyGo different from HelloTalk or Tandem?\", \"a\": \"PolyGo focuses on **contextual AI Correction/Translation** and **online Cultural Events (workshops)**, creating a 'language immersion' experience rather than just simple chat.\"}, {\"q\": \"How does the AI correction work?\", \"a\": \"The system uses advanced NLP models to analyze your message in real-time, suggesting more natural phrasing or correcting grammar/vocabulary errors, helping you build confidence.\"}, {\"q\": \"What are **Language Mini-Games** and why are they important?\", \"a\": \"Language Mini-Games are short, interactive games designed to challenge your vocabulary and grammar in a fun way, helping to convert passive knowledge into active use.\"}]",
     "ctaData": "{\"title\": \"Ready to connect with the world?\", \"subtitle\": \"Join the PolyGo community now and start your language learning journey in the most exciting way.\", \"primary\": \"Get Started for Free\", \"secondary\": \"View Event Schedule\"}"
   },
+  "supportSonner": {
+    "metaTitle": "Customer Support - PolyGo",
+    "title": "How can we help you?",
+    "subtitle": "Fill out the form below, and our team will get back to you within 24 hours.",
+    "categories": {
+      "technical": "Technical/App Issues",
+      "billing": "Billing/Plus Plan",
+      "account": "Account/Profile Management",
+      "feedback": "Suggestions/Feedback",
+      "other": "Other Issue"
+    },
+    "form": {
+      "nameLabel": "Your Name",
+      "namePlaceholder": "Enter your full name",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "example@polygo.com",
+      "categoryLabel": "Select Support Category",
+      "categoryPlaceholder": "Select an issue...",
+      "subjectLabel": "Subject",
+      "subjectPlaceholder": "Briefly summarize your issue",
+      "messageLabel": "Detailed Description",
+      "messagePlaceholder": "Describe your issue in detail...",
+      "submitButton": "Submit Support Request",
+      "submitting": "Submitting..."
+    },
+    "validation": {
+      "nameRequired": "Name is required (min 2 characters).",
+      "emailInvalid": "Invalid email address.",
+      "categoryRequired": "Category is required.",
+      "subjectRequired": "Subject must be at least 5 characters long.",
+      "messageMin": "Message must be at least 20 characters."
+    },
+    "toastSuccess": "Support request submitted. We will get back to you soon."
+  },
   "home": {
     "title": "PolyGo",
     "clickMe": "Click Me",

@@ -213,6 +213,40 @@
     "faqItemsData": "[{\"q\": \"PolyGo khác gì so với HelloTalk hay Tandem?\", \"a\": \"PolyGo tập trung vào AI Correction/Translation theo ngữ cảnh và các Sự kiện Văn hóa trực tuyến (workshops), tạo ra trải nghiệm 'sống trong ngôn ngữ' thay vì chỉ đơn thuần là chat.\"}, {\"q\": \"AI sửa lỗi hoạt động như thế nào?\", \"a\": \"Hệ thống sử dụng các mô hình NLP tiên tiến để phân tích tin nhắn của bạn trong thời gian thực, gợi ý cách diễn đạt tự nhiên hơn hoặc sửa lỗi ngữ pháp/từ vựng, giúp bạn tự tin hơn.\"}, {\"q\": \"Language Mini-Games là gì và tại sao chúng quan trọng?\", \"a\": \"Language Mini-Games là các trò chơi tương tác ngắn, được thiết kế để thử thách từ vựng và ngữ pháp của bạn theo cách thú vị, giúp chuyển kiến thức từ thụ động sang chủ động.\"}]",
     "ctaData": "{\"title\": \"Sẵn sàng để kết nối với thế giới?\", \"subtitle\": \"Tham gia ngay cộng đồng PolyGo để bắt đầu hành trình học ngôn ngữ của bạn một cách thú vị nhất.\", \"primary\": \"Bắt đầu miễn phí\", \"secondary\": \"Xem Lịch Sự kiện\"}"
   },
+  "supportSonner": {
+    "metaTitle": "Hỗ Trợ Khách Hàng - PolyGo",
+    "title": "Bạn cần hỗ trợ gì?",
+    "subtitle": "Điền vào biểu mẫu dưới đây, đội ngũ của chúng tôi sẽ phản hồi trong vòng 24 giờ.",
+    "categories": {
+      "technical": "Lỗi kỹ thuật/Ứng dụng",
+      "billing": "Thanh toán/Gói Plus",
+      "account": "Quản lý Tài khoản/Hồ sơ",
+      "feedback": "Đề xuất/Phản hồi",
+      "other": "Vấn đề khác"
+    },
+    "form": {
+      "nameLabel": "Tên của bạn",
+      "namePlaceholder": "Nhập tên đầy đủ của bạn",
+      "emailLabel": "Địa chỉ Email",
+      "emailPlaceholder": "example@polygo.com",
+      "categoryLabel": "Chọn Danh mục hỗ trợ",
+      "categoryPlaceholder": "Chọn một vấn đề...",
+      "subjectLabel": "Chủ đề",
+      "subjectPlaceholder": "Tóm tắt ngắn gọn vấn đề của bạn",
+      "messageLabel": "Nội dung chi tiết",
+      "messagePlaceholder": "Mô tả vấn đề của bạn một cách chi tiết...",
+      "submitButton": "Gửi Yêu Cầu Hỗ Trợ",
+      "submitting": "Đang gửi..."
+    },
+    "validation": {
+      "nameRequired": "Vui lòng nhập tên của bạn (ít nhất 2 ký tự).",
+      "emailInvalid": "Email không hợp lệ.",
+      "categoryRequired": "Vui lòng chọn một danh mục.",
+      "subjectRequired": "Chủ đề cần ít nhất 5 ký tự.",
+      "messageMin": "Nội dung mô tả cần ít nhất 20 ký tự."
+    },
+    "toastSuccess": "Yêu cầu hỗ trợ đã được gửi. Chúng tôi sẽ liên hệ lại với bạn sớm nhất có thể."
+  },
   "home": {
     "title": "PolyGo",
     "clickMe": "Nhấn vào tôi",
