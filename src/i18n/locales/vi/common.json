@@ -142,7 +142,6 @@
       }
     }
   },
-
   "guideline": {
     "title": "Quy định cộng đồng",
     "intro": "Bộ quy tắc ứng xử để giữ môi trường học tập an toàn, tôn trọng và giàu văn hoá.",
@@ -190,6 +189,29 @@
         "events": "Sự kiện phải tuân thủ quy định nền tảng và pháp luật sở tại."
       }
     }
+  },
+  "about": {
+    "meta": {
+      "title": "Về PolyGo - Kết nối, Học hỏi & Phát triển"
+    },
+    "hero": {
+      "kicker": "Câu chuyện của chúng tôi",
+      "title": "Tạo ra những kết nối ý nghĩa, vượt mọi rào cản ngôn ngữ",
+      "subtitle": "PolyGo được thành lập với niềm tin rằng cách tốt nhất để học một ngôn ngữ là sống trong nó. Chúng tôi kết hợp sức mạnh của AI với cộng đồng toàn cầu để mang lại trải nghiệm trao đổi văn hóa chân thực nhất."
+    },
+    "statsData": "[{\"label\": \"Người học tích cực\", \"value\": \"500K+\", \"note\": \"Từ hơn 100 quốc gia, tham gia hàng ngày.\"}, {\"label\": \"Ngôn ngữ được hỗ trợ\", \"value\": \"30+\", \"note\": \"Từ Anh, Pháp, Nhật đến các ngôn ngữ ít phổ biến.\"}, {\"label\": \"Tỷ lệ kết nối thành công\", \"value\": \"95%\", \"note\": \"Được ghép đôi chỉ trong vòng 30 giây.\"}]",
+    "mission": {
+      "title": "Sứ mệnh cốt lõi",
+      "desc": "Sứ mệnh của chúng tôi là vượt lên trên các khóa học ngôn ngữ truyền thống. Chúng tôi muốn tạo ra một nền tảng nơi việc học không còn là nghĩa vụ mà là niềm vui khám phá, kết nối và trải nghiệm văn hóa.",
+      "cta": "Tìm hiểu thêm về Tầm nhìn"
+    },
+    "valuesData": "[{\"title\": \"Trải nghiệm thực tế (Immersion)\", \"desc\": \"Chúng tôi ưu tiên giao tiếp trực tiếp (chat, voice, video) và các sự kiện văn hóa để mô phỏng môi trường ngôn ngữ thực.\"}, {\"title\": \"Hỗ trợ bằng AI\", \"desc\": \"Sử dụng AI dịch thuật và sửa lỗi tức thì để xóa bỏ rào cản, giúp người học tự tin bắt đầu hội thoại.\"}, {\"title\": \"An toàn & Tôn trọng\", \"desc\": \"Xây dựng một cộng đồng toàn cầu tích cực, nơi mọi khác biệt văn hóa và ngôn ngữ đều được tôn trọng.\"}, {\"title\": \"Học qua Gamification\", \"desc\": \"Hệ thống XP, streak và leaderboards để duy trì động lực, biến việc học thành trò chơi hấp dẫn.\"}]",
+    "timelineTitle": "Hành trình Phát triển",
+    "timelineItemsData": "[{\"when\": \"Q3 2023\", \"title\": \"Khởi động Dự án MVP\", \"subtitle\": \"Bắt đầu phát triển chức năng cốt lõi: Đăng ký, Hồ sơ & Chat Text Real-time.\", \"note\": \"Công nghệ: ReactJS, Node.js/Express, MongoDB.\"}, {\"when\": \"Q1 2024\", \"title\": \"Ra mắt Gói Plus & Thanh toán\", \"subtitle\": \"Tích hợp Stripe/PayPal, triển khai hệ thống PolyCoin và gói Plus (Freemium).\", \"note\": \"KPI: Tỷ lệ chuyển đổi Free -> Plus đạt 2%.\"}, {\"when\": \"Q3 2024\", \"title\": \"Tích hợp AI & Event Beta\", \"subtitle\": \"Ra mắt AI dịch/sửa lỗi tức thì và tính năng tổ chức Sự kiện Văn hóa thử nghiệm.\", \"note\": \"USP mạnh nhất được triển khai.\"}, {\"when\": \"Hiện tại\", \"title\": \"Đạt 500K Người dùng\", \"subtitle\": \"Hoàn thiện các tính năng Gamification (XP, Leaderboard) và tối ưu hiệu năng gọi Video (WebRTC).\", \"note\": \"Đẩy mạnh mở rộng thị trường sang Châu Á và Châu Âu.\"}]",
+    "teamData": "{\"title\": \"Gặp gỡ Đội ngũ\", \"badge\": \"Toàn cầu & Đa văn hoá\", \"desc\": \"Chúng tôi là một đội ngũ nhỏ, đa quốc tịch, có chung đam mê xóa bỏ rào cản ngôn ngữ và kết nối con người.\", \"members\": [{\"name\": \"Alex Nguyễn\", \"role\": \"CEO & Founder\", \"image\": \"https://www.misa.vn/wp-content/uploads/2020/06/70-nhung-doanh-nhan-viet-dang-lam-ceo.jpg\", \"initials\": \"AN\"}, {\"name\": \"Maria Lopez\", \"role\": \"Head of Community\", \"image\": \"https://forbes.vn/wp-content/uploads/2024/10/VD-596-Copy-1620x1080.jpg\", \"initials\": \"ML\"}, {\"name\": \"Kenji Tanaka\", \"role\": \"Lead AI Engineer\", \"image\": \"https://nhaquanly.vn/uploads/images/blog/dangbinh/2024/06/07/ceo-nguyen-van-thanh-1717734282.webp\", \"initials\": \"KT\"}]}",
+    "faqTitle": "Những câu hỏi thường gặp",
+    "faqItemsData": "[{\"q\": \"PolyGo khác gì so với HelloTalk hay Tandem?\", \"a\": \"PolyGo tập trung vào AI Correction/Translation theo ngữ cảnh và các Sự kiện Văn hóa trực tuyến (workshops), tạo ra trải nghiệm 'sống trong ngôn ngữ' thay vì chỉ đơn thuần là chat.\"}, {\"q\": \"AI sửa lỗi hoạt động như thế nào?\", \"a\": \"Hệ thống sử dụng các mô hình NLP tiên tiến để phân tích tin nhắn của bạn trong thời gian thực, gợi ý cách diễn đạt tự nhiên hơn hoặc sửa lỗi ngữ pháp/từ vựng, giúp bạn tự tin hơn.\"}, {\"q\": \"Language Mini-Games là gì và tại sao chúng quan trọng?\", \"a\": \"Language Mini-Games là các trò chơi tương tác ngắn, được thiết kế để thử thách từ vựng và ngữ pháp của bạn theo cách thú vị, giúp chuyển kiến thức từ thụ động sang chủ động.\"}]",
+    "ctaData": "{\"title\": \"Sẵn sàng để kết nối với thế giới?\", \"subtitle\": \"Tham gia ngay cộng đồng PolyGo để bắt đầu hành trình học ngôn ngữ của bạn một cách thú vị nhất.\", \"primary\": \"Bắt đầu miễn phí\", \"secondary\": \"Xem Lịch Sự kiện\"}"
   },
   "home": {
     "title": "PolyGo",

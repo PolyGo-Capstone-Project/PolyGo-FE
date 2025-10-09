@@ -190,6 +190,29 @@
       }
     }
   },
+  "about": {
+    "meta": {
+      "title": "About PolyGo - Connect, Learn & Grow"
+    },
+    "hero": {
+      "kicker": "Our Story",
+      "title": "Creating meaningful connections, breaking language barriers",
+      "subtitle": "PolyGo was founded on the belief that the best way to learn a language is to live in it. We combine the power of AI with a global community to deliver the most authentic cultural exchange experience."
+    },
+    "statsData": "[{\"label\": \"Active Learners\", \"value\": \"500K+\", \"note\": \"From over 100 countries, engaging daily.\"}, {\"label\": \"Languages Supported\", \"value\": \"30+\", \"note\": \"From English, French, Japanese to less common languages.\"}, {\"label\": \"Successful Connection Rate\", \"value\": \"95%\", \"note\": \"Matched with a partner in under 30 seconds.\"}]",
+    "mission": {
+      "title": "Our Core Mission",
+      "desc": "Our mission is to move beyond traditional language courses. We aim to create a platform where learning is not a chore but a joy of discovery, connection, and cultural immersion.",
+      "cta": "Explore Our Vision"
+    },
+    "valuesData": "[{\"title\": \"Real-World Immersion\", \"desc\": \"We prioritize direct communication (chat, voice, video) and cultural events to simulate a real language environment.\"}, {\"title\": \"AI-Powered Assistance\", \"desc\": \"We use instant AI translation and correction to remove barriers, helping learners confidently start conversations.\"}, {\"title\": \"Safety & Respect\", \"desc\": \"Building a positive global community where all cultural and linguistic differences are respected.\"}, {\"title\": \"Learning through Gamification\", \"desc\": \"XP, streak, and leaderboard systems maintain motivation, turning the learning process into an engaging game.\"}]",
+    "timelineTitle": "Development Journey",
+    "timelineItemsData": "[{\"when\": \"Q3 2023\", \"title\": \"MVP Project Kickoff\", \"subtitle\": \"Started developing core features: Registration, Profile, and Real-time Text Chat.\", \"note\": \"Tech Stack: ReactJS, Node.js/Express, MongoDB.\"}, {\"when\": \"Q1 2024\", \"title\": \"Plus Plan & Payment Launch\", \"subtitle\": \"Integrated Stripe/PayPal, deployed PolyCoin system and the Plus subscription (Freemium).\", \"note\": \"KPI: Achieved Free to Plus conversion rate of 2%.\"}, {\"when\": \"Q3 2024\", \"title\": \"AI & Event Beta Integration\", \"subtitle\": \"Launched instant AI translation/correction and tested the Cultural Event hosting feature.\", \"note\": \"The strongest USP was deployed.\"}, {\"when\": \"Current\", \"title\": \"Reached 500K Users\", \"subtitle\": \"Completed Gamification features (XP, Leaderboard) and optimized Video call performance (WebRTC).\", \"note\": \"Focusing on market expansion into Asia and Europe.\"}]",
+    "teamData": "{\"title\": \"Meet the Team\", \"badge\": \"Global & Multicultural\", \"desc\": \"We are a small, multinational team united by a passion for breaking down language barriers and connecting people.\", \"members\": [{\"name\": \"Alex Nguyen\", \"role\": \"CEO & Founder\", \"image\": \"https://www.misa.vn/wp-content/uploads/2020/06/70-nhung-doanh-nhan-viet-dang-lam-ceo.jpg\", \"initials\": \"AN\"}, {\"name\": \"Maria Lopez\", \"role\": \"Head of Community\", \"image\": \"https://forbes.vn/wp-content/uploads/2024/10/VD-596-Copy-1620x1080.jpg\", \"initials\": \"ML\"}, {\"name\": \"Kenji Tanaka\", \"role\": \"Lead AI Engineer\", \"image\": \"https://nhaquanly.vn/uploads/images/blog/dangbinh/2024/06/07/ceo-nguyen-van-thanh-1717734282.webp\", \"initials\": \"KT\"}]}",
+    "faqTitle": "Frequently Asked Questions",
+    "faqItemsData": "[{\"q\": \"How is PolyGo different from HelloTalk or Tandem?\", \"a\": \"PolyGo focuses on **contextual AI Correction/Translation** and **online Cultural Events (workshops)**, creating a 'language immersion' experience rather than just simple chat.\"}, {\"q\": \"How does the AI correction work?\", \"a\": \"The system uses advanced NLP models to analyze your message in real-time, suggesting more natural phrasing or correcting grammar/vocabulary errors, helping you build confidence.\"}, {\"q\": \"What are **Language Mini-Games** and why are they important?\", \"a\": \"Language Mini-Games are short, interactive games designed to challenge your vocabulary and grammar in a fun way, helping to convert passive knowledge into active use.\"}]",
+    "ctaData": "{\"title\": \"Ready to connect with the world?\", \"subtitle\": \"Join the PolyGo community now and start your language learning journey in the most exciting way.\", \"primary\": \"Get Started for Free\", \"secondary\": \"View Event Schedule\"}"
+  },
   "home": {
     "title": "PolyGo",
     "clickMe": "Click Me",
