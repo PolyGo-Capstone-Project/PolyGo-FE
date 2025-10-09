@@ -7,6 +7,8 @@ export function Footer() {
   const t = useTranslations("footer");
   const locale = useLocale();
   const year = new Date().getFullYear();
+
+  // Giữ logic prefix đúng cho i18n routes
   const prefix = locale === "" ? "" : `/${locale}`;
 
   const navigation = [
@@ -18,29 +20,52 @@ export function Footer() {
 
   return (
     <footer className="border-t">
-      <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-3">
-          <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-            P
+      <div className="container mx-auto px-4 py-8">
+        {/* Block logo + brand */}
+        <div className="flex flex-col items-center justify-center gap-3 md:flex-row md:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground text-base font-bold">
+              P
+            </div>
+            <span className="font-semibold text-base">PolyGo</span>
           </div>
-          <span className="font-semibold">PolyGo</span>
+
+          {/* Nav desktop (giống cũ) */}
+          <nav
+            aria-label="Footer navigation"
+            className="hidden md:flex md:flex-wrap md:items-center md:gap-5 text-sm text-muted-foreground"
+          >
+            {navigation.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium transition-colors hover:text-foreground"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
         </div>
 
-        <nav className="flex flex-wrap items-center gap-5 text-sm text-muted-foreground">
+        {/* Nav mobile: lưới 2 cột, tap-target lớn */}
+        <nav
+          aria-label="Footer navigation mobile"
+          className="mt-6 grid grid-cols-2 gap-3 md:hidden"
+        >
           {navigation.map((item) => (
             <Link
-              key={item.name}
+              key={item.href}
               href={item.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              className="rounded-lg border bg-card/30 px-4 py-3 text-center text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
             >
               {item.name}
             </Link>
           ))}
         </nav>
-      </div>
 
-      <div className="border-t">
-        <div className="container mx-auto px-4 py-4 text-center text-xs text-muted-foreground">
+        {/* Divider + copyright */}
+        <div className="mt-8 border-t" />
+        <div className="pt-4 text-center text-xs text-muted-foreground">
           {t("copyright")}
         </div>
       </div>
