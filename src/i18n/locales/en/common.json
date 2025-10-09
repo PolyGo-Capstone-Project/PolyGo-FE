@@ -89,6 +89,59 @@
     "copyright": "© 2025 PolyGo. All rights reserved.",
     "madeInVietnam": "Proudly made in Vietnam"
   },
+  "terms": {
+    "title": "PolyGo Terms of Service",
+    "intro": "The binding terms and rules governing the use of the PolyGo platform.",
+    "registration": {
+      "title": "1. Users and Accounts",
+      "items": {
+        "required": "Registration Required: Only registered users can join chat, participate in events, send gifts, or use translation tools.",
+        "verification": "Email/Phone Verification: New accounts must be verified before accessing communication features.",
+        "age": "Age Policy: Users must be at least 13 or 18 years old (depending on local regulations) to register."
+      }
+    },
+    "plans": {
+      "title": "2. Service Tiers (Free and Plus)",
+      "items": {
+        "free": "Free Plan: Limited translations, matching attempts, and conversation time.",
+        "plus": "Plus Plan: Unlimited usage and permission to host live events with advanced matching filters."
+      }
+    },
+    "communication": {
+      "title": "3. Communication and Events",
+      "items": {
+        "roomCapacity": "Room Capacity Limit: Each event room can host a maximum of X participants (configured by Event creator).",
+        "eventVerification": "Event Verification: Event must be verified by admin before being published.",
+        "entryVerification": "Entry Verification: Pre-registration is required to participate in events.",
+        "callDuration": "Call Duration: Free plan users have time limits on voice/video calls; Plus users have no limit.",
+        "matchingRules": "Matching Rules: The matching engine pairs users only when their target and native languages align.",
+        "cancellation": "Event Cancellation: Hosts must cancel at least Y hours before the start time to avoid losing PolyCoins and being restricted from certain rights for a period of time."
+      }
+    },
+    "payments": {
+      "title": "4. Payments and Credits",
+      "items": {
+        "billingCycle": "Billing Cycle for Plus Plan: The Plus subscription renews automatically every month unless cancelled by the user.",
+        "balance": "Balance Requirement: Transactions that exceed the user’s available PolyCoin balance are rejected; the user must top up to complete the purchase."
+      }
+    },
+    "administration": {
+      "title": "5. Administration and Moderation",
+      "items": {
+        "contentModeration": "Content Moderation: Admins may lock rooms, delete posts, mute or ban users who violate community guidelines.",
+        "violationReporting": "Violation Reporting: Any member can report content or users; the system logs and forwards reports to admins.",
+        "activityLogging": "Activity Logging: Event activity must be logged and retained for at least N days for security and dispute resolution.",
+        "adminAuthority": "Admin Authority: Only admins can grant bonus PolyCoins, adjust balances due to disputes, or issue refunds according to policy."
+      }
+    },
+    "security": {
+      "title": "6. Security and Privacy",
+      "items": {
+        "dataCompliance": "Data Protection Compliance: Personal data storage must comply with data-protection laws.",
+        "informationSharing": "Information Sharing: User email addresses and phone numbers cannot be shared with third parties without explicit consent."
+      }
+    }
+  },
   "guideline": {
     "title": "Community Guidelines",
     "intro": "A code of conduct to maintain a safe, respectful, and culturally rich learning environment.",

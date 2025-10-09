@@ -89,6 +89,60 @@
     "copyright": "© 2025 PolyGo. Bản quyền thuộc về chúng tôi.",
     "madeInVietnam": "Được phát triển tại Việt Nam"
   },
+  "terms": {
+    "title": "Điều khoản Dịch vụ PolyGo",
+    "intro": "Các điều khoản và quy tắc ràng buộc việc sử dụng nền tảng PolyGo.",
+    "registration": {
+      "title": "1. Người dùng và Tài khoản",
+      "items": {
+        "required": "Yêu cầu Đăng ký: Chỉ người dùng đã đăng ký mới được tham gia trò chuyện, sự kiện, gửi quà hoặc dùng công cụ dịch.",
+        "verification": "Xác minh Email/Điện thoại: Tài khoản mới phải được xác minh trước khi truy cập các tính năng giao tiếp.",
+        "age": "Chính sách Tuổi: Người dùng phải từ 13 hoặc 18 tuổi trở lên (tùy theo quy định địa phương) để đăng ký."
+      }
+    },
+    "plans": {
+      "title": "2. Gói Dịch vụ (Miễn phí và Plus)",
+      "items": {
+        "free": "Gói Miễn phí (Free): Giới hạn dịch thuật, số lần ghép đôi, và thời gian trò chuyện.",
+        "plus": "Gói Plus: Sử dụng không giới hạn và được phép tổ chức sự kiện trực tiếp với các bộ lọc ghép đôi nâng cao."
+      }
+    },
+    "communication": {
+      "title": "3. Giao tiếp và Sự kiện",
+      "items": {
+        "roomCapacity": "Giới hạn Phòng Sự kiện: Mỗi phòng sự kiện tối đa có X người tham gia (do người tạo Sự kiện cấu hình).",
+        "eventVerification": "Xác minh Sự kiện: Sự kiện phải được Quản trị viên (Admin) xác minh trước khi được xuất bản.",
+        "entryVerification": "Xác minh Tham gia: Bắt buộc đăng ký trước để tham gia các sự kiện.",
+        "callDuration": "Thời lượng Cuộc gọi: Người dùng gói Miễn phí có giới hạn thời gian gọi thoại/video; người dùng gói Plus không giới hạn.",
+        "matchingRules": "Quy tắc Ghép đôi: Hệ thống chỉ ghép đôi người dùng khi ngôn ngữ mục tiêu và ngôn ngữ mẹ đẻ của họ phù hợp.",
+        "cancellation": "Huỷ Sự kiện: Người tổ chức phải huỷ ít nhất Y giờ trước giờ bắt đầu để tránh bị mất PolyCoin và bị hạn chế quyền trong một khoảng thời gian."
+      }
+    },
+    "payments": {
+      "title": "4. Thanh toán và Tín dụng",
+      "items": {
+        "billingCycle": "Chu kỳ Thanh toán Gói Plus: Đăng ký Plus tự động gia hạn hàng tháng trừ khi người dùng hủy.",
+        "balance": "Yêu cầu Số dư: Các giao dịch vượt quá số dư PolyCoin hiện có của người dùng sẽ bị từ chối; người dùng phải nạp thêm để hoàn tất giao dịch."
+      }
+    },
+    "administration": {
+      "title": "5. Quản trị và Kiểm duyệt",
+      "items": {
+        "contentModeration": "Kiểm duyệt Nội dung: Admin có thể khoá phòng, xoá bài đăng, tắt tiếng hoặc cấm người dùng vi phạm quy định cộng đồng.",
+        "violationReporting": "Báo cáo Vi phạm: Bất kỳ thành viên nào cũng có thể báo cáo nội dung hoặc người dùng; hệ thống ghi lại và chuyển tiếp báo cáo đến Admin.",
+        "activityLogging": "Ghi nhật ký Hoạt động: Hoạt động sự kiện phải được ghi nhật ký và lưu trữ ít nhất N ngày cho mục đích bảo mật và giải quyết tranh chấp.",
+        "adminAuthority": "Thẩm quyền Admin: Chỉ Admin mới được cấp PolyCoin thưởng, điều chỉnh số dư do tranh chấp, hoặc hoàn tiền theo chính sách."
+      }
+    },
+    "security": {
+      "title": "6. Bảo mật và Quyền riêng tư",
+      "items": {
+        "dataCompliance": "Tuân thủ Bảo vệ Dữ liệu: Việc lưu trữ dữ liệu cá nhân phải tuân thủ luật bảo vệ dữ liệu.",
+        "informationSharing": "Chia sẻ Thông tin: Địa chỉ email và số điện thoại của người dùng không được chia sẻ với bên thứ ba mà không có sự đồng ý rõ ràng."
+      }
+    }
+  },
+
   "guideline": {
     "title": "Quy định cộng đồng",
     "intro": "Bộ quy tắc ứng xử để giữ môi trường học tập an toàn, tôn trọng và giàu văn hoá.",
