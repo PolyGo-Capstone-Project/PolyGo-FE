@@ -1,4 +1,5 @@
 import http from "@/lib/http";
+import { buildQueryString } from "@/lib/utils";
 import {
   ForgotPasswordBodyType,
   GetUserProfileResType,
@@ -18,12 +19,8 @@ const authApiRequest = {
     }),
   //send otp
   sendOTP: ({ mail, verificationType }: SendOTPBodyType) => {
-    const searchParams = new URLSearchParams({
-      verificationType,
-      mail,
-    });
-
-    return http.post(`/auth/otp?${searchParams.toString()}`, null);
+    const query = buildQueryString({ verificationType, mail });
+    return http.post(`/auth/otp${query}`, null);
   },
   //register
   register: (body: RegisterBodyType) =>

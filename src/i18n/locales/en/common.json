@@ -445,5 +445,87 @@
       "6": "6-10 hours per week",
       "11": "10+ hours per week"
     }
+  },
+  "comingSoon": {
+    "title": "Coming Soon",
+    "description": "This feature is under development. Stay tuned!",
+    "working": "We're working hard to bring this to you"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "languages": "Language Management",
+    "accounts": "Employee Management",
+    "permissions": "Permission Management",
+    "roles": "Role Management",
+    "settings": "Settings",
+    "support": "Support",
+    "search": "Search",
+    "management": "Management",
+    "gifts": "Gifts",
+    "interests": "Interests"
+  },
+  "admin": {
+    "languages": {
+      "title": "Languages",
+      "description": "Manage the languages available across the PolyGo platform.",
+      "confirmDelete": "Are you sure you want to delete {name}?",
+      "error": "Unable to load languages.",
+      "errorTitle": "Something went wrong",
+      "retry": "Try again",
+      "emptyTitle": "No languages yet",
+      "emptyDescription": "Add a new language to get started.",
+      "createButton": "Create language",
+      "languageIdLabel": "Internal ID",
+      "edit": "Edit",
+      "delete": "Delete",
+      "tableTitle": "Language catalogue",
+      "tableDescription": "Review, add or update available languages.",
+      "languageFilter": "Locale",
+      "pageSize": "Page size",
+      "refresh": "Refresh",
+      "columns": {
+        "id": "ID",
+        "name": "Display name",
+        "code": "Code",
+        "flag": "Flag icon",
+        "actions": "Actions",
+        "flagAlt": "Language flag image"
+      },
+      "pagination": {
+        "summary": "Showing {start}-{end} of {total} languages",
+        "empty": "No languages to display",
+        "previous": "Previous",
+        "page": "Page {page} of {total}",
+        "next": "Next"
+      },
+      "form": {
+        "codeLabel": "Language code",
+        "codePlaceholder": "e.g. EN",
+        "nameLabel": "Display name",
+        "namePlaceholder": "English",
+        "flagLabel": "Flag icon",
+        "flagPlaceholder": "No file selected",
+        "flagPreviewAlt": "Flag preview",
+        "flagRemove": "Remove",
+        "flagHint": "Upload a square image (PNG, JPG, SVG) for the language flag.",
+        "cancel": "Cancel",
+        "submitCreate": "Create",
+        "submitUpdate": "Save changes"
+      },
+      "sheet": {
+        "createTitle": "Create language",
+        "createDescription": "Define the language code and display name.",
+        "editTitle": "Edit language",
+        "editDescription": "Update the language information for the selected locale."
+      }
+    },
+    "gift": {
+      "title": "Gifts",
+      "description": "Manage user gifts and settings"
+    },
+    "interests": {
+      "title": "Interests",
+      "description": "Manage user interests and settings"
+    }
   }
 }

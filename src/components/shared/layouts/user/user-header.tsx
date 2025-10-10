@@ -151,7 +151,9 @@ export function UserHeader() {
                       variant="ghost"
                       size="icon"
                       className="text-destructive hover:text-destructive"
-                      onClick={() => console.log("Logout clicked")}
+                      onClick={() => {
+                        /* TODO: handle logout action */
+                      }}
                     >
                       <LogOut className="h-4 w-4" />
                     </Button>
