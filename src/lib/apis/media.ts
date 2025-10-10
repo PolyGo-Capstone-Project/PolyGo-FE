@@ -1,6 +1,6 @@
 "use client";
 
-import envConfig from "@/config";
+import http from "@/lib/http";
 import { UploadMediaResType } from "@/models";
 
 type UploadImagePayload = {
@@ -9,14 +9,7 @@ type UploadImagePayload = {
   fileName?: string;
 };
 
-const prefix = "/dev/upload-image";
-const isBrowser = typeof window !== "undefined";
-
-const getSessionToken = () =>
-  isBrowser ? window.localStorage.getItem("sessionToken") : null;
-
-const normalizePath = (path: string) =>
-  path.startsWith("/") ? path.slice(1) : path;
+const prefix = "media/upload-file";
 
 async function uploadImage({
   file,
@@ -32,38 +25,16 @@ async function uploadImage({
   }
 
   const searchParams = new URLSearchParams();
-  if (typeof addUniqueName !== "undefined") {
+  if (addUniqueName !== undefined) {
     searchParams.set("addUniqueName", String(addUniqueName));
   }
 
-  const query = searchParams.toString();
-  const endpoint = envConfig.NEXT_PUBLIC_API_ENDPOINT.replace(/\/+$/, "");
-  const fullPath = normalizePath(prefix);
-  const url = `${endpoint}/${fullPath}${query ? `?${query}` : ""}`;
+  const url = `${prefix}${searchParams.size ? `?${searchParams}` : ""}`;
 
-  const headers: Record<string, string> = {};
-  const sessionToken = getSessionToken();
-  if (sessionToken) {
-    headers.Authorization = `Bearer ${sessionToken}`;
-  }
-
-  const response = await fetch(url, {
-    method: "POST",
-    body: formData,
-    headers,
-  });
-
-  const payload: UploadMediaResType = await response.json();
-
-  return {
-    status: response.status,
-    payload,
-  };
+  return http.post<UploadMediaResType>(url, formData);
 }
 
-const mediaApiRequest = {
-  uploadImage,
-};
+const mediaApiRequest = { uploadImage };
 
 export type { UploadImagePayload };
 export default mediaApiRequest;

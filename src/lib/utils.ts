@@ -146,7 +146,6 @@ export const clearLocalStorage = () => {
   localStorage.clear();
 };
 
-// Export message handler utilities
 export {
   createMessageHandler,
   getAuthMessage,

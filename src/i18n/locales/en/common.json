@@ -454,15 +454,15 @@
   "nav": {
     "dashboard": "Dashboard",
     "languages": "Language Management",
-    "accounts": "Employee Management",
+    "accounts": "User Management",
     "permissions": "Permission Management",
     "roles": "Role Management",
     "settings": "Settings",
     "support": "Support",
     "search": "Search",
     "management": "Management",
-    "gifts": "Gifts",
-    "interests": "Interests"
+    "gifts": "Gifts Management",
+    "interests": "Interests Management"
   },
   "admin": {
     "languages": {
@@ -489,6 +489,8 @@
         "code": "Code",
         "flag": "Flag icon",
         "actions": "Actions",
+        "createdAt": "Created At",
+        "lastUpdatedAt": "Last Updated At",
         "flagAlt": "Language flag image"
       },
       "pagination": {
@@ -525,7 +527,62 @@
     },
     "interests": {
       "title": "Interests",
-      "description": "Manage user interests and settings"
+      "description": "Manage user interests and settings",
+      "confirmDelete": "Are you sure you want to delete {name}?",
+      "error": "Unable to load interests.",
+      "errorTitle": "Something went wrong",
+      "retry": "Try again",
+      "emptyTitle": "No interests yet",
+      "emptyDescription": "Add a new interest to get started.",
+      "createButton": "Create interest",
+      "edit": "Edit",
+      "delete": "Delete",
+      "tableTitle": "Interests catalogue",
+      "tableDescription": "Review, add or update interests available on the platform.",
+      "languageFilter": "Locale",
+      "pageSize": "Page size",
+      "refresh": "Refresh",
+      "columns": {
+        "id": "ID",
+        "name": "Interest",
+        "code": "Locale",
+        "icon": "Icon",
+        "locale": "Language",
+        "createdAt": "Created at",
+        "lastUpdatedAt": "Last updated at",
+        "actions": "Actions",
+        "iconAlt": "Interest icon image"
+      },
+      "pagination": {
+        "summary": "Showing {start}-{end} of {total} interests",
+        "empty": "No interests to display",
+        "previous": "Previous",
+        "page": "Page {page} of {total}",
+        "next": "Next"
+      },
+      "form": {
+        "codeLabel": "Locale code",
+        "codePlaceholder": "e.g. en",
+        "codeHint": "Use the language code for this translation.",
+        "nameLabel": "Interest name",
+        "namePlaceholder": "e.g. Travel",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Describe this interest",
+        "iconLabel": "Icon",
+        "iconPlaceholder": "No file selected",
+        "iconPreviewAlt": "Icon preview",
+        "iconRemove": "Remove",
+        "iconHint": "Upload a square image (PNG, JPG, SVG) to represent this interest.",
+        "cancel": "Cancel",
+        "submitCreate": "Create",
+        "submitUpdate": "Save changes"
+      },
+      "sheet": {
+        "createTitle": "Create interest",
+        "createDescription": "Define the locale, name, and description for the new interest.",
+        "editTitle": "Edit interest",
+        "editDescription": "Update the information for the selected interest."
+      }
     }
   }
 }

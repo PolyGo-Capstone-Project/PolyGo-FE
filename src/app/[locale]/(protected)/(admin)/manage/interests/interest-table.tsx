@@ -35,7 +35,7 @@ import {
   Spinner,
 } from "@/components/ui";
 import { localeFlags, localeNames, locales, type Locale } from "@/i18n/config";
-import { LanguageListItemType } from "@/models";
+import { InterestListItemType } from "@/models";
 
 const EMPTY_ICON = "—";
 const FALLBACK_FLAG = "🏳️";
@@ -56,9 +56,9 @@ type PaginationState = {
   hasPreviousPage: boolean;
 };
 
-type LanguageTableProps = {
+type InterestTableProps = {
   safeTranslate: SafeTranslate;
-  items: LanguageListItemType[];
+  items: InterestListItemType[];
   isLoading: boolean;
   isFetching: boolean;
   isError: boolean;
@@ -66,7 +66,7 @@ type LanguageTableProps = {
   onRefresh: () => void;
   onOpenCreate: () => void;
   onOpenEdit: (id: string) => void;
-  onDelete: (language: LanguageListItemType) => void | Promise<void>;
+  onDelete: (interest: InterestListItemType) => void | Promise<void>;
   isDeletePending: boolean;
   deletingId: string | null;
   lang: string;
@@ -78,7 +78,7 @@ type LanguageTableProps = {
   pagination: PaginationState;
 };
 
-export function LanguageTable({
+export function InterestTable({
   safeTranslate,
   items,
   isLoading,
@@ -98,7 +98,7 @@ export function LanguageTable({
   pageSizeOptions,
   onPageChange,
   pagination,
-}: LanguageTableProps) {
+}: InterestTableProps) {
   const isSupportedLocale = (value: string): value is Locale =>
     locales.includes(value as Locale);
 
@@ -143,11 +143,11 @@ export function LanguageTable({
       const errorMessage =
         error instanceof Error
           ? error.message
-          : safeTranslate("error", "Unable to load languages.");
+          : safeTranslate("error", "Unable to load interests.");
 
       return (
         <tr>
-          <td colSpan={7} className="p-6">
+          <td colSpan={8} className="p-6">
             <Empty className="border border-dashed">
               <EmptyHeader>
                 <EmptyTitle>
@@ -170,23 +170,23 @@ export function LanguageTable({
     if (!items.length) {
       return (
         <tr>
-          <td colSpan={7} className="p-6">
+          <td colSpan={8} className="p-6">
             <Empty className="border border-dashed">
               <EmptyHeader>
                 <EmptyTitle>
-                  {safeTranslate("emptyTitle", "No languages yet")}
+                  {safeTranslate("emptyTitle", "No interests yet")}
                 </EmptyTitle>
                 <EmptyDescription>
                   {safeTranslate(
                     "emptyDescription",
-                    "Add a new language to get started."
+                    "Add a new interest to get started."
                   )}
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
                 <Button onClick={onOpenCreate}>
                   <IconPlus className="size-4" />
-                  {safeTranslate("createButton", "Create language")}
+                  {safeTranslate("createButton", "Create interest")}
                 </Button>
               </EmptyContent>
             </Empty>
@@ -195,27 +195,29 @@ export function LanguageTable({
       );
     }
 
-    return items.map((language) => (
-      <tr key={language.id} className="border-b last:border-b-0">
-        <td className="px-4 py-3 font-medium uppercase">{language.id}</td>
+    return items.map((interest) => (
+      <tr key={interest.id} className="border-b last:border-b-0">
+        <td className="px-4 py-3 font-medium uppercase">{interest.id}</td>
         <td className="px-4 py-3">
-          <div className="flex flex-col">
-            <span className="font-medium">{language.name}</span>
-            <span className="text-muted-foreground text-xs">
-              {safeTranslate("languageIdLabel", "Internal ID")}: {language.id}
+          <div className="flex flex-col gap-1">
+            <span className="font-medium">{interest.name}</span>
+            <span className="text-muted-foreground text-xs line-clamp-2">
+              {interest.description || EMPTY_ICON}
             </span>
           </div>
         </td>
         <td className="px-4 py-3">
-          <Badge variant="secondary">{language.code?.toUpperCase()}</Badge>
+          <Badge variant="secondary">
+            {interest.code?.toUpperCase() || EMPTY_ICON}
+          </Badge>
         </td>
         <td className="px-4 py-3">
-          {language.flagIconUrl ? (
-            <div className="flex  items-center gap-3">
+          {interest.iconUrl ? (
+            <div className="flex items-center gap-3">
               <span className="relative h-10 w-10 overflow-hidden rounded bg-muted">
                 <Image
-                  src={language.flagIconUrl}
-                  alt={safeTranslate("columns.flagAlt", "Language flag image")}
+                  src={interest.iconUrl}
+                  alt={safeTranslate("columns.iconAlt", "Interest icon image")}
                   fill
                   sizes="40px"
                   className="object-cover"
@@ -228,17 +230,25 @@ export function LanguageTable({
           )}
         </td>
         <td className="px-4 py-3 text-nowrap">
-          {formatDateTime(language.createdAt)}
+          <div className="flex items-center gap-2">
+            <span>{getLocaleFlag(interest.code ?? "")}</span>
+            <span className="text-muted-foreground text-xs">
+              {getLocaleName(interest.code ?? "—")}
+            </span>
+          </div>
         </td>
         <td className="px-4 py-3 text-nowrap">
-          {formatDateTime(language.lastUpdatedAt)}
+          {formatDateTime(interest.createdAt)}
+        </td>
+        <td className="px-4 py-3 text-nowrap">
+          {formatDateTime(interest.lastUpdatedAt)}
         </td>
         <td className="px-4 py-3">
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onOpenEdit(language.id)}
+              onClick={() => onOpenEdit(interest.id)}
             >
               <IconPencil className="size-4" />
               <span className="sr-only">{safeTranslate("edit", "Edit")}</span>
@@ -246,10 +256,10 @@ export function LanguageTable({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onDelete(language)}
+              onClick={() => onDelete(interest)}
               disabled={isDeletePending}
             >
-              {isDeletePending && deletingId === language.id ? (
+              {isDeletePending && deletingId === interest.id ? (
                 <Spinner className="size-4" />
               ) : (
                 <IconTrash className="size-4 text-destructive" />
@@ -269,12 +279,12 @@ export function LanguageTable({
       <CardHeader>
         <div>
           <CardTitle>
-            {safeTranslate("tableTitle", "Language catalogue")}
+            {safeTranslate("tableTitle", "Interests catalogue")}
           </CardTitle>
           <CardDescription>
             {safeTranslate(
               "tableDescription",
-              "Review, add or update available languages."
+              "Review, add or update interests available on the platform."
             )}
           </CardDescription>
         </div>
@@ -338,7 +348,7 @@ export function LanguageTable({
 
             <Button onClick={onOpenCreate}>
               <IconPlus className="size-4" />
-              {safeTranslate("createButton", "Create language")}
+              {safeTranslate("createButton", "Create interest")}
             </Button>
           </div>
         </CardAction>
@@ -346,20 +356,23 @@ export function LanguageTable({
 
       <CardContent>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-sm">
+          <table className="w-full min-w-[720px] text-sm">
             <thead>
               <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
                 <th className="px-4 py-3 font-medium">
                   {safeTranslate("columns.id", "ID")}
                 </th>
                 <th className="px-4 py-3 font-medium">
-                  {safeTranslate("columns.name", "Display name")}
+                  {safeTranslate("columns.name", "Interest")}
                 </th>
                 <th className="px-4 py-3 font-medium">
-                  {safeTranslate("columns.code", "Code")}
+                  {safeTranslate("columns.code", "Locale")}
                 </th>
                 <th className="px-4 py-3 font-medium">
-                  {safeTranslate("columns.flag", "Flag icon")}
+                  {safeTranslate("columns.icon", "Icon")}
+                </th>
+                <th className="px-4 py-3 font-medium">
+                  {safeTranslate("columns.locale", "Language")}
                 </th>
                 <th className="px-4 py-3 font-medium">
                   {safeTranslate("columns.createdAt", "Created at")}
@@ -382,7 +395,7 @@ export function LanguageTable({
           {pagination.totalItems > 0 ? (
             safeTranslate(
               "pagination.summary",
-              `Showing ${pagination.startItem}-${pagination.endItem} of ${pagination.totalItems} languages`,
+              `Showing ${pagination.startItem}-${pagination.endItem} of ${pagination.totalItems} interests`,
               {
                 start: pagination.startItem,
                 end: pagination.endItem,
@@ -391,7 +404,7 @@ export function LanguageTable({
             )
           ) : (
             <span>
-              {safeTranslate("pagination.empty", "No languages to display")}
+              {safeTranslate("pagination.empty", "No interests to display")}
             </span>
           )}
         </div>
