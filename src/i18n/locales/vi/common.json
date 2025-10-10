@@ -483,6 +483,7 @@
       "languageFilter": "Ngôn ngữ",
       "pageSize": "Số dòng mỗi trang",
       "refresh": "Làm mới",
+      "fallbackName": "Tên dự phòng",
       "columns": {
         "id": "ID",
         "name": "Tên hiển thị",
@@ -519,6 +520,12 @@
         "createDescription": "Định nghĩa mã và tên hiển thị cho ngôn ngữ.",
         "editTitle": "Chỉnh sửa ngôn ngữ",
         "editDescription": "Cập nhật thông tin cho ngôn ngữ đã chọn."
+      },
+      "deleteDialog": {
+        "title": "Xoá ngôn ngữ",
+        "description": "Bạn có chắc muốn xoá {name}? Hành động này không thể hoàn tác.",
+        "cancel": "Huỷ",
+        "confirm": "Xoá"
       }
     },
     "gift": {
@@ -582,6 +589,12 @@
         "createDescription": "Định nghĩa mã ngôn ngữ, tên và mô tả cho sở thích mới.",
         "editTitle": "Chỉnh sửa sở thích",
         "editDescription": "Cập nhật thông tin cho sở thích đã chọn."
+      },
+      "deleteDialog": {
+        "title": "Xoá sở thích",
+        "description": "Bạn có chắc muốn xoá {name}? Hành động này không thể hoàn tác.",
+        "cancel": "Huỷ",
+        "confirm": "Xoá"
       }
     }
   }

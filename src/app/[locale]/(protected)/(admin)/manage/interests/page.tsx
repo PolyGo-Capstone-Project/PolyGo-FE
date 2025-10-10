@@ -4,6 +4,16 @@ import { useLocale, useTranslations, type TranslationValues } from "next-intl";
 import { useCallback, useMemo, useState } from "react";
 
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui";
+import {
   useCreateInterestMutation,
   useDeleteInterestMutation,
   useInterestQuery,
@@ -63,6 +73,10 @@ export default function ManageInterestsPage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<InterestListItemType | null>(
+    null
+  );
 
   const queryParams = useMemo<PaginationLangQueryType>(
     () => ({ pageNumber, pageSize, lang }),
@@ -219,24 +233,18 @@ export default function ManageInterestsPage() {
   };
 
   const handleDeleteInterest = async (interest: InterestListItemType) => {
-    const confirmationName =
-      interest.name ?? safeTranslate("fallbackName", "this interest");
+    setItemToDelete(interest);
+    setDeleteDialogOpen(true);
+  };
 
-    const shouldDelete = window.confirm(
-      safeTranslate(
-        "confirmDelete",
-        `Are you sure you want to delete ${confirmationName}?`,
-        { name: confirmationName }
-      )
-    );
-
-    if (!shouldDelete) return;
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
 
     try {
-      setDeletingId(interest.id);
-      await deleteMutation.mutateAsync(interest.id);
+      setDeletingId(itemToDelete.id);
+      await deleteMutation.mutateAsync(itemToDelete.id);
 
-      if (editingId === interest.id) {
+      if (editingId === itemToDelete.id) {
         setEditingId(null);
         setIsEditOpen(false);
       }
@@ -248,6 +256,8 @@ export default function ManageInterestsPage() {
       handleErrorApi({ error, tError });
     } finally {
       setDeletingId(null);
+      setDeleteDialogOpen(false);
+      setItemToDelete(null);
     }
   };
 
@@ -329,6 +339,41 @@ export default function ManageInterestsPage() {
         tError={tError}
         isUploading={uploadMediaMutation.isPending}
       />
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {safeTranslate("deleteDialog.title", "Delete interest")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {safeTranslate(
+                "deleteDialog.description",
+                `Are you sure you want to delete ${itemToDelete?.name ?? "this interest"}? This action cannot be undone.`,
+                {
+                  name:
+                    itemToDelete?.name ??
+                    safeTranslate("fallbackName", "this interest"),
+                }
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteMutation.isPending}>
+              {safeTranslate("deleteDialog.cancel", "Cancel")}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              disabled={deleteMutation.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteMutation.isPending
+                ? safeTranslate("deleting", "Deleting...")
+                : safeTranslate("deleteDialog.confirm", "Delete")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

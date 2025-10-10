@@ -4,6 +4,16 @@ import { useLocale, useTranslations, type TranslationValues } from "next-intl";
 import { useCallback, useMemo, useState } from "react";
 
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui";
+import {
   useCreateLanguageMutation,
   useDeleteLanguageMutation,
   useLanguageQuery,
@@ -63,6 +73,10 @@ export default function ManageLanguagesPage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<LanguageListItemType | null>(
+    null
+  );
 
   const queryParams = useMemo<PaginationLangQueryType>(
     () => ({ pageNumber, pageSize, lang }),
@@ -215,23 +229,18 @@ export default function ManageLanguagesPage() {
   };
 
   const handleDeleteLanguage = async (language: LanguageListItemType) => {
-    const confirmationMessage = `${language.name} (${language.code?.toUpperCase()})`;
+    setItemToDelete(language);
+    setDeleteDialogOpen(true);
+  };
 
-    const shouldDelete = window.confirm(
-      safeTranslate(
-        "confirmDelete",
-        `Are you sure you want to delete ${confirmationMessage}?`,
-        { name: confirmationMessage }
-      )
-    );
-
-    if (!shouldDelete) return;
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
 
     try {
-      setDeletingId(language.id);
-      await deleteMutation.mutateAsync(language.id);
+      setDeletingId(itemToDelete.id);
+      await deleteMutation.mutateAsync(itemToDelete.id);
 
-      if (editingId === language.id) {
+      if (editingId === itemToDelete.id) {
         setEditingId(null);
         setIsEditOpen(false);
       }
@@ -243,6 +252,8 @@ export default function ManageLanguagesPage() {
       handleErrorApi({ error, tError });
     } finally {
       setDeletingId(null);
+      setDeleteDialogOpen(false);
+      setItemToDelete(null);
     }
   };
 
@@ -324,6 +335,41 @@ export default function ManageLanguagesPage() {
         tError={tError}
         isUploading={uploadMediaMutation.isPending}
       />
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {safeTranslate("deleteDialog.title", "Delete language")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {safeTranslate(
+                "deleteDialog.description",
+                `Are you sure you want to delete ${itemToDelete?.name ?? "this language"}? This action cannot be undone.`,
+                {
+                  name: itemToDelete?.name
+                    ? `${itemToDelete.name} (${itemToDelete.code?.toUpperCase()})`
+                    : safeTranslate("fallbackName", "this language"),
+                }
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteMutation.isPending}>
+              {safeTranslate("deleteDialog.cancel", "Cancel")}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              disabled={deleteMutation.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleteMutation.isPending
+                ? safeTranslate("deleting", "Deleting...")
+                : safeTranslate("deleteDialog.confirm", "Delete")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

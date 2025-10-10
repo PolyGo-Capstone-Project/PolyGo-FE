@@ -483,6 +483,7 @@
       "languageFilter": "Locale",
       "pageSize": "Page size",
       "refresh": "Refresh",
+      "fallbackName": "Fallback name",
       "columns": {
         "id": "ID",
         "name": "Display name",
@@ -519,6 +520,12 @@
         "createDescription": "Define the language code and display name.",
         "editTitle": "Edit language",
         "editDescription": "Update the language information for the selected locale."
+      },
+      "deleteDialog": {
+        "title": "Delete language",
+        "description": "Are you sure you want to delete {name}? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
       }
     },
     "gift": {
@@ -582,6 +589,12 @@
         "createDescription": "Define the locale, name, and description for the new interest.",
         "editTitle": "Edit interest",
         "editDescription": "Update the information for the selected interest."
+      },
+      "deleteDialog": {
+        "title": "Delete interest",
+        "description": "Are you sure you want to delete {name}? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
       }
     }
   }
