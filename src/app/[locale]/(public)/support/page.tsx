@@ -1,12 +1,10 @@
 "use client";
 
-// Nhóm 1: React, Next-intl
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 
-// Nhóm 2: Components Shadcn/ui
 import {
   Button,
   Card,
