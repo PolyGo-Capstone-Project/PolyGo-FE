@@ -23,7 +23,7 @@ export const LoadingOverlay = React.forwardRef<
 >(
   (
     {
-      message = "Đang tải dữ liệu",
+      message = "Loading...",
       blur = true,
       className,
       spinnerProps,
@@ -59,9 +59,7 @@ export const LoadingOverlay = React.forwardRef<
           <p
             className="text-sm text-muted-foreground"
             data-slot="loading-message"
-          >
-            {message}
-          </p>
+          ></p>
         )}
         {children}
       </div>

@@ -1,10 +1,10 @@
 import {
-  Icon123,
   IconAdjustmentsBolt,
   IconGift,
   IconHelpCircle,
+  IconLanguageHiragana,
   IconLayoutDashboard,
-  IconReceipt2,
+  IconMoodHeart,
   IconSearch,
   IconSettings,
   IconShieldLock,
@@ -60,12 +60,12 @@ const buildNavItems = (locale: string, t: TranslateFn): NavConfig => {
       {
         title: t("languages"),
         url: `/${locale}/manage/languages`,
-        icon: IconReceipt2,
+        icon: IconLanguageHiragana,
       },
       {
         title: t("interests"),
         url: `/${locale}/manage/interests`,
-        icon: Icon123,
+        icon: IconMoodHeart,
       },
       {
         title: t("gifts"),

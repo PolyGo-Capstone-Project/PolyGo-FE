@@ -454,15 +454,15 @@
   "nav": {
     "dashboard": "Bảng điều khiển",
     "languages": "Quản lý ngôn ngữ",
-    "accounts": "Quản lý nhân viên",
+    "accounts": "Quản lý người dùng",
     "permissions": "Quản lý quyền hạn",
     "roles": "Quản lý vai trò",
     "settings": "Cài đặt",
     "support": "Hỗ trợ",
     "search": "Tìm kiếm",
     "management": "Quản lý",
-    "gifts": "Quà tặng",
-    "interests": "Sở thích"
+    "gifts": "Quản lý quà tặng",
+    "interests": "Quản lý sở thích"
   },
   "admin": {
     "languages": {
@@ -483,11 +483,14 @@
       "languageFilter": "Ngôn ngữ",
       "pageSize": "Số dòng mỗi trang",
       "refresh": "Làm mới",
+      "fallbackName": "Tên dự phòng",
       "columns": {
         "id": "ID",
         "name": "Tên hiển thị",
         "code": "Mã",
         "flag": "Biểu tượng cờ",
+        "createdAt": "Ngày tạo",
+        "lastUpdatedAt": "Cập nhật lần cuối",
         "actions": "Hành động",
         "flagAlt": "Ảnh cờ ngôn ngữ"
       },
@@ -517,6 +520,12 @@
         "createDescription": "Định nghĩa mã và tên hiển thị cho ngôn ngữ.",
         "editTitle": "Chỉnh sửa ngôn ngữ",
         "editDescription": "Cập nhật thông tin cho ngôn ngữ đã chọn."
+      },
+      "deleteDialog": {
+        "title": "Xoá ngôn ngữ",
+        "description": "Bạn có chắc muốn xoá {name}? Hành động này không thể hoàn tác.",
+        "cancel": "Huỷ",
+        "confirm": "Xoá"
       }
     },
     "gift": {
@@ -525,7 +534,68 @@
     },
     "interests": {
       "title": "Sở thích",
-      "description": "Quản lý sở thích của người dùng và cài đặt"
+      "description": "Quản lý sở thích của người dùng và cài đặt",
+      "confirmDelete": "Bạn có chắc muốn xoá {name}?",
+      "error": "Không thể tải danh sách sở thích.",
+      "errorTitle": "Đã xảy ra lỗi",
+      "retry": "Thử lại",
+      "emptyTitle": "Chưa có sở thích nào",
+      "emptyDescription": "Thêm sở thích mới để bắt đầu.",
+      "createButton": "Tạo sở thích",
+      "edit": "Chỉnh sửa",
+      "delete": "Xoá",
+      "tableTitle": "Danh mục sở thích",
+      "tableDescription": "Xem, thêm hoặc cập nhật các sở thích có sẵn trên nền tảng.",
+      "languageFilter": "Ngôn ngữ",
+      "pageSize": "Số dòng mỗi trang",
+      "refresh": "Làm mới",
+      "columns": {
+        "id": "ID",
+        "name": "Tên sở thích",
+        "code": "Mã ngôn ngữ",
+        "icon": "Biểu tượng",
+        "locale": "Ngôn ngữ",
+        "createdAt": "Ngày tạo",
+        "lastUpdatedAt": "Cập nhật lần cuối",
+        "actions": "Hành động",
+        "iconAlt": "Ảnh biểu tượng sở thích"
+      },
+      "pagination": {
+        "summary": "Đang hiển thị {start}-{end} trên tổng {total} sở thích",
+        "empty": "Không có sở thích để hiển thị",
+        "previous": "Trước",
+        "page": "Trang {page} trên {total}",
+        "next": "Tiếp"
+      },
+      "form": {
+        "codeLabel": "Mã ngôn ngữ",
+        "codePlaceholder": "vd. en",
+        "codeHint": "Sử dụng mã ngôn ngữ cho bản dịch này.",
+        "nameLabel": "Tên sở thích",
+        "namePlaceholder": "vd. Du lịch",
+        "descriptionLabel": "Mô tả",
+        "descriptionPlaceholder": "Mô tả về sở thích này",
+        "iconLabel": "Biểu tượng",
+        "iconPlaceholder": "Chưa chọn tệp",
+        "iconPreviewAlt": "Xem trước biểu tượng",
+        "iconRemove": "Gỡ bỏ",
+        "iconHint": "Tải lên hình vuông (PNG, JPG, SVG) để đại diện cho sở thích này.",
+        "cancel": "Huỷ",
+        "submitCreate": "Tạo mới",
+        "submitUpdate": "Lưu thay đổi"
+      },
+      "sheet": {
+        "createTitle": "Tạo sở thích",
+        "createDescription": "Định nghĩa mã ngôn ngữ, tên và mô tả cho sở thích mới.",
+        "editTitle": "Chỉnh sửa sở thích",
+        "editDescription": "Cập nhật thông tin cho sở thích đã chọn."
+      },
+      "deleteDialog": {
+        "title": "Xoá sở thích",
+        "description": "Bạn có chắc muốn xoá {name}? Hành động này không thể hoàn tác.",
+        "cancel": "Huỷ",
+        "confirm": "Xoá"
+      }
     }
   }
 }

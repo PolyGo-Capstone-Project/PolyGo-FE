@@ -12,12 +12,9 @@ export const LanguageSchema = z.object({
   id: z.string().max(2),
   code: z.string().max(2),
   flagIconUrl: z.string().optional(),
-  createdById: z.number().nullable(),
-  updatedById: z.number().nullable(),
-  deletedById: z.number().nullable(),
   deletedAt: z.iso.datetime().nullable(),
   createdAt: z.iso.datetime(),
-  updatedAt: z.iso.datetime(),
+  lastUpdatedAt: z.iso.datetime(),
 });
 
 export const LanguageTranslationsSchema = z.object({
@@ -27,11 +24,9 @@ export const LanguageTranslationsSchema = z.object({
   languageId: z.string().max(2),
 });
 
-export const LanguageListItemSchema = LanguageSchema.pick({
-  id: true,
-  code: true,
-  flagIconUrl: true,
-}).merge(LanguageTranslationsSchema.pick({ name: true }));
+export const LanguageListItemSchema = LanguageSchema.merge(
+  LanguageTranslationsSchema.pick({ name: true })
+);
 
 export const GetLanguagesQuerySchema = PaginationLangQuerySchema;
 
