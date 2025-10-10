@@ -9,6 +9,34 @@ import { TokenPayload } from "@/types";
 
 import { getTranslatedMessage } from "./message-handler";
 
+export type QueryParamPrimitive = string | number | boolean | null | undefined;
+export type QueryParamValue = QueryParamPrimitive | QueryParamPrimitive[];
+
+export type QueryParams = Record<string, QueryParamValue>;
+
+export const buildQueryString = (params?: QueryParams) => {
+  if (!params) return "";
+
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        if (item === undefined || item === null) return;
+        searchParams.append(key, String(item));
+      });
+      return;
+    }
+
+    searchParams.append(key, String(value));
+  });
+
+  const query = searchParams.toString();
+  return query ? `?${query}` : "";
+};
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -103,15 +131,19 @@ const isBrowser = typeof window !== "undefined";
 export const getSessionTokenFromLocalStorage = () =>
   isBrowser ? localStorage.getItem("sessionToken") : null;
 
-export const setSessionTokenToLocalStorage = (value: string) =>
-  isBrowser && localStorage.setItem("sessionToken", value);
+export const setSessionTokenToLocalStorage = (value: string) => {
+  if (!isBrowser) return;
+  localStorage.setItem("sessionToken", value);
+};
 
 export const removeTokensFromLocalStorage = () => {
-  isBrowser && localStorage.removeItem("sessionToken");
+  if (!isBrowser) return;
+  localStorage.removeItem("sessionToken");
 };
 
 export const clearLocalStorage = () => {
-  isBrowser && localStorage.clear();
+  if (!isBrowser) return;
+  localStorage.clear();
 };
 
 // Export message handler utilities

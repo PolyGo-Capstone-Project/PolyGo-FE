@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { ComingSoon } from "@/components";
+
 export const metadata: Metadata = {
   title: "Manage Gifts - PolyGo",
   description: "Manage user gifts and settings",
@@ -8,9 +10,10 @@ export const metadata: Metadata = {
 export default function ManageGiftsPage() {
   return (
     <>
-      <div>
-        <h1>Manage Gifts Page - Admin Only</h1>
-      </div>
+      <ComingSoon
+        title="Gift Management"
+        description="We're building an amazing gift management system. Check back soon!"
+      />
     </>
   );
 }

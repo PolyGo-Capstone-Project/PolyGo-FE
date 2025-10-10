@@ -1,12 +1,13 @@
 "use client";
 
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import * as React from "react";
 
 import { NavDocuments } from "@/components/shared/layouts/admin/nav-documents";
 import {
-  defaultNavItems,
-  getNavItemsByRole,
+  getDefaultNavItems,
+  getNavItems,
 } from "@/components/shared/layouts/admin/nav-items";
 import { NavMain } from "@/components/shared/layouts/admin/nav-main";
 import { NavSecondary } from "@/components/shared/layouts/admin/nav-secondary";
@@ -22,17 +23,18 @@ import {
   SidebarMenuItem,
 } from "@/components/ui";
 import { useAuthMe, useAuthStore } from "@/hooks";
-import { RoleType } from "@/types";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: userData } = useAuthMe();
   const account = userData?.payload;
 
   const role = useAuthStore((state) => state.role);
+  const locale = useLocale();
+  const t = useTranslations("nav");
 
   const navConfig = role
-    ? getNavItemsByRole(role as RoleType)
-    : defaultNavItems;
+    ? getNavItems(locale, t)
+    : getDefaultNavItems(locale, t);
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -43,8 +45,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <Link href="/">
-                <Logo className="h-6 w-auto text-black" />
+              <Link href={`/${locale}`}>
+                <Logo className="h-6 w-auto text-black" withLink={false} />
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -53,7 +55,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={navConfig.navMain} />
         {navConfig.navManagement && (
-          <NavDocuments items={navConfig.navManagement} title="Quản lý" />
+          <NavDocuments
+            items={navConfig.navManagement}
+            title={t("management")}
+          />
         )}
         <NavSecondary items={navConfig.navSecondary} className="mt-auto" />
       </SidebarContent>
