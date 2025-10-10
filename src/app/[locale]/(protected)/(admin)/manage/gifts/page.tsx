@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Manage Gifts | PolyGo",
+  title: "Manage Gifts - PolyGo",
   description: "Manage user gifts and settings",
 };
 

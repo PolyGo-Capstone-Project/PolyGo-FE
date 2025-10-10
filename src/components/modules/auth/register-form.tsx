@@ -121,23 +121,6 @@ export default function RegisterForm() {
   };
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-      {/* Name & Phone Row */}
-      <div className="flex gap-4">
-        <div className="flex-1 basis-3/5 space-y-2">
-          <Label htmlFor="name">{t("nameLabel")}</Label>
-          <Input
-            id="name"
-            type="text"
-            placeholder={t("namePlaceholder")}
-            {...form.register("name")}
-          />
-          {form.formState.errors.name && (
-            <p className="text-sm text-destructive">
-              {form.formState.errors.name.message}
-            </p>
-          )}
-        </div>
-      </div>
       {/* Mail Field with OTP */}
       <div className="space-y-2">
         <Label htmlFor="mail">{t("mailLabel")}</Label>
@@ -181,6 +164,24 @@ export default function RegisterForm() {
             <span>{t("otpSent")}</span>
           </div>
         )}
+      </div>
+
+      {/* Name & Phone Row */}
+      <div className="flex gap-4">
+        <div className="flex-1 basis-3/5 space-y-2">
+          <Label htmlFor="name">{t("nameLabel")}</Label>
+          <Input
+            id="name"
+            type="text"
+            placeholder={t("namePlaceholder")}
+            {...form.register("name")}
+          />
+          {form.formState.errors.name && (
+            <p className="text-sm text-destructive">
+              {form.formState.errors.name.message}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* OTP Field */}
