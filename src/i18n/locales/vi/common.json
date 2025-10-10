@@ -70,6 +70,67 @@
     "events": "Sự kiện của tôi",
     "wallet": "Ví"
   },
+  "support": {
+    "title": "Gửi yêu cầu hỗ trợ",
+    "success": "Gửi yêu cầu thành công! Chúng tôi sẽ liên hệ bạn sớm.",
+    "error": "Gửi yêu cầu thất bại. Vui lòng thử lại.",
+    "submit": "Gửi yêu cầu",
+    "form": {
+      "title": "Gửi yêu cầu tư vấn",
+      "subtitle": "Điền thông tin bên dưới và chúng tôi sẽ liên hệ lại trong 24h",
+      "name": "Họ và tên",
+      "namePlaceholder": "Nguyễn Văn A",
+      "phone": "Số điện thoại",
+      "phonePlaceholder": "0834 564 869",
+      "email": "Email",
+      "emailPlaceholder": "contact@company.com",
+      "company": "Tên tổ chức / Công ty",
+      "companyPlaceholder": "Tên công ty",
+      "businessType": "Loại hình",
+      "businessTypePlaceholder": "Chọn loại hình",
+      "size": "Quy mô",
+      "sizePlaceholder": "Chọn quy mô",
+      "package": "Gói dịch vụ",
+      "packagePlaceholder": "Chọn gói dịch vụ",
+      "message": "Tin nhắn",
+      "messagePlaceholder": "Mô tả chi tiết nhu cầu của bạn...",
+      "submit": "Gửi yêu cầu tư vấn",
+      "sending": "Đang gửi..."
+    },
+    "topic": "Chủ đề",
+    "selectTopicPlaceholder": "Chọn chủ đề",
+    "note": "Chúng tôi sẽ liên hệ lại trong 24 giờ.",
+    "contact": {
+      "title": "Thông tin liên hệ",
+      "description": "Liên hệ trực tiếp với đội ngũ hỗ trợ của chúng tôi",
+      "emailLabel": "Email",
+      "emailValue": "polygocorp@gmail.com",
+      "phone": "0834 564 869",
+      "addressLabel": "Địa chỉ",
+      "addressValue": "Hồ Chí Minh, Việt Nam",
+      "hoursLabel": "Giờ làm việc",
+      "hoursValue": "T2 - T6: 8:00 - 18:00 / T7: 8:00 - 12:00"
+    },
+    "actions": {
+      "bookDemo": {
+        "title": "Đặt lịch Demo",
+        "desc": "Xem demo trực tiếp 1:1 với chuyên gia",
+        "cta": "Đặt lịch ngay"
+      },
+      "liveChat": {
+        "title": "Hỗ trợ Live Chat",
+        "desc": "Chat trực tiếp với đội ngũ support",
+        "cta": "Bắt đầu chat"
+      }
+    },
+    "faq": {
+      "title": "Câu hỏi thường gặp",
+      "q1": "PolyGo hoạt động như thế nào?",
+      "q2": "Tôi có cần trả phí để sử dụng PolyGo không?",
+      "q3": "Làm sao để tìm bạn học hoặc người trao đổi phù hợp?",
+      "q4": "PolyGo có hỗ trợ người dùng mới không?"
+    }
+  },
   "footer": {
     "description": "Nền tảng trao đổi ngôn ngữ và văn hóa thông minh cho người học trên toàn thế giới",
     "product": "Sản phẩm",

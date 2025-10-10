@@ -15,7 +15,7 @@ export function Footer() {
     { name: t("about"), href: `${prefix}/about` },
     { name: t("terms"), href: `${prefix}/terms` },
     { name: t("privacy"), href: `${prefix}/policy` },
-    { name: t("supportCenter"), href: `${prefix}/support-center` },
+    { name: t("supportCenter"), href: `${prefix}/support` },
   ];
 
   return (
