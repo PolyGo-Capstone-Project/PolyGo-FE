@@ -211,6 +211,121 @@
     },
     "footerNote": "If you have any questions about these terms, please contact us via the <link>Support</link> page."
   },
+  "policy": {
+    "header": "Privacy Policy",
+    "title": "PolyGo Data Privacy Policy",
+    "intro": "We take your privacy seriously. This policy explains how we collect, use, and protect your information.",
+    "lastUpdated": "Last Updated",
+    "effectiveDate": "Effective Date",
+    "commitment": {
+      "title": "Privacy Commitment",
+      "content": "PolyGo is committed to protecting your privacy and personal data. We comply with current data protection regulations and only use your information for the purposes explicitly stated in this policy."
+    },
+    "dataCollection": {
+      "title": "Information Collection",
+      "items": {
+        "personalTitle": "Personal Information",
+        "personal": "We collect information you provide directly, including your name, email, password (encrypted), native language, and language you wish to learn.",
+        "usageTitle": "Usage Information",
+        "usage": "We automatically collect information about how you access and use the Service, including interaction logs, IP address, and device type.",
+        "communicationTitle": "Communication Data",
+        "communication": "To ensure safety and content moderation, we may record or analyze text messages and video/voice call logs.",
+        "paymentTitle": "Payment Information",
+        "payment": "Payment information (e.g., credit card details) is processed by our secure payment partners and is not stored directly by PolyGo."
+      }
+    },
+    "dataUsage": {
+      "title": "Use of Information",
+      "items": {
+        "serviceTitle": "Service Provision",
+        "service": "To operate and maintain the Service, including matching learners and managing communication events.",
+        "improvementTitle": "Experience Improvement",
+        "improvement": "To understand how users use the Service and develop new features, products, and services.",
+        "aiTitle": "AI Support",
+        "ai": "Some communication data (anonymized) may be used to train and improve our AI/Machine Learning models.",
+        "securityTitle": "Security and Safety",
+        "security": "To prevent fraud, abuse, and other illegal activities, and to maintain the safety and integrity of the Service."
+      }
+    },
+    "dataSharing": {
+      "title": "Information Sharing",
+      "items": {
+        "noThirdPartyTitle": "No Third-Party Sharing",
+        "noThirdParty": "We do not sell, rent, or trade your personal information with third parties for their own marketing purposes.",
+        "serviceProvidersTitle": "Service Providers",
+        "serviceProviders": "We may share data with trusted third-party service providers (e.g., hosting, analytics) only as necessary for them to perform their functions.",
+        "legalTitle": "Legal Requirements",
+        "legal": "We may disclose your information if required to comply with the law or to respond to valid government requests."
+      }
+    },
+    "userRights": {
+      "title": "User Rights",
+      "items": {
+        "accessTitle": "Right to Access",
+        "access": "You have the right to request copies of the personal data we hold about you.",
+        "editTitle": "Right to Edit",
+        "edit": "You have the right to request that we correct any information you believe is inaccurate or incomplete.",
+        "deleteTitle": "Right to Delete",
+        "delete": "You have the right to request that we erase your personal data, subject to our legal obligations.",
+        "exportTitle": "Right to Data Portability",
+        "export": "You have the right to receive your personal data in a structured, commonly used, and machine-readable format."
+      }
+    },
+    "dataSecurity": {
+      "title": "Data Security",
+      "items": {
+        "encryptionTitle": "Data Encryption",
+        "encryption": "We use SSL/TLS encryption to protect data in transit and encrypt sensitive data (like passwords) at rest.",
+        "paymentSecurityTitle": "Payment Security",
+        "paymentSecurity": "All payment transactions are handled by PCI DSS compliant payment gateways and are not processed on PolyGo's own servers.",
+        "accessControlTitle": "Access Control",
+        "accessControl": "Access to user data is strictly limited to employees with a genuine business need.",
+        "monitoringTitle": "Security Monitoring",
+        "monitoring": "We continuously monitor our systems for vulnerabilities and potential attacks."
+      }
+    },
+    "cookies": {
+      "title": "Cookies and Tracking Technologies",
+      "items": {
+        "essentialTitle": "Essential Cookies",
+        "essential": "These cookies are strictly necessary for you to navigate the website and use its features, such as accessing secure areas.",
+        "analyticsTitle": "Analytics Cookies",
+        "analytics": "We use third-party cookies (like Google Analytics) to collect information about how you interact with our Service to improve performance.",
+        "managementTitle": "Cookie Management",
+        "management": "You can manage or decline cookies in your browser settings, though this may affect the functionality of the Service."
+      }
+    },
+    "dataRetention": {
+      "title": "Data Retention",
+      "items": {
+        "durationTitle": "Retention Period",
+        "duration": "We retain your personal information only for as long as necessary to fulfill the purposes outlined in this policy.",
+        "deletionTitle": "Account Deletion",
+        "deletion": "Upon account deletion, we will delete or anonymize your personal information, except for information we must retain due to legal obligations.",
+        "legalTitle": "Legal Retention",
+        "legal": "Data may be retained for longer periods if required to comply with legal obligations, resolve disputes, or enforce our agreements."
+      }
+    },
+    "childrenPrivacy": {
+      "title": "Children's Privacy",
+      "items": {
+        "ageLimitTitle": "Age Restriction",
+        "ageLimit": "PolyGo does not knowingly collect personally identifiable information from children under 13. If you believe we have such information, please contact us.",
+        "protectionTitle": "Child Protection",
+        "protection": "If we become aware that we have collected personal data from a child under 13 without verifiable parental consent, we will take steps to remove that information."
+      }
+    },
+    "policyChanges": {
+      "title": "Changes to the Policy",
+      "items": {
+        "notificationTitle": "Notification of Changes",
+        "notification": "We may update this policy from time to time. We will notify you of any significant changes by posting the new Policy and updating the 'Last Updated' date.",
+        "acceptanceTitle": "Acceptance of Changes",
+        "acceptance": "Your continued use of the Service after any changes become effective constitutes your acceptance of the revised Policy."
+      }
+    },
+    "footerNote": "If you have any questions about this privacy policy, please contact us:"
+  },
   "footer": {
     "description": "Smart language & cultural exchange platform for learners worldwide",
     "product": "Product",
@@ -247,34 +362,6 @@
         "warnings": "Warnings, muting microphone/chat, or feature limitations based on severity.",
         "bans": "Temporary/permanent bans for repeat or serious violations.",
         "appeals": "Transparent appeal process through support channels."
-      }
-    }
-  },
-  "policy": {
-    "title": "PolyGo Policies",
-    "intro": "Core policies to protect privacy, ensure secure payments, and promote a fair learning experience.",
-    "privacy": {
-      "title": "Privacy & Security",
-      "items": {
-        "dataProtection": "Protection of personal data, especially sensitive and payment information.",
-        "aiLogs": "AI is used for translation/editing; event logs are kept for safety and quality control.",
-        "compliance": "Compliance with current laws and requirements for content removal when necessary."
-      }
-    },
-    "payments": {
-      "title": "Plans & Payments",
-      "items": {
-        "tiers": "Free account has limitations; Plus unlocks all features and benefits.",
-        "refunds": "Principles for refunds/credits when issues are verified.",
-        "security": "Secure payment gateway; card information is not stored on the application server."
-      }
-    },
-    "safety": {
-      "title": "Community Safety",
-      "items": {
-        "moderation": "Admins may issue warnings, ban accounts, close rooms, or remove violating content.",
-        "reports": "Mechanism for reporting, dispute resolution, and user support.",
-        "events": "Events must comply with platform regulations and local laws."
       }
     }
   },

@@ -13,7 +13,7 @@ export default function TermsPage() {
       <div className="mb-8 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
           <span>📋</span>
-          <span>{t("header")}</span> {/* Đã chuyển sang t() */}
+          <span>{t("header")}</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3 text-balance">
           {t("title")}
@@ -46,9 +46,8 @@ export default function TermsPage() {
               <h3 className="font-bold text-yellow-900 dark:text-yellow-200 mb-2">
                 {t("warning.title")}:
               </h3>{" "}
-              {/* Đã chuyển sang t() */}
               <p className="text-sm text-yellow-800 dark:text-yellow-300 leading-relaxed">
-                {t("warning.content")} {/* Đã chuyển sang t() */}
+                {t("warning.content")}
               </p>
             </div>
           </div>
@@ -71,7 +70,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("registration.items.requiredTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("registration.items.required")}
                 </p>
@@ -81,7 +79,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("registration.items.verificationTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("registration.items.verification")}
                 </p>
@@ -91,7 +88,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("registration.items.ageTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("registration.items.age")}
                 </p>
@@ -114,7 +110,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("plans.items.freeTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("plans.items.free")}
                 </p>
@@ -124,7 +119,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("plans.items.plusTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("plans.items.plus")}
                 </p>
@@ -147,7 +141,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("communication.items.roomCapacityTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("communication.items.roomCapacity")}
                 </p>
@@ -157,7 +150,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("communication.items.eventVerificationTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("communication.items.eventVerification")}
                 </p>
@@ -167,7 +159,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("communication.items.entryVerificationTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("communication.items.entryVerification")}
                 </p>
@@ -177,7 +168,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("communication.items.callDurationTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("communication.items.callDuration")}
                 </p>
@@ -187,7 +177,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("communication.items.matchingRulesTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("communication.items.matchingRules")}
                 </p>
@@ -197,7 +186,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("communication.items.cancellationTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("communication.items.cancellation")}
                 </p>
@@ -220,7 +208,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("payments.items.billingCycleTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("payments.items.billingCycle")}
                 </p>
@@ -230,7 +217,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("payments.items.balanceTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("payments.items.balance")}
                 </p>
@@ -253,7 +239,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("administration.items.contentModerationTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("administration.items.contentModeration")}
                 </p>
@@ -263,7 +248,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("administration.items.violationReportingTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("administration.items.violationReporting")}
                 </p>
@@ -273,7 +257,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("administration.items.activityLoggingTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("administration.items.activityLogging")}
                 </p>
@@ -283,7 +266,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("administration.items.adminAuthorityTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("administration.items.adminAuthority")}
                 </p>
@@ -306,7 +288,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("security.items.dataComplianceTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("security.items.dataCompliance")}
                 </p>
@@ -316,7 +297,6 @@ export default function TermsPage() {
                 <div className="font-semibold text-foreground mb-2">
                   • {t("security.items.informationSharingTitle")}
                 </div>{" "}
-                {/* Đã chuyển sang t() */}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("security.items.informationSharing")}
                 </p>
