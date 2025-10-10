@@ -16,20 +16,20 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useState } from "react";
 
-import { ModeToggle } from "@/components/modules";
-import { LanguageSwitcher } from "@/components/shared/layouts/language-switcher";
-import { NotificationBell } from "@/components/shared/layouts/user/notification";
-import { UserMenu } from "@/components/shared/layouts/user/user-menu";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
   Button,
+  LanguageSwitcher,
   Logo,
+  ModeToggle,
+  NotificationBell,
   Sheet,
   SheetContent,
   SheetTrigger,
-} from "@/components/ui";
+} from "@/components";
+import { UserMenu } from "@/components/shared";
 import { useAuthMe } from "@/hooks";
 
 export function UserHeader() {
@@ -56,7 +56,7 @@ export function UserHeader() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <Logo />
+            <Logo redirectTo="dashboard" />
           </div>
 
           {/* Desktop Navigation */}
@@ -101,7 +101,7 @@ export function UserHeader() {
                 <div className="flex flex-col overflow-y-auto">
                   {/* logo + close */}
                   <div className="flex items-center gap-2 p-4 border-b">
-                    <Logo />
+                    <Logo redirectTo="dashboard" />
                   </div>
 
                   {/* menu items */}
