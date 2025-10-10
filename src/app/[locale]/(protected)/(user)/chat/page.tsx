@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Chat | PolyGo",
+  title: "Chat - PolyGo",
   description: "User chat with friends",
 };
 

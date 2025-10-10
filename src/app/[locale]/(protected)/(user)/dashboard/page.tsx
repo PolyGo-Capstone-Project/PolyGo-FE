@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dashboard | PolyGo",
+  title: "Dashboard - PolyGo",
   description: "User dashboard with account information and settings",
 };
 

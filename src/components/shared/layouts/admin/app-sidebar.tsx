@@ -21,16 +21,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui";
-import { useAuthStore } from "@/hooks";
+import { useAuthMe, useAuthStore } from "@/hooks";
 import { RoleType } from "@/types";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  // const { data: userData } = useAccountMe();
-  // const account = userData?.payload;
+  const { data: userData } = useAuthMe();
+  const account = userData?.payload;
 
   const role = useAuthStore((state) => state.role);
 
-  // Lấy navigation items dựa trên role
   const navConfig = role
     ? getNavItemsByRole(role as RoleType)
     : defaultNavItems;
@@ -58,8 +57,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         )}
         <NavSecondary items={navConfig.navSecondary} className="mt-auto" />
       </SidebarContent>
-      {/* <SidebarFooter>{account && <NavUser user={account} />}</SidebarFooter> */}
-      <SidebarFooter>{<NavUser />}</SidebarFooter>
+      <SidebarFooter>{account && <NavUser user={account} />}</SidebarFooter>
     </Sidebar>
   );
 }

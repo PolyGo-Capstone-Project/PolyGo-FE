@@ -1,6 +1,9 @@
-import { ModeToggle } from "@/components/modules";
-import { LanguageSwitcher } from "@/components/shared/layouts/language-switcher";
-import { Separator, SidebarTrigger } from "@/components/ui";
+import {
+  LanguageSwitcher,
+  ModeToggle,
+  Separator,
+  SidebarTrigger,
+} from "@/components";
 
 export function SiteHeader() {
   return (

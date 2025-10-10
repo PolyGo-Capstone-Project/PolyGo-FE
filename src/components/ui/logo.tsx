@@ -6,9 +6,10 @@ import { cn } from "@/lib/utils";
 interface LogoProps {
   className?: string;
   size?: "sm" | "default" | "lg";
+  redirectTo?: string;
 }
 
-export function Logo({ className, size = "default" }: LogoProps) {
+export function Logo({ className, size = "default", redirectTo }: LogoProps) {
   const locale = useLocale();
 
   const sizes = {
@@ -20,7 +21,7 @@ export function Logo({ className, size = "default" }: LogoProps) {
   return (
     <div className="flex items-center justify-between">
       <Link
-        href={`/${locale}`}
+        href={`/${locale}/${redirectTo || ""}`}
         className={cn(
           "font-bold text-primary flex items-center space-x-2",
           sizes[size],

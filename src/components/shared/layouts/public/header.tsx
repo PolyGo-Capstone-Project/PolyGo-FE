@@ -5,15 +5,15 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { ModeToggle } from "@/components/modules";
-import { LanguageSwitcher } from "@/components/shared/layouts/language-switcher";
 import {
+  ModeToggle,
+LanguageSwitcher,
   Button,
   Logo,
   Sheet,
   SheetContent,
   SheetTrigger,
-} from "@/components/ui";
+} from "@/components";
 import { Role } from "@/constants";
 import { useAuthStore } from "@/hooks";
 
