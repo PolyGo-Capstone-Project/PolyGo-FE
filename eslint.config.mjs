@@ -20,13 +20,13 @@ const eslintConfig = [
       "@tanstack/query/exhaustive-deps": "error",
       // TypeScript rules
       "@typescript-eslint/no-unused-vars": [
-        "warn",
+        "off",
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
         },
       ],
-      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-explicit-any": "off",
 
       // React rules
       "react/react-in-jsx-scope": "off",

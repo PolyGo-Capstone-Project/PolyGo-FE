@@ -1,24 +1,21 @@
 import {
-  Cog,
-  HelpCircle,
-  LayoutDashboard,
-  Receipt,
-  Search,
-  Settings,
-  ShieldUser,
-  SquareStack,
-  Table,
-  Users,
-  UtensilsCrossed,
-} from "lucide-react";
-
-import { Role } from "@/constants";
-import { RoleType } from "@/types";
+  IconAdjustmentsBolt,
+  IconGift,
+  IconHelpCircle,
+  IconLanguageHiragana,
+  IconLayoutDashboard,
+  IconMoodHeart,
+  IconSearch,
+  IconSettings,
+  IconShieldLock,
+  IconUsers,
+  type Icon,
+} from "@tabler/icons-react";
 
 export interface NavItem {
   title: string;
   url: string;
-  icon: any;
+  icon: Icon;
   isActive?: boolean;
   items?: {
     title: string;
@@ -32,98 +29,90 @@ export interface NavConfig {
   navManagement?: NavItem[];
 }
 
-// Navigation items theo role
-export const getNavItemsByRole = (role: RoleType): NavConfig => {
+type TranslateFn = (key: string) => string;
+
+const buildNavItems = (locale: string, t: TranslateFn): NavConfig => {
   const baseNavSecondary = [
     {
-      title: "Cài đặt",
-      url: "/manage/setting",
-      icon: Settings,
+      title: t("settings"),
+      url: `/${locale}/manage/setting`,
+      icon: IconSettings,
     },
     {
-      title: "Hỗ trợ",
-      url: "#",
-      icon: HelpCircle,
+      title: t("support"),
+      url: `/${locale}/manage/support`,
+      icon: IconHelpCircle,
     },
   ];
 
-  switch (role) {
-    case Role.Admin:
-      return {
-        navMain: [
-          {
-            title: "Dashboard",
-            url: "/manage/dashboard",
-            icon: LayoutDashboard,
-          },
-          {
-            title: "Quản lý hóa đơn",
-            url: "/manage/bills",
-            icon: Receipt,
-          },
-          {
-            title: "Quản lý nhân viên",
-            url: "/manage/accounts",
-            icon: Users,
-          },
-          {
-            title: "Quản lý category",
-            url: "/manage/categories",
-            icon: SquareStack,
-          },
-          {
-            title: "Quản lý menu",
-            url: "/manage/dishes",
-            icon: UtensilsCrossed,
-          },
-          {
-            title: "Quản lý bàn ăn",
-            url: "/manage/tables",
-            icon: Table,
-          },
-        ],
-        navManagement: [
-          {
-            title: "Quản lý quyền hạn",
-            url: "/manage/permissions",
-            icon: Cog,
-          },
-          {
-            title: "Quản lý vai trò",
-            url: "/manage/roles",
-            icon: ShieldUser,
-          },
-        ],
-        navSecondary: baseNavSecondary,
-      };
-
-    default:
-      return {
-        navMain: [],
-        navSecondary: baseNavSecondary,
-      };
-  }
+  return {
+    navMain: [
+      {
+        title: t("dashboard"),
+        url: `/${locale}/manage/dashboard`,
+        icon: IconLayoutDashboard,
+      },
+      {
+        title: t("accounts"),
+        url: `/${locale}/manage/accounts`,
+        icon: IconUsers,
+      },
+      {
+        title: t("languages"),
+        url: `/${locale}/manage/languages`,
+        icon: IconLanguageHiragana,
+      },
+      {
+        title: t("interests"),
+        url: `/${locale}/manage/interests`,
+        icon: IconMoodHeart,
+      },
+      {
+        title: t("gifts"),
+        url: `/${locale}/manage/gifts`,
+        icon: IconGift,
+      },
+    ],
+    navManagement: [
+      {
+        title: t("permissions"),
+        url: `/${locale}/manage/permissions`,
+        icon: IconAdjustmentsBolt,
+      },
+      {
+        title: t("roles"),
+        url: `/${locale}/manage/roles`,
+        icon: IconShieldLock,
+      },
+    ],
+    navSecondary: baseNavSecondary,
+  };
 };
 
-// Navigation items mặc định (fallback)
-export const defaultNavItems: NavConfig = {
+const buildDefaultNavItems = (locale: string, t: TranslateFn): NavConfig => ({
   navMain: [
     {
-      title: "Dashboard",
-      url: "/manage/dashboard",
-      icon: LayoutDashboard,
+      title: t("dashboard"),
+      url: `/${locale}/manage/dashboard`,
+      icon: IconLayoutDashboard,
     },
   ],
   navSecondary: [
     {
-      title: "Tìm kiếm",
+      title: t("search"),
       url: "#",
-      icon: Search,
+      icon: IconSearch,
     },
     {
-      title: "Hỗ trợ",
+      title: t("support"),
       url: "#",
-      icon: HelpCircle,
+      icon: IconHelpCircle,
     },
   ],
-};
+});
+
+export const getNavItems = (locale: string, t: TranslateFn): NavConfig =>
+  buildNavItems(locale, t);
+
+export const getDefaultNavItems = (locale: string, t: TranslateFn): NavConfig =>
+  buildDefaultNavItems(locale, t);

@@ -1,4 +1,3 @@
-// src/hooks/reusable/use-logout.ts
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
