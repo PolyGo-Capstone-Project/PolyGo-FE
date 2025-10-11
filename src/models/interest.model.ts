@@ -17,7 +17,7 @@ export const InterestSchema = z.object({
 
 export const InterestTranslationSchema = z.object({
   id: z.string(),
-  code: z.string().max(2),
+  lang: z.string().max(2),
   name: z.string().max(500),
   description: z.string().max(1000),
   interestId: z.string(),
@@ -25,7 +25,7 @@ export const InterestTranslationSchema = z.object({
 
 //GET ALL
 export const InterestListItemSchema = InterestSchema.merge(
-  InterestTranslationSchema.pick({ code: true, name: true, description: true })
+  InterestTranslationSchema.pick({ lang: true, name: true, description: true })
 );
 
 export const GetInterestsQuerySchema = PaginationLangQuerySchema;
@@ -52,7 +52,7 @@ export const GetInterestByIdResSchema = z.object({
 export const CreateInterestBodySchema = InterestSchema.pick({
   iconUrl: true,
 }).merge(
-  InterestTranslationSchema.pick({ code: true, name: true, description: true })
+  InterestTranslationSchema.pick({ lang: true, name: true, description: true })
 );
 
 //PUT

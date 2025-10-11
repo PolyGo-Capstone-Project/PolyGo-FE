@@ -181,7 +181,7 @@ export default function ManageInterestsPage() {
     values: CreateInterestBodyType,
     options?: { file?: File | null }
   ) => {
-    const trimmedCode = values.code.trim();
+    const trimmedLang = values.lang.trim();
     const trimmedName = values.name.trim();
     const trimmedDescription = values.description.trim();
     let iconUrl = values.iconUrl?.trim() || undefined;
@@ -195,7 +195,7 @@ export default function ManageInterestsPage() {
     }
 
     const payload: CreateInterestBodyType = {
-      code: trimmedCode,
+      lang: trimmedLang,
       name: trimmedName,
       description: trimmedDescription,
       ...(iconUrl ? { iconUrl } : {}),
@@ -209,7 +209,7 @@ export default function ManageInterestsPage() {
     values: CreateInterestBodyType,
     options?: { file?: File | null }
   ) => {
-    const trimmedCode = values.code.trim();
+    const trimmedLang = values.lang.trim();
     const trimmedName = values.name.trim();
     const trimmedDescription = values.description.trim();
     let iconUrl = values.iconUrl?.trim() || undefined;
@@ -223,7 +223,7 @@ export default function ManageInterestsPage() {
     }
 
     const payload: UpdateInterestBodyType = {
-      code: trimmedCode,
+      lang: trimmedLang,
       name: trimmedName,
       description: trimmedDescription,
       ...(iconUrl ? { iconUrl } : {}),
