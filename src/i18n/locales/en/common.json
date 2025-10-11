@@ -70,6 +70,366 @@
     "events": "My Events",
     "wallet": "Wallet"
   },
+  "support": {
+    "title": "Submit a Support Request",
+    "success": "Request sent successfully! We will contact you soon.",
+    "error": "Request failed. Please try again.",
+    "submit": "Submit Request",
+    "form": {
+      "title": "Send Consultation Request",
+      "subtitle": "Fill out the information below and we will contact you within 24 hours.",
+      "name": "Full Name",
+      "namePlaceholder": "John Doe",
+      "phone": "Phone Number",
+      "phonePlaceholder": "+1 555 123 4567",
+      "email": "Email",
+      "emailPlaceholder": "contact@company.com",
+      "company": "Organization / Company Name",
+      "companyPlaceholder": "Company Name",
+      "businessType": "Business Type",
+      "businessTypePlaceholder": "Select type",
+      "size": "Size",
+      "sizePlaceholder": "Select size",
+      "package": "Service Package",
+      "packagePlaceholder": "Select package",
+      "message": "Message",
+      "messagePlaceholder": "Describe your needs in detail...",
+      "submit": "Submit Consultation Request",
+      "sending": "Sending..."
+    },
+    "topic": "Topic",
+    "selectTopicPlaceholder": "Select topic",
+    "note": "We will contact you within 24 hours.",
+    "contact": {
+      "title": "Contact Information",
+      "description": "Contact our support team directly",
+      "emailLabel": "Email",
+      "emailValue": "polygocorp@gmail.com",
+      "phone": "+84 834 564 869",
+      "addressLabel": "Address",
+      "addressValue": "Ho Chi Minh City, Vietnam",
+      "hoursLabel": "Working Hours",
+      "hoursValue": "Mon - Fri: 8:00 - 18:00 / Sat: 8:00 - 12:00"
+    },
+    "actions": {
+      "bookDemo": {
+        "title": "Book a Demo",
+        "desc": "See a live 1:1 demo with an expert",
+        "cta": "Book Now"
+      },
+      "liveChat": {
+        "title": "Live Chat Support",
+        "desc": "Chat directly with our support team",
+        "cta": "Start Chat"
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "q1": "How does PolyGo work?",
+      "q2": "Do I have to pay to use PolyGo?",
+      "q3": "How can I find suitable study partners or language exchange partners?",
+      "q4": "Does PolyGo provide support for new users?"
+    }
+  },
+  "terms": {
+    "header": "Terms of Service",
+    "title": "PolyGo Terms of Service",
+    "intro": "These terms govern your use of PolyGo. Please read them carefully before using our services.",
+    "lastUpdated": "Last Updated",
+    "effectiveDate": "Effective Date",
+    "warning": {
+      "title": "Important",
+      "content": "By accessing and using the PolyGo service, you agree to comply with and be bound by these terms. If you do not agree with any part of these terms, please refrain from using our service."
+    },
+    "registration": {
+      "title": "Account Registration",
+      "items": {
+        "requiredTitle": "Registration Requirement",
+        "required": "Users must provide accurate and complete information to create an account. Any false information may lead to account suspension.",
+        "verificationTitle": "Email/Phone Verification",
+        "verification": "We require email or phone number verification to ensure user authenticity and system security.",
+        "ageTitle": "Age Policy",
+        "age": "The service is intended only for individuals 18 years of age or older, or 13 and older with parental/guardian consent."
+      }
+    },
+    "plans": {
+      "title": "Service Plans and Payment",
+      "items": {
+        "freeTitle": "Free Plan",
+        "free": "Provides access to basic features, including limited public event rooms and restricted random language matching.",
+        "plusTitle": "Plus Plan",
+        "plus": "Offers premium benefits such as unlimited access to private events, priority matching, and an ad-free experience."
+      }
+    },
+    "communication": {
+      "title": "Communication and Interaction Rules",
+      "items": {
+        "roomCapacityTitle": "Event Room Capacity",
+        "roomCapacity": "The maximum number of participants in event rooms is capped to ensure interaction quality.",
+        "eventVerificationTitle": "Event Verification",
+        "eventVerification": "Users creating events must have a verified profile. PolyGo reserves the right to moderate or delete inappropriate events.",
+        "entryVerificationTitle": "Entry Verification",
+        "entryVerification": "Certain events may require additional verification or approval from the organizer to join.",
+        "callDurationTitle": "Call Duration",
+        "callDuration": "The duration of random video/voice calls may be limited under the Free Plan.",
+        "matchingRulesTitle": "Matching Rules",
+        "matchingRules": "The matching system is based on interests, languages, and learning goals. Abuse of the matching feature is prohibited.",
+        "cancellationTitle": "Event Cancellation",
+        "cancellation": "Users must give 24 hours' notice to cancel a created event. Late cancellations may incur penalties."
+      }
+    },
+    "payments": {
+      "title": "Payment and Refund Terms",
+      "items": {
+        "billingCycleTitle": "Plus Plan Billing Cycle",
+        "billingCycle": "Plus Plan subscriptions are billed monthly or annually and will automatically renew unless canceled.",
+        "balanceTitle": "Balance Requirement",
+        "balance": "Users must maintain a valid balance to access paid services. No refunds are provided for fees already paid."
+      }
+    },
+    "administration": {
+      "title": "Administration and Enforcement",
+      "items": {
+        "contentModerationTitle": "Content Moderation",
+        "contentModeration": "PolyGo reserves the right to review, edit, or remove any content deemed inappropriate or in violation of terms.",
+        "violationReportingTitle": "Violation Reporting",
+        "violationReporting": "Users are required to immediately report any behavior or content that violates the Terms of Service.",
+        "activityLoggingTitle": "Activity Logging",
+        "activityLogging": "We log user activity for security, analysis, and moderation purposes.",
+        "adminAuthorityTitle": "Admin Authority",
+        "adminAuthority": "PolyGo administrators have the absolute authority to suspend or terminate violating accounts without prior notice."
+      }
+    },
+    "security": {
+      "title": "Security and Privacy",
+      "items": {
+        "dataComplianceTitle": "Data Protection Compliance",
+        "dataCompliance": "We comply with data protection regulations in handling your personal information. See the Privacy Policy for details.",
+        "informationSharingTitle": "Information Sharing",
+        "informationSharing": "Personal information is not shared with third parties without your consent, except as required by law."
+      }
+    },
+    "footerNote": "If you have any questions about these terms, please contact us via the <link>Support</link> page."
+  },
+  "policy": {
+    "header": "Privacy Policy",
+    "title": "PolyGo Data Privacy Policy",
+    "intro": "We take your privacy seriously. This policy explains how we collect, use, and protect your information.",
+    "lastUpdated": "Last Updated",
+    "effectiveDate": "Effective Date",
+    "commitment": {
+      "title": "Privacy Commitment",
+      "content": "PolyGo is committed to protecting your privacy and personal data. We comply with current data protection regulations and only use your information for the purposes explicitly stated in this policy."
+    },
+    "dataCollection": {
+      "title": "Information Collection",
+      "items": {
+        "personalTitle": "Personal Information",
+        "personal": "We collect information you provide directly, including your name, email, password (encrypted), native language, and language you wish to learn.",
+        "usageTitle": "Usage Information",
+        "usage": "We automatically collect information about how you access and use the Service, including interaction logs, IP address, and device type.",
+        "communicationTitle": "Communication Data",
+        "communication": "To ensure safety and content moderation, we may record or analyze text messages and video/voice call logs.",
+        "paymentTitle": "Payment Information",
+        "payment": "Payment information (e.g., credit card details) is processed by our secure payment partners and is not stored directly by PolyGo."
+      }
+    },
+    "dataUsage": {
+      "title": "Use of Information",
+      "items": {
+        "serviceTitle": "Service Provision",
+        "service": "To operate and maintain the Service, including matching learners and managing communication events.",
+        "improvementTitle": "Experience Improvement",
+        "improvement": "To understand how users use the Service and develop new features, products, and services.",
+        "aiTitle": "AI Support",
+        "ai": "Some communication data (anonymized) may be used to train and improve our AI/Machine Learning models.",
+        "securityTitle": "Security and Safety",
+        "security": "To prevent fraud, abuse, and other illegal activities, and to maintain the safety and integrity of the Service."
+      }
+    },
+    "dataSharing": {
+      "title": "Information Sharing",
+      "items": {
+        "noThirdPartyTitle": "No Third-Party Sharing",
+        "noThirdParty": "We do not sell, rent, or trade your personal information with third parties for their own marketing purposes.",
+        "serviceProvidersTitle": "Service Providers",
+        "serviceProviders": "We may share data with trusted third-party service providers (e.g., hosting, analytics) only as necessary for them to perform their functions.",
+        "legalTitle": "Legal Requirements",
+        "legal": "We may disclose your information if required to comply with the law or to respond to valid government requests."
+      }
+    },
+    "userRights": {
+      "title": "User Rights",
+      "items": {
+        "accessTitle": "Right to Access",
+        "access": "You have the right to request copies of the personal data we hold about you.",
+        "editTitle": "Right to Edit",
+        "edit": "You have the right to request that we correct any information you believe is inaccurate or incomplete.",
+        "deleteTitle": "Right to Delete",
+        "delete": "You have the right to request that we erase your personal data, subject to our legal obligations.",
+        "exportTitle": "Right to Data Portability",
+        "export": "You have the right to receive your personal data in a structured, commonly used, and machine-readable format."
+      }
+    },
+    "dataSecurity": {
+      "title": "Data Security",
+      "items": {
+        "encryptionTitle": "Data Encryption",
+        "encryption": "We use SSL/TLS encryption to protect data in transit and encrypt sensitive data (like passwords) at rest.",
+        "paymentSecurityTitle": "Payment Security",
+        "paymentSecurity": "All payment transactions are handled by PCI DSS compliant payment gateways and are not processed on PolyGo's own servers.",
+        "accessControlTitle": "Access Control",
+        "accessControl": "Access to user data is strictly limited to employees with a genuine business need.",
+        "monitoringTitle": "Security Monitoring",
+        "monitoring": "We continuously monitor our systems for vulnerabilities and potential attacks."
+      }
+    },
+    "cookies": {
+      "title": "Cookies and Tracking Technologies",
+      "items": {
+        "essentialTitle": "Essential Cookies",
+        "essential": "These cookies are strictly necessary for you to navigate the website and use its features, such as accessing secure areas.",
+        "analyticsTitle": "Analytics Cookies",
+        "analytics": "We use third-party cookies (like Google Analytics) to collect information about how you interact with our Service to improve performance.",
+        "managementTitle": "Cookie Management",
+        "management": "You can manage or decline cookies in your browser settings, though this may affect the functionality of the Service."
+      }
+    },
+    "dataRetention": {
+      "title": "Data Retention",
+      "items": {
+        "durationTitle": "Retention Period",
+        "duration": "We retain your personal information only for as long as necessary to fulfill the purposes outlined in this policy.",
+        "deletionTitle": "Account Deletion",
+        "deletion": "Upon account deletion, we will delete or anonymize your personal information, except for information we must retain due to legal obligations.",
+        "legalTitle": "Legal Retention",
+        "legal": "Data may be retained for longer periods if required to comply with legal obligations, resolve disputes, or enforce our agreements."
+      }
+    },
+    "childrenPrivacy": {
+      "title": "Children's Privacy",
+      "items": {
+        "ageLimitTitle": "Age Restriction",
+        "ageLimit": "PolyGo does not knowingly collect personally identifiable information from children under 13. If you believe we have such information, please contact us.",
+        "protectionTitle": "Child Protection",
+        "protection": "If we become aware that we have collected personal data from a child under 13 without verifiable parental consent, we will take steps to remove that information."
+      }
+    },
+    "policyChanges": {
+      "title": "Changes to the Policy",
+      "items": {
+        "notificationTitle": "Notification of Changes",
+        "notification": "We may update this policy from time to time. We will notify you of any significant changes by posting the new Policy and updating the 'Last Updated' date.",
+        "acceptanceTitle": "Acceptance of Changes",
+        "acceptance": "Your continued use of the Service after any changes become effective constitutes your acceptance of the revised Policy."
+      }
+    },
+    "footerNote": "If you have any questions about this privacy policy, please contact us:"
+  },
+  "about": {
+    "title": "About PolyGo",
+    "subtitle": "Connecting Language Learners with Native Speakers Worldwide",
+    "hero": {
+      "tagline": "Break Language Barriers Through Real Conversations",
+      "description": "PolyGo is an innovative online platform that connects language learners with native speakers globally, providing real-time communication, AI-powered assistance, and cultural immersion experiences."
+    },
+    "problem": {
+      "title": "The Problem We Solve",
+      "description": "Language learners often lack real-world conversation practice with native speakers. Traditional courses focus on grammar and vocabulary, leaving students unable to communicate confidently.",
+      "points": {
+        "p1": "Difficulty finding suitable practice partners (timezone, interests, proficiency level)",
+        "p2": "Lack of instant support tools (translation/error correction)",
+        "p3": "Limited cultural exchange opportunities beyond dry language learning"
+      }
+    },
+    "solution": {
+      "title": "Our Solution",
+      "description": "A cross-platform language & cultural exchange platform that connects learners with native speakers worldwide, featuring AI-powered real-time assistance and cultural immersion events."
+    },
+    "features": {
+      "title": "Core Features",
+      "matching": {
+        "title": "Smart Matching",
+        "description": "Intelligent partner matching based on language goals, interests, proficiency level, and timezone"
+      },
+      "chat": {
+        "title": "Real-Time Communication",
+        "description": "Text, voice, and video chat with seamless WebRTC integration for instant conversations"
+      },
+      "ai": {
+        "title": "AI Translation & Correction",
+        "description": "Contextual real-time translation and grammar correction to help you learn as you speak"
+      },
+      "events": {
+        "title": "Cultural Events",
+        "description": "Join online workshops, cultural discussions, and immersion sessions with global communities"
+      },
+      "gamification": {
+        "title": "Gamification",
+        "description": "Earn XP, badges, and streaks to stay motivated on your language learning journey"
+      },
+      "subscription": {
+        "title": "Flexible Plans",
+        "description": "Free tier for basic features, Plus subscription for advanced AI and exclusive events"
+      }
+    },
+    "usps": {
+      "title": "What Makes Us Different",
+      "usp1": {
+        "title": "AI Contextual Correction",
+        "description": "Unlike basic translation tools, our AI understands conversation context and provides natural corrections in real-time"
+      },
+      "usp2": {
+        "title": "Cultural Immersion Events",
+        "description": "Go beyond language learning with live cultural workshops, discussions, and community events"
+      },
+      "usp3": {
+        "title": "Community-Driven",
+        "description": "Built by language learners, for language learners. Safe, supportive, and globally connected"
+      }
+    },
+    "tech": {
+      "title": "Technology Stack",
+      "frontend": "React (Web) + Flutter (Mobile)",
+      "backend": "ASP.NET Core / Node.js + MongoDB",
+      "realtime": "SignalR (Chat) + WebRTC (Voice/Video)",
+      "ai": "OpenAI API + HuggingFace NLP",
+      "cloud": "Azure / AWS with Docker deployment"
+    },
+    "stats": {
+      "title": "Our Impact",
+      "users": "100K+",
+      "usersLabel": "Active Users",
+      "languages": "50+",
+      "languagesLabel": "Languages Supported",
+      "events": "500+",
+      "eventsLabel": "Cultural Events Monthly",
+      "satisfaction": "4.8/5",
+      "satisfactionLabel": "User Satisfaction"
+    },
+    "competitors": {
+      "title": "How We Compare",
+      "description": "We analyzed 10+ language exchange platforms to build something truly unique",
+      "apps": {
+        "hellotalk": "HelloTalk - 30M+ users, auto-translate",
+        "tandem": "Tandem - Smart matching by interests",
+        "speaky": "Speaky - Fast partner finding",
+        "italki": "italki - Professional tutors",
+        "cambly": "Cambly - 24/7 native speakers"
+      },
+      "ourEdge": "PolyGo combines the best of all: smart matching + AI contextual correction + cultural immersion events"
+    },
+    "cta": {
+      "title": "Ready to Start Your Language Journey?",
+      "description": "Join thousands of learners connecting with native speakers worldwide",
+      "button": "Get Started Free",
+      "learnMore": "Learn More"
+    },
+    "contact": {
+      "title": "Get in Touch",
+      "description": "Have any questions about our platform? Don't hesitate to email the PolyGo support team."
+    }
+  },
   "footer": {
     "description": "Smart language & cultural exchange platform for learners worldwide",
     "product": "Product",
@@ -106,34 +466,6 @@
         "warnings": "Warnings, muting microphone/chat, or feature limitations based on severity.",
         "bans": "Temporary/permanent bans for repeat or serious violations.",
         "appeals": "Transparent appeal process through support channels."
-      }
-    }
-  },
-  "policy": {
-    "title": "PolyGo Policies",
-    "intro": "Core policies to protect privacy, ensure secure payments, and promote a fair learning experience.",
-    "privacy": {
-      "title": "Privacy & Security",
-      "items": {
-        "dataProtection": "Protection of personal data, especially sensitive and payment information.",
-        "aiLogs": "AI is used for translation/editing; event logs are kept for safety and quality control.",
-        "compliance": "Compliance with current laws and requirements for content removal when necessary."
-      }
-    },
-    "payments": {
-      "title": "Plans & Payments",
-      "items": {
-        "tiers": "Free account has limitations; Plus unlocks all features and benefits.",
-        "refunds": "Principles for refunds/credits when issues are verified.",
-        "security": "Secure payment gateway; card information is not stored on the application server."
-      }
-    },
-    "safety": {
-      "title": "Community Safety",
-      "items": {
-        "moderation": "Admins may issue warnings, ban accounts, close rooms, or remove violating content.",
-        "reports": "Mechanism for reporting, dispute resolution, and user support.",
-        "events": "Events must comply with platform regulations and local laws."
       }
     }
   },

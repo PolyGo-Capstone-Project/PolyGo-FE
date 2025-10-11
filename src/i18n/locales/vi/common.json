@@ -70,6 +70,262 @@
     "events": "Sự kiện của tôi",
     "wallet": "Ví"
   },
+  "support": {
+    "title": "Gửi yêu cầu hỗ trợ",
+    "success": "Gửi yêu cầu thành công! Chúng tôi sẽ liên hệ bạn sớm.",
+    "error": "Gửi yêu cầu thất bại. Vui lòng thử lại.",
+    "submit": "Gửi yêu cầu",
+    "form": {
+      "title": "Gửi yêu cầu tư vấn",
+      "subtitle": "Điền thông tin bên dưới và chúng tôi sẽ liên hệ lại trong 24h",
+      "name": "Họ và tên",
+      "namePlaceholder": "Nguyễn Văn A",
+      "phone": "Số điện thoại",
+      "phonePlaceholder": "0834 564 869",
+      "email": "Email",
+      "emailPlaceholder": "contact@company.com",
+      "company": "Tên tổ chức / Công ty",
+      "companyPlaceholder": "Tên công ty",
+      "businessType": "Loại hình",
+      "businessTypePlaceholder": "Chọn loại hình",
+      "size": "Quy mô",
+      "sizePlaceholder": "Chọn quy mô",
+      "package": "Gói dịch vụ",
+      "packagePlaceholder": "Chọn gói dịch vụ",
+      "message": "Tin nhắn",
+      "messagePlaceholder": "Mô tả chi tiết nhu cầu của bạn...",
+      "submit": "Gửi yêu cầu tư vấn",
+      "sending": "Đang gửi..."
+    },
+    "topic": "Chủ đề",
+    "selectTopicPlaceholder": "Chọn chủ đề",
+    "note": "Chúng tôi sẽ liên hệ lại trong 24 giờ.",
+    "contact": {
+      "title": "Thông tin liên hệ",
+      "description": "Liên hệ trực tiếp với đội ngũ hỗ trợ của chúng tôi",
+      "emailLabel": "Email",
+      "emailValue": "polygocorp@gmail.com",
+      "phone": "0834 564 869",
+      "addressLabel": "Địa chỉ",
+      "addressValue": "Hồ Chí Minh, Việt Nam",
+      "hoursLabel": "Giờ làm việc",
+      "hoursValue": "T2 - T6: 8:00 - 18:00 / T7: 8:00 - 12:00"
+    },
+    "actions": {
+      "bookDemo": {
+        "title": "Đặt lịch Demo",
+        "desc": "Xem demo trực tiếp 1:1 với chuyên gia",
+        "cta": "Đặt lịch ngay"
+      },
+      "liveChat": {
+        "title": "Hỗ trợ Live Chat",
+        "desc": "Chat trực tiếp với đội ngũ support",
+        "cta": "Bắt đầu chat"
+      }
+    },
+    "faq": {
+      "title": "Câu hỏi thường gặp",
+      "q1": "PolyGo hoạt động như thế nào?",
+      "q2": "Tôi có cần trả phí để sử dụng PolyGo không?",
+      "q3": "Làm sao để tìm bạn học hoặc người trao đổi phù hợp?",
+      "q4": "PolyGo có hỗ trợ người dùng mới không?"
+    }
+  },
+  "terms": {
+    "header": "Điều khoản dịch vụ",
+    "title": "Điều khoản Dịch vụ PolyGo",
+    "intro": "Các điều khoản này quản lý việc sử dụng PolyGo của bạn. Vui lòng đọc kỹ trước khi sử dụng dịch vụ của chúng tôi.",
+    "lastUpdated": "Cập nhật lần cuối",
+    "effectiveDate": "Có hiệu lực từ",
+    "warning": {
+      "title": "Quan trọng",
+      "content": "Bằng việc truy cập và sử dụng dịch vụ PolyGo, bạn đồng ý tuân thủ và bị ràng buộc bởi các điều khoản này. Nếu bạn không đồng ý với bất kỳ phần nào của các điều khoản này, vui lòng không sử dụng dịch vụ của chúng tôi."
+    },
+    "registration": {
+      "title": "Đăng ký Tài khoản",
+      "items": {
+        "requiredTitle": "Yêu cầu Đăng ký",
+        "required": "Người dùng phải cung cấp thông tin chính xác và đầy đủ để tạo tài khoản. Bất kỳ thông tin sai lệch nào đều có thể dẫn đến việc đình chỉ tài khoản.",
+        "verificationTitle": "Xác minh Email/Điện thoại",
+        "verification": "Chúng tôi yêu cầu xác minh email hoặc số điện thoại để đảm bảo tính xác thực của người dùng và bảo mật hệ thống.",
+        "ageTitle": "Chính sách Tuổi",
+        "age": "Dịch vụ chỉ dành cho những người từ 18 tuổi trở lên, hoặc từ 13 tuổi trở lên có sự đồng ý của phụ huynh/người giám hộ."
+      }
+    },
+    "plans": {
+      "title": "Gói Dịch vụ và Thanh toán",
+      "items": {
+        "freeTitle": "Gói Miễn phí (Free)",
+        "free": "Cung cấp quyền truy cập vào các tính năng cơ bản, bao gồm tham gia các phòng sự kiện công cộng và ghép đôi ngôn ngữ ngẫu nhiên có giới hạn.",
+        "plusTitle": "Gói Plus",
+        "plus": "Cung cấp các lợi ích nâng cao như truy cập không giới hạn vào các sự kiện riêng tư, ưu tiên ghép đôi và không có quảng cáo."
+      }
+    },
+    "communication": {
+      "title": "Quy tắc Giao tiếp và Tương tác",
+      "items": {
+        "roomCapacityTitle": "Giới hạn Phòng Sự kiện",
+        "roomCapacity": "Số lượng người tham gia phòng sự kiện tối đa được giới hạn để đảm bảo chất lượng tương tác.",
+        "eventVerificationTitle": "Xác minh Sự kiện",
+        "eventVerification": "Người dùng tạo sự kiện phải có hồ sơ đã được xác minh. PolyGo có quyền kiểm duyệt hoặc xóa các sự kiện không phù hợp.",
+        "entryVerificationTitle": "Xác minh Tham gia",
+        "entryVerification": "Một số sự kiện có thể yêu cầu xác minh bổ sung hoặc chấp thuận từ người tổ chức để tham gia.",
+        "callDurationTitle": "Thời lượng Cuộc gọi",
+        "callDuration": "Thời lượng cuộc gọi video/thoại ngẫu nhiên có thể bị giới hạn trong Gói Miễn phí.",
+        "matchingRulesTitle": "Quy tắc Ghép đôi",
+        "matchingRules": "Hệ thống ghép đôi dựa trên sở thích, ngôn ngữ, và mục tiêu học tập. Nghiêm cấm các hành vi lạm dụng tính năng ghép đôi.",
+        "cancellationTitle": "Huỷ Sự kiện",
+        "cancellation": "Người dùng phải thông báo hủy sự kiện đã tạo trước 24 giờ. Hủy bỏ quá gần có thể dẫn đến hình phạt."
+      }
+    },
+    "payments": {
+      "title": "Điều khoản Thanh toán và Hoàn tiền",
+      "items": {
+        "billingCycleTitle": "Chu kỳ Thanh toán Gói Plus",
+        "billingCycle": "Đăng ký Gói Plus được thanh toán hàng tháng hoặc hàng năm và sẽ tự động gia hạn trừ khi bị hủy.",
+        "balanceTitle": "Yêu cầu Số dư",
+        "balance": "Người dùng phải duy trì số dư hợp lệ để truy cập các dịch vụ trả phí. Không có hoàn tiền cho các khoản phí đã thanh toán."
+      }
+    },
+    "administration": {
+      "title": "Quản trị và Thi hành",
+      "items": {
+        "contentModerationTitle": "Kiểm duyệt Nội dung",
+        "contentModeration": "PolyGo có quyền xem xét, chỉnh sửa hoặc xóa bất kỳ nội dung nào bị coi là không phù hợp hoặc vi phạm điều khoản.",
+        "violationReportingTitle": "Báo cáo Vi phạm",
+        "violationReporting": "Người dùng phải báo cáo mọi hành vi hoặc nội dung vi phạm Điều khoản Dịch vụ ngay lập tức.",
+        "activityLoggingTitle": "Ghi nhật ký Hoạt động",
+        "activityLogging": "Chúng tôi ghi nhật ký hoạt động của người dùng cho mục đích bảo mật, phân tích và kiểm duyệt.",
+        "adminAuthorityTitle": "Thẩm quyền Admin",
+        "adminAuthority": "Quản trị viên PolyGo có thẩm quyền tuyệt đối trong việc đình chỉ hoặc chấm dứt tài khoản vi phạm mà không cần thông báo trước."
+      }
+    },
+    "security": {
+      "title": "Bảo mật và Quyền riêng tư",
+      "items": {
+        "dataComplianceTitle": "Tuân thủ Bảo vệ Dữ liệu",
+        "dataCompliance": "Chúng tôi tuân thủ các quy định bảo vệ dữ liệu để xử lý thông tin cá nhân của bạn. Xem Chính sách Quyền riêng tư để biết thêm chi tiết.",
+        "informationSharingTitle": "Chia sẻ Thông tin",
+        "informationSharing": "Thông tin cá nhân không được chia sẻ với bên thứ ba mà không có sự đồng ý của bạn, trừ các trường hợp được pháp luật yêu cầu."
+      }
+    },
+    "footerNote": "Nếu bạn có bất kỳ câu hỏi nào về các điều khoản này, vui lòng liên hệ với chúng tôi qua trang <link>Hỗ trợ</link>."
+  },
+  "policy": {
+    "header": "Chính sách bảo mật",
+    "title": "Chính sách Bảo mật Dữ liệu PolyGo",
+    "intro": "Chúng tôi coi trọng quyền riêng tư của bạn. Chính sách này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông tin của bạn.",
+    "lastUpdated": "Cập nhật lần cuối",
+    "effectiveDate": "Có hiệu lực từ",
+    "commitment": {
+      "title": "Cam kết bảo mật",
+      "content": "PolyGo cam kết bảo vệ quyền riêng tư và dữ liệu cá nhân của bạn. Chúng tôi tuân thủ các quy định bảo vệ dữ liệu hiện hành và chỉ sử dụng thông tin của bạn cho các mục đích được nêu rõ trong chính sách này."
+    },
+    "dataCollection": {
+      "title": "Thu thập Thông tin",
+      "items": {
+        "personalTitle": "Thông tin cá nhân",
+        "personal": "Chúng tôi thu thập thông tin bạn cung cấp trực tiếp, bao gồm tên, email, mật khẩu (đã mã hóa), ngôn ngữ nói và ngôn ngữ muốn học.",
+        "usageTitle": "Thông tin sử dụng",
+        "usage": "Chúng tôi tự động thu thập thông tin về cách bạn truy cập và sử dụng Dịch vụ, bao gồm nhật ký tương tác, địa chỉ IP, và loại thiết bị.",
+        "communicationTitle": "Dữ liệu giao tiếp",
+        "communication": "Để đảm bảo an toàn và kiểm duyệt nội dung, chúng tôi có thể ghi lại hoặc phân tích tin nhắn văn bản và nhật ký cuộc gọi video/thoại.",
+        "paymentTitle": "Thông tin thanh toán",
+        "payment": "Thông tin thanh toán (ví dụ: chi tiết thẻ tín dụng) được xử lý bởi các đối tác thanh toán bảo mật của chúng tôi và không được PolyGo lưu trữ trực tiếp."
+      }
+    },
+    "dataUsage": {
+      "title": "Sử dụng Thông tin",
+      "items": {
+        "serviceTitle": "Cung cấp dịch vụ",
+        "service": "Để vận hành và duy trì Dịch vụ, bao gồm việc ghép đôi người học và quản lý các sự kiện giao tiếp.",
+        "improvementTitle": "Cải thiện trải nghiệm",
+        "improvement": "Để hiểu cách người dùng sử dụng Dịch vụ và phát triển các tính năng, sản phẩm và dịch vụ mới.",
+        "aiTitle": "Hỗ trợ AI",
+        "ai": "Một số dữ liệu giao tiếp (đã ẩn danh) có thể được sử dụng để đào tạo và cải thiện các mô hình AI/Machine Learning của chúng tôi.",
+        "securityTitle": "Bảo mật và an toàn",
+        "security": "Để ngăn chặn gian lận, lạm dụng, và các hoạt động bất hợp pháp khác, cũng như duy trì tính an toàn của Dịch vụ."
+      }
+    },
+    "dataSharing": {
+      "title": "Chia sẻ Thông tin",
+      "items": {
+        "noThirdPartyTitle": "Không chia sẻ với bên thứ ba",
+        "noThirdParty": "Chúng tôi không bán, cho thuê hoặc trao đổi thông tin cá nhân của bạn với bên thứ ba cho mục đích tiếp thị của họ.",
+        "serviceProvidersTitle": "Nhà cung cấp dịch vụ",
+        "serviceProviders": "Chúng tôi có thể chia sẻ dữ liệu với các nhà cung cấp dịch vụ bên thứ ba đáng tin cậy (ví dụ: lưu trữ, phân tích) chỉ khi cần thiết để thực hiện các chức năng của họ.",
+        "legalTitle": "Yêu cầu pháp lý",
+        "legal": "Chúng tôi có thể tiết lộ thông tin của bạn nếu cần thiết để tuân thủ luật pháp hoặc đáp ứng yêu cầu hợp lệ của chính phủ."
+      }
+    },
+    "userRights": {
+      "title": "Quyền của Người dùng",
+      "items": {
+        "accessTitle": "Quyền truy cập",
+        "access": "Bạn có quyền yêu cầu bản sao dữ liệu cá nhân mà chúng tôi nắm giữ về bạn.",
+        "editTitle": "Quyền chỉnh sửa",
+        "edit": "Bạn có quyền yêu cầu chúng tôi sửa chữa bất kỳ thông tin nào bạn tin là không chính xác hoặc không đầy đủ.",
+        "deleteTitle": "Quyền xóa",
+        "delete": "Bạn có quyền yêu cầu chúng tôi xóa dữ liệu cá nhân của bạn, tùy thuộc vào các nghĩa vụ pháp lý của chúng tôi.",
+        "exportTitle": "Quyền xuất dữ liệu",
+        "export": "Bạn có quyền nhận dữ liệu cá nhân của mình dưới dạng có cấu trúc, thường được sử dụng và có thể đọc được bằng máy."
+      }
+    },
+    "dataSecurity": {
+      "title": "Bảo mật Dữ liệu",
+      "items": {
+        "encryptionTitle": "Mã hóa dữ liệu",
+        "encryption": "Chúng tôi sử dụng mã hóa SSL/TLS để bảo vệ dữ liệu được truyền đi và mã hóa các dữ liệu nhạy cảm (như mật khẩu) khi lưu trữ.",
+        "paymentSecurityTitle": "Bảo mật thanh toán",
+        "paymentSecurity": "Tất cả các giao dịch thanh toán được xử lý bởi cổng thanh toán tuân thủ PCI DSS và không được PolyGo xử lý trên máy chủ của chính nó.",
+        "accessControlTitle": "Kiểm soát truy cập",
+        "accessControl": "Truy cập vào dữ liệu người dùng bị giới hạn nghiêm ngặt chỉ dành cho nhân viên có nhu cầu công việc thực sự.",
+        "monitoringTitle": "Giám sát bảo mật",
+        "monitoring": "Chúng tôi liên tục giám sát hệ thống của mình để phát hiện các lỗ hổng và các cuộc tấn công tiềm tàng."
+      }
+    },
+    "cookies": {
+      "title": "Cookies và Công nghệ Theo dõi",
+      "items": {
+        "essentialTitle": "Cookies cần thiết",
+        "essential": "Các cookies này là bắt buộc để bạn có thể điều hướng trang web và sử dụng các tính năng của nó, chẳng hạn như truy cập các khu vực an toàn.",
+        "analyticsTitle": "Cookies phân tích",
+        "analytics": "Chúng tôi sử dụng cookies của bên thứ ba (như Google Analytics) để thu thập thông tin về cách bạn tương tác với Dịch vụ của chúng tôi nhằm cải thiện hiệu suất.",
+        "managementTitle": "Quản lý cookies",
+        "management": "Bạn có thể quản lý hoặc từ chối cookies trong cài đặt trình duyệt của mình, nhưng điều này có thể ảnh hưởng đến chức năng của Dịch vụ."
+      }
+    },
+    "dataRetention": {
+      "title": "Lưu trữ Dữ liệu",
+      "items": {
+        "durationTitle": "Thời gian lưu trữ",
+        "duration": "Chúng tôi lưu giữ thông tin cá nhân của bạn chỉ trong khoảng thời gian cần thiết để thực hiện các mục đích được nêu trong chính sách này.",
+        "deletionTitle": "Xóa tài khoản",
+        "deletion": "Khi bạn xóa tài khoản, chúng tôi sẽ xóa hoặc ẩn danh thông tin cá nhân của bạn, ngoại trừ những thông tin mà chúng tôi phải giữ lại do luật pháp.",
+        "legalTitle": "Lưu trữ pháp lý",
+        "legal": "Dữ liệu có thể được giữ lại trong thời gian dài hơn nếu cần thiết để tuân thủ các nghĩa vụ pháp lý, giải quyết tranh chấp hoặc thực thi các thỏa thuận của chúng tôi."
+      }
+    },
+    "childrenPrivacy": {
+      "title": "Quyền riêng tư của Trẻ em",
+      "items": {
+        "ageLimitTitle": "Giới hạn độ tuổi",
+        "ageLimit": "PolyGo không cố ý thu thập thông tin cá nhân từ trẻ em dưới 13 tuổi. Nếu bạn tin rằng chúng tôi có thông tin đó, vui lòng liên hệ với chúng tôi.",
+        "protectionTitle": "Bảo vệ trẻ em",
+        "protection": "Nếu chúng tôi phát hiện ra rằng chúng tôi đã thu thập thông tin cá nhân từ trẻ em dưới 13 tuổi mà không có sự đồng ý của cha mẹ, chúng tôi sẽ thực hiện các bước để xóa thông tin đó."
+      }
+    },
+    "policyChanges": {
+      "title": "Thay đổi Chính sách",
+      "items": {
+        "notificationTitle": "Thông báo thay đổi",
+        "notification": "Chúng tôi có thể cập nhật chính sách này theo thời gian. Chúng tôi sẽ thông báo cho bạn về bất kỳ thay đổi quan trọng nào bằng cách đăng Chính sách mới và cập nhật ngày 'Cập nhật lần cuối'.",
+        "acceptanceTitle": "Chấp nhận thay đổi",
+        "acceptance": "Việc bạn tiếp tục sử dụng Dịch vụ sau khi bất kỳ thay đổi nào có hiệu lực sẽ cấu thành sự chấp nhận của bạn đối với Chính sách đã sửa đổi."
+      }
+    },
+    "footerNote": "Nếu bạn có bất kỳ câu hỏi nào về chính sách bảo mật này, vui lòng liên hệ với chúng tôi:"
+  },
   "footer": {
     "description": "Nền tảng trao đổi ngôn ngữ và văn hóa thông minh cho người học trên toàn thế giới",
     "product": "Sản phẩm",
@@ -109,32 +365,108 @@
       }
     }
   },
-  "policy": {
-    "title": "Chính sách PolyGo",
-    "intro": "Các chính sách cốt lõi nhằm bảo vệ quyền riêng tư, thanh toán an toàn và trải nghiệm học tập công bằng.",
-    "privacy": {
-      "title": "Quyền riêng tư & Bảo mật",
-      "items": {
-        "dataProtection": "Bảo vệ dữ liệu cá nhân, đặc biệt với thanh toán & thông tin nhạy cảm.",
-        "aiLogs": "Dùng AI cho dịch/chỉnh sửa; nhật ký sự kiện phục vụ an toàn & chất lượng.",
-        "compliance": "Tuân thủ pháp luật hiện hành và yêu cầu gỡ nội dung khi cần."
+  "about": {
+    "title": "Về PolyGo",
+    "subtitle": "Kết Nối Người Học Ngôn Ngữ với Người Bản Ngữ Toàn Cầu",
+    "hero": {
+      "tagline": "Phá Vỡ Rào Cản Ngôn Ngữ Qua Giao Tiếp Thực Tế",
+      "description": "PolyGo là nền tảng trực tuyến sáng tạo kết nối người học ngôn ngữ với người bản ngữ trên toàn cầu, cung cấp giao tiếp thời gian thực, hỗ trợ AI và trải nghiệm hòa nhập văn hóa."
+    },
+    "problem": {
+      "title": "Vấn Đề Chúng Tôi Giải Quyết",
+      "description": "Người học ngôn ngữ thường thiếu môi trường thực hành giao tiếp với người bản ngữ. Các khóa học truyền thống tập trung vào ngữ pháp và từ vựng, khiến học viên không tự tin giao tiếp.",
+      "points": {
+        "p1": "Khó tìm đối tác luyện tập phù hợp (múi giờ, sở thích, trình độ)",
+        "p2": "Thiếu công cụ hỗ trợ tức thời (dịch/sửa lỗi)",
+        "p3": "Ít cơ hội trao đổi văn hóa, chỉ học ngôn ngữ khô khan"
       }
     },
-    "payments": {
-      "title": "Gói & Thanh toán",
-      "items": {
-        "tiers": "Tài khoản Free giới hạn; Plus mở toàn bộ tính năng và ưu đãi.",
-        "refunds": "Nguyên tắc hoàn tiền/ghi có khi sự cố được xác minh.",
-        "security": "Cổng thanh toán bảo mật; không lưu thông tin thẻ trên máy chủ ứng dụng."
+    "solution": {
+      "title": "Giải Pháp Của Chúng Tôi",
+      "description": "Nền tảng giao lưu ngôn ngữ & văn hóa đa nền tảng kết nối người học với người bản ngữ toàn cầu, có hỗ trợ AI thời gian thực và sự kiện hòa nhập văn hóa."
+    },
+    "features": {
+      "title": "Tính Năng Cốt Lõi",
+      "matching": {
+        "title": "Ghép Đôi Thông Minh",
+        "description": "Ghép đôi đối tác thông minh dựa trên mục tiêu ngôn ngữ, sở thích, trình độ và múi giờ"
+      },
+      "chat": {
+        "title": "Giao Tiếp Thời Gian Thực",
+        "description": "Chat văn bản, thoại và video với tích hợp WebRTC mượt mà cho cuộc trò chuyện tức thì"
+      },
+      "ai": {
+        "title": "Dịch & Sửa Lỗi AI",
+        "description": "Dịch theo ngữ cảnh và sửa lỗi ngữ pháp thời gian thực giúp bạn học trong khi nói"
+      },
+      "events": {
+        "title": "Sự Kiện Văn Hóa",
+        "description": "Tham gia workshop trực tuyến, thảo luận văn hóa và phiên hòa nhập với cộng đồng toàn cầu"
+      },
+      "gamification": {
+        "title": "Trò Chơi Hóa",
+        "description": "Kiếm XP, huy hiệu và chuỗi ngày để duy trì động lực học ngôn ngữ"
+      },
+      "subscription": {
+        "title": "Gói Linh Hoạt",
+        "description": "Gói miễn phí cho tính năng cơ bản, gói Plus cho AI nâng cao và sự kiện độc quyền"
       }
     },
-    "safety": {
-      "title": "An toàn cộng đồng",
-      "items": {
-        "moderation": "Admin có thể cảnh cáo, khoá tài khoản, đóng phòng, gỡ nội dung vi phạm.",
-        "reports": "Cơ chế báo cáo, xử lý tranh chấp và hỗ trợ người dùng.",
-        "events": "Sự kiện phải tuân thủ quy định nền tảng và pháp luật sở tại."
+    "usps": {
+      "title": "Điểm Khác Biệt",
+      "usp1": {
+        "title": "Sửa Lỗi Theo Ngữ Cảnh AI",
+        "description": "Khác với công cụ dịch cơ bản, AI của chúng tôi hiểu ngữ cảnh và đưa ra sửa lỗi tự nhiên thời gian thực"
+      },
+      "usp2": {
+        "title": "Sự Kiện Hòa Nhập Văn Hóa",
+        "description": "Vượt xa học ngôn ngữ với workshop văn hóa trực tiếp, thảo luận và sự kiện cộng đồng"
+      },
+      "usp3": {
+        "title": "Cộng Đồng Là Trung Tâm",
+        "description": "Xây dựng bởi người học, cho người học. An toàn, hỗ trợ và kết nối toàn cầu"
       }
+    },
+    "tech": {
+      "title": "Công Nghệ Sử Dụng",
+      "frontend": "React (Web) + Flutter (Mobile)",
+      "backend": "ASP.NET Core / Node.js + MongoDB",
+      "realtime": "SignalR (Chat) + WebRTC (Voice/Video)",
+      "ai": "OpenAI API + HuggingFace NLP",
+      "cloud": "Azure / AWS với Docker deployment"
+    },
+    "stats": {
+      "title": "Tác Động Của Chúng Tôi",
+      "users": "100K+",
+      "usersLabel": "Người Dùng Hoạt Động",
+      "languages": "50+",
+      "languagesLabel": "Ngôn Ngữ Hỗ Trợ",
+      "events": "500+",
+      "eventsLabel": "Sự Kiện Văn Hóa Mỗi Tháng",
+      "satisfaction": "4.8/5",
+      "satisfactionLabel": "Hài Lòng Người Dùng"
+    },
+    "competitors": {
+      "title": "So Sánh Với Đối Thủ",
+      "description": "Chúng tôi phân tích 10+ nền tảng giao lưu ngôn ngữ để xây dựng điều thực sự độc đáo",
+      "apps": {
+        "hellotalk": "HelloTalk - 30M+ người dùng, dịch tự động",
+        "tandem": "Tandem - Ghép đôi thông minh theo sở thích",
+        "speaky": "Speaky - Tìm đối tác nhanh",
+        "italki": "italki - Giáo viên chuyên nghiệp",
+        "cambly": "Cambly - Người bản ngữ 24/7"
+      },
+      "ourEdge": "PolyGo kết hợp tất cả: ghép đôi thông minh + sửa lỗi AI theo ngữ cảnh + sự kiện hòa nhập văn hóa"
+    },
+    "cta": {
+      "title": "Sẵn Sàng Bắt Đầu Hành Trình Ngôn Ngữ?",
+      "description": "Tham gia hàng nghìn người học đang kết nối với người bản ngữ toàn cầu",
+      "button": "Bắt Đầu Miễn Phí",
+      "learnMore": "Tìm Hiểu Thêm"
+    },
+    "contact": {
+      "title": "Liên hệ với chúng tôi",
+      "description": "Có bất kỳ câu hỏi nào về nền tảng của chúng tôi? Đừng ngần ngại gửi email cho đội ngũ hỗ trợ của PolyGo."
     }
   },
   "home": {

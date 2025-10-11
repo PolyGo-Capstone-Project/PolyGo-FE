@@ -183,20 +183,20 @@ export default function ManageLanguagesPage() {
   ) => {
     const trimmedCode = values.code.trim();
     const trimmedName = values.name.trim();
-    let flagIconUrl = values.flagIconUrl?.trim() || undefined;
+    let iconUrl = values.iconUrl?.trim() || undefined;
 
     if (options?.file) {
       const uploadResponse = await uploadMediaMutation.mutateAsync({
         file: options.file,
         addUniqueName: true,
       });
-      flagIconUrl = uploadResponse.payload?.data ?? flagIconUrl;
+      iconUrl = uploadResponse.payload?.data ?? iconUrl;
     }
 
     const payload: CreateLanguageBodyType = {
       code: trimmedCode,
       name: trimmedName,
-      ...(flagIconUrl ? { flagIconUrl } : {}),
+      ...(iconUrl ? { iconUrl } : {}),
     };
 
     await createMutation.mutateAsync(payload);
@@ -209,20 +209,20 @@ export default function ManageLanguagesPage() {
   ) => {
     const trimmedCode = values.code.trim();
     const trimmedName = values.name.trim();
-    let flagIconUrl = values.flagIconUrl?.trim() || undefined;
+    let iconUrl = values.iconUrl?.trim() || undefined;
 
     if (options?.file) {
       const uploadResponse = await uploadMediaMutation.mutateAsync({
         file: options.file,
         addUniqueName: true,
       });
-      flagIconUrl = uploadResponse.payload?.data ?? flagIconUrl;
+      iconUrl = uploadResponse.payload?.data ?? iconUrl;
     }
 
     const payload: UpdateLanguageBodyType = {
       code: trimmedCode,
       name: trimmedName,
-      ...(flagIconUrl ? { flagIconUrl } : {}),
+      ...(iconUrl ? { iconUrl } : {}),
     };
 
     await updateMutation.mutateAsync({ id, body: payload });

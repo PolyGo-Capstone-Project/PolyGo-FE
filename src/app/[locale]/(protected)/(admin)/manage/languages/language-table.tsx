@@ -210,11 +210,11 @@ export function LanguageTable({
           <Badge variant="secondary">{language.code?.toUpperCase()}</Badge>
         </td>
         <td className="px-4 py-3">
-          {language.flagIconUrl ? (
+          {language.iconUrl ? (
             <div className="flex  items-center gap-3">
               <span className="relative h-10 w-10 overflow-hidden rounded bg-muted">
                 <Image
-                  src={language.flagIconUrl}
+                  src={language.iconUrl}
                   alt={safeTranslate("columns.flagAlt", "Language flag image")}
                   fill
                   sizes="40px"
