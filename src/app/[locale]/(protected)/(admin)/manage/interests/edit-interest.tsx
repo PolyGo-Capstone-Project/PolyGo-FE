@@ -55,7 +55,7 @@ type EditInterestProps = {
 };
 
 const DEFAULT_VALUES: CreateInterestBodyType = {
-  code: "",
+  lang: "",
   name: "",
   description: "",
   iconUrl: "",
@@ -96,7 +96,7 @@ export function EditInterest({
 
     if (interest) {
       form.reset({
-        code: interest.code ?? "",
+        lang: interest.lang ?? "",
         name: interest.name ?? "",
         description: interest.description ?? "",
         iconUrl: interest.iconUrl ?? "",
@@ -149,7 +149,7 @@ export function EditInterest({
     if (!interestId) return;
 
     const payload: CreateInterestBodyType = {
-      code: values.code.trim(),
+      lang: values.lang.trim(),
       name: values.name.trim(),
       description: values.description.trim(),
       iconUrl: values.iconUrl?.trim() || undefined,
@@ -187,11 +187,11 @@ export function EditInterest({
           >
             <FormField
               control={form.control}
-              name="code"
+              name="lang"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {safeTranslate("form.codeLabel", "Locale code")}
+                    {safeTranslate("form.langLabel", "Language code")}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -199,7 +199,7 @@ export function EditInterest({
                       maxLength={2}
                       disabled={isFormDisabled}
                       placeholder={safeTranslate(
-                        "form.codePlaceholder",
+                        "form.langPlaceholder",
                         "e.g. en"
                       )}
                     />

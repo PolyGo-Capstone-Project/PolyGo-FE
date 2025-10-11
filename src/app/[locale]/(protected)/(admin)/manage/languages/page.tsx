@@ -182,6 +182,7 @@ export default function ManageLanguagesPage() {
     options?: { file?: File | null }
   ) => {
     const trimmedCode = values.code.trim();
+    const trimmedLang = values.lang.trim();
     const trimmedName = values.name.trim();
     let iconUrl = values.iconUrl?.trim() || undefined;
 
@@ -195,6 +196,7 @@ export default function ManageLanguagesPage() {
 
     const payload: CreateLanguageBodyType = {
       code: trimmedCode,
+      lang: trimmedLang,
       name: trimmedName,
       ...(iconUrl ? { iconUrl } : {}),
     };
@@ -208,6 +210,7 @@ export default function ManageLanguagesPage() {
     options?: { file?: File | null }
   ) => {
     const trimmedCode = values.code.trim();
+    const trimmedLang = values.lang.trim();
     const trimmedName = values.name.trim();
     let iconUrl = values.iconUrl?.trim() || undefined;
 
@@ -221,6 +224,7 @@ export default function ManageLanguagesPage() {
 
     const payload: UpdateLanguageBodyType = {
       code: trimmedCode,
+      lang: trimmedLang,
       name: trimmedName,
       ...(iconUrl ? { iconUrl } : {}),
     };

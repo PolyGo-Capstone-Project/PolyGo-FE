@@ -29,6 +29,7 @@ import { CreateLanguageBodySchema, CreateLanguageBodyType } from "@/models";
 
 const DEFAULT_VALUES: CreateLanguageBodyType = {
   code: "",
+  lang: "",
   name: "",
   iconUrl: "",
 };
@@ -120,6 +121,7 @@ export function AddLanguage({
   const handleSubmit = form.handleSubmit(async (values) => {
     const payload: CreateLanguageBodyType = {
       code: values.code.trim(),
+      lang: values.lang.trim(),
       name: values.name.trim(),
       iconUrl: values.iconUrl?.trim() || undefined,
     };
@@ -168,6 +170,29 @@ export function AddLanguage({
                       placeholder={safeTranslate(
                         "form.codePlaceholder",
                         "e.g. EN"
+                      )}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="lang"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {safeTranslate("form.langLabel", "Translation locale")}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      maxLength={2}
+                      placeholder={safeTranslate(
+                        "form.langPlaceholder",
+                        "e.g. en"
                       )}
                     />
                   </FormControl>

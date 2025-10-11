@@ -817,6 +817,7 @@
       "refresh": "Làm mới",
       "fallbackName": "Tên dự phòng",
       "columns": {
+        "no": "STT",
         "id": "ID",
         "name": "Tên hiển thị",
         "code": "Mã",
@@ -836,6 +837,8 @@
       "form": {
         "codeLabel": "Mã ngôn ngữ",
         "codePlaceholder": "vd. EN",
+        "langLabel": "Mã bản dịch",
+        "langPlaceholder": "vd. en",
         "nameLabel": "Tên hiển thị",
         "namePlaceholder": "Tiếng Anh",
         "flagLabel": "Biểu tượng cờ",
@@ -882,9 +885,10 @@
       "pageSize": "Số dòng mỗi trang",
       "refresh": "Làm mới",
       "columns": {
+        "no": "STT",
         "id": "ID",
         "name": "Tên sở thích",
-        "code": "Mã ngôn ngữ",
+        "lang": "Mã ngôn ngữ",
         "icon": "Biểu tượng",
         "locale": "Ngôn ngữ",
         "createdAt": "Ngày tạo",
@@ -900,9 +904,9 @@
         "next": "Tiếp"
       },
       "form": {
-        "codeLabel": "Mã ngôn ngữ",
-        "codePlaceholder": "vd. en",
-        "codeHint": "Sử dụng mã ngôn ngữ cho bản dịch này.",
+        "langLabel": "Mã ngôn ngữ",
+        "langPlaceholder": "vd. en",
+        "langHint": "Sử dụng mã ngôn ngữ cho bản dịch này.",
         "nameLabel": "Tên sở thích",
         "namePlaceholder": "vd. Du lịch",
         "descriptionLabel": "Mô tả",

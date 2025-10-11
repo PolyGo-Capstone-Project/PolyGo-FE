@@ -9,7 +9,7 @@ import {
 } from "@/models/common.model";
 
 export const LanguageSchema = z.object({
-  id: z.string().max(2),
+  id: z.string(),
   code: z.string().max(2),
   iconUrl: z.string().optional(),
   deletedAt: z.iso.datetime().nullable(),
@@ -19,13 +19,13 @@ export const LanguageSchema = z.object({
 
 export const LanguageTranslationsSchema = z.object({
   id: z.string(),
-  code: z.string().max(2),
+  lang: z.string().max(2),
   name: z.string().max(100),
   languageId: z.string().max(2),
 });
 
 export const LanguageListItemSchema = LanguageSchema.merge(
-  LanguageTranslationsSchema.pick({ name: true })
+  LanguageTranslationsSchema.pick({ name: true, lang: true })
 );
 
 export const GetLanguagesQuerySchema = PaginationLangQuerySchema;
@@ -53,9 +53,7 @@ export const GetLanguageByIdResSchema = z.object({
 export const CreateLanguageBodySchema = LanguageSchema.pick({
   code: true,
   iconUrl: true,
-}).extend({
-  name: z.string().max(100),
-});
+}).merge(LanguageTranslationsSchema.pick({ lang: true, name: true }));
 
 //put
 export const UpdateLanguageBodySchema = CreateLanguageBodySchema;

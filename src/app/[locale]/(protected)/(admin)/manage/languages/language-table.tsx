@@ -195,73 +195,79 @@ export function LanguageTable({
       );
     }
 
-    return items.map((language) => (
-      <tr key={language.id} className="border-b last:border-b-0">
-        <td className="px-4 py-3 font-medium uppercase">{language.id}</td>
-        <td className="px-4 py-3">
-          <div className="flex flex-col">
-            <span className="font-medium">{language.name}</span>
-            <span className="text-muted-foreground text-xs">
-              {safeTranslate("languageIdLabel", "Internal ID")}: {language.id}
-            </span>
-          </div>
-        </td>
-        <td className="px-4 py-3">
-          <Badge variant="secondary">{language.code?.toUpperCase()}</Badge>
-        </td>
-        <td className="px-4 py-3">
-          {language.iconUrl ? (
-            <div className="flex  items-center gap-3">
-              <span className="relative h-10 w-10 overflow-hidden rounded bg-muted">
-                <Image
-                  src={language.iconUrl}
-                  alt={safeTranslate("columns.flagAlt", "Language flag image")}
-                  fill
-                  sizes="40px"
-                  className="object-cover"
-                  unoptimized
-                />
+    return items.map((language, index) => {
+      const rowNumber = (pagination.currentPage - 1) * pageSize + index + 1;
+      return (
+        <tr key={language.id} className="border-b last:border-b-0">
+          <td className="px-4 py-3 text-center font-medium">{rowNumber}</td>
+          <td className="px-4 py-3">
+            <div className="flex flex-col">
+              <span className="font-medium">{language.name}</span>
+              <span className="text-muted-foreground text-xs">
+                {safeTranslate("languageIdLabel", "Internal ID")}: {language.id}
               </span>
             </div>
-          ) : (
-            <span className="text-muted-foreground">{EMPTY_ICON}</span>
-          )}
-        </td>
-        <td className="px-4 py-3 text-nowrap">
-          {formatDateTime(language.createdAt)}
-        </td>
-        <td className="px-4 py-3 text-nowrap">
-          {formatDateTime(language.lastUpdatedAt)}
-        </td>
-        <td className="px-4 py-3">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onOpenEdit(language.id)}
-            >
-              <IconPencil className="size-4" />
-              <span className="sr-only">{safeTranslate("edit", "Edit")}</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onDelete(language)}
-              disabled={isDeletePending}
-            >
-              {isDeletePending && deletingId === language.id ? (
-                <Spinner className="size-4" />
-              ) : (
-                <IconTrash className="size-4 text-destructive" />
-              )}
-              <span className="sr-only">
-                {safeTranslate("delete", "Delete")}
-              </span>
-            </Button>
-          </div>
-        </td>
-      </tr>
-    ));
+          </td>
+          <td className="px-4 py-3">
+            <Badge variant="secondary">{language.code?.toUpperCase()}</Badge>
+          </td>
+          <td className="px-4 py-3">
+            {language.iconUrl ? (
+              <div className="flex  items-center gap-3">
+                <span className="relative h-10 w-10 overflow-hidden rounded bg-muted">
+                  <Image
+                    src={language.iconUrl}
+                    alt={safeTranslate(
+                      "columns.flagAlt",
+                      "Language flag image"
+                    )}
+                    fill
+                    sizes="40px"
+                    className="object-cover"
+                    unoptimized
+                  />
+                </span>
+              </div>
+            ) : (
+              <span className="text-muted-foreground">{EMPTY_ICON}</span>
+            )}
+          </td>
+          <td className="px-4 py-3 text-nowrap">
+            {formatDateTime(language.createdAt)}
+          </td>
+          <td className="px-4 py-3 text-nowrap">
+            {formatDateTime(language.lastUpdatedAt)}
+          </td>
+          <td className="px-4 py-3">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onOpenEdit(language.id)}
+              >
+                <IconPencil className="size-4" />
+                <span className="sr-only">{safeTranslate("edit", "Edit")}</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onDelete(language)}
+                disabled={isDeletePending}
+              >
+                {isDeletePending && deletingId === language.id ? (
+                  <Spinner className="size-4" />
+                ) : (
+                  <IconTrash className="size-4 text-destructive" />
+                )}
+                <span className="sr-only">
+                  {safeTranslate("delete", "Delete")}
+                </span>
+              </Button>
+            </div>
+          </td>
+        </tr>
+      );
+    });
   };
 
   return (
@@ -349,8 +355,8 @@ export function LanguageTable({
           <table className="w-full min-w-[640px] text-sm">
             <thead>
               <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                <th className="px-4 py-3 font-medium">
-                  {safeTranslate("columns.id", "ID")}
+                <th className="px-4 py-3 text-center font-medium">
+                  {safeTranslate("columns.no", "No.")}
                 </th>
                 <th className="px-4 py-3 font-medium">
                   {safeTranslate("columns.name", "Display name")}
