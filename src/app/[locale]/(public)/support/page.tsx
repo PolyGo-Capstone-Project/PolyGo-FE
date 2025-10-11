@@ -281,46 +281,6 @@ export default function SupportPage() {
             </CardContent>
           </Card>
 
-          {/* Quick Actions (Demo & Chat) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-            <Card className="border-2 hover:shadow-lg transition-shadow">
-              <CardContent className="text-center pt-6">
-                <div className="mb-3 text-3xl">📅</div>
-                <div className="font-semibold text-base mb-1">
-                  {t("actions.bookDemo.title")}
-                </div>
-                <div className="text-sm text-muted-foreground mb-4">
-                  {t("actions.bookDemo.desc")}
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => alert(t("actions.bookDemo.cta"))}
-                  className="w-full"
-                >
-                  {t("actions.bookDemo.cta")}
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 hover:shadow-lg transition-shadow">
-              <CardContent className="text-center pt-6">
-                <div className="mb-3 text-3xl">💬</div>
-                <div className="font-semibold text-base mb-1">
-                  {t("actions.liveChat.title")}
-                </div>
-                <div className="text-sm text-muted-foreground mb-4">
-                  {t("actions.liveChat.desc")}
-                </div>
-                <Button
-                  onClick={() => alert(t("actions.liveChat.cta"))}
-                  className="w-full"
-                >
-                  {t("actions.liveChat.cta")}
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
           {/* FAQ Card */}
           <Card className="border-2">
             <CardHeader>
