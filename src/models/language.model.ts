@@ -11,7 +11,7 @@ import {
 export const LanguageSchema = z.object({
   id: z.string().max(2),
   code: z.string().max(2),
-  flagIconUrl: z.string().optional(),
+  iconUrl: z.string().optional(),
   deletedAt: z.iso.datetime().nullable(),
   createdAt: z.iso.datetime(),
   lastUpdatedAt: z.iso.datetime(),
@@ -52,7 +52,7 @@ export const GetLanguageByIdResSchema = z.object({
 //Post
 export const CreateLanguageBodySchema = LanguageSchema.pick({
   code: true,
-  flagIconUrl: true,
+  iconUrl: true,
 }).extend({
   name: z.string().max(100),
 });

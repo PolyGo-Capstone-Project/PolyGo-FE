@@ -30,7 +30,7 @@ import { CreateLanguageBodySchema, CreateLanguageBodyType } from "@/models";
 const DEFAULT_VALUES: CreateLanguageBodyType = {
   code: "",
   name: "",
-  flagIconUrl: "",
+  iconUrl: "",
 };
 
 type SafeTranslate = (
@@ -103,7 +103,7 @@ export function AddLanguage({
     flagPreviewBlobRef.current = previewUrl;
     setFlagFile(file);
     setFlagPreview(previewUrl);
-    form.setValue("flagIconUrl", file.name, { shouldDirty: true });
+    form.setValue("iconUrl", file.name, { shouldDirty: true });
     event.target.value = "";
   };
 
@@ -114,14 +114,14 @@ export function AddLanguage({
     }
     setFlagFile(null);
     setFlagPreview("");
-    form.setValue("flagIconUrl", "", { shouldDirty: true });
+    form.setValue("iconUrl", "", { shouldDirty: true });
   };
 
   const handleSubmit = form.handleSubmit(async (values) => {
     const payload: CreateLanguageBodyType = {
       code: values.code.trim(),
       name: values.name.trim(),
-      flagIconUrl: values.flagIconUrl?.trim() || undefined,
+      iconUrl: values.iconUrl?.trim() || undefined,
     };
 
     try {
@@ -200,7 +200,7 @@ export function AddLanguage({
 
             <FormField
               control={form.control}
-              name="flagIconUrl"
+              name="iconUrl"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>

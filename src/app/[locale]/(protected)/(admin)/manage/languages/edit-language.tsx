@@ -57,7 +57,7 @@ type EditLanguageProps = {
 const DEFAULT_VALUES: CreateLanguageBodyType = {
   code: "",
   name: "",
-  flagIconUrl: "",
+  iconUrl: "",
 };
 
 export function EditLanguage({
@@ -97,10 +97,10 @@ export function EditLanguage({
       form.reset({
         code: language.code ?? "",
         name: language.name ?? "",
-        flagIconUrl: language.flagIconUrl ?? "",
+        iconUrl: language.iconUrl ?? "",
       });
       setFlagFile(null);
-      setFlagPreview(language.flagIconUrl ?? "");
+      setFlagPreview(language.iconUrl ?? "");
       flagPreviewBlobRef.current = null;
     }
   }, [form, language, open]);
@@ -126,7 +126,7 @@ export function EditLanguage({
     flagPreviewBlobRef.current = previewUrl;
     setFlagFile(file);
     setFlagPreview(previewUrl);
-    form.setValue("flagIconUrl", file.name, { shouldDirty: true });
+    form.setValue("iconUrl", file.name, { shouldDirty: true });
 
     event.target.value = "";
   };
@@ -137,9 +137,9 @@ export function EditLanguage({
       flagPreviewBlobRef.current = null;
     }
     setFlagFile(null);
-    const fallback = language?.flagIconUrl ?? "";
+    const fallback = language?.iconUrl ?? "";
     setFlagPreview(fallback);
-    form.setValue("flagIconUrl", fallback, { shouldDirty: true });
+    form.setValue("iconUrl", fallback, { shouldDirty: true });
   };
 
   const handleSubmit = form.handleSubmit(async (values) => {
@@ -148,7 +148,7 @@ export function EditLanguage({
     const payload: CreateLanguageBodyType = {
       code: values.code.trim(),
       name: values.name.trim(),
-      flagIconUrl: values.flagIconUrl?.trim() || undefined,
+      iconUrl: values.iconUrl?.trim() || undefined,
     };
 
     try {
@@ -230,7 +230,7 @@ export function EditLanguage({
 
             <FormField
               control={form.control}
-              name="flagIconUrl"
+              name="iconUrl"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
