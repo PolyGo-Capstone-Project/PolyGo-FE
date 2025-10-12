@@ -108,11 +108,11 @@ export const ChangePasswordBodySchema = z
   .object({
     currentPassword: z.string().min(6).max(100).regex(passwordRegex),
     newPassword: z.string().min(6).max(100).regex(passwordRegex),
-    confirmNewPassword: z.string().min(6).max(100).regex(passwordRegex),
+    confirmPassword: z.string().min(6).max(100).regex(passwordRegex),
   })
   .strict()
-  .superRefine(({ confirmNewPassword, newPassword }, ctx) => {
-    if (confirmNewPassword !== newPassword) {
+  .superRefine(({ confirmPassword, newPassword }, ctx) => {
+    if (confirmPassword !== newPassword) {
       ctx.addIssue({
         code: "custom",
         message: "Mật khẩu mới và mật khẩu xác nhận phải giống nhau",

@@ -23,6 +23,7 @@ export const InterestTranslationSchema = z.object({
   interestId: z.string(),
 });
 
+//FOR ADMIN ===========================================
 //GET ALL
 export const InterestListItemSchema = InterestSchema.merge(
   InterestTranslationSchema.pick({ lang: true, name: true, description: true })
@@ -58,6 +59,12 @@ export const CreateInterestBodySchema = InterestSchema.pick({
 //PUT
 export const UpdateInterestBodySchema = CreateInterestBodySchema;
 
+// FOR USER ============================================
+//GET user interests
+export const UserInterestsResSchema = GetInterestsResSchema;
+
+//===========================================
+
 //types
 export type InterestType = z.infer<typeof InterestSchema>;
 export type InterestTranslationType = z.infer<typeof InterestTranslationSchema>;
@@ -71,3 +78,4 @@ export type GetInterestByIdBodyType = z.infer<typeof GetInterestByIdBodySchema>;
 export type GetInterestByIdResType = z.infer<typeof GetInterestByIdResSchema>;
 export type CreateInterestBodyType = z.infer<typeof CreateInterestBodySchema>;
 export type UpdateInterestBodyType = z.infer<typeof UpdateInterestBodySchema>;
+export type UserInterestsResType = z.infer<typeof UserInterestsResSchema>;
