@@ -1,0 +1,240 @@
+﻿{
+  "admin": {
+    "title": "Trang quản trị",
+    "description": "Quản lý người dùng, nội dung và cài đặt hệ thống",
+    "nav": {
+      "dashboard": "Bảng điều khiển",
+      "users": "Người dùng",
+      "content": "Nội dung",
+      "reports": "Báo cáo",
+      "settings": "Cài đặt"
+    },
+    "cards": {
+      "totalUsers": {
+        "title": "Tổng người dùng",
+        "description": "Tổng số tài khoản đã đăng ký"
+      },
+      "activeUsers": {
+        "title": "Người dùng hoạt động",
+        "description": "Đăng nhập trong 30 ngày gần đây"
+      },
+      "newUsers": {
+        "title": "Người dùng mới",
+        "description": "Đăng ký trong tuần này"
+      },
+      "reports": {
+        "title": "Báo cáo",
+        "description": "Báo cáo mới tạo hôm nay"
+      }
+    },
+    "tables": {
+      "users": {
+        "headers": {
+          "user": "Người dùng",
+          "status": "Trạng thái",
+          "role": "Vai trò",
+          "createdAt": "Ngày tạo",
+          "actions": "Thao tác"
+        },
+        "actions": {
+          "view": "Xem chi tiết",
+          "edit": "Chỉnh sửa",
+          "disable": "Vô hiệu",
+          "enable": "Kích hoạt",
+          "delete": "Xoá"
+        },
+        "empty": "Chưa có người dùng nào",
+        "loading": "Đang tải người dùng..."
+      },
+      "reports": {
+        "headers": {
+          "user": "Người báo cáo",
+          "type": "Loại",
+          "target": "Đối tượng",
+          "status": "Trạng thái",
+          "createdAt": "Ngày tạo"
+        },
+        "empty": "Không có báo cáo nào",
+        "loading": "Đang tải dữ liệu báo cáo..."
+      }
+    },
+    "filters": {
+      "search": "Tìm kiếm",
+      "status": "Trạng thái",
+      "role": "Vai trò",
+      "dateRange": "Khoảng thời gian",
+      "apply": "Áp dụng",
+      "reset": "Đặt lại"
+    },
+    "status": {
+      "active": "Hoạt động",
+      "inactive": "Không hoạt động",
+      "banned": "Đã khoá",
+      "pending": "Đang chờ"
+    },
+    "dialog": {
+      "confirmDisable": {
+        "title": "Vô hiệu hoá người dùng",
+        "description": "Bạn có chắc muốn vô hiệu hoá người dùng này? Họ sẽ không thể đăng nhập cho đến khi được kích hoạt lại.",
+        "confirm": "Vô hiệu hoá",
+        "cancel": "Huỷ"
+      },
+      "confirmEnable": {
+        "title": "Kích hoạt người dùng",
+        "description": "Cho phép người dùng này hoạt động trở lại.",
+        "confirm": "Kích hoạt",
+        "cancel": "Huỷ"
+      },
+      "confirmDelete": {
+        "title": "Xoá người dùng",
+        "description": "Hành động này không thể hoàn tác. Bạn chắc chắn?",
+        "confirm": "Xoá",
+        "cancel": "Huỷ"
+      }
+    },
+    "toast": {
+      "updateSuccess": "Cập nhật thành công",
+      "updateError": "Không thể cập nhật, vui lòng thử lại",
+      "deleteSuccess": "Đã xoá người dùng",
+      "deleteError": "Không thể xoá, vui lòng thử lại"
+    },
+    "gift": {
+      "title": "Quà tặng",
+      "description": "Quản lý quà tặng và cài đặt liên quan"
+    },
+    "languages": {
+      "title": "Ngôn ngữ",
+      "description": "Quản lý các ngôn ngữ được sử dụng trên nền tảng PolyGo.",
+      "confirmDelete": "Bạn có chắc muốn xoá {name}?",
+      "error": "Không thể tải danh sách ngôn ngữ.",
+      "errorTitle": "Đã xảy ra lỗi",
+      "retry": "Thử lại",
+      "emptyTitle": "Chưa có ngôn ngữ nào",
+      "emptyDescription": "Hãy thêm một ngôn ngữ mới để bắt đầu.",
+      "createButton": "Thêm ngôn ngữ",
+      "languageIdLabel": "ID nội bộ",
+      "edit": "Chỉnh sửa",
+      "delete": "Xoá",
+      "tableTitle": "Danh mục ngôn ngữ",
+      "tableDescription": "Xem, thêm hoặc cập nhật các ngôn ngữ có sẵn.",
+      "languageFilter": "Ngôn ngữ hiển thị",
+      "pageSize": "Số dòng",
+      "refresh": "Làm mới",
+      "fallbackName": "Tên mặc định",
+      "columns": {
+        "no": "STT",
+        "id": "ID",
+        "name": "Tên hiển thị",
+        "code": "Mã",
+        "flag": "Quốc kỳ",
+        "actions": "Thao tác",
+        "createdAt": "Ngày tạo",
+        "lastUpdatedAt": "Cập nhật cuối",
+        "flagAlt": "Ảnh quốc kỳ"
+      },
+      "pagination": {
+        "summary": "Hiển thị {start}-{end} / {total} ngôn ngữ",
+        "empty": "Không có ngôn ngữ để hiển thị",
+        "previous": "Trước",
+        "page": "Trang {page}/{total}",
+        "next": "Sau"
+      },
+      "form": {
+        "codeLabel": "Mã ngôn ngữ",
+        "codePlaceholder": "vd: EN",
+        "langLabel": "Locale bản dịch",
+        "langPlaceholder": "vd: en",
+        "nameLabel": "Tên hiển thị",
+        "namePlaceholder": "English",
+        "flagLabel": "Biểu tượng quốc kỳ",
+        "flagPlaceholder": "Chưa chọn tệp",
+        "flagPreviewAlt": "Xem trước quốc kỳ",
+        "flagRemove": "Xoá",
+        "flagHint": "Tải lên ảnh vuông (PNG, JPG, SVG) cho biểu tượng ngôn ngữ.",
+        "cancel": "Huỷ",
+        "submitCreate": "Tạo mới",
+        "submitUpdate": "Lưu thay đổi"
+      },
+      "sheet": {
+        "createTitle": "Thêm ngôn ngữ",
+        "createDescription": "Khai báo mã và tên hiển thị cho ngôn ngữ mới.",
+        "editTitle": "Chỉnh sửa ngôn ngữ",
+        "editDescription": "Cập nhật thông tin cho ngôn ngữ đã chọn."
+      },
+      "deleteDialog": {
+        "title": "Xoá ngôn ngữ",
+        "description": "Bạn có chắc muốn xoá {name}? Hành động này không thể hoàn tác.",
+        "cancel": "Huỷ",
+        "confirm": "Xoá"
+      },
+      "deleting": "Đang xoá..."
+    },
+    "interests": {
+      "title": "Sở thích",
+      "description": "Quản lý các sở thích và tuỳ chọn cho người dùng",
+      "confirmDelete": "Bạn có chắc muốn xoá {name}?",
+      "error": "Không thể tải danh sách sở thích.",
+      "errorTitle": "Đã xảy ra lỗi",
+      "retry": "Thử lại",
+      "emptyTitle": "Chưa có sở thích nào",
+      "emptyDescription": "Hãy thêm một sở thích mới để bắt đầu.",
+      "createButton": "Thêm sở thích",
+      "edit": "Chỉnh sửa",
+      "delete": "Xoá",
+      "tableTitle": "Danh mục sở thích",
+      "tableDescription": "Xem, thêm hoặc cập nhật các sở thích trên nền tảng.",
+      "languageFilter": "Ngôn ngữ hiển thị",
+      "pageSize": "Số dòng",
+      "refresh": "Làm mới",
+      "columns": {
+        "no": "STT",
+        "id": "ID",
+        "name": "Tên sở thích",
+        "lang": "Locale",
+        "icon": "Biểu tượng",
+        "locale": "Ngôn ngữ",
+        "createdAt": "Ngày tạo",
+        "lastUpdatedAt": "Cập nhật cuối",
+        "actions": "Thao tác",
+        "iconAlt": "Ảnh biểu tượng"
+      },
+      "pagination": {
+        "summary": "Hiển thị {start}-{end} / {total} sở thích",
+        "empty": "Không có sở thích để hiển thị",
+        "previous": "Trước",
+        "page": "Trang {page}/{total}",
+        "next": "Sau"
+      },
+      "form": {
+        "langLabel": "Mã ngôn ngữ",
+        "langPlaceholder": "vd: vi",
+        "langHint": "Sử dụng mã ngôn ngữ cho bản dịch này.",
+        "nameLabel": "Tên sở thích",
+        "namePlaceholder": "vd: Du lịch",
+        "descriptionLabel": "Mô tả",
+        "descriptionPlaceholder": "Mô tả ngắn gọn về sở thích",
+        "iconLabel": "Biểu tượng",
+        "iconPlaceholder": "Chưa chọn tệp",
+        "iconPreviewAlt": "Xem trước biểu tượng",
+        "iconRemove": "Xoá",
+        "iconHint": "Tải lên ảnh vuông (PNG, JPG, SVG) cho biểu tượng của sở thích.",
+        "cancel": "Huỷ",
+        "submitCreate": "Tạo mới",
+        "submitUpdate": "Lưu thay đổi"
+      },
+      "sheet": {
+        "createTitle": "Thêm sở thích",
+        "createDescription": "Khai báo locale, tên và mô tả cho sở thích mới.",
+        "editTitle": "Chỉnh sửa sở thích",
+        "editDescription": "Cập nhật thông tin cho sở thích đã chọn."
+      },
+      "deleteDialog": {
+        "title": "Xoá sở thích",
+        "description": "Bạn có chắc muốn xoá {name}? Hành động này không thể hoàn tác.",
+        "cancel": "Huỷ",
+        "confirm": "Xoá"
+      },
+      "deleting": "Đang xoá..."
+    }
+  }
+}

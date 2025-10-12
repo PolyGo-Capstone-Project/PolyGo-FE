@@ -1,0 +1,106 @@
+{
+  "about": {
+    "title": "About PolyGo",
+    "subtitle": "Connecting Language Learners with Native Speakers Worldwide",
+    "hero": {
+      "tagline": "Break Language Barriers Through Real Conversations",
+      "description": "PolyGo is an innovative online platform that connects language learners with native speakers globally, providing real-time communication, AI-powered assistance, and cultural immersion experiences."
+    },
+    "problem": {
+      "title": "The Problem We Solve",
+      "description": "Language learners often lack real-world conversation practice with native speakers. Traditional courses focus on grammar and vocabulary, leaving students unable to communicate confidently.",
+      "points": {
+        "p1": "Difficulty finding suitable practice partners (timezone, interests, proficiency level)",
+        "p2": "Lack of instant support tools (translation/error correction)",
+        "p3": "Limited cultural exchange opportunities beyond dry language learning"
+      }
+    },
+    "solution": {
+      "title": "Our Solution",
+      "description": "A cross-platform language & cultural exchange platform that connects learners with native speakers worldwide, featuring AI-powered real-time assistance and cultural immersion events."
+    },
+    "features": {
+      "title": "Core Features",
+      "matching": {
+        "title": "Smart Matching",
+        "description": "Intelligent partner matching based on language goals, interests, proficiency level, and timezone"
+      },
+      "chat": {
+        "title": "Real-Time Communication",
+        "description": "Text, voice, and video chat with seamless WebRTC integration for instant conversations"
+      },
+      "ai": {
+        "title": "AI Translation & Correction",
+        "description": "Contextual real-time translation and grammar correction to help you learn as you speak"
+      },
+      "events": {
+        "title": "Cultural Events",
+        "description": "Join online workshops, cultural discussions, and immersion sessions with global communities"
+      },
+      "gamification": {
+        "title": "Gamification",
+        "description": "Earn XP, badges, and streaks to stay motivated on your language learning journey"
+      },
+      "subscription": {
+        "title": "Flexible Plans",
+        "description": "Free tier for basic features, Plus subscription for advanced AI and exclusive events"
+      }
+    },
+    "usps": {
+      "title": "What Makes Us Different",
+      "usp1": {
+        "title": "AI Contextual Correction",
+        "description": "Unlike basic translation tools, our AI understands conversation context and provides natural corrections in real-time"
+      },
+      "usp2": {
+        "title": "Cultural Immersion Events",
+        "description": "Go beyond language learning with live cultural workshops, discussions, and community events"
+      },
+      "usp3": {
+        "title": "Community-Driven",
+        "description": "Built by language learners, for language learners. Safe, supportive, and globally connected"
+      }
+    },
+    "tech": {
+      "title": "Technology Stack",
+      "frontend": "React (Web) + Flutter (Mobile)",
+      "backend": "ASP.NET Core / Node.js + MongoDB",
+      "realtime": "SignalR (Chat) + WebRTC (Voice/Video)",
+      "ai": "OpenAI API + HuggingFace NLP",
+      "cloud": "Azure / AWS with Docker deployment"
+    },
+    "stats": {
+      "title": "Our Impact",
+      "users": "100K+",
+      "usersLabel": "Active Users",
+      "languages": "50+",
+      "languagesLabel": "Languages Supported",
+      "events": "500+",
+      "eventsLabel": "Cultural Events Monthly",
+      "satisfaction": "4.8/5",
+      "satisfactionLabel": "User Satisfaction"
+    },
+    "competitors": {
+      "title": "How We Compare",
+      "description": "We analyzed 10+ language exchange platforms to build something truly unique",
+      "apps": {
+        "hellotalk": "HelloTalk - 30M+ users, auto-translate",
+        "tandem": "Tandem - Smart matching by interests",
+        "speaky": "Speaky - Fast partner finding",
+        "italki": "italki - Professional tutors",
+        "cambly": "Cambly - 24/7 native speakers"
+      },
+      "ourEdge": "PolyGo combines the best of all: smart matching + AI contextual correction + cultural immersion events"
+    },
+    "cta": {
+      "title": "Ready to Start Your Language Journey?",
+      "description": "Join thousands of learners connecting with native speakers worldwide",
+      "button": "Get Started Free",
+      "learnMore": "Learn More"
+    },
+    "contact": {
+      "title": "Get in Touch",
+      "description": "Have any questions about our platform? Don't hesitate to email the PolyGo support team."
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "about": {
+    "title": "Về PolyGo",
+    "subtitle": "Kết Nối Người Học Ngôn Ngữ với Người Bản Ngữ Toàn Cầu",
+    "hero": {
+      "tagline": "Phá Vỡ Rào Cản Ngôn Ngữ Qua Giao Tiếp Thực Tế",
+      "description": "PolyGo là nền tảng trực tuyến sáng tạo kết nối người học ngôn ngữ với người bản ngữ trên toàn cầu, cung cấp giao tiếp thời gian thực, hỗ trợ AI và trải nghiệm hòa nhập văn hóa."
+    },
+    "problem": {
+      "title": "Vấn Đề Chúng Tôi Giải Quyết",
+      "description": "Người học ngôn ngữ thường thiếu môi trường thực hành giao tiếp với người bản ngữ. Các khóa học truyền thống tập trung vào ngữ pháp và từ vựng, khiến học viên không tự tin giao tiếp.",
+      "points": {
+        "p1": "Khó tìm đối tác luyện tập phù hợp (múi giờ, sở thích, trình độ)",
+        "p2": "Thiếu công cụ hỗ trợ tức thời (dịch/sửa lỗi)",
+        "p3": "Ít cơ hội trao đổi văn hóa, chỉ học ngôn ngữ khô khan"
+      }
+    },
+    "solution": {
+      "title": "Giải Pháp Của Chúng Tôi",
+      "description": "Nền tảng giao lưu ngôn ngữ & văn hóa đa nền tảng kết nối người học với người bản ngữ toàn cầu, có hỗ trợ AI thời gian thực và sự kiện hòa nhập văn hóa."
+    },
+    "features": {
+      "title": "Tính Năng Cốt Lõi",
+      "matching": {
+        "title": "Ghép Đôi Thông Minh",
+        "description": "Ghép đôi đối tác thông minh dựa trên mục tiêu ngôn ngữ, sở thích, trình độ và múi giờ"
+      },
+      "chat": {
+        "title": "Giao Tiếp Thời Gian Thực",
+        "description": "Chat văn bản, thoại và video với tích hợp WebRTC mượt mà cho cuộc trò chuyện tức thì"
+      },
+      "ai": {
+        "title": "Dịch & Sửa Lỗi AI",
+        "description": "AI ngữ cảnh dịch và sửa lỗi thời gian thực để bạn học trong lúc trò chuyện"
+      },
+      "events": {
+        "title": "Sự Kiện Văn Hóa",
+        "description": "Tham gia workshop, thảo luận văn hóa và hoạt động cộng đồng hấp dẫn"
+      },
+      "gamification": {
+        "title": "Gamification",
+        "description": "Hệ thống XP, huy hiệu và bảng xếp hạng giúp duy trì động lực học tập"
+      },
+      "subscription": {
+        "title": "Gói Linh Hoạt",
+        "description": "Tầng miễn phí cho tính năng cơ bản, gói Plus cho AI nâng cao và sự kiện độc quyền"
+      }
+    },
+    "usps": {
+      "title": "Điểm Khác Biệt",
+      "usp1": {
+        "title": "AI Hiểu Ngữ Cảnh",
+        "description": "Khác với công cụ dịch cơ bản, AI của chúng tôi hiểu ngữ cảnh cuộc trò chuyện và đề xuất chỉnh sửa tự nhiên"
+      },
+      "usp2": {
+        "title": "Sự Kiện Văn Hóa",
+        "description": "Vượt ra ngoài việc học ngôn ngữ với workshop, thảo luận và cộng đồng văn hóa trực tuyến"
+      },
+      "usp3": {
+        "title": "Cộng Đồng Dẫn Dắt",
+        "description": "Được xây dựng bởi người học ngôn ngữ, dành cho người học ngôn ngữ. An toàn, hỗ trợ và kết nối toàn cầu"
+      }
+    },
+    "tech": {
+      "title": "Công Nghệ",
+      "frontend": "React (Web) + Flutter (Mobile)",
+      "backend": "ASP.NET Core / Node.js + MongoDB",
+      "realtime": "SignalR (Chat) + WebRTC (Voice/Video)",
+      "ai": "OpenAI API + HuggingFace NLP",
+      "cloud": "Azure / AWS với triển khai Docker"
+    },
+    "stats": {
+      "title": "Tác Động",
+      "users": "100K+",
+      "usersLabel": "Người dùng hoạt động",
+      "languages": "50+",
+      "languagesLabel": "Ngôn ngữ hỗ trợ",
+      "events": "500+",
+      "eventsLabel": "Sự kiện văn hóa mỗi tháng",
+      "satisfaction": "4.8/5",
+      "satisfactionLabel": "Mức độ hài lòng"
+    },
+    "competitors": {
+      "title": "Chúng Tôi Nổi Bật",
+      "description": "Chúng tôi phân tích hơn 10 nền tảng trao đổi ngôn ngữ để xây dựng giải pháp khác biệt",
+      "apps": {
+        "hellotalk": "HelloTalk - 30M+ người dùng, dịch tự động",
+        "tandem": "Tandem - Ghép đôi theo sở thích",
+        "speaky": "Speaky - Tìm đối tác nhanh",
+        "italki": "italki - Gia sư chuyên nghiệp",
+        "cambly": "Cambly - Người bản ngữ 24/7"
+      },
+      "ourEdge": "PolyGo kết hợp ưu điểm: ghép đôi thông minh + AI hiểu ngữ cảnh + sự kiện hoà nhập văn hóa"
+    },
+    "cta": {
+      "title": "Sẵn sàng bắt đầu hành trình ngôn ngữ?",
+      "description": "Tham gia cộng đồng hàng ngàn người học và kết nối với người bản ngữ",
+      "button": "Bắt đầu miễn phí",
+      "learnMore": "Tìm hiểu thêm"
+    },
+    "contact": {
+      "title": "Liên hệ",
+      "description": "Nếu bạn có câu hỏi về nền tảng, đừng ngại gửi mail cho đội ngũ PolyGo"
+    }
+  }
+}

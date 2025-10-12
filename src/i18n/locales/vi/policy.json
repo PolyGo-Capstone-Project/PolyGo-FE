@@ -1,0 +1,117 @@
+{
+  "policy": {
+    "header": "Chính sách bảo mật",
+    "title": "Chính sách Bảo mật Dữ liệu PolyGo",
+    "intro": "Chúng tôi coi trọng quyền riêng tư của bạn. Chính sách này giải thích cách chúng tôi thu thập, sử dụng và bảo vệ thông tin của bạn.",
+    "lastUpdated": "Cập nhật lần cuối",
+    "effectiveDate": "Có hiệu lực từ",
+    "commitment": {
+      "title": "Cam kết bảo mật",
+      "content": "PolyGo cam kết bảo vệ quyền riêng tư và dữ liệu cá nhân của bạn. Chúng tôi tuân thủ các quy định bảo vệ dữ liệu hiện hành và chỉ sử dụng thông tin của bạn cho các mục đích được nêu rõ trong chính sách này."
+    },
+    "dataCollection": {
+      "title": "Thu thập Thông tin",
+      "items": {
+        "personalTitle": "Thông tin cá nhân",
+        "personal": "Chúng tôi thu thập thông tin bạn cung cấp trực tiếp, bao gồm tên, email, mật khẩu (đã mã hóa), ngôn ngữ nói và ngôn ngữ muốn học.",
+        "usageTitle": "Thông tin sử dụng",
+        "usage": "Chúng tôi tự động thu thập thông tin về cách bạn truy cập và sử dụng Dịch vụ, bao gồm nhật ký tương tác, địa chỉ IP, và loại thiết bị.",
+        "communicationTitle": "Dữ liệu giao tiếp",
+        "communication": "Để đảm bảo an toàn và kiểm duyệt nội dung, chúng tôi có thể ghi lại hoặc phân tích tin nhắn văn bản và nhật ký cuộc gọi video/thoại.",
+        "paymentTitle": "Thông tin thanh toán",
+        "payment": "Thông tin thanh toán (ví dụ: chi tiết thẻ tín dụng) được xử lý bởi các đối tác thanh toán bảo mật của chúng tôi và không được PolyGo lưu trữ trực tiếp."
+      }
+    },
+    "dataUsage": {
+      "title": "Sử dụng Thông tin",
+      "items": {
+        "serviceTitle": "Cung cấp dịch vụ",
+        "service": "Để vận hành và duy trì Dịch vụ, bao gồm việc ghép đôi người học và quản lý các sự kiện giao tiếp.",
+        "improvementTitle": "Cải thiện trải nghiệm",
+        "improvement": "Để hiểu cách người dùng sử dụng Dịch vụ và phát triển các tính năng, sản phẩm và dịch vụ mới.",
+        "aiTitle": "Hỗ trợ AI",
+        "ai": "Một số dữ liệu giao tiếp (đã ẩn danh) có thể được sử dụng để đào tạo và cải thiện các mô hình AI/Machine Learning của chúng tôi.",
+        "securityTitle": "Bảo mật và an toàn",
+        "security": "Để ngăn chặn gian lận, lạm dụng, và các hoạt động bất hợp pháp khác, cũng như duy trì tính an toàn của Dịch vụ."
+      }
+    },
+    "dataSharing": {
+      "title": "Chia sẻ Thông tin",
+      "items": {
+        "noThirdPartyTitle": "Không chia sẻ với bên thứ ba",
+        "noThirdParty": "Chúng tôi không bán, cho thuê hoặc trao đổi thông tin cá nhân của bạn với bên thứ ba cho mục đích tiếp thị của họ.",
+        "serviceProvidersTitle": "Nhà cung cấp dịch vụ",
+        "serviceProviders": "Chúng tôi có thể chia sẻ dữ liệu với các nhà cung cấp dịch vụ bên thứ ba đáng tin cậy (ví dụ: lưu trữ, phân tích) chỉ khi cần thiết để thực hiện các chức năng của họ.",
+        "legalTitle": "Yêu cầu pháp lý",
+        "legal": "Chúng tôi có thể tiết lộ thông tin của bạn nếu cần thiết để tuân thủ luật pháp hoặc đáp ứng yêu cầu hợp lệ của chính phủ."
+      }
+    },
+    "userRights": {
+      "title": "Quyền của Người dùng",
+      "items": {
+        "accessTitle": "Quyền truy cập",
+        "access": "Bạn có quyền yêu cầu bản sao dữ liệu cá nhân mà chúng tôi nắm giữ về bạn.",
+        "editTitle": "Quyền chỉnh sửa",
+        "edit": "Bạn có quyền yêu cầu chúng tôi sửa chữa bất kỳ thông tin nào bạn tin là không chính xác hoặc không đầy đủ.",
+        "deleteTitle": "Quyền xóa",
+        "delete": "Bạn có quyền yêu cầu chúng tôi xóa dữ liệu cá nhân của bạn, tùy thuộc vào các nghĩa vụ pháp lý của chúng tôi.",
+        "exportTitle": "Quyền xuất dữ liệu",
+        "export": "Bạn có quyền nhận dữ liệu cá nhân của mình dưới dạng có cấu trúc, thường được sử dụng và có thể đọc được bằng máy."
+      }
+    },
+    "dataSecurity": {
+      "title": "Bảo mật Dữ liệu",
+      "items": {
+        "encryptionTitle": "Mã hóa dữ liệu",
+        "encryption": "Chúng tôi sử dụng mã hóa SSL/TLS để bảo vệ dữ liệu được truyền đi và mã hóa các dữ liệu nhạy cảm (như mật khẩu) khi lưu trữ.",
+        "paymentSecurityTitle": "Bảo mật thanh toán",
+        "paymentSecurity": "Tất cả các giao dịch thanh toán được xử lý bởi cổng thanh toán tuân thủ PCI DSS và không được PolyGo xử lý trên máy chủ của chính nó.",
+        "accessControlTitle": "Kiểm soát truy cập",
+        "accessControl": "Truy cập vào dữ liệu người dùng bị giới hạn nghiêm ngặt chỉ dành cho nhân viên có nhu cầu công việc thực sự.",
+        "monitoringTitle": "Giám sát bảo mật",
+        "monitoring": "Chúng tôi liên tục giám sát hệ thống của mình để phát hiện các lỗ hổng và các cuộc tấn công tiềm tàng."
+      }
+    },
+    "cookies": {
+      "title": "Cookies và Công nghệ Theo dõi",
+      "items": {
+        "essentialTitle": "Cookies cần thiết",
+        "essential": "Các cookies này là bắt buộc để bạn có thể điều hướng trang web và sử dụng các tính năng của nó, chẳng hạn như truy cập các khu vực an toàn.",
+        "analyticsTitle": "Cookies phân tích",
+        "analytics": "Chúng tôi sử dụng cookies của bên thứ ba (như Google Analytics) để thu thập thông tin về cách bạn tương tác với Dịch vụ của chúng tôi nhằm cải thiện hiệu suất.",
+        "managementTitle": "Quản lý cookies",
+        "management": "Bạn có thể quản lý hoặc từ chối cookies trong cài đặt trình duyệt của mình, nhưng điều này có thể ảnh hưởng đến chức năng của Dịch vụ."
+      }
+    },
+    "dataRetention": {
+      "title": "Lưu trữ Dữ liệu",
+      "items": {
+        "durationTitle": "Thời gian lưu trữ",
+        "duration": "Chúng tôi lưu giữ thông tin cá nhân của bạn chỉ trong khoảng thời gian cần thiết để thực hiện các mục đích được nêu trong chính sách này.",
+        "deletionTitle": "Xóa tài khoản",
+        "deletion": "Khi bạn xóa tài khoản, chúng tôi sẽ xóa hoặc ẩn danh thông tin cá nhân của bạn, ngoại trừ những thông tin mà chúng tôi phải giữ lại do luật pháp.",
+        "legalTitle": "Lưu trữ pháp lý",
+        "legal": "Dữ liệu có thể được giữ lại trong thời gian dài hơn nếu cần thiết để tuân thủ các nghĩa vụ pháp lý, giải quyết tranh chấp hoặc thực thi các thỏa thuận của chúng tôi."
+      }
+    },
+    "childrenPrivacy": {
+      "title": "Quyền riêng tư của Trẻ em",
+      "items": {
+        "ageLimitTitle": "Giới hạn độ tuổi",
+        "ageLimit": "PolyGo không cố ý thu thập thông tin cá nhân từ trẻ em dưới 13 tuổi. Nếu bạn tin rằng chúng tôi có thông tin đó, vui lòng liên hệ với chúng tôi.",
+        "protectionTitle": "Bảo vệ trẻ em",
+        "protection": "Nếu chúng tôi phát hiện ra rằng chúng tôi đã thu thập thông tin cá nhân từ trẻ em dưới 13 tuổi mà không có sự đồng ý của cha mẹ, chúng tôi sẽ thực hiện các bước để xóa thông tin đó."
+      }
+    },
+    "policyChanges": {
+      "title": "Thay đổi Chính sách",
+      "items": {
+        "notificationTitle": "Thông báo thay đổi",
+        "notification": "Chúng tôi có thể cập nhật chính sách này theo thời gian. Chúng tôi sẽ thông báo cho bạn về bất kỳ thay đổi quan trọng nào bằng cách đăng Chính sách mới và cập nhật ngày 'Cập nhật lần cuối'.",
+        "acceptanceTitle": "Chấp nhận thay đổi",
+        "acceptance": "Việc bạn tiếp tục sử dụng Dịch vụ sau khi bất kỳ thay đổi nào có hiệu lực sẽ cấu thành sự chấp nhận của bạn đối với Chính sách đã sửa đổi."
+      }
+    },
+    "footerNote": "Nếu bạn có bất kỳ câu hỏi nào về chính sách bảo mật này, vui lòng liên hệ với chúng tôi:"
+  }
+}

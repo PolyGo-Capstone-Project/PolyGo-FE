@@ -1,7 +1,48 @@
+import type { AbstractIntlMessages } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { defaultLocale, locales } from "./config";
+
+const messageNamespaces = [
+  "common",
+  "support",
+  "terms",
+  "policy",
+  "about",
+  "footer",
+  "guideline",
+  "home",
+  "auth",
+  "setup-profile",
+  "admin",
+];
+
+async function loadMessages(locale: string): Promise<AbstractIntlMessages> {
+  const namespaceModules = await Promise.all(
+    messageNamespaces.map(async (namespace) => {
+      try {
+        return (await import(`./locales/${locale}/${namespace}.json`)).default;
+      } catch (error) {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn(
+            `Missing translation namespace: ${namespace} for locale: ${locale}`
+          );
+        }
+
+        return {};
+      }
+    })
+  );
+
+  return namespaceModules.reduce<AbstractIntlMessages>(
+    (accumulator, messages) => ({
+      ...accumulator,
+      ...messages,
+    }),
+    {}
+  );
+}
 
 export default getRequestConfig(async ({ requestLocale }) => {
   // 🔥 Use requestLocale instead of locale (deprecated)
@@ -26,6 +67,6 @@ export default getRequestConfig(async ({ requestLocale }) => {
 
   return {
     locale, // 🔥 Return locale explicitly
-    messages: (await import(`./locales/${locale}/common.json`)).default,
+    messages: await loadMessages(locale),
   };
 });
