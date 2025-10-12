@@ -1,0 +1,22 @@
+{
+  "guideline": {
+    "title": "Community Guidelines",
+    "intro": "A code of conduct to maintain a safe, respectful, and culturally rich learning environment.",
+    "conduct": {
+      "title": "Conduct",
+      "items": {
+        "respect": "Respect linguistic and cultural differences; no harassment or discrimination.",
+        "safety": "Do not share sensitive information; be cautious when interacting outside the platform.",
+        "prohibited": "Prohibited content includes violence, pornography, hate speech, cheating, and spam."
+      }
+    },
+    "enforcement": {
+      "title": "Violation Enforcement",
+      "items": {
+        "warnings": "Warnings, muting microphone/chat, or feature limitations based on severity.",
+        "bans": "Temporary/permanent bans for repeat or serious violations.",
+        "appeals": "Transparent appeal process through support channels."
+      }
+    }
+  }
+}

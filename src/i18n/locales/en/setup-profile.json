@@ -1,0 +1,146 @@
+{
+  "setupProfile": {
+    "steps": {
+      "personalInfo": {
+        "title": "Personal Information",
+        "description": "Tell us about yourself",
+        "avatarLabel": "Profile Picture",
+        "avatarHint": "Max 5MB, JPG/PNG/GIF",
+        "avatarUploadSuccess": "Avatar uploaded successfully!",
+        "avatarUploadError": "Failed to upload avatar",
+        "avatarInvalidType": "Please select an image file",
+        "avatarTooLarge": "File size must be less than 5MB",
+        "nameLabel": "Full Name",
+        "namePlaceholder": "Enter your name",
+        "nameHint": "This is how others will see you",
+        "genderLabel": "Gender",
+        "introductionLabel": "About Me",
+        "introductionPlaceholder": "Tell us about yourself, your interests, and why you want to learn languages...",
+        "introductionHint": "Optional - help others know you better",
+        "skipNotice": "You can skip this step and complete it later in your profile settings"
+      },
+      "targetLanguage": {
+        "title": "Languages to Learn",
+        "description": "What do you want to learn?",
+        "heading": "Choose your target languages",
+        "subheading": "Select up to 3 languages you want to learn with PolyGo",
+        "selected": "{count} selected",
+        "maxReached": "Maximum 3 languages",
+        "clearAll": "Clear all",
+        "noLanguagesFound": "No languages available",
+        "noLanguagesDescription": "Please try again later"
+      },
+      "knownLanguages": {
+        "title": "Languages You Speak",
+        "description": "Languages you already know",
+        "heading": "Languages you already know",
+        "subheading": "Select all languages you can speak. This helps us find better conversation partners.",
+        "selected": "{count} selected",
+        "clearAll": "Clear all",
+        "noLanguagesFound": "No languages available",
+        "noLanguagesDescription": "Please try again later"
+      },
+      "interests": {
+        "title": "Your Interests",
+        "description": "Topics you'd like to discuss",
+        "heading": "What are your interests?",
+        "subheading": "Choose topics you'd like to talk about. This helps us match you with like-minded partners.",
+        "selected": "{count} selected",
+        "clearAll": "Clear all",
+        "noInterestsFound": "No interests available",
+        "noInterestsDescription": "Please try again later",
+        "skipNotice": "You can skip this step and add interests later"
+      }
+    },
+    "navigation": {
+      "back": "Back",
+      "continue": "Continue",
+      "complete": "Complete Setup",
+      "skip": "Skip to Dashboard",
+      "step": "Step {current} of {total}",
+      "saving": "Saving...",
+      "completing": "Completing..."
+    },
+    "proficiencyLevels": {
+      "beginner": {
+        "label": "Beginner",
+        "description": "Just starting out"
+      },
+      "elementary": {
+        "label": "Elementary",
+        "description": "Basic understanding"
+      },
+      "intermediate": {
+        "label": "Intermediate",
+        "description": "Can have conversations"
+      },
+      "advanced": {
+        "label": "Advanced",
+        "description": "Fluent speaker"
+      },
+      "native": {
+        "label": "Native",
+        "description": "Native speaker"
+      }
+    },
+    "interests": {
+      "travel": "Travel",
+      "food": "Food & Cooking",
+      "music": "Music",
+      "sports": "Sports",
+      "movies": "Movies & TV",
+      "books": "Books & Reading",
+      "technology": "Technology",
+      "art": "Art & Design",
+      "business": "Business",
+      "science": "Science",
+      "gaming": "Gaming",
+      "fashion": "Fashion"
+    },
+    "availability": {
+      "morning": {
+        "label": "Morning",
+        "time": "6:00 - 12:00"
+      },
+      "afternoon": {
+        "label": "Afternoon",
+        "time": "12:00 - 18:00"
+      },
+      "evening": {
+        "label": "Evening",
+        "time": "18:00 - 22:00"
+      },
+      "night": {
+        "label": "Night",
+        "time": "22:00 - 6:00"
+      }
+    },
+    "weeklyHours": {
+      "1": "1-2 hours per week",
+      "3": "3-5 hours per week",
+      "6": "6-10 hours per week",
+      "11": "10+ hours per week"
+    },
+    "errors": {
+      "name": {
+        "required": "Name is required",
+        "min": "Name must be at least {length} characters",
+        "max": "Name must be at most {length} characters"
+      },
+      "introduction": {
+        "max": "Introduction must be at most {length} characters"
+      },
+      "learningLanguages": {
+        "required": "Please select at least one language to learn"
+      },
+      "speakingLanguages": {
+        "required": "Please select at least one language you speak"
+      },
+      "interests": {
+        "required": "Please select at least one interest"
+      }
+    },
+    "personalInfoSaved": "Personal information saved successfully!",
+    "setupComplete": "Setup completed successfully!"
+  }
+}

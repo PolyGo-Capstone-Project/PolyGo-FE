@@ -1,0 +1,22 @@
+{
+  "guideline": {
+    "title": "Quy định cộng đồng",
+    "intro": "Bộ quy tắc ứng xử để giữ môi trường học tập an toàn, tôn trọng và giàu văn hoá.",
+    "conduct": {
+      "title": "Ứng xử",
+      "items": {
+        "respect": "Tôn trọng khác biệt ngôn ngữ, văn hoá; không quấy rối hay phân biệt đối xử.",
+        "safety": "Không chia sẻ thông tin nhạy cảm; thận trọng khi tương tác ngoài nền tảng.",
+        "prohibited": "Cấm nội dung bạo lực, khiêu dâm, thù ghét, gian lận, spam."
+      }
+    },
+    "enforcement": {
+      "title": "Xử lý vi phạm",
+      "items": {
+        "warnings": "Cảnh cáo, tắt micro/chat, giới hạn tính năng tuỳ mức độ.",
+        "bans": "Khoá tạm thời/vĩnh viễn khi tái phạm hoặc vi phạm nghiêm trọng.",
+        "appeals": "Quy trình khiếu nại minh bạch qua kênh hỗ trợ."
+      }
+    }
+  }
+}

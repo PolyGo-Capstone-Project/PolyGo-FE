@@ -1,0 +1,63 @@
+{
+  "support": {
+    "title": "Submit a Support Request",
+    "success": "Request sent successfully! We will contact you soon.",
+    "error": "Request failed. Please try again.",
+    "submit": "Submit Request",
+    "form": {
+      "title": "Send Consultation Request",
+      "subtitle": "Fill out the information below and we will contact you within 24 hours.",
+      "name": "Full Name",
+      "namePlaceholder": "John Doe",
+      "phone": "Phone Number",
+      "phonePlaceholder": "+1 555 123 4567",
+      "email": "Email",
+      "emailPlaceholder": "contact@company.com",
+      "company": "Organization / Company Name",
+      "companyPlaceholder": "Company Name",
+      "businessType": "Business Type",
+      "businessTypePlaceholder": "Select type",
+      "size": "Size",
+      "sizePlaceholder": "Select size",
+      "package": "Service Package",
+      "packagePlaceholder": "Select package",
+      "message": "Message",
+      "messagePlaceholder": "Describe your needs in detail...",
+      "submit": "Submit Consultation Request",
+      "sending": "Sending..."
+    },
+    "topic": "Topic",
+    "selectTopicPlaceholder": "Select topic",
+    "note": "We will contact you within 24 hours.",
+    "contact": {
+      "title": "Contact Information",
+      "description": "Contact our support team directly",
+      "emailLabel": "Email",
+      "emailValue": "polygocorp@gmail.com",
+      "phone": "+84 834 564 869",
+      "addressLabel": "Address",
+      "addressValue": "Ho Chi Minh City, Vietnam",
+      "hoursLabel": "Working Hours",
+      "hoursValue": "Mon - Fri: 8:00 - 18:00 / Sat: 8:00 - 12:00"
+    },
+    "actions": {
+      "bookDemo": {
+        "title": "Book a Demo",
+        "desc": "See a live 1:1 demo with an expert",
+        "cta": "Book Now"
+      },
+      "liveChat": {
+        "title": "Live Chat Support",
+        "desc": "Chat directly with our support team",
+        "cta": "Start Chat"
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "q1": "How does PolyGo work?",
+      "q2": "Do I have to pay to use PolyGo?",
+      "q3": "How can I find suitable study partners or language exchange partners?",
+      "q4": "Does PolyGo provide support for new users?"
+    }
+  }
+}

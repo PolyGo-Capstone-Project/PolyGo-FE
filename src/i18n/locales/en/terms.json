@@ -1,0 +1,82 @@
+{
+  "terms": {
+    "header": "Terms of Service",
+    "title": "PolyGo Terms of Service",
+    "intro": "These terms govern your use of PolyGo. Please read them carefully before using our services.",
+    "lastUpdated": "Last Updated",
+    "effectiveDate": "Effective Date",
+    "warning": {
+      "title": "Important",
+      "content": "By accessing and using the PolyGo service, you agree to comply with and be bound by these terms. If you do not agree with any part of these terms, please refrain from using our service."
+    },
+    "registration": {
+      "title": "Account Registration",
+      "items": {
+        "requiredTitle": "Registration Requirement",
+        "required": "Users must provide accurate and complete information to create an account. Any false information may lead to account suspension.",
+        "verificationTitle": "Email/Phone Verification",
+        "verification": "We require email or phone number verification to ensure user authenticity and system security.",
+        "ageTitle": "Age Policy",
+        "age": "The service is intended only for individuals 18 years of age or older, or 13 and older with parental/guardian consent."
+      }
+    },
+    "plans": {
+      "title": "Service Plans and Payment",
+      "items": {
+        "freeTitle": "Free Plan",
+        "free": "Provides access to basic features, including limited public event rooms and restricted random language matching.",
+        "plusTitle": "Plus Plan",
+        "plus": "Offers premium benefits such as unlimited access to private events, priority matching, and an ad-free experience."
+      }
+    },
+    "communication": {
+      "title": "Communication and Interaction Rules",
+      "items": {
+        "roomCapacityTitle": "Event Room Capacity",
+        "roomCapacity": "The maximum number of participants in event rooms is capped to ensure interaction quality.",
+        "eventVerificationTitle": "Event Verification",
+        "eventVerification": "Users creating events must have a verified profile. PolyGo reserves the right to moderate or delete inappropriate events.",
+        "entryVerificationTitle": "Entry Verification",
+        "entryVerification": "Certain events may require additional verification or approval from the organizer to join.",
+        "callDurationTitle": "Call Duration",
+        "callDuration": "The duration of random video/voice calls may be limited under the Free Plan.",
+        "matchingRulesTitle": "Matching Rules",
+        "matchingRules": "The matching system is based on interests, languages, and learning goals. Abuse of the matching feature is prohibited.",
+        "cancellationTitle": "Event Cancellation",
+        "cancellation": "Users must give 24 hours' notice to cancel a created event. Late cancellations may incur penalties."
+      }
+    },
+    "payments": {
+      "title": "Payment and Refund Terms",
+      "items": {
+        "billingCycleTitle": "Plus Plan Billing Cycle",
+        "billingCycle": "Plus Plan subscriptions are billed monthly or annually and will automatically renew unless canceled.",
+        "balanceTitle": "Balance Requirement",
+        "balance": "Users must maintain a valid balance to access paid services. No refunds are provided for fees already paid."
+      }
+    },
+    "administration": {
+      "title": "Administration and Enforcement",
+      "items": {
+        "contentModerationTitle": "Content Moderation",
+        "contentModeration": "PolyGo reserves the right to review, edit, or remove any content deemed inappropriate or in violation of terms.",
+        "violationReportingTitle": "Violation Reporting",
+        "violationReporting": "Users are required to immediately report any behavior or content that violates the Terms of Service.",
+        "activityLoggingTitle": "Activity Logging",
+        "activityLogging": "We log user activity for security, analysis, and moderation purposes.",
+        "adminAuthorityTitle": "Admin Authority",
+        "adminAuthority": "PolyGo administrators have the absolute authority to suspend or terminate violating accounts without prior notice."
+      }
+    },
+    "security": {
+      "title": "Security and Privacy",
+      "items": {
+        "dataComplianceTitle": "Data Protection Compliance",
+        "dataCompliance": "We comply with data protection regulations in handling your personal information. See the Privacy Policy for details.",
+        "informationSharingTitle": "Information Sharing",
+        "informationSharing": "Personal information is not shared with third parties without your consent, except as required by law."
+      }
+    },
+    "footerNote": "If you have any questions about these terms, please contact us via the <link>Support</link> page."
+  }
+}

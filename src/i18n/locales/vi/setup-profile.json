@@ -1,0 +1,146 @@
+{
+  "setupProfile": {
+    "steps": {
+      "personalInfo": {
+        "title": "Thông tin cá nhân",
+        "description": "Cho chúng tôi biết về bạn",
+        "avatarLabel": "Ảnh đại diện",
+        "avatarHint": "Tối đa 5MB, định dạng JPG/PNG/GIF",
+        "avatarUploadSuccess": "Tải ảnh lên thành công!",
+        "avatarUploadError": "Tải ảnh thất bại",
+        "avatarInvalidType": "Vui lòng chọn tệp hình ảnh",
+        "avatarTooLarge": "Kích thước tệp phải nhỏ hơn 5MB",
+        "nameLabel": "Họ và tên",
+        "namePlaceholder": "Nhập họ và tên",
+        "nameHint": "Tên hiển thị với những người khác",
+        "genderLabel": "Giới tính",
+        "introductionLabel": "Giới thiệu bản thân",
+        "introductionPlaceholder": "Chia sẻ về bạn, sở thích và lý do bạn muốn học ngôn ngữ...",
+        "introductionHint": "Không bắt buộc - giúp mọi người hiểu bạn hơn",
+        "skipNotice": "Bạn có thể bỏ qua bước này và hoàn thành sau trong phần cài đặt hồ sơ"
+      },
+      "targetLanguage": {
+        "title": "Ngôn ngữ muốn học",
+        "description": "Bạn muốn học gì?",
+        "heading": "Chọn ngôn ngữ mục tiêu",
+        "subheading": "Chọn tối đa 3 ngôn ngữ bạn muốn học cùng PolyGo",
+        "selected": "Đã chọn {count}",
+        "maxReached": "Tối đa 3 ngôn ngữ",
+        "clearAll": "Xoá tất cả",
+        "noLanguagesFound": "Không có ngôn ngữ nào",
+        "noLanguagesDescription": "Vui lòng thử lại sau"
+      },
+      "knownLanguages": {
+        "title": "Ngôn ngữ bạn biết",
+        "description": "Những ngôn ngữ bạn đã sử dụng",
+        "heading": "Bạn đã biết những ngôn ngữ nào?",
+        "subheading": "Chọn tất cả ngôn ngữ bạn có thể sử dụng. Điều này giúp chúng tôi tìm đối tác phù hợp hơn.",
+        "selected": "Đã chọn {count}",
+        "clearAll": "Xoá tất cả",
+        "noLanguagesFound": "Không có ngôn ngữ nào",
+        "noLanguagesDescription": "Vui lòng thử lại sau"
+      },
+      "interests": {
+        "title": "Sở thích của bạn",
+        "description": "Những chủ đề bạn muốn thảo luận",
+        "heading": "Bạn quan tâm điều gì?",
+        "subheading": "Chọn các chủ đề bạn muốn nói về. Điều này giúp chúng tôi ghép bạn với những người có cùng mối quan tâm.",
+        "selected": "Đã chọn {count}",
+        "clearAll": "Xoá tất cả",
+        "noInterestsFound": "Không có sở thích nào",
+        "noInterestsDescription": "Vui lòng thử lại sau",
+        "skipNotice": "Bạn có thể bỏ qua bước này và thêm sau"
+      }
+    },
+    "navigation": {
+      "back": "Quay lại",
+      "continue": "Tiếp tục",
+      "complete": "Hoàn tất thiết lập",
+      "skip": "Bỏ qua đến bảng điều khiển",
+      "step": "Bước {current} / {total}",
+      "saving": "Đang lưu...",
+      "completing": "Đang hoàn tất..."
+    },
+    "proficiencyLevels": {
+      "beginner": {
+        "label": "Mới bắt đầu",
+        "description": "Vừa bắt đầu học"
+      },
+      "elementary": {
+        "label": "Cơ bản",
+        "description": "Hiểu biết cơ bản"
+      },
+      "intermediate": {
+        "label": "Trung cấp",
+        "description": "Có thể giao tiếp"
+      },
+      "advanced": {
+        "label": "Nâng cao",
+        "description": "Sử dụng thành thạo"
+      },
+      "native": {
+        "label": "Bản ngữ",
+        "description": "Ngôn ngữ mẹ đẻ"
+      }
+    },
+    "interests": {
+      "travel": "Du lịch",
+      "food": "Ẩm thực",
+      "music": "Âm nhạc",
+      "sports": "Thể thao",
+      "movies": "Phim ảnh",
+      "books": "Sách & Đọc",
+      "technology": "Công nghệ",
+      "art": "Nghệ thuật",
+      "business": "Kinh doanh",
+      "science": "Khoa học",
+      "gaming": "Trò chơi",
+      "fashion": "Thời trang"
+    },
+    "availability": {
+      "morning": {
+        "label": "Buổi sáng",
+        "time": "6:00 - 12:00"
+      },
+      "afternoon": {
+        "label": "Buổi chiều",
+        "time": "12:00 - 18:00"
+      },
+      "evening": {
+        "label": "Buổi tối",
+        "time": "18:00 - 22:00"
+      },
+      "night": {
+        "label": "Khuya",
+        "time": "22:00 - 6:00"
+      }
+    },
+    "weeklyHours": {
+      "1": "1-2 giờ mỗi tuần",
+      "3": "3-5 giờ mỗi tuần",
+      "6": "6-10 giờ mỗi tuần",
+      "11": "Trên 10 giờ mỗi tuần"
+    },
+    "errors": {
+      "name": {
+        "required": "Vui lòng nhập họ và tên",
+        "min": "Họ và tên phải dài ít nhất {length} ký tự",
+        "max": "Họ và tên tối đa {length} ký tự"
+      },
+      "introduction": {
+        "max": "Giới thiệu tối đa {length} ký tự"
+      },
+      "learningLanguages": {
+        "required": "Vui lòng chọn ít nhất một ngôn ngữ muốn học"
+      },
+      "speakingLanguages": {
+        "required": "Vui lòng chọn ít nhất một ngôn ngữ bạn biết"
+      },
+      "interests": {
+        "required": "Vui lòng chọn ít nhất một sở thích"
+      }
+    },
+    "personalInfoSaved": "Đã lưu thông tin cá nhân!",
+    "setupComplete": "Hoàn tất thiết lập thành công!"
+  }
+}
