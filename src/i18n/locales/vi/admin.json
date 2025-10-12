@@ -169,6 +169,63 @@
       },
       "deleting": "Đang xoá..."
     },
+    "accounts": {
+      "title": "Tài khoản người dùng",
+      "description": "Quản lý tài khoản người dùng và quyền hạn truy cập.",
+      "error": "Không thể tải danh sách tài khoản.",
+      "errorTitle": "Đã xảy ra lỗi",
+      "retry": "Thử lại",
+      "emptyTitle": "Chưa có tài khoản nào",
+      "emptyDescription": "Không tìm thấy tài khoản người dùng trong hệ thống.",
+      "edit": "Chỉnh sửa",
+      "tableTitle": "Tài khoản người dùng",
+      "tableDescription": "Quản lý tài khoản người dùng và quyền hạn của họ.",
+      "pageSize": "Số dòng",
+      "refresh": "Làm mới",
+      "userIdLabel": "ID",
+      "columns": {
+        "no": "STT",
+        "user": "Người dùng",
+        "meritLevel": "Cấp độ uy tín",
+        "role": "Vai trò",
+        "gender": "Giới tính",
+        "experience": "Điểm kinh nghiệm",
+        "streak": "Chuỗi ngày",
+        "subscription": "Tự động gia hạn",
+        "lastLogin": "Đăng nhập cuối",
+        "actions": "Thao tác"
+      },
+      "pagination": {
+        "summary": "Hiển thị {start}-{end} / {total} tài khoản",
+        "empty": "Không có tài khoản để hiển thị",
+        "previous": "Trước",
+        "page": "Trang {page}/{total}",
+        "next": "Sau"
+      },
+      "meritLevels": {
+        "banned": "Đã cấm",
+        "bannedDesc": "Người dùng bị cấm hoàn toàn khỏi nền tảng",
+        "restricted": "Hạn chế",
+        "restrictedDesc": "Người dùng bị giới hạn quyền truy cập tính năng",
+        "monitored": "Giám sát",
+        "monitoredDesc": "Hoạt động của người dùng đang được giám sát",
+        "reliable": "Đáng tin cậy",
+        "reliableDesc": "Người dùng tiêu chuẩn với quyền truy cập đầy đủ",
+        "admin": "Quản trị viên",
+        "adminDesc": "Quản trị viên với đầy đủ đặc quyền"
+      },
+      "form": {
+        "meritLevelLabel": "Cấp độ uy tín",
+        "meritLevelPlaceholder": "Chọn cấp độ uy tín",
+        "meritLevelHint": "Thiết lập mức độ truy cập và hạn chế cho người dùng.",
+        "cancel": "Huỷ",
+        "submitUpdate": "Lưu thay đổi"
+      },
+      "sheet": {
+        "editTitle": "Chỉnh sửa hạn chế người dùng",
+        "editDescription": "Cập nhật cấp độ uy tín và hạn chế cho tài khoản người dùng này."
+      }
+    },
     "interests": {
       "title": "Sở thích",
       "description": "Quản lý các sở thích và tuỳ chọn cho người dùng",

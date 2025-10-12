@@ -24,7 +24,9 @@
     "Submit": "Gửi thành công!",
     "setupComplete": "Thiết lập hồ sơ thành công!",
     "UpdateProfile": "Cập nhật hồ sơ thành công!",
-    "avatarUploaded": "Tải lên ảnh đại diện thành công!"
+    "avatarUploaded": "Tải lên ảnh đại diện thành công!",
+    "SetUserRestriction": "Cập nhật hạn chế người dùng thành công!",
+    "UserBanned": "Bạn đã bị cấm khỏi nền tảng."
   },
   "Error": {
     "default": "Đã xảy ra lỗi. Vui lòng thử lại.",
