@@ -1,35 +1,35 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Field } from "@/components/ui/field-wrapper";
-import { Label } from "@/components/ui/label";
+import { Button, Checkbox } from "@/components";
+import { Field, Label } from "@/components/ui";
 import {
   useInterestsQuery,
-  useUserInterestsQuery,
-} from "@/hooks/query/use-interest";
-import {
   useLanguagesQuery,
+  useUserInterestsQuery,
   useUserLanguagesLearningQuery,
   useUserLanguagesSpeakingQuery,
-} from "@/hooks/query/use-language";
-
-type LanguagesInterestsFormData = {
-  nativeLanguageIds: string[];
-  learningLanguageIds: string[];
-  interestIds: string[];
-};
+} from "@/hooks";
+import { useUpdateProfileMutation } from "@/hooks/query/use-user";
+import { handleErrorApi, showSuccessToast } from "@/lib/utils";
+import { UpdateProfileBodySchema, UpdateProfileBodyType } from "@/models";
 
 export function LanguagesInterestsTab() {
   const t = useTranslations("profile.editDialog.languagesAndInterests");
   const tButton = useTranslations("profile.editDialog");
+  const errorMessages = useTranslations(
+    "profile.editDialog.errors.languagesInterests"
+  );
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
   // Fetch all languages and interests
   const { data: allLanguagesData } = useLanguagesQuery();
@@ -49,26 +49,42 @@ export function LanguagesInterestsTab() {
     userLearningLanguagesData?.payload.data?.items || [];
   const userInterests = userInterestsData?.payload.data?.items || [];
 
+  const updateProfileMutation = useUpdateProfileMutation();
+
+  const resolver = useMemo(
+    () =>
+      zodResolver(UpdateProfileBodySchema, {
+        error: (issue) => ({
+          message: translateLanguagesInterestsError(issue, errorMessages),
+        }),
+      }),
+    [errorMessages]
+  );
+
   const {
     handleSubmit,
     watch,
     setValue,
     formState: { errors },
-  } = useForm<LanguagesInterestsFormData>({
+  } = useForm<UpdateProfileBodyType>({
+    resolver,
     defaultValues: {
-      nativeLanguageIds: userNativeLanguages.map((l) => l.id),
+      speakingLanguageIds: userNativeLanguages.map((l) => l.id),
       learningLanguageIds: userLearningLanguages.map((l) => l.id),
       interestIds: userInterests.map((i) => i.id),
     },
   });
 
-  const nativeLanguageIds = watch("nativeLanguageIds") || [];
+  const nativeLanguageIds = watch("speakingLanguageIds") || [];
   const learningLanguageIds = watch("learningLanguageIds") || [];
   const interestIds = watch("interestIds") || [];
 
-  const toggleLanguage = (languageId: string, type: "native" | "learning") => {
+  const toggleLanguage = (
+    languageId: string,
+    type: "speaking" | "learning"
+  ) => {
     const field =
-      type === "native" ? "nativeLanguageIds" : "learningLanguageIds";
+      type === "speaking" ? "speakingLanguageIds" : "learningLanguageIds";
     const currentIds = watch(field) || [];
 
     if (currentIds.includes(languageId)) {
@@ -94,15 +110,24 @@ export function LanguagesInterestsTab() {
     }
   };
 
-  const onSubmit = async (data: LanguagesInterestsFormData) => {
-    setIsSubmitting(true);
+  const onSubmit = async (data: UpdateProfileBodyType) => {
+    if (updateProfileMutation.isPending) return;
     try {
-      // TODO: Implement API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    } catch (error) {
-      console.error("Error updating languages & interests:", error);
-    } finally {
-      setIsSubmitting(false);
+      const result = await updateProfileMutation.mutateAsync(data);
+      showSuccessToast(
+        result.payload?.message || tSuccess("UpdateProfile"),
+        tSuccess
+      );
+      // Invalidate queries to refresh user data
+      queryClient.invalidateQueries({ queryKey: ["user-languages-speaking"] });
+      queryClient.invalidateQueries({ queryKey: ["user-languages-learning"] });
+      queryClient.invalidateQueries({ queryKey: ["user-interests"] });
+    } catch (error: any) {
+      handleErrorApi({
+        error,
+        setError: setValue as any,
+        tError,
+      });
     }
   };
 
@@ -117,12 +142,12 @@ export function LanguagesInterestsTab() {
               className="flex items-center gap-2 rounded-lg border p-3"
             >
               <Checkbox
-                id={`native-${language.id}`}
+                id={`speaking-${language.id}`}
                 checked={nativeLanguageIds.includes(language.id)}
-                onCheckedChange={() => toggleLanguage(language.id, "native")}
+                onCheckedChange={() => toggleLanguage(language.id, "speaking")}
               />
               <Label
-                htmlFor={`native-${language.id}`}
+                htmlFor={`speaking-${language.id}`}
                 className="flex flex-1 cursor-pointer items-center gap-2"
               >
                 {language.iconUrl && (
@@ -208,10 +233,76 @@ export function LanguagesInterestsTab() {
 
       {/* Action Buttons */}
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? tButton("saving") : tButton("save")}
+        <Button type="submit" disabled={updateProfileMutation.isPending}>
+          {updateProfileMutation.isPending
+            ? tButton("saving")
+            : tButton("save")}
         </Button>
       </div>
     </form>
   );
 }
+
+type Translator = (key: string, values?: Record<string, any>) => string;
+
+type ZodIssueForLanguagesInterests = {
+  code: string;
+  message?: string;
+  path?: PropertyKey[];
+  [key: string]: unknown;
+};
+
+const translateLanguagesInterestsError = (
+  issue: ZodIssueForLanguagesInterests,
+  t: Translator
+): string => {
+  const field = issue.path?.[0];
+  const detail = issue as Record<string, any>;
+
+  if (typeof field !== "string") {
+    return t("default");
+  }
+
+  switch (field) {
+    case "speakingLanguageIds": {
+      if (issue.code === "invalid_type") {
+        return t("speakingLanguageIds.required");
+      }
+
+      if (issue.code === "too_small") {
+        const min = detail.minimum ?? 1;
+        return t("speakingLanguageIds.min", { min });
+      }
+
+      break;
+    }
+    case "learningLanguageIds": {
+      if (issue.code === "invalid_type") {
+        return t("learningLanguageIds.required");
+      }
+
+      if (issue.code === "too_small") {
+        const min = detail.minimum ?? 1;
+        return t("learningLanguageIds.min", { min });
+      }
+
+      break;
+    }
+    case "interestIds": {
+      if (issue.code === "invalid_type") {
+        return t("interestIds.required");
+      }
+
+      if (issue.code === "too_small") {
+        const min = detail.minimum ?? 1;
+        return t("interestIds.min", { min });
+      }
+
+      break;
+    }
+    default:
+      break;
+  }
+
+  return t("default");
+};

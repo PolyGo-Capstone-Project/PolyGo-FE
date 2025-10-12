@@ -156,7 +156,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto max-w-7xl space-y-6 ">
+    <div className="container mx-auto max-w-7xl space-y-6 p-4 md:p-0">
       {/* Header Section */}
       <ProfileHeader
         name={user.name}

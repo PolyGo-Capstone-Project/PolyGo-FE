@@ -100,7 +100,66 @@
       },
       "save": "Save Changes",
       "cancel": "Cancel",
-      "saving": "Saving..."
+      "saving": "Saving...",
+      "errors": {
+        "default": "Please check this field.",
+        "personalInfo": {
+          "name": {
+            "required": "Full name is required.",
+            "min": "Full name must be at least {length} character.",
+            "max": "Full name must be at most {length} characters."
+          },
+          "introduction": {
+            "max": "Introduction must be at most {length} characters."
+          },
+          "gender": {
+            "required": "Gender is required.",
+            "invalid": "Please select a valid gender."
+          },
+          "avatarUrl": {
+            "invalid": "Invalid avatar URL."
+          }
+        },
+        "languagesInterests": {
+          "speakingLanguageIds": {
+            "required": "Please select at least one native language.",
+            "min": "Please select at least {min} native language(s)."
+          },
+          "learningLanguageIds": {
+            "required": "Please select at least one learning language.",
+            "min": "Please select at least {min} learning language(s)."
+          },
+          "interestIds": {
+            "required": "Please select at least one interest.",
+            "min": "Please select at least {min} interest(s)."
+          }
+        },
+        "changePassword": {
+          "currentPassword": {
+            "required": "Current password is required.",
+            "min": "Current password must be at least {length} characters.",
+            "max": "Current password must be at most {length} characters.",
+            "format": "Current password must include uppercase, lowercase, number, and special character."
+          },
+          "newPassword": {
+            "required": "New password is required.",
+            "min": "New password must be at least {length} characters.",
+            "max": "New password must be at most {length} characters.",
+            "format": "New password must include uppercase, lowercase, number, and special character."
+          },
+          "confirmPassword": {
+            "required": "Please confirm your new password.",
+            "min": "Confirm password must be at least {length} characters.",
+            "max": "Confirm password must be at most {length} characters.",
+            "mismatch": "New password and confirm password must match."
+          }
+        }
+      },
+      "success": {
+        "personalInfoUpdated": "Personal information updated successfully!",
+        "languagesInterestsUpdated": "Languages and interests updated successfully!",
+        "passwordChanged": "Password changed successfully!"
+      }
     },
     "noData": "No data available",
     "loading": "Loading profile..."

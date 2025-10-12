@@ -1,28 +1,40 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field-wrapper";
-import { Input } from "@/components/ui/input";
-
-type ChangePasswordFormData = {
-  currentPassword: string;
-  newPassword: string;
-  confirmPassword: string;
-};
+import { Button, Field, Input } from "@/components";
+import { useChangePasswordMutation } from "@/hooks";
+import { handleErrorApi, showSuccessToast } from "@/lib/utils";
+import { ChangePasswordBodySchema, ChangePasswordBodyType } from "@/models";
 
 export function ChangePasswordTab() {
   const t = useTranslations("profile.editDialog.changePassword");
   const tButton = useTranslations("profile.editDialog");
+  const errorMessages = useTranslations(
+    "profile.editDialog.errors.changePassword"
+  );
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const changePasswordMutation = useChangePasswordMutation();
+
+  const resolver = useMemo(
+    () =>
+      zodResolver(ChangePasswordBodySchema, {
+        error: (issue) => ({
+          message: translateChangePasswordError(issue, errorMessages),
+        }),
+      }),
+    [errorMessages]
+  );
 
   const {
     register,
@@ -30,7 +42,9 @@ export function ChangePasswordTab() {
     watch,
     formState: { errors },
     reset,
-  } = useForm<ChangePasswordFormData>({
+    setError,
+  } = useForm<ChangePasswordBodyType>({
+    resolver,
     defaultValues: {
       currentPassword: "",
       newPassword: "",
@@ -40,21 +54,21 @@ export function ChangePasswordTab() {
 
   const newPassword = watch("newPassword");
 
-  const onSubmit = async (data: ChangePasswordFormData) => {
-    if (data.newPassword !== data.confirmPassword) {
-      // TODO: Show error toast
-      return;
-    }
-
-    setIsSubmitting(true);
+  const onSubmit = async (data: ChangePasswordBodyType) => {
+    if (changePasswordMutation.isPending) return;
     try {
-      // TODO: Implement API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const result = await changePasswordMutation.mutateAsync(data);
+      showSuccessToast(
+        result.payload?.message || tSuccess("ChangePassword"),
+        tSuccess
+      );
       reset();
-    } catch (error) {
-      console.error("Error changing password:", error);
-    } finally {
-      setIsSubmitting(false);
+    } catch (error: any) {
+      handleErrorApi({
+        error,
+        setError,
+        tError,
+      });
     }
   };
 
@@ -163,10 +177,93 @@ export function ChangePasswordTab() {
 
       {/* Action Buttons */}
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? tButton("saving") : tButton("save")}
+        <Button type="submit" disabled={changePasswordMutation.isPending}>
+          {changePasswordMutation.isPending
+            ? tButton("saving")
+            : tButton("save")}
         </Button>
       </div>
     </form>
   );
 }
+
+type Translator = (key: string, values?: Record<string, any>) => string;
+
+type ZodIssueForChangePassword = {
+  code: string;
+  message?: string;
+  path?: PropertyKey[];
+  [key: string]: unknown;
+};
+
+const translateChangePasswordError = (
+  issue: ZodIssueForChangePassword,
+  t: Translator
+): string => {
+  const field = issue.path?.[0];
+  const detail = issue as Record<string, any>;
+
+  if (typeof field !== "string") {
+    return t("default");
+  }
+
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
+  const handlePasswordField = (fieldName: string) => {
+    if (issue.code === "invalid_type") {
+      return t(`${fieldName}.required`);
+    }
+
+    if (issue.code === "too_small") {
+      if (detail.minimum && detail.minimum > 1) {
+        return t(`${fieldName}.min`, { length: detail.minimum });
+      }
+      return t(`${fieldName}.required`);
+    }
+
+    if (issue.code === "too_big") {
+      return t(`${fieldName}.max`, { length: detail.maximum ?? 100 });
+    }
+
+    // Handle regex validation error
+    if (issue.code === "invalid_format" && detail.format === "regex") {
+      return t(`${fieldName}.format`);
+    }
+
+    // Backward compatibility: check invalid_string
+    if (issue.code === "invalid_string") {
+      return t(`${fieldName}.format`);
+    }
+
+    return null;
+  };
+
+  switch (field) {
+    case "currentPassword": {
+      const result = handlePasswordField("currentPassword");
+      if (result) return result;
+      break;
+    }
+    case "newPassword": {
+      const result = handlePasswordField("newPassword");
+      if (result) return result;
+      break;
+    }
+    case "confirmPassword": {
+      const result = handlePasswordField("confirmPassword");
+      if (result) return result;
+
+      // Handle mismatch error
+      if (issue.code === "custom") {
+        return t("confirmPassword.mismatch");
+      }
+
+      break;
+    }
+    default:
+      break;
+  }
+
+  return t("default");
+};

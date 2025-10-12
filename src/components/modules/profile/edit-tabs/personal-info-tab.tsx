@@ -1,42 +1,65 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { IconUpload } from "@tabler/icons-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Field } from "@/components/ui/field-wrapper";
-import { Input } from "@/components/ui/input";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
+  Field,
+  Input,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+  Textarea,
+} from "@/components";
 import { useAuthMe } from "@/hooks/query/use-auth";
-
-type PersonalInfoFormData = {
-  name: string;
-  introduction: string;
-  gender: string;
-};
+import { useUploadMediaMutation } from "@/hooks/query/use-media";
+import { useUpdateMeMutation } from "@/hooks/query/use-user";
+import { handleErrorApi, showSuccessToast } from "@/lib/utils";
+import { UpdateMeBodySchema, UpdateMeBodyType } from "@/models";
 
 export function PersonalInfoTab() {
   const t = useTranslations("profile.editDialog.personalInfo");
   const tCommon = useTranslations("common.gender");
   const tButton = useTranslations("profile.editDialog");
+  const errorMessages = useTranslations(
+    "profile.editDialog.errors.personalInfo"
+  );
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
 
+  const queryClient = useQueryClient();
   const { data: authData } = useAuthMe();
   const user = authData?.payload.data;
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(
     user?.avatarUrl || null
   );
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const updateMeMutation = useUpdateMeMutation();
+  const uploadMediaMutation = useUploadMediaMutation();
+
+  const resolver = useMemo(
+    () =>
+      zodResolver(UpdateMeBodySchema, {
+        error: (issue) => ({
+          message: translatePersonalInfoError(issue, errorMessages),
+        }),
+      }),
+    [errorMessages]
+  );
 
   const {
     register,
@@ -44,36 +67,65 @@ export function PersonalInfoTab() {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<PersonalInfoFormData>({
+  } = useForm<UpdateMeBodyType>({
+    resolver,
     defaultValues: {
       name: user?.name || "",
       introduction: user?.introduction || "",
       gender: user?.gender || "Male",
+      avatarUrl: user?.avatarUrl || "",
     },
   });
 
   const gender = watch("gender");
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error(tError("invalidFileType"));
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error(tError("fileTooLarge"));
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const response = await uploadMediaMutation.mutateAsync({ file });
+      const uploadedUrl = response.payload.data;
+      setValue("avatarUrl", uploadedUrl);
+      setAvatarPreview(uploadedUrl);
+      toast.success(tSuccess("avatarUploaded"));
+    } catch (error) {
+      handleErrorApi({ error, tError });
+    } finally {
+      setIsUploading(false);
     }
   };
 
-  const onSubmit = async (data: PersonalInfoFormData) => {
-    setIsSubmitting(true);
+  const onSubmit = async (data: UpdateMeBodyType) => {
+    if (updateMeMutation.isPending) return;
     try {
-      // TODO: Implement API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    } catch (error) {
-      console.error("Error updating personal info:", error);
-    } finally {
-      setIsSubmitting(false);
+      const result = await updateMeMutation.mutateAsync(data);
+      showSuccessToast(result.payload?.message || tSuccess("Update"), tSuccess);
+      // Invalidate auth-me query to refresh user data
+      queryClient.invalidateQueries({ queryKey: ["auth-me"] });
+    } catch (error: any) {
+      handleErrorApi({
+        error,
+        setError: setValue as any,
+        tError,
+      });
     }
   };
 
@@ -96,6 +148,7 @@ export function PersonalInfoTab() {
         </Avatar>
         <div>
           <input
+            ref={fileInputRef}
             id="avatar-upload"
             type="file"
             accept="image/*"
@@ -106,10 +159,11 @@ export function PersonalInfoTab() {
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => document.getElementById("avatar-upload")?.click()}
+            onClick={handleAvatarClick}
+            disabled={isUploading}
           >
             <IconUpload className="mr-2 h-4 w-4" />
-            {t("changeAvatar")}
+            {isUploading ? tButton("saving") : t("changeAvatar")}
           </Button>
         </div>
       </div>
@@ -134,7 +188,12 @@ export function PersonalInfoTab() {
 
       {/* Gender */}
       <Field label={t("gender")} error={errors.gender?.message} required>
-        <Select value={gender} onValueChange={(val) => setValue("gender", val)}>
+        <Select
+          value={gender || undefined}
+          onValueChange={(val) =>
+            setValue("gender", val as "Male" | "Female" | "Other")
+          }
+        >
           <SelectTrigger>
             <SelectValue placeholder={t("genderPlaceholder")} />
           </SelectTrigger>
@@ -148,10 +207,81 @@ export function PersonalInfoTab() {
 
       {/* Action Buttons */}
       <div className="flex justify-end gap-2 pt-4">
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? tButton("saving") : tButton("save")}
+        <Button type="submit" disabled={updateMeMutation.isPending}>
+          {updateMeMutation.isPending ? tButton("saving") : tButton("save")}
         </Button>
       </div>
     </form>
   );
 }
+
+type Translator = (key: string, values?: Record<string, any>) => string;
+
+type ZodIssueForPersonalInfo = {
+  code: string;
+  message?: string;
+  path?: PropertyKey[];
+  [key: string]: unknown;
+};
+
+const translatePersonalInfoError = (
+  issue: ZodIssueForPersonalInfo,
+  t: Translator
+): string => {
+  const field = issue.path?.[0];
+  const detail = issue as Record<string, any>;
+
+  if (typeof field !== "string") {
+    return t("default");
+  }
+
+  switch (field) {
+    case "name": {
+      if (issue.code === "invalid_type") {
+        return t("name.required");
+      }
+
+      if (issue.code === "too_small") {
+        if (detail.minimum && detail.minimum > 1) {
+          return t("name.min", { length: detail.minimum });
+        }
+        return t("name.required");
+      }
+
+      if (issue.code === "too_big") {
+        return t("name.max", { length: detail.maximum ?? 100 });
+      }
+
+      break;
+    }
+    case "introduction": {
+      if (issue.code === "too_big") {
+        return t("introduction.max", { length: detail.maximum ?? 500 });
+      }
+
+      break;
+    }
+    case "gender": {
+      if (issue.code === "invalid_type") {
+        return t("gender.required");
+      }
+
+      if (issue.code === "invalid_enum_value") {
+        return t("gender.invalid");
+      }
+
+      break;
+    }
+    case "avatarUrl": {
+      if (issue.code === "invalid_string") {
+        return t("avatarUrl.invalid");
+      }
+
+      break;
+    }
+    default:
+      break;
+  }
+
+  return t("default");
+};
