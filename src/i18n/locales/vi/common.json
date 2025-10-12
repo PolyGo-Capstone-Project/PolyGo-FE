@@ -20,7 +20,8 @@
     "Upload": "Tải lên thành công!",
     "Download": "Tải xuống thành công!",
     "Send": "Gửi thành công!",
-    "Submit": "Gửi thành công!"
+    "Submit": "Gửi thành công!",
+    "setupComplete": "Thiết lập hồ sơ thành công!"
   },
   "Error": {
     "default": "Đã xảy ra lỗi. Vui lòng thử lại.",
@@ -514,6 +515,13 @@
       "description": "Hệ thống XP, badges và leaderboard để duy trì động lực học tập"
     }
   },
+  "common": {
+    "gender": {
+      "Male": "Nam",
+      "Female": "Nữ",
+      "Other": "Khác"
+    }
+  },
   "languageSwitcher": {
     "label": "Ngôn ngữ",
     "description": "Chọn ngôn ngữ bạn muốn sử dụng"
@@ -672,54 +680,69 @@
   },
   "setupProfile": {
     "steps": {
+      "personalInfo": {
+        "title": "Thông tin cá nhân",
+        "description": "Cho chúng tôi biết về bạn",
+        "avatarLabel": "Ảnh đại diện",
+        "avatarHint": "Tối đa 5MB, JPG/PNG/GIF",
+        "avatarUploadSuccess": "Tải ảnh đại diện thành công!",
+        "avatarUploadError": "Tải ảnh đại diện thất bại",
+        "avatarInvalidType": "Vui lòng chọn file ảnh",
+        "avatarTooLarge": "Kích thước file phải nhỏ hơn 5MB",
+        "nameLabel": "Họ và tên",
+        "namePlaceholder": "Nhập tên của bạn",
+        "nameHint": "Đây là cách người khác sẽ nhìn thấy bạn",
+        "genderLabel": "Giới tính",
+        "introductionLabel": "Giới thiệu bản thân",
+        "introductionPlaceholder": "Hãy kể về bản thân, sở thích và lý do bạn muốn học ngôn ngữ...",
+        "introductionHint": "Tùy chọn - giúp người khác hiểu bạn hơn",
+        "skipNotice": "Bạn có thể bỏ qua bước này và hoàn thành sau trong cài đặt hồ sơ"
+      },
       "targetLanguage": {
-        "title": "Ngôn ngữ mục tiêu",
+        "title": "Ngôn ngữ muốn học",
         "description": "Bạn muốn học gì?",
-        "heading": "Chọn ngôn ngữ bạn muốn học",
+        "heading": "Chọn ngôn ngữ mục tiêu của bạn",
         "subheading": "Chọn tối đa 3 ngôn ngữ bạn muốn học với PolyGo",
-        "selected": "Đã chọn: {count} ngôn ngữ",
-        "maxReached": "Tối đa 3 ngôn ngữ"
+        "selected": "Đã chọn {count}",
+        "maxReached": "Tối đa 3 ngôn ngữ",
+        "clearAll": "Xóa tất cả",
+        "noLanguagesFound": "Không có ngôn ngữ nào",
+        "noLanguagesDescription": "Vui lòng thử lại sau"
       },
       "knownLanguages": {
-        "title": "Ngôn ngữ đã biết",
+        "title": "Ngôn ngữ bạn biết",
         "description": "Ngôn ngữ bạn đã biết",
         "heading": "Ngôn ngữ bạn đã biết",
         "subheading": "Chọn tất cả ngôn ngữ bạn có thể nói. Điều này giúp chúng tôi tìm đối tác trò chuyện phù hợp hơn.",
-        "selected": "Đã chọn: {count} ngôn ngữ"
+        "selected": "Đã chọn {count}",
+        "clearAll": "Xóa tất cả",
+        "noLanguagesFound": "Không có ngôn ngữ nào",
+        "noLanguagesDescription": "Vui lòng thử lại sau"
       },
-      "proficiency": {
-        "title": "Trình độ & Sở thích",
-        "description": "Trình độ và sở thích của bạn",
-        "proficiencyHeading": "Trình độ của bạn là gì?",
-        "proficiencySubheading": "Chọn trình độ hiện tại của bạn với ngôn ngữ mục tiêu",
-        "interestsHeading": "Sở thích của bạn là gì?",
-        "interestsSubheading": "Chọn chủ đề bạn muốn trò chuyện (chọn ít nhất một)",
-        "selected": "Đã chọn: {count} sở thích"
-      },
-      "availability": {
-        "title": "Thời gian rảnh",
-        "description": "Khi nào bạn có thể luyện tập?",
-        "timezoneHeading": "Múi giờ của bạn",
-        "timezoneSubheading": "Chúng tôi sẽ dùng thông tin này để ghép bạn với đối tác phù hợp",
-        "timezoneLabel": "Chọn múi giờ",
-        "currentTime": "Giờ hiện tại",
-        "timeSlotsHeading": "Bạn thường rảnh khi nào?",
-        "timeSlotsSubheading": "Chọn khung giờ khi bạn có thể luyện tập",
-        "weeklyHoursHeading": "Bạn có thể dành bao nhiêu thời gian?",
-        "weeklyHoursSubheading": "Chọn số giờ mỗi tuần bạn muốn luyện tập",
-        "weeklyHoursLabel": "Số giờ mỗi tuần",
-        "selected": "Đã chọn: {count} khung giờ"
+      "interests": {
+        "title": "Sở thích của bạn",
+        "description": "Chủ đề bạn muốn thảo luận",
+        "heading": "Sở thích của bạn là gì?",
+        "subheading": "Chọn các chủ đề bạn muốn nói về. Điều này giúp chúng tôi ghép bạn với những người có cùng sở thích.",
+        "selected": "Đã chọn {count}",
+        "clearAll": "Xóa tất cả",
+        "noInterestsFound": "Không có sở thích nào",
+        "noInterestsDescription": "Vui lòng thử lại sau",
+        "skipNotice": "Bạn có thể bỏ qua bước này và thêm sở thích sau"
       }
     },
     "navigation": {
       "back": "Quay lại",
       "continue": "Tiếp tục",
       "complete": "Hoàn thành",
-      "step": "Bước {current} / {total}"
+      "skip": "Bỏ qua về Dashboard",
+      "step": "Bước {current} / {total}",
+      "saving": "Đang lưu...",
+      "completing": "Đang hoàn thành..."
     },
     "proficiencyLevels": {
       "beginner": {
-        "label": "Người mới bắt đầu",
+        "label": "Mới bắt đầu",
         "description": "Mới bắt đầu học"
       },
       "elementary": {
@@ -728,55 +751,52 @@
       },
       "intermediate": {
         "label": "Trung cấp",
-        "description": "Có thể trò chuyện"
+        "description": "Có thể giao tiếp"
       },
       "advanced": {
         "label": "Nâng cao",
-        "description": "Nói lưu loát"
+        "description": "Giao tiếp thành thạo"
       },
       "native": {
-        "label": "Người bản ngữ",
-        "description": "Người bản xứ"
+        "label": "Bản ngữ",
+        "description": "Người bản ngữ"
       }
     },
     "interests": {
       "travel": "Du lịch",
-      "food": "Ẩm thực & Nấu ăn",
+      "food": "Ẩm thực",
       "music": "Âm nhạc",
       "sports": "Thể thao",
-      "movies": "Phim & TV",
+      "movies": "Phim & Ti vi",
       "books": "Sách & Đọc",
       "technology": "Công nghệ",
-      "art": "Nghệ thuật & Thiết kế",
+      "art": "Nghệ thuật",
       "business": "Kinh doanh",
       "science": "Khoa học",
-      "gaming": "Game",
+      "gaming": "Trò chơi",
       "fashion": "Thời trang"
     },
-    "availability": {
-      "morning": {
-        "label": "Buổi sáng",
-        "time": "6:00 - 12:00"
+    "errors": {
+      "name": {
+        "required": "Tên là bắt buộc",
+        "min": "Tên phải có ít nhất {length} ký tự",
+        "max": "Tên không được vượt quá {length} ký tự"
       },
-      "afternoon": {
-        "label": "Buổi chiều",
-        "time": "12:00 - 18:00"
+      "introduction": {
+        "max": "Giới thiệu không được vượt quá {length} ký tự"
       },
-      "evening": {
-        "label": "Buổi tối",
-        "time": "18:00 - 22:00"
+      "learningLanguages": {
+        "required": "Vui lòng chọn ít nhất một ngôn ngữ muốn học"
       },
-      "night": {
-        "label": "Đêm khuya",
-        "time": "22:00 - 6:00"
+      "speakingLanguages": {
+        "required": "Vui lòng chọn ít nhất một ngôn ngữ bạn biết"
+      },
+      "interests": {
+        "required": "Vui lòng chọn ít nhất một sở thích"
       }
     },
-    "weeklyHours": {
-      "1": "1-2 giờ mỗi tuần",
-      "3": "3-5 giờ mỗi tuần",
-      "6": "6-10 giờ mỗi tuần",
-      "11": "Hơn 10 giờ mỗi tuần"
-    }
+    "personalInfoSaved": "Lưu thông tin cá nhân thành công!",
+    "setupComplete": "Thiết lập hồ sơ thành công!"
   },
   "comingSoon": {
     "title": "Sắp ra mắt",

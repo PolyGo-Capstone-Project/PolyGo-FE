@@ -1,10 +1,10 @@
 "use client";
 
-import { IconCheck } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
+import { IconCheck, IconLoader2 } from "@tabler/icons-react";
+import { useLocale, useTranslations } from "next-intl";
 
-import { Button } from "@/components/ui/button";
-import { MOCK_LANGUAGES } from "@/constants/languages";
+import { Button } from "@/components/ui";
+import { useLanguagesQuery } from "@/hooks";
 import { cn } from "@/lib/utils";
 
 type TargetLanguageStepProps = {
@@ -19,6 +19,13 @@ export function TargetLanguageStep({
   onSelect,
 }: TargetLanguageStepProps) {
   const t = useTranslations("setupProfile.steps.targetLanguage");
+  const locale = useLocale();
+
+  const { data, isLoading, isError } = useLanguagesQuery({
+    params: { lang: locale, pageSize: 100 },
+  });
+
+  const languages = data?.payload.data.items || [];
 
   const toggleLanguage = (languageId: string) => {
     if (selected.includes(languageId)) {
@@ -30,10 +37,29 @@ export function TargetLanguageStep({
 
   const isMaxReached = selected.length >= MAX_SELECTION;
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <IconLoader2 className="size-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (isError || languages.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <p className="text-lg font-semibold">{t("noLanguagesFound")}</p>
+        <p className="text-sm text-muted-foreground">
+          {t("noLanguagesDescription")}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {MOCK_LANGUAGES.map((language) => {
+        {languages.map((language) => {
           const isSelected = selected.includes(language.id);
           const isDisabled = !isSelected && isMaxReached;
 
@@ -57,7 +83,15 @@ export function TargetLanguageStep({
                   <IconCheck className="size-4" />
                 </div>
               )}
-              <span className="text-4xl">{language.flag}</span>
+              {language.iconUrl ? (
+                <img
+                  src={language.iconUrl}
+                  alt={language.name}
+                  className="size-12 rounded-full object-cover"
+                />
+              ) : (
+                <span className="text-4xl">🌐</span>
+              )}
               <span className="text-center text-sm font-medium">
                 {language.name}
               </span>
@@ -88,7 +122,7 @@ export function TargetLanguageStep({
             onClick={() => onSelect([])}
             className="text-muted-foreground"
           >
-            Clear all
+            {t("clearAll")}
           </Button>
         )}
       </div>

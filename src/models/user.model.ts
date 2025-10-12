@@ -41,9 +41,9 @@ export const UpdateMeBodySchema = UserSchema.pick({
 
 // PUT /users/profile-setup first time setup when register
 export const SetupProfileBodySchema = z.object({
-  learningLanguageIds: z.array(z.number()).min(1),
-  speakingLanguageIds: z.array(z.number()).min(1),
-  interestIds: z.array(z.number()).min(1),
+  learningLanguageIds: z.array(z.string()).min(1),
+  speakingLanguageIds: z.array(z.string()).min(1),
+  interestIds: z.array(z.string()).min(1),
 });
 
 // PUT /users/profile/me update profile
