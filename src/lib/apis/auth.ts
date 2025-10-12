@@ -1,6 +1,7 @@
 import http from "@/lib/http";
 import { buildQueryString } from "@/lib/utils";
 import {
+  ChangePasswordBodyType,
   ForgotPasswordBodyType,
   GetUserProfileResType,
   LoginBodyType,
@@ -30,6 +31,9 @@ const authApiRequest = {
     http.post<MessageResType>("/auth/reset-password", body),
   //me
   me: () => http.get<GetUserProfileResType>("/auth/me"),
+  //change password
+  changePassword: (body: ChangePasswordBodyType) =>
+    http.post<MessageResType>("/auth/change-password", body),
 };
 
 export default authApiRequest;
