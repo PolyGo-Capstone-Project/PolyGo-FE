@@ -8,6 +8,8 @@ import {
   GetLanguagesResType,
   MessageResType,
   UpdateLanguageBodyType,
+  UserLanguageLearningResType,
+  UserLanguageSpeakingResType,
 } from "@/models";
 
 const prefix = "/languages";
@@ -16,6 +18,7 @@ export type GetLanguagesParams = GetLanguagesQueryType;
 export type GetLanguageParams = GetLanguageByIdQueryType;
 
 const languageApiRequest = {
+  // Admin
   getAll: createGetAll<GetLanguagesResType, GetLanguagesParams>(prefix),
   getOne: createGetOne<GetLanguageByIdResType, GetLanguageParams>(prefix),
   create: (body: CreateLanguageBodyType) =>
@@ -23,6 +26,15 @@ const languageApiRequest = {
   update: (id: string, body: UpdateLanguageBodyType) =>
     http.put<MessageResType>(`${prefix}/${id}`, body),
   delete: (id: string) => http.delete<MessageResType>(`${prefix}/${id}`),
+  // User
+  getUserLanguagesSpeaking: createGetAll<
+    UserLanguageSpeakingResType,
+    GetLanguagesParams
+  >(`${prefix}/me`),
+  getUserLanguagesLearning: createGetAll<
+    UserLanguageLearningResType,
+    GetLanguagesParams
+  >(`${prefix}/me`),
 };
 
 export default languageApiRequest;

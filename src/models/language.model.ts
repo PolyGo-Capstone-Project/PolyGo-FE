@@ -24,6 +24,7 @@ export const LanguageTranslationsSchema = z.object({
   languageId: z.string().max(2),
 });
 
+// ============= For Admin =====================
 export const LanguageListItemSchema = LanguageSchema.merge(
   LanguageTranslationsSchema.pick({ name: true, lang: true })
 );
@@ -58,6 +59,15 @@ export const CreateLanguageBodySchema = LanguageSchema.pick({
 //put
 export const UpdateLanguageBodySchema = CreateLanguageBodySchema;
 
+//===========================================
+//For User
+//GET Your language user can speak
+export const UserLanguageSpeakingResSchema = GetLanguagesResSchema;
+
+//GET Your language user wants to learn
+export const UserLanguageLearningResSchema = GetLanguagesResSchema;
+
+//===========================================
 //types
 export type LanguageType = z.infer<typeof LanguageSchema>;
 export type LanguageTranslationsType = z.infer<
@@ -71,3 +81,9 @@ export type GetLanguagesQueryType = PaginationLangQueryType;
 export type GetLanguageByIdQueryType = LangQueryType;
 export type CreateLanguageBodyType = z.infer<typeof CreateLanguageBodySchema>;
 export type UpdateLanguageBodyType = z.infer<typeof UpdateLanguageBodySchema>;
+export type UserLanguageSpeakingResType = z.infer<
+  typeof UserLanguageSpeakingResSchema
+>;
+export type UserLanguageLearningResType = z.infer<
+  typeof UserLanguageLearningResSchema
+>;

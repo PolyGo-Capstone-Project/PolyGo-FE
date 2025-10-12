@@ -20,6 +20,10 @@ type InterestQueryResponse = Awaited<
   ReturnType<typeof interestApiRequest.getOne>
 >;
 
+type UserInterestsQueryResponse = Awaited<
+  ReturnType<typeof interestApiRequest.getUserInterests>
+>;
+
 type UseInterestsQueryOptions = {
   enabled?: boolean;
   params?: PaginationLangQueryType;
@@ -32,6 +36,23 @@ export const useInterestsQuery = ({
   return useQuery<InterestsQueryResponse>({
     queryKey: ["interests", params ?? null],
     queryFn: () => interestApiRequest.getAll(params),
+    enabled,
+    placeholderData: keepPreviousData,
+  });
+};
+
+type UseUserInterestsQueryOptions = {
+  enabled?: boolean;
+  params?: PaginationLangQueryType;
+};
+
+export const useUserInterestsQuery = ({
+  enabled = true,
+  params,
+}: UseUserInterestsQueryOptions = {}) => {
+  return useQuery<UserInterestsQueryResponse>({
+    queryKey: ["user-interests", params ?? null],
+    queryFn: () => interestApiRequest.getUserInterests(params),
     enabled,
     placeholderData: keepPreviousData,
   });
