@@ -24,7 +24,9 @@
     "Submit": "Submitted successfully!",
     "setupComplete": "Profile setup completed successfully!",
     "UpdateProfile": "Profile updated successfully!",
-    "avatarUploaded": "Avatar uploaded successfully!"
+    "avatarUploaded": "Avatar uploaded successfully!",
+    "SetUserRestriction": "User restriction updated successfully!",
+    "UserBanned": "You have been banned from the platform."
   },
   "Error": {
     "default": "An error occurred. Please try again.",
