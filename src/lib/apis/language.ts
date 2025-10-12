@@ -30,11 +30,11 @@ const languageApiRequest = {
   getUserLanguagesSpeaking: createGetAll<
     UserLanguageSpeakingResType,
     GetLanguagesParams
-  >(`${prefix}/me`),
+  >(`${prefix}/speaking/me`),
   getUserLanguagesLearning: createGetAll<
     UserLanguageLearningResType,
     GetLanguagesParams
-  >(`${prefix}/me`),
+  >(`${prefix}/learning/me`),
 };
 
 export default languageApiRequest;

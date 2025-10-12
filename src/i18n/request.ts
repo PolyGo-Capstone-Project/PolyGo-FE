@@ -16,6 +16,7 @@ const messageNamespaces = [
   "auth",
   "setup-profile",
   "admin",
+  "profile",
 ];
 
 async function loadMessages(locale: string): Promise<AbstractIntlMessages> {
