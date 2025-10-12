@@ -20,7 +20,8 @@
     "Upload": "Uploaded successfully!",
     "Download": "Downloaded successfully!",
     "Send": "Sent successfully!",
-    "Submit": "Submitted successfully!"
+    "Submit": "Submitted successfully!",
+    "setupComplete": "Profile setup completed successfully!"
   },
   "Error": {
     "default": "An error occurred. Please try again.",
@@ -514,6 +515,13 @@
       "description": "XP system, badges, and leaderboard to maintain learning motivation"
     }
   },
+  "common": {
+    "gender": {
+      "Male": "Male",
+      "Female": "Female",
+      "Other": "Other"
+    }
+  },
   "languageSwitcher": {
     "label": "Language",
     "description": "Select the language you prefer"
@@ -672,50 +680,65 @@
   },
   "setupProfile": {
     "steps": {
+      "personalInfo": {
+        "title": "Personal Information",
+        "description": "Tell us about yourself",
+        "avatarLabel": "Profile Picture",
+        "avatarHint": "Max 5MB, JPG/PNG/GIF",
+        "avatarUploadSuccess": "Avatar uploaded successfully!",
+        "avatarUploadError": "Failed to upload avatar",
+        "avatarInvalidType": "Please select an image file",
+        "avatarTooLarge": "File size must be less than 5MB",
+        "nameLabel": "Full Name",
+        "namePlaceholder": "Enter your name",
+        "nameHint": "This is how others will see you",
+        "genderLabel": "Gender",
+        "introductionLabel": "About Me",
+        "introductionPlaceholder": "Tell us about yourself, your interests, and why you want to learn languages...",
+        "introductionHint": "Optional - help others know you better",
+        "skipNotice": "You can skip this step and complete it later in your profile settings"
+      },
       "targetLanguage": {
-        "title": "Target Languages",
+        "title": "Languages to Learn",
         "description": "What do you want to learn?",
         "heading": "Choose your target languages",
         "subheading": "Select up to 3 languages you want to learn with PolyGo",
-        "selected": "Selected: {count} language",
-        "maxReached": "Maximum 3 languages"
+        "selected": "{count} selected",
+        "maxReached": "Maximum 3 languages",
+        "clearAll": "Clear all",
+        "noLanguagesFound": "No languages available",
+        "noLanguagesDescription": "Please try again later"
       },
       "knownLanguages": {
-        "title": "Known Languages",
-        "description": "Languages you already speak",
+        "title": "Languages You Speak",
+        "description": "Languages you already know",
         "heading": "Languages you already know",
         "subheading": "Select all languages you can speak. This helps us find better conversation partners.",
-        "selected": "Selected: {count} language"
+        "selected": "{count} selected",
+        "clearAll": "Clear all",
+        "noLanguagesFound": "No languages available",
+        "noLanguagesDescription": "Please try again later"
       },
-      "proficiency": {
-        "title": "Level & Interests",
-        "description": "Your proficiency and interests",
-        "proficiencyHeading": "What's your proficiency level?",
-        "proficiencySubheading": "Select your current level in the target language",
-        "interestsHeading": "What are your interests?",
-        "interestsSubheading": "Choose topics you'd like to talk about (select at least one)",
-        "selected": "Selected: {count} interest"
-      },
-      "availability": {
-        "title": "Availability",
-        "description": "When can you practice?",
-        "timezoneHeading": "Your timezone",
-        "timezoneSubheading": "We'll use this to match you with partners at convenient times",
-        "timezoneLabel": "Select your timezone",
-        "currentTime": "Current time",
-        "timeSlotsHeading": "When are you usually available?",
-        "timeSlotsSubheading": "Select the time slots when you can practice",
-        "weeklyHoursHeading": "How much time can you dedicate?",
-        "weeklyHoursSubheading": "Choose how many hours per week you want to practice",
-        "weeklyHoursLabel": "Weekly hours",
-        "selected": "Selected: {count} time slot"
+      "interests": {
+        "title": "Your Interests",
+        "description": "Topics you'd like to discuss",
+        "heading": "What are your interests?",
+        "subheading": "Choose topics you'd like to talk about. This helps us match you with like-minded partners.",
+        "selected": "{count} selected",
+        "clearAll": "Clear all",
+        "noInterestsFound": "No interests available",
+        "noInterestsDescription": "Please try again later",
+        "skipNotice": "You can skip this step and add interests later"
       }
     },
     "navigation": {
       "back": "Back",
       "continue": "Continue",
       "complete": "Complete Setup",
-      "step": "Step {current} of {total}"
+      "skip": "Skip to Dashboard",
+      "step": "Step {current} of {total}",
+      "saving": "Saving...",
+      "completing": "Completing..."
     },
     "proficiencyLevels": {
       "beginner": {
@@ -776,7 +799,28 @@
       "3": "3-5 hours per week",
       "6": "6-10 hours per week",
       "11": "10+ hours per week"
-    }
+    },
+    "errors": {
+      "name": {
+        "required": "Name is required",
+        "min": "Name must be at least {length} characters",
+        "max": "Name must be at most {length} characters"
+      },
+      "introduction": {
+        "max": "Introduction must be at most {length} characters"
+      },
+      "learningLanguages": {
+        "required": "Please select at least one language to learn"
+      },
+      "speakingLanguages": {
+        "required": "Please select at least one language you speak"
+      },
+      "interests": {
+        "required": "Please select at least one interest"
+      }
+    },
+    "personalInfoSaved": "Personal information saved successfully!",
+    "setupComplete": "Setup completed successfully!"
   },
   "comingSoon": {
     "title": "Coming Soon",

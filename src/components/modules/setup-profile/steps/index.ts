@@ -1,4 +1,4 @@
-export * from "./availability-step";
-export * from "./known-languages-step";
-export * from "./proficiency-step";
-export * from "./target-language-step";
+export { InterestsStep } from "./interests-step";
+export { KnownLanguagesStep } from "./known-languages-step";
+export { PersonalInfoStep } from "./personal-info-step";
+export { TargetLanguageStep } from "./target-language-step";

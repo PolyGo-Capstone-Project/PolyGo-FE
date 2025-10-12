@@ -17,7 +17,11 @@ import { toast } from "sonner";
 
 import { Button, Input, Label, Separator } from "@/components/ui";
 import { TypeOfVerificationCode } from "@/constants";
-import { useRegisterMutation, useSendOTPMutation } from "@/hooks";
+import {
+  useLoginMutation,
+  useRegisterMutation,
+  useSendOTPMutation,
+} from "@/hooks";
 import { handleErrorApi, showSuccessToast } from "@/lib/utils";
 import {
   RegisterBodySchema,
@@ -38,6 +42,7 @@ export default function RegisterForm() {
   const router = useRouter();
 
   const registerMutation = useRegisterMutation();
+  const loginMutation = useLoginMutation();
   const sendOTPMutation = useSendOTPMutation();
   //   const { initiateGoogleLogin, isLoading: isGoogleLoading } = useGoogleAuth();
 
@@ -85,7 +90,7 @@ export default function RegisterForm() {
       setOtpSent(true);
 
       // Start countdown
-      setCountdown(120);
+      setCountdown(180);
       const timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
@@ -109,8 +114,12 @@ export default function RegisterForm() {
 
     try {
       const response = await registerMutation.mutateAsync(data);
+      await loginMutation.mutateAsync({
+        mail: data.mail,
+        password: data.password,
+      });
       showSuccessToast(response.payload.message, tSuccess);
-      router.push(`/${locale}/login`);
+      router.push(`/${locale}/setup-profile`);
     } catch (error) {
       handleErrorApi({
         error,
@@ -166,24 +175,6 @@ export default function RegisterForm() {
         )}
       </div>
 
-      {/* Name & Phone Row */}
-      <div className="flex gap-4">
-        <div className="flex-1 basis-3/5 space-y-2">
-          <Label htmlFor="name">{t("nameLabel")}</Label>
-          <Input
-            id="name"
-            type="text"
-            placeholder={t("namePlaceholder")}
-            {...form.register("name")}
-          />
-          {form.formState.errors.name && (
-            <p className="text-sm text-destructive">
-              {form.formState.errors.name.message}
-            </p>
-          )}
-        </div>
-      </div>
-
       {/* OTP Field */}
       <div className="space-y-2">
         <Label htmlFor="otp">{t("otpLabel")}</Label>
@@ -204,6 +195,24 @@ export default function RegisterForm() {
           </p>
         )}
         <p className="text-xs text-muted-foreground">{t("otpHint")}</p>
+      </div>
+
+      {/* Name & Phone Row */}
+      <div className="flex gap-4">
+        <div className="flex-1 basis-3/5 space-y-2">
+          <Label htmlFor="name">{t("nameLabel")}</Label>
+          <Input
+            id="name"
+            type="text"
+            placeholder={t("namePlaceholder")}
+            {...form.register("name")}
+          />
+          {form.formState.errors.name && (
+            <p className="text-sm text-destructive">
+              {form.formState.errors.name.message}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Password Field */}

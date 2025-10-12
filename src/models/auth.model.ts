@@ -103,6 +103,24 @@ export const ForgotPasswordBodySchema = z
     }
   });
 
+//change password
+export const ChangePasswordBodySchema = z
+  .object({
+    currentPassword: z.string().min(6).max(100).regex(passwordRegex),
+    newPassword: z.string().min(6).max(100).regex(passwordRegex),
+    confirmNewPassword: z.string().min(6).max(100).regex(passwordRegex),
+  })
+  .strict()
+  .superRefine(({ confirmNewPassword, newPassword }, ctx) => {
+    if (confirmNewPassword !== newPassword) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Mật khẩu mới và mật khẩu xác nhận phải giống nhau",
+        path: ["confirmNewPassword"],
+      });
+    }
+  });
+
 //types
 export type LoginBodyType = z.infer<typeof LoginBodySchema>;
 export type LoginResType = z.infer<typeof LoginResSchema>;
@@ -113,3 +131,4 @@ export type RegisterBodyType = z.infer<typeof RegisterBodySchema>;
 export type VerificationCodeType = z.infer<typeof VerificationCodeSchema>;
 export type SendOTPBodyType = z.infer<typeof SendOTPBodySchema>;
 export type ForgotPasswordBodyType = z.infer<typeof ForgotPasswordBodySchema>;
+export type ChangePasswordBodyType = z.infer<typeof ChangePasswordBodySchema>;

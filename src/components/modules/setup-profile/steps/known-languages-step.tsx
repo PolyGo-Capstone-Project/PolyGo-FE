@@ -1,10 +1,10 @@
 "use client";
 
-import { IconCheck } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
+import { IconCheck, IconLoader2 } from "@tabler/icons-react";
+import { useLocale, useTranslations } from "next-intl";
 
-import { Button } from "@/components/ui/button";
-import { MOCK_LANGUAGES } from "@/constants/languages";
+import { Button } from "@/components/ui";
+import { useLanguagesQuery } from "@/hooks";
 import { cn } from "@/lib/utils";
 
 type KnownLanguagesStepProps = {
@@ -19,8 +19,14 @@ export function KnownLanguagesStep({
   targetLanguages,
 }: KnownLanguagesStepProps) {
   const t = useTranslations("setupProfile.steps.knownLanguages");
+  const locale = useLocale();
 
-  const availableLanguages = MOCK_LANGUAGES.filter(
+  const { data, isLoading, isError } = useLanguagesQuery({
+    params: { lang: locale, pageSize: 100 },
+  });
+
+  const allLanguages = data?.payload.data.items || [];
+  const availableLanguages = allLanguages.filter(
     (lang) => !targetLanguages.includes(lang.id)
   );
 
@@ -31,6 +37,25 @@ export function KnownLanguagesStep({
       onSelect([...selected, languageId]);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <IconLoader2 className="size-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (isError || availableLanguages.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <p className="text-lg font-semibold">{t("noLanguagesFound")}</p>
+        <p className="text-sm text-muted-foreground">
+          {t("noLanguagesDescription")}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -54,7 +79,15 @@ export function KnownLanguagesStep({
                   <IconCheck className="size-4" />
                 </div>
               )}
-              <span className="text-4xl">{language.flag}</span>
+              {language.iconUrl ? (
+                <img
+                  src={language.iconUrl}
+                  alt={language.name}
+                  className="size-12 rounded-full object-cover"
+                />
+              ) : (
+                <span className="text-4xl">🌐</span>
+              )}
               <span className="text-center text-sm font-medium">
                 {language.name}
               </span>
@@ -80,7 +113,7 @@ export function KnownLanguagesStep({
             onClick={() => onSelect([])}
             className="text-muted-foreground"
           >
-            Clear all
+            {t("clearAll")}
           </Button>
         )}
       </div>

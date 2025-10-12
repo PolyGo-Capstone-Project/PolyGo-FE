@@ -1,9 +1,3 @@
-export const UserStatus = {
-  ACTIVE: "ACTIVE",
-  INACTIVE: "INACTIVE",
-  BLOCKED: "BLOCKED",
-} as const;
-
 export const TypeOfVerificationCode = {
   REGISTER: "0",
   FORGOT_PASSWORD: "1",
