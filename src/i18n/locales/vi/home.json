@@ -1,0 +1,47 @@
+{
+  "home": {
+    "title": "PolyGo",
+    "clickMe": "Nhấn vào tôi",
+    "heroTitle": "Học ngôn ngữ qua trải nghiệm thực tế",
+    "heroSubtitle": "Kết nối với người bản ngữ, tham gia các sự kiện văn hóa thú vị và cải thiện kỹ năng ngôn ngữ của bạn một cách tự nhiên nhất.",
+    "Demo": "Xem demo",
+    "getStarted": "Bắt đầu miễn phí",
+    "usersCount": "50K+",
+    "users": "Người học",
+    "languageCount": "30+",
+    "language": "Ngôn ngữ",
+    "eventsCount": "100+",
+    "events": "Sự kiện/Tháng",
+    "whyTitle": "Tại sao chọn PolyGo?",
+    "whySubtitle": "Nền tảng học ngôn ngữ toàn diện với công nghệ AI và cộng đồng toàn cầu",
+    "bannerTitle": "Sẵn sàng bắt đầu hành trình học ngôn ngữ?",
+    "bannerSubtitle": "Tham gia cộng đồng hơn 50,000 người học trên toàn thế giới",
+    "bannerButtonOne": "Đăng ký miễn phí",
+    "bannerButtonTwo": "Đã có tài khoản? Đăng nhập",
+    "live": "Live với Anna",
+    "firstCard": {
+      "name": "Trò chuyện thông minh",
+      "description": "AI tự động sửa lỗi và gợi ý câu văn tự nhiên trong khi bạn chat"
+    },
+    "secondCard": {
+      "name": "Video call 1:1",
+      "description": "Luyện nói trực tiếp với người bản ngữ qua video call chất lượng cao"
+    },
+    "thirdCard": {
+      "name": "Sự kiện văn hóa",
+      "description": "Tham gia workshops, movie nights và các hoạt động thú vị"
+    },
+    "fourthCard": {
+      "name": "Matching thông minh",
+      "description": "Thuật toán tìm kiếm partner phù hợp dựa trên sở thích và mục tiêu"
+    },
+    "fifthCard": {
+      "name": "30+ ngôn ngữ",
+      "description": "Từ tiếng Anh, Pháp, Nhật, Hàn đến các ngôn ngữ ít phổ biến"
+    },
+    "sixthCard": {
+      "name": "Chơi game",
+      "description": "Hệ thống XP, badges và leaderboard để duy trì động lực học tập"
+    }
+  }
+}

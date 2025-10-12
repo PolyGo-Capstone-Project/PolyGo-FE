@@ -1,0 +1,82 @@
+{
+  "terms": {
+    "header": "Điều khoản dịch vụ",
+    "title": "Điều khoản Dịch vụ PolyGo",
+    "intro": "Các điều khoản này quản lý việc sử dụng PolyGo của bạn. Vui lòng đọc kỹ trước khi sử dụng dịch vụ của chúng tôi.",
+    "lastUpdated": "Cập nhật lần cuối",
+    "effectiveDate": "Có hiệu lực từ",
+    "warning": {
+      "title": "Quan trọng",
+      "content": "Bằng việc truy cập và sử dụng dịch vụ PolyGo, bạn đồng ý tuân thủ và bị ràng buộc bởi các điều khoản này. Nếu bạn không đồng ý với bất kỳ phần nào của các điều khoản này, vui lòng không sử dụng dịch vụ của chúng tôi."
+    },
+    "registration": {
+      "title": "Đăng ký Tài khoản",
+      "items": {
+        "requiredTitle": "Yêu cầu Đăng ký",
+        "required": "Người dùng phải cung cấp thông tin chính xác và đầy đủ để tạo tài khoản. Bất kỳ thông tin sai lệch nào đều có thể dẫn đến việc đình chỉ tài khoản.",
+        "verificationTitle": "Xác minh Email/Điện thoại",
+        "verification": "Chúng tôi yêu cầu xác minh email hoặc số điện thoại để đảm bảo tính xác thực của người dùng và bảo mật hệ thống.",
+        "ageTitle": "Chính sách Tuổi",
+        "age": "Dịch vụ chỉ dành cho những người từ 18 tuổi trở lên, hoặc từ 13 tuổi trở lên có sự đồng ý của phụ huynh/người giám hộ."
+      }
+    },
+    "plans": {
+      "title": "Gói Dịch vụ và Thanh toán",
+      "items": {
+        "freeTitle": "Gói Miễn phí (Free)",
+        "free": "Cung cấp quyền truy cập vào các tính năng cơ bản, bao gồm tham gia các phòng sự kiện công cộng và ghép đôi ngôn ngữ ngẫu nhiên có giới hạn.",
+        "plusTitle": "Gói Plus",
+        "plus": "Cung cấp các lợi ích nâng cao như truy cập không giới hạn vào các sự kiện riêng tư, ưu tiên ghép đôi và không có quảng cáo."
+      }
+    },
+    "communication": {
+      "title": "Quy tắc Giao tiếp và Tương tác",
+      "items": {
+        "roomCapacityTitle": "Giới hạn Phòng Sự kiện",
+        "roomCapacity": "Số lượng người tham gia phòng sự kiện tối đa được giới hạn để đảm bảo chất lượng tương tác.",
+        "eventVerificationTitle": "Xác minh Sự kiện",
+        "eventVerification": "Người dùng tạo sự kiện phải có hồ sơ đã được xác minh. PolyGo có quyền kiểm duyệt hoặc xóa các sự kiện không phù hợp.",
+        "entryVerificationTitle": "Xác minh Tham gia",
+        "entryVerification": "Một số sự kiện có thể yêu cầu xác minh bổ sung hoặc chấp thuận từ người tổ chức để tham gia.",
+        "callDurationTitle": "Thời lượng Cuộc gọi",
+        "callDuration": "Thời lượng cuộc gọi video/thoại ngẫu nhiên có thể bị giới hạn trong Gói Miễn phí.",
+        "matchingRulesTitle": "Quy tắc Ghép đôi",
+        "matchingRules": "Hệ thống ghép đôi dựa trên sở thích, ngôn ngữ, và mục tiêu học tập. Nghiêm cấm các hành vi lạm dụng tính năng ghép đôi.",
+        "cancellationTitle": "Huỷ Sự kiện",
+        "cancellation": "Người dùng phải thông báo hủy sự kiện đã tạo trước 24 giờ. Hủy bỏ quá gần có thể dẫn đến hình phạt."
+      }
+    },
+    "payments": {
+      "title": "Điều khoản Thanh toán và Hoàn tiền",
+      "items": {
+        "billingCycleTitle": "Chu kỳ Thanh toán Gói Plus",
+        "billingCycle": "Đăng ký Gói Plus được thanh toán hàng tháng hoặc hàng năm và sẽ tự động gia hạn trừ khi bị hủy.",
+        "balanceTitle": "Yêu cầu Số dư",
+        "balance": "Người dùng phải duy trì số dư hợp lệ để truy cập các dịch vụ trả phí. Không có hoàn tiền cho các khoản phí đã thanh toán."
+      }
+    },
+    "administration": {
+      "title": "Quản trị và Thi hành",
+      "items": {
+        "contentModerationTitle": "Kiểm duyệt Nội dung",
+        "contentModeration": "PolyGo có quyền xem xét, chỉnh sửa hoặc xóa bất kỳ nội dung nào bị coi là không phù hợp hoặc vi phạm điều khoản.",
+        "violationReportingTitle": "Báo cáo Vi phạm",
+        "violationReporting": "Người dùng phải báo cáo mọi hành vi hoặc nội dung vi phạm Điều khoản Dịch vụ ngay lập tức.",
+        "activityLoggingTitle": "Ghi nhật ký Hoạt động",
+        "activityLogging": "Chúng tôi ghi nhật ký hoạt động của người dùng cho mục đích bảo mật, phân tích và kiểm duyệt.",
+        "adminAuthorityTitle": "Thẩm quyền Admin",
+        "adminAuthority": "Quản trị viên PolyGo có thẩm quyền tuyệt đối trong việc đình chỉ hoặc chấm dứt tài khoản vi phạm mà không cần thông báo trước."
+      }
+    },
+    "security": {
+      "title": "Bảo mật và Quyền riêng tư",
+      "items": {
+        "dataComplianceTitle": "Tuân thủ Bảo vệ Dữ liệu",
+        "dataCompliance": "Chúng tôi tuân thủ các quy định bảo vệ dữ liệu để xử lý thông tin cá nhân của bạn. Xem Chính sách Quyền riêng tư để biết thêm chi tiết.",
+        "informationSharingTitle": "Chia sẻ Thông tin",
+        "informationSharing": "Thông tin cá nhân không được chia sẻ với bên thứ ba mà không có sự đồng ý của bạn, trừ các trường hợp được pháp luật yêu cầu."
+      }
+    },
+    "footerNote": "Nếu bạn có bất kỳ câu hỏi nào về các điều khoản này, vui lòng liên hệ với chúng tôi qua trang <link>Hỗ trợ</link>."
+  }
+}

@@ -195,83 +195,89 @@ export function InterestTable({
       );
     }
 
-    return items.map((interest) => (
-      <tr key={interest.id} className="border-b last:border-b-0">
-        <td className="px-4 py-3 font-medium uppercase">{interest.id}</td>
-        <td className="px-4 py-3">
-          <div className="flex flex-col gap-1">
-            <span className="font-medium">{interest.name}</span>
-            <span className="text-muted-foreground text-xs line-clamp-2">
-              {interest.description || EMPTY_ICON}
-            </span>
-          </div>
-        </td>
-        <td className="px-4 py-3">
-          <Badge variant="secondary">
-            {interest.code?.toUpperCase() || EMPTY_ICON}
-          </Badge>
-        </td>
-        <td className="px-4 py-3">
-          {interest.iconUrl ? (
-            <div className="flex items-center gap-3">
-              <span className="relative h-10 w-10 overflow-hidden rounded bg-muted">
-                <Image
-                  src={interest.iconUrl}
-                  alt={safeTranslate("columns.iconAlt", "Interest icon image")}
-                  fill
-                  sizes="40px"
-                  className="object-cover"
-                  unoptimized
-                />
+    return items.map((interest, index) => {
+      const rowNumber = (pagination.currentPage - 1) * pageSize + index + 1;
+      return (
+        <tr key={interest.id} className="border-b last:border-b-0">
+          <td className="px-4 py-3 text-center font-medium">{rowNumber}</td>
+          <td className="px-4 py-3">
+            <div className="flex flex-col gap-1">
+              <span className="font-medium">{interest.name}</span>
+              <span className="text-muted-foreground text-xs line-clamp-2">
+                {interest.description || EMPTY_ICON}
               </span>
             </div>
-          ) : (
-            <span className="text-muted-foreground">{EMPTY_ICON}</span>
-          )}
-        </td>
-        <td className="px-4 py-3 text-nowrap">
-          <div className="flex items-center gap-2">
-            <span>{getLocaleFlag(interest.code ?? "")}</span>
-            <span className="text-muted-foreground text-xs">
-              {getLocaleName(interest.code ?? "—")}
-            </span>
-          </div>
-        </td>
-        <td className="px-4 py-3 text-nowrap">
-          {formatDateTime(interest.createdAt)}
-        </td>
-        <td className="px-4 py-3 text-nowrap">
-          {formatDateTime(interest.lastUpdatedAt)}
-        </td>
-        <td className="px-4 py-3">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onOpenEdit(interest.id)}
-            >
-              <IconPencil className="size-4" />
-              <span className="sr-only">{safeTranslate("edit", "Edit")}</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onDelete(interest)}
-              disabled={isDeletePending}
-            >
-              {isDeletePending && deletingId === interest.id ? (
-                <Spinner className="size-4" />
-              ) : (
-                <IconTrash className="size-4 text-destructive" />
-              )}
-              <span className="sr-only">
-                {safeTranslate("delete", "Delete")}
+          </td>
+          <td className="px-4 py-3">
+            <Badge variant="secondary">
+              {interest.lang?.toUpperCase() || EMPTY_ICON}
+            </Badge>
+          </td>
+          <td className="px-4 py-3">
+            {interest.iconUrl ? (
+              <div className="flex items-center gap-3">
+                <span className="relative h-10 w-10 overflow-hidden rounded bg-muted">
+                  <Image
+                    src={interest.iconUrl}
+                    alt={safeTranslate(
+                      "columns.iconAlt",
+                      "Interest icon image"
+                    )}
+                    fill
+                    sizes="40px"
+                    className="object-cover"
+                    unoptimized
+                  />
+                </span>
+              </div>
+            ) : (
+              <span className="text-muted-foreground">{EMPTY_ICON}</span>
+            )}
+          </td>
+          <td className="px-4 py-3 text-nowrap">
+            <div className="flex items-center gap-2">
+              <span>{getLocaleFlag(interest.lang ?? "")}</span>
+              <span className="text-muted-foreground text-xs">
+                {getLocaleName(interest.lang ?? "—")}
               </span>
-            </Button>
-          </div>
-        </td>
-      </tr>
-    ));
+            </div>
+          </td>
+          <td className="px-4 py-3 text-nowrap">
+            {formatDateTime(interest.createdAt)}
+          </td>
+          <td className="px-4 py-3 text-nowrap">
+            {formatDateTime(interest.lastUpdatedAt)}
+          </td>
+          <td className="px-4 py-3">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onOpenEdit(interest.id)}
+              >
+                <IconPencil className="size-4" />
+                <span className="sr-only">{safeTranslate("edit", "Edit")}</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onDelete(interest)}
+                disabled={isDeletePending}
+              >
+                {isDeletePending && deletingId === interest.id ? (
+                  <Spinner className="size-4" />
+                ) : (
+                  <IconTrash className="size-4 text-destructive" />
+                )}
+                <span className="sr-only">
+                  {safeTranslate("delete", "Delete")}
+                </span>
+              </Button>
+            </div>
+          </td>
+        </tr>
+      );
+    });
   };
 
   return (
@@ -359,14 +365,14 @@ export function InterestTable({
           <table className="w-full min-w-[720px] text-sm">
             <thead>
               <tr className="border-b bg-muted/40 text-left text-xs uppercase tracking-wide text-muted-foreground">
-                <th className="px-4 py-3 font-medium">
-                  {safeTranslate("columns.id", "ID")}
+                <th className="px-4 py-3 text-center font-medium">
+                  {safeTranslate("columns.no", "No.")}
                 </th>
                 <th className="px-4 py-3 font-medium">
                   {safeTranslate("columns.name", "Interest")}
                 </th>
                 <th className="px-4 py-3 font-medium">
-                  {safeTranslate("columns.code", "Locale")}
+                  {safeTranslate("columns.lang", "Locale")}
                 </th>
                 <th className="px-4 py-3 font-medium">
                   {safeTranslate("columns.icon", "Icon")}

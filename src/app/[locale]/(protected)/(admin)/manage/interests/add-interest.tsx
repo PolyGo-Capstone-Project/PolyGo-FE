@@ -29,7 +29,7 @@ import { handleErrorApi } from "@/lib/utils";
 import { CreateInterestBodySchema, CreateInterestBodyType } from "@/models";
 
 const DEFAULT_VALUES: CreateInterestBodyType = {
-  code: "",
+  lang: "",
   name: "",
   description: "",
   iconUrl: "",
@@ -122,7 +122,7 @@ export function AddInterest({
 
   const handleSubmit = form.handleSubmit(async (values) => {
     const payload: CreateInterestBodyType = {
-      code: values.code.trim(),
+      lang: values.lang.trim(),
       name: values.name.trim(),
       description: values.description.trim(),
       iconUrl: values.iconUrl?.trim() || undefined,
@@ -159,25 +159,25 @@ export function AddInterest({
           >
             <FormField
               control={form.control}
-              name="code"
+              name="lang"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>
-                    {safeTranslate("form.codeLabel", "Locale code")}
+                    {safeTranslate("form.langLabel", "Language code")}
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       maxLength={2}
                       placeholder={safeTranslate(
-                        "form.codePlaceholder",
+                        "form.langPlaceholder",
                         "e.g. en"
                       )}
                     />
                   </FormControl>
                   <FormDescription>
                     {safeTranslate(
-                      "form.codeHint",
+                      "form.langHint",
                       "Use the language code for this translation."
                     )}
                   </FormDescription>

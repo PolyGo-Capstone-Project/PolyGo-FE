@@ -56,6 +56,7 @@ type EditLanguageProps = {
 
 const DEFAULT_VALUES: CreateLanguageBodyType = {
   code: "",
+  lang: "",
   name: "",
   iconUrl: "",
 };
@@ -96,6 +97,7 @@ export function EditLanguage({
     if (language) {
       form.reset({
         code: language.code ?? "",
+        lang: language.lang ?? "",
         name: language.name ?? "",
         iconUrl: language.iconUrl ?? "",
       });
@@ -147,6 +149,7 @@ export function EditLanguage({
 
     const payload: CreateLanguageBodyType = {
       code: values.code.trim(),
+      lang: values.lang.trim(),
       name: values.name.trim(),
       iconUrl: values.iconUrl?.trim() || undefined,
     };
@@ -197,6 +200,30 @@ export function EditLanguage({
                       placeholder={safeTranslate(
                         "form.codePlaceholder",
                         "e.g. EN"
+                      )}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="lang"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    {safeTranslate("form.langLabel", "Translation locale")}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      maxLength={2}
+                      disabled={isFormDisabled}
+                      placeholder={safeTranslate(
+                        "form.langPlaceholder",
+                        "e.g. en"
                       )}
                     />
                   </FormControl>
