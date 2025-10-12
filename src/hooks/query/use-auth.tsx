@@ -26,6 +26,12 @@ export const useForgotPasswordMutation = () => {
   });
 };
 
+export const useChangePasswordMutation = () => {
+  return useMutation({
+    mutationFn: authApiRequest.changePassword,
+  });
+};
+
 export const useAuthMe = () => {
   return useQuery({
     queryKey: ["auth-me"],

@@ -1,0 +1,167 @@
+{
+  "profile": {
+    "title": "Profile",
+    "edit": "Edit Profile",
+    "stats": {
+      "title": "Statistics",
+      "totalSessions": "Total Sessions",
+      "averageRating": "Average Rating",
+      "responseRate": "Response Rate",
+      "totalHours": "Total Hours",
+      "streakDays": "Day Streak",
+      "eventsHosted": "Events Hosted"
+    },
+    "sections": {
+      "introduction": "Introduction",
+      "nativeLanguages": "Native Languages",
+      "learningLanguages": "Learning Languages",
+      "interests": "Interests",
+      "experiencePoints": "Experience Points",
+      "level": "Level",
+      "gifts": "Gifts from Community",
+      "achievements": "Achievements & Badges"
+    },
+    "info": {
+      "name": "Name",
+      "email": "Email",
+      "gender": "Gender",
+      "meritLevel": "Merit Level",
+      "role": "Role",
+      "balance": "Balance",
+      "lastLogin": "Last Login",
+      "memberSince": "Member Since"
+    },
+    "xp": {
+      "toNextLevel": "XP to next level",
+      "label": "XP",
+      "untilLevel": "XP until Level"
+    },
+    "streak": {
+      "day": "Day",
+      "days": "Days",
+      "label": "Streak!",
+      "keepItUp": "Keep it up!"
+    },
+    "timeAgo": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "d ago",
+      "weeksAgo": "w ago",
+      "monthsAgo": "mo ago"
+    },
+    "empty": {
+      "noLanguages": "No languages added",
+      "noInterests": "No interests added",
+      "noGifts": "No gifts received yet"
+    },
+    "achievements": {
+      "unlocked": "Unlocked",
+      "firstChat": "First Chat",
+      "firstChatDesc": "Had your first conversation",
+      "tenHoursSpoken": "10 Hours Spoken",
+      "tenHoursSpokenDesc": "Spoken for 10+ hours"
+    },
+    "gifts": {
+      "from": "From"
+    },
+    "editDialog": {
+      "title": "Edit Profile",
+      "description": "Make changes to your profile here. Click save when you're done.",
+      "tabs": {
+        "personalInfo": "Personal Info",
+        "languagesAndInterests": "Languages & Interests",
+        "changePassword": "Change Password"
+      },
+      "personalInfo": {
+        "name": "Full Name",
+        "namePlaceholder": "Enter your full name",
+        "introduction": "Introduction",
+        "introductionPlaceholder": "Tell us about yourself...",
+        "gender": "Gender",
+        "genderPlaceholder": "Select your gender",
+        "avatar": "Profile Picture",
+        "changeAvatar": "Change Avatar"
+      },
+      "languagesAndInterests": {
+        "nativeLanguages": "Native Languages",
+        "nativeLanguagesPlaceholder": "Select your native languages",
+        "learningLanguages": "Learning Languages",
+        "learningLanguagesPlaceholder": "Select languages you're learning",
+        "interests": "Interests",
+        "interestsPlaceholder": "Select your interests"
+      },
+      "changePassword": {
+        "currentPassword": "Current Password",
+        "currentPasswordPlaceholder": "Enter your current password",
+        "newPassword": "New Password",
+        "newPasswordPlaceholder": "Enter your new password",
+        "confirmPassword": "Confirm Password",
+        "confirmPasswordPlaceholder": "Confirm your new password"
+      },
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "errors": {
+        "default": "Please check this field.",
+        "personalInfo": {
+          "name": {
+            "required": "Full name is required.",
+            "min": "Full name must be at least {length} character.",
+            "max": "Full name must be at most {length} characters."
+          },
+          "introduction": {
+            "max": "Introduction must be at most {length} characters."
+          },
+          "gender": {
+            "required": "Gender is required.",
+            "invalid": "Please select a valid gender."
+          },
+          "avatarUrl": {
+            "invalid": "Invalid avatar URL."
+          }
+        },
+        "languagesInterests": {
+          "speakingLanguageIds": {
+            "required": "Please select at least one native language.",
+            "min": "Please select at least {min} native language(s)."
+          },
+          "learningLanguageIds": {
+            "required": "Please select at least one learning language.",
+            "min": "Please select at least {min} learning language(s)."
+          },
+          "interestIds": {
+            "required": "Please select at least one interest.",
+            "min": "Please select at least {min} interest(s)."
+          }
+        },
+        "changePassword": {
+          "currentPassword": {
+            "required": "Current password is required.",
+            "min": "Current password must be at least {length} characters.",
+            "max": "Current password must be at most {length} characters.",
+            "format": "Current password must include uppercase, lowercase, number, and special character."
+          },
+          "newPassword": {
+            "required": "New password is required.",
+            "min": "New password must be at least {length} characters.",
+            "max": "New password must be at most {length} characters.",
+            "format": "New password must include uppercase, lowercase, number, and special character."
+          },
+          "confirmPassword": {
+            "required": "Please confirm your new password.",
+            "min": "Confirm password must be at least {length} characters.",
+            "max": "Confirm password must be at most {length} characters.",
+            "mismatch": "New password and confirm password must match."
+          }
+        }
+      },
+      "success": {
+        "personalInfoUpdated": "Personal information updated successfully!",
+        "languagesInterestsUpdated": "Languages and interests updated successfully!",
+        "passwordChanged": "Password changed successfully!"
+      }
+    },
+    "noData": "No data available",
+    "loading": "Loading profile..."
+  }
+}

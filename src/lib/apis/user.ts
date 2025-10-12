@@ -1,6 +1,12 @@
+import { createGetAll, createGetOne } from "@/lib/apis/factory";
 import http from "@/lib/http";
 import {
+  GetUserByIdBodyType,
+  GetUserByIdResType,
+  GetUsersQueryType,
+  GetUsersResType,
   MessageResType,
+  SetRestrictionsBodyType,
   SetupProfileBodyType,
   UpdateMeBodyType,
   UpdateProfileBodyType,
@@ -19,6 +25,10 @@ const userApiRequest = {
   updateProfile: (body: UpdateProfileBodyType) =>
     http.put<MessageResType>(`${prefix}/profile/me`, body),
 
-  //FOR ADMIN - NOT IMPLEMENT YET
+  //FOR ADMIN
+  getUsers: createGetAll<GetUsersResType, GetUsersQueryType>(prefix),
+  getOne: createGetOne<GetUserByIdResType, GetUserByIdBodyType>(prefix),
+  setRestrictions: (body: SetRestrictionsBodyType, id: string) =>
+    http.put<MessageResType>(`${prefix}/set-restriction/${id}`, body),
 };
 export default userApiRequest;

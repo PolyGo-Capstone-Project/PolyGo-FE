@@ -2,7 +2,7 @@
   "Success": {
     "default": "Thao tác thành công!",
     "GetAll": "Lấy dữ liệu thành công!",
-    "GetOne": "Lấy dữ liệu thành công!",
+    "Get": "Lấy dữ liệu thành công!",
     "Create": "Tạo mới thành công!",
     "Update": "Cập nhật thành công!",
     "Delete": "Xoá thành công!",
@@ -11,6 +11,7 @@
     "Logout": "Đăng xuất thành công!",
     "ForgotPassword": "Đặt lại mật khẩu thành công!",
     "ResetPassword": "Đặt lại mật khẩu thành công!",
+    "ChangePassword": "Đổi mật khẩu thành công!",
     "VerifyEmail": "Xác thực email thành công!",
     "ResendVerification": "Đã gửi email xác thực!",
     "ProfileUpdate": "Cập nhật hồ sơ thành công!",
@@ -21,7 +22,11 @@
     "Download": "Tải xuống thành công!",
     "Send": "Gửi thành công!",
     "Submit": "Gửi thành công!",
-    "setupComplete": "Thiết lập hồ sơ thành công!"
+    "setupComplete": "Thiết lập hồ sơ thành công!",
+    "UpdateProfile": "Cập nhật hồ sơ thành công!",
+    "avatarUploaded": "Tải lên ảnh đại diện thành công!",
+    "SetUserRestriction": "Cập nhật hạn chế người dùng thành công!",
+    "UserBanned": "Bạn đã bị cấm khỏi nền tảng."
   },
   "Error": {
     "default": "Đã xảy ra lỗi. Vui lòng thử lại.",
@@ -48,7 +53,9 @@
     "InvalidPassword": "Mật khẩu không đúng định dạng.",
     "PasswordMismatch": "Mật khẩu không khớp.",
     "InvalidFormat": "Định dạng không hợp lệ.",
-    "InvalidMailOrPassword": "Email hoặc mật khẩu không đúng."
+    "InvalidMailOrPassword": "Email hoặc mật khẩu không đúng.",
+    "invalidFileType": "Loại file không hợp lệ. Vui lòng chọn file ảnh.",
+    "fileTooLarge": "Kích thước file quá lớn. Kích thước tối đa là 5MB."
   },
   "header": {
     "products": "Sản phẩm",

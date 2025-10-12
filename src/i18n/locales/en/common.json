@@ -2,7 +2,7 @@
   "Success": {
     "default": "Operation successful!",
     "GetAll": "Data retrieved successfully!",
-    "GetOne": "Data retrieved successfully!",
+    "Get": "Data retrieved successfully!",
     "Create": "Created successfully!",
     "Update": "Updated successfully!",
     "Delete": "Deleted successfully!",
@@ -11,6 +11,7 @@
     "Logout": "Logout successful!",
     "ForgotPassword": "Password reset successful!",
     "ResetPassword": "Password reset successful!",
+    "ChangePassword": "Password changed successfully!",
     "VerifyEmail": "Email verified successfully!",
     "ResendVerification": "Verification email sent!",
     "ProfileUpdate": "Profile updated successfully!",
@@ -21,7 +22,11 @@
     "Download": "Downloaded successfully!",
     "Send": "Sent successfully!",
     "Submit": "Submitted successfully!",
-    "setupComplete": "Profile setup completed successfully!"
+    "setupComplete": "Profile setup completed successfully!",
+    "UpdateProfile": "Profile updated successfully!",
+    "avatarUploaded": "Avatar uploaded successfully!",
+    "SetUserRestriction": "User restriction updated successfully!",
+    "UserBanned": "You have been banned from the platform."
   },
   "Error": {
     "default": "An error occurred. Please try again.",
@@ -48,7 +53,9 @@
     "InvalidPassword": "Invalid password format.",
     "PasswordMismatch": "Passwords do not match.",
     "InvalidFormat": "Invalid format.",
-    "InvalidMailOrPassword": "Invalid email or password."
+    "InvalidMailOrPassword": "Invalid email or password.",
+    "invalidFileType": "Invalid file type. Please select an image file.",
+    "fileTooLarge": "File size too large. Maximum size is 5MB."
   },
   "header": {
     "products": "Products",

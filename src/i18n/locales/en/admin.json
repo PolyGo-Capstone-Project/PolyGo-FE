@@ -70,6 +70,63 @@
       "title": "Gifts",
       "description": "Manage user gifts and settings"
     },
+    "accounts": {
+      "title": "User accounts",
+      "description": "Manage user accounts and their access restrictions.",
+      "error": "Unable to load accounts.",
+      "errorTitle": "Something went wrong",
+      "retry": "Try again",
+      "emptyTitle": "No accounts yet",
+      "emptyDescription": "No user accounts found in the system.",
+      "edit": "Edit",
+      "tableTitle": "User accounts",
+      "tableDescription": "Manage user accounts and their permissions.",
+      "pageSize": "Page size",
+      "refresh": "Refresh",
+      "userIdLabel": "ID",
+      "columns": {
+        "no": "No.",
+        "user": "User",
+        "meritLevel": "Merit level",
+        "role": "Role",
+        "gender": "Gender",
+        "experience": "XP",
+        "streak": "Streak",
+        "subscription": "Auto-renew",
+        "lastLogin": "Last login",
+        "actions": "Actions"
+      },
+      "pagination": {
+        "summary": "Showing {start}-{end} of {total} accounts",
+        "empty": "No accounts to display",
+        "previous": "Previous",
+        "page": "Page {page} of {total}",
+        "next": "Next"
+      },
+      "meritLevels": {
+        "banned": "Banned",
+        "bannedDesc": "User is completely banned from the platform",
+        "restricted": "Restricted",
+        "restrictedDesc": "User has limited access to features",
+        "monitored": "Monitored",
+        "monitoredDesc": "User activities are being monitored",
+        "reliable": "Reliable",
+        "reliableDesc": "Standard user with full access",
+        "admin": "Admin",
+        "adminDesc": "Administrator with full privileges"
+      },
+      "form": {
+        "meritLevelLabel": "Merit level",
+        "meritLevelPlaceholder": "Select a merit level",
+        "meritLevelHint": "Set the user's access level and restrictions.",
+        "cancel": "Cancel",
+        "submitUpdate": "Save changes"
+      },
+      "sheet": {
+        "editTitle": "Edit user restrictions",
+        "editDescription": "Update the merit level and restrictions for this user account."
+      }
+    },
     "interests": {
       "title": "Interests",
       "description": "Manage user interests and settings",

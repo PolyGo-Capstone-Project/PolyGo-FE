@@ -1,9 +1,11 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import userApiRequest from "@/lib/apis/user";
 import {
+  GetUsersQueryType,
+  SetRestrictionsBodyType,
   SetupProfileBodyType,
   UpdateMeBodyType,
   UpdateProfileBodyType,
@@ -47,6 +49,55 @@ export const useUpdateProfileMutation = (options?: {
   return useMutation({
     mutationFn: (body: UpdateProfileBodyType) =>
       userApiRequest.updateProfile(body),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+};
+
+// ============= ADMIN HOOKS =============
+
+type GetUsersResponse = Awaited<ReturnType<typeof userApiRequest.getUsers>>;
+type GetUserResponse = Awaited<ReturnType<typeof userApiRequest.getOne>>;
+type SetRestrictionsResponse = Awaited<
+  ReturnType<typeof userApiRequest.setRestrictions>
+>;
+
+// GET /users - Get all users with pagination
+export const useGetUsers = (
+  query: GetUsersQueryType,
+  options?: {
+    enabled?: boolean;
+  }
+) => {
+  return useQuery({
+    queryKey: ["users", query],
+    queryFn: () => userApiRequest.getUsers(query),
+    enabled: options?.enabled,
+  });
+};
+
+// GET /users/:id - Get user by ID
+export const useGetUser = (
+  id: string,
+  options?: {
+    enabled?: boolean;
+  }
+) => {
+  return useQuery({
+    queryKey: ["user", id],
+    queryFn: () => userApiRequest.getOne(id),
+    enabled: options?.enabled,
+  });
+};
+
+// PUT /users/set-restrictions/:id - Set user restrictions
+export const useSetRestrictionsMutation = (options?: {
+  onSuccess?: (data: SetRestrictionsResponse) => void;
+  onError?: (error: unknown) => void;
+}) => {
+  return useMutation({
+    mutationFn: ({ body, id }: { body: SetRestrictionsBodyType; id: string }) =>
+      userApiRequest.setRestrictions(body, id),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });

@@ -20,6 +20,14 @@ type LanguageQueryResponse = Awaited<
   ReturnType<typeof languageApiRequest.getOne>
 >;
 
+type UserLanguagesSpeakingQueryResponse = Awaited<
+  ReturnType<typeof languageApiRequest.getUserLanguagesSpeaking>
+>;
+
+type UserLanguagesLearningQueryResponse = Awaited<
+  ReturnType<typeof languageApiRequest.getUserLanguagesLearning>
+>;
+
 type UseLanguagesQueryOptions = {
   enabled?: boolean;
   params?: PaginationLangQueryType;
@@ -52,6 +60,35 @@ export const useLanguageQuery = ({
     queryKey: ["language", id ?? null, lang ?? null],
     queryFn: () => languageApiRequest.getOne(id as string, { lang }),
     enabled: enabled && Boolean(id),
+    placeholderData: keepPreviousData,
+  });
+};
+
+type UseUserLanguagesQueryOptions = {
+  enabled?: boolean;
+  params?: PaginationLangQueryType;
+};
+
+export const useUserLanguagesSpeakingQuery = ({
+  enabled = true,
+  params,
+}: UseUserLanguagesQueryOptions = {}) => {
+  return useQuery<UserLanguagesSpeakingQueryResponse>({
+    queryKey: ["user-languages-speaking", params ?? null],
+    queryFn: () => languageApiRequest.getUserLanguagesSpeaking(params),
+    enabled,
+    placeholderData: keepPreviousData,
+  });
+};
+
+export const useUserLanguagesLearningQuery = ({
+  enabled = true,
+  params,
+}: UseUserLanguagesQueryOptions = {}) => {
+  return useQuery<UserLanguagesLearningQueryResponse>({
+    queryKey: ["user-languages-learning", params ?? null],
+    queryFn: () => languageApiRequest.getUserLanguagesLearning(params),
+    enabled,
     placeholderData: keepPreviousData,
   });
 };
