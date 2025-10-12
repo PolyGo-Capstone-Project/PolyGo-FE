@@ -22,7 +22,9 @@ export function ProfileInfoSection({
   experiencePoints,
   streakDays,
 }: ProfileInfoSectionProps) {
-  const t = useTranslations("profile.sections");
+  const t = useTranslations("profile");
+  const tXp = useTranslations("profile");
+  const tStreak = useTranslations("profile");
 
   // Simple XP calculation (you can adjust this formula later)
   const currentLevel = Math.floor(experiencePoints / 500) + 1;
@@ -35,14 +37,16 @@ export function ProfileInfoSection({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{t("experiencePoints")}</CardTitle>
+        <CardTitle className="text-lg">
+          {t("sections.experiencePoints")}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Level Badge */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Badge variant="default" className="text-lg px-4 py-1">
-              {t("level")} {currentLevel}
+              {t("sections.level")} {currentLevel}
             </Badge>
             <TooltipProvider>
               <Tooltip>
@@ -51,7 +55,7 @@ export function ProfileInfoSection({
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="text-xs">
-                    {xpProgress} / {xpNeeded} XP to next level
+                    {xpProgress} / {xpNeeded} {tXp("xp.toNextLevel")}
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -59,7 +63,7 @@ export function ProfileInfoSection({
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold">{experiencePoints}</p>
-            <p className="text-xs text-muted-foreground">XP</p>
+            <p className="text-xs text-muted-foreground">{tXp("xp.label")}</p>
           </div>
         </div>
 
@@ -67,7 +71,7 @@ export function ProfileInfoSection({
         <div className="space-y-2">
           <Progress value={progressPercent} className="h-2" />
           <p className="text-xs text-muted-foreground text-center">
-            {xpNeeded - xpProgress} XP until Level {currentLevel + 1}
+            {xpNeeded - xpProgress} {tXp("xp.untilLevel")} {currentLevel + 1}
           </p>
         </div>
 
@@ -77,9 +81,15 @@ export function ProfileInfoSection({
             <span className="text-2xl">🔥</span>
             <div>
               <p className="text-sm font-medium">
-                {streakDays} Day{streakDays > 1 ? "s" : ""} Streak!
+                {streakDays}{" "}
+                {streakDays > 1
+                  ? tStreak("streak.days")
+                  : tStreak("streak.day")}{" "}
+                {tStreak("streak.label")}
               </p>
-              <p className="text-xs text-muted-foreground">Keep it up!</p>
+              <p className="text-xs text-muted-foreground">
+                {tStreak("streak.keepItUp")}
+              </p>
             </div>
           </div>
         )}

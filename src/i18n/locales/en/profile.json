@@ -1,77 +1,108 @@
 {
-  "title": "Profile",
-  "edit": "Edit Profile",
-  "stats": {
-    "totalSessions": "Total Sessions",
-    "averageRating": "Average Rating",
-    "responseRate": "Response Rate",
-    "totalHours": "Total Hours",
-    "streakDays": "Day Streak",
-    "eventsHosted": "Events Hosted"
-  },
-  "sections": {
-    "introduction": "Introduction",
-    "nativeLanguages": "Native Languages",
-    "learningLanguages": "Learning Languages",
-    "interests": "Interests",
-    "experiencePoints": "Experience Points",
-    "level": "Level",
-    "gifts": "Gifts from Community",
-    "achievements": "Achievements & Badges"
-  },
-  "info": {
-    "name": "Name",
-    "email": "Email",
-    "gender": "Gender",
-    "meritLevel": "Merit Level",
-    "role": "Role",
-    "balance": "Balance",
-    "lastLogin": "Last Login",
-    "memberSince": "Member Since"
-  },
-  "editDialog": {
-    "title": "Edit Profile",
-    "tabs": {
-      "personalInfo": "Personal Info",
-      "languagesAndInterests": "Languages & Interests",
-      "changePassword": "Change Password"
+  "profile": {
+    "title": "Profile",
+    "edit": "Edit Profile",
+    "stats": {
+      "title": "Statistics",
+      "totalSessions": "Total Sessions",
+      "averageRating": "Average Rating",
+      "responseRate": "Response Rate",
+      "totalHours": "Total Hours",
+      "streakDays": "Day Streak",
+      "eventsHosted": "Events Hosted"
     },
-    "personalInfo": {
-      "name": "Full Name",
-      "namePlaceholder": "Enter your full name",
+    "sections": {
       "introduction": "Introduction",
-      "introductionPlaceholder": "Tell us about yourself...",
-      "gender": "Gender",
-      "genderPlaceholder": "Select your gender",
-      "avatar": "Profile Picture",
-      "changeAvatar": "Change Avatar"
-    },
-    "languagesAndInterests": {
       "nativeLanguages": "Native Languages",
-      "nativeLanguagesPlaceholder": "Select your native languages",
       "learningLanguages": "Learning Languages",
-      "learningLanguagesPlaceholder": "Select languages you're learning",
       "interests": "Interests",
-      "interestsPlaceholder": "Select your interests"
+      "experiencePoints": "Experience Points",
+      "level": "Level",
+      "gifts": "Gifts from Community",
+      "achievements": "Achievements & Badges"
     },
-    "changePassword": {
-      "currentPassword": "Current Password",
-      "currentPasswordPlaceholder": "Enter your current password",
-      "newPassword": "New Password",
-      "newPasswordPlaceholder": "Enter your new password",
-      "confirmPassword": "Confirm Password",
-      "confirmPasswordPlaceholder": "Confirm your new password"
+    "info": {
+      "name": "Name",
+      "email": "Email",
+      "gender": "Gender",
+      "meritLevel": "Merit Level",
+      "role": "Role",
+      "balance": "Balance",
+      "lastLogin": "Last Login",
+      "memberSince": "Member Since"
     },
-    "save": "Save Changes",
-    "cancel": "Cancel",
-    "saving": "Saving..."
-  },
-  "achievements": {
-    "firstChat": "First Chat",
-    "firstChatDesc": "Had your first conversation",
-    "tenHoursSpoken": "10 Hours Spoken",
-    "tenHoursSpokenDesc": "Spoken for 10+ hours"
-  },
-  "noData": "No data available",
-  "loading": "Loading profile..."
+    "xp": {
+      "toNextLevel": "XP to next level",
+      "label": "XP",
+      "untilLevel": "XP until Level"
+    },
+    "streak": {
+      "day": "Day",
+      "days": "Days",
+      "label": "Streak!",
+      "keepItUp": "Keep it up!"
+    },
+    "timeAgo": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "d ago",
+      "weeksAgo": "w ago",
+      "monthsAgo": "mo ago"
+    },
+    "empty": {
+      "noLanguages": "No languages added",
+      "noInterests": "No interests added",
+      "noGifts": "No gifts received yet"
+    },
+    "achievements": {
+      "unlocked": "Unlocked",
+      "firstChat": "First Chat",
+      "firstChatDesc": "Had your first conversation",
+      "tenHoursSpoken": "10 Hours Spoken",
+      "tenHoursSpokenDesc": "Spoken for 10+ hours"
+    },
+    "gifts": {
+      "from": "From"
+    },
+    "editDialog": {
+      "title": "Edit Profile",
+      "description": "Make changes to your profile here. Click save when you're done.",
+      "tabs": {
+        "personalInfo": "Personal Info",
+        "languagesAndInterests": "Languages & Interests",
+        "changePassword": "Change Password"
+      },
+      "personalInfo": {
+        "name": "Full Name",
+        "namePlaceholder": "Enter your full name",
+        "introduction": "Introduction",
+        "introductionPlaceholder": "Tell us about yourself...",
+        "gender": "Gender",
+        "genderPlaceholder": "Select your gender",
+        "avatar": "Profile Picture",
+        "changeAvatar": "Change Avatar"
+      },
+      "languagesAndInterests": {
+        "nativeLanguages": "Native Languages",
+        "nativeLanguagesPlaceholder": "Select your native languages",
+        "learningLanguages": "Learning Languages",
+        "learningLanguagesPlaceholder": "Select languages you're learning",
+        "interests": "Interests",
+        "interestsPlaceholder": "Select your interests"
+      },
+      "changePassword": {
+        "currentPassword": "Current Password",
+        "currentPasswordPlaceholder": "Enter your current password",
+        "newPassword": "New Password",
+        "newPasswordPlaceholder": "Enter your new password",
+        "confirmPassword": "Confirm Password",
+        "confirmPasswordPlaceholder": "Confirm your new password"
+      },
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "saving": "Saving..."
+    },
+    "noData": "No data available",
+    "loading": "Loading profile..."
+  }
 }

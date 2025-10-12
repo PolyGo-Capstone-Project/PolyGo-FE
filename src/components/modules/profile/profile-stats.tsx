@@ -36,36 +36,37 @@ export function ProfileStats({
   streakDays,
   eventsHosted,
 }: ProfileStatsProps) {
-  const t = useTranslations("profile.stats");
+  const t = useTranslations("profile");
+  const tStats = useTranslations("profile");
 
   const stats: StatItem[] = [
     {
-      label: t("totalSessions"),
+      label: t("stats.totalSessions"),
       value: totalSessions,
       icon: <IconChartBar className="h-4 w-4" />,
     },
     {
-      label: t("averageRating"),
+      label: t("stats.averageRating"),
       value: averageRating.toFixed(1),
       icon: <IconStar className="h-4 w-4" />,
     },
     {
-      label: t("responseRate"),
+      label: t("stats.responseRate"),
       value: `${responseRate}%`,
       icon: <IconTrendingUp className="h-4 w-4" />,
     },
     {
-      label: t("totalHours"),
+      label: t("stats.totalHours"),
       value: `${totalHours}h`,
       icon: <IconClock className="h-4 w-4" />,
     },
     {
-      label: t("streakDays"),
+      label: t("stats.streakDays"),
       value: streakDays,
       icon: <IconFlame className="h-4 w-4" />,
     },
     {
-      label: t("eventsHosted"),
+      label: t("stats.eventsHosted"),
       value: eventsHosted,
       icon: <IconCalendarEvent className="h-4 w-4" />,
     },
@@ -74,7 +75,7 @@ export function ProfileStats({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Statistics</CardTitle>
+        <CardTitle className="text-lg">{tStats("stats.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

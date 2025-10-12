@@ -19,12 +19,13 @@ type ProfileInterestsSectionProps = {
 export function ProfileInterestsSection({
   interests,
 }: ProfileInterestsSectionProps) {
-  const t = useTranslations("profile.sections");
+  const t = useTranslations("profile");
+  const tEmpty = useTranslations("profile");
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{t("interests")}</CardTitle>
+        <CardTitle className="text-lg">{t("sections.interests")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-wrap gap-3">
@@ -47,7 +48,9 @@ export function ProfileInterestsSection({
               </div>
             ))
           ) : (
-            <p className="text-sm text-muted-foreground">No interests added</p>
+            <p className="text-sm text-muted-foreground">
+              {tEmpty("empty.noInterests")}
+            </p>
           )}
         </div>
       </CardContent>

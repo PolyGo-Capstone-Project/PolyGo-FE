@@ -28,7 +28,8 @@ type ProfileAchievementsSectionProps = {
 export function ProfileAchievementsSection({
   achievements,
 }: ProfileAchievementsSectionProps) {
-  const t = useTranslations("profile.sections");
+  const t = useTranslations("profile");
+  const tAchievements = useTranslations("profile");
 
   const unlockedCount = achievements.filter((a) => a.isUnlocked).length;
 
@@ -37,7 +38,7 @@ export function ProfileAchievementsSection({
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <IconTrophy className="h-5 w-5" />
-          {t("achievements")}
+          {t("sections.achievements")}
           <Badge variant="secondary" className="ml-auto">
             {unlockedCount}/{achievements.length}
           </Badge>
@@ -70,7 +71,7 @@ export function ProfileAchievementsSection({
                     </p>
                     {achievement.isUnlocked && achievement.unlockedAt && (
                       <p className="text-xs text-muted-foreground">
-                        Unlocked:{" "}
+                        {tAchievements("achievements.unlocked")}:{" "}
                         {new Date(achievement.unlockedAt).toLocaleDateString()}
                       </p>
                     )}

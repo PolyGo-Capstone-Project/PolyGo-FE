@@ -1,77 +1,108 @@
 {
-  "title": "Hồ sơ",
-  "edit": "Chỉnh sửa hồ sơ",
-  "stats": {
-    "totalSessions": "Tổng buổi học",
-    "averageRating": "Đánh giá trung bình",
-    "responseRate": "Tỷ lệ phản hồi",
-    "totalHours": "Tổng số giờ",
-    "streakDays": "Chuỗi ngày",
-    "eventsHosted": "Sự kiện đã tổ chức"
-  },
-  "sections": {
-    "introduction": "Giới thiệu",
-    "nativeLanguages": "Ngôn ngữ bản ngữ",
-    "learningLanguages": "Đang học",
-    "interests": "Sở thích",
-    "experiencePoints": "Điểm kinh nghiệm",
-    "level": "Cấp độ",
-    "gifts": "Quà từ cộng đồng",
-    "achievements": "Thành tích & Huy hiệu"
-  },
-  "info": {
-    "name": "Tên",
-    "email": "Email",
-    "gender": "Giới tính",
-    "meritLevel": "Cấp độ uy tín",
-    "role": "Vai trò",
-    "balance": "Số dư",
-    "lastLogin": "Đăng nhập lần cuối",
-    "memberSince": "Thành viên từ"
-  },
-  "editDialog": {
-    "title": "Chỉnh sửa hồ sơ",
-    "tabs": {
-      "personalInfo": "Thông tin cá nhân",
-      "languagesAndInterests": "Ngôn ngữ & Sở thích",
-      "changePassword": "Đổi mật khẩu"
+  "profile": {
+    "title": "Hồ sơ",
+    "edit": "Chỉnh sửa hồ sơ",
+    "stats": {
+      "title": "Thống kê",
+      "totalSessions": "Tổng buổi học",
+      "averageRating": "Đánh giá trung bình",
+      "responseRate": "Tỷ lệ phản hồi",
+      "totalHours": "Tổng số giờ",
+      "streakDays": "Chuỗi ngày",
+      "eventsHosted": "Sự kiện đã tổ chức"
     },
-    "personalInfo": {
-      "name": "Họ và tên",
-      "namePlaceholder": "Nhập họ và tên của bạn",
+    "sections": {
       "introduction": "Giới thiệu",
-      "introductionPlaceholder": "Kể về bản thân bạn...",
-      "gender": "Giới tính",
-      "genderPlaceholder": "Chọn giới tính",
-      "avatar": "Ảnh đại diện",
-      "changeAvatar": "Thay đổi ảnh đại diện"
-    },
-    "languagesAndInterests": {
       "nativeLanguages": "Ngôn ngữ bản ngữ",
-      "nativeLanguagesPlaceholder": "Chọn ngôn ngữ bản ngữ của bạn",
-      "learningLanguages": "Ngôn ngữ đang học",
-      "learningLanguagesPlaceholder": "Chọn ngôn ngữ bạn đang học",
+      "learningLanguages": "Đang học",
       "interests": "Sở thích",
-      "interestsPlaceholder": "Chọn sở thích của bạn"
+      "experiencePoints": "Điểm kinh nghiệm",
+      "level": "Cấp độ",
+      "gifts": "Quà từ cộng đồng",
+      "achievements": "Thành tích & Huy hiệu"
     },
-    "changePassword": {
-      "currentPassword": "Mật khẩu hiện tại",
-      "currentPasswordPlaceholder": "Nhập mật khẩu hiện tại",
-      "newPassword": "Mật khẩu mới",
-      "newPasswordPlaceholder": "Nhập mật khẩu mới",
-      "confirmPassword": "Xác nhận mật khẩu",
-      "confirmPasswordPlaceholder": "Xác nhận mật khẩu mới"
+    "info": {
+      "name": "Tên",
+      "email": "Email",
+      "gender": "Giới tính",
+      "meritLevel": "Cấp độ uy tín",
+      "role": "Vai trò",
+      "balance": "Số dư",
+      "lastLogin": "Đăng nhập lần cuối",
+      "memberSince": "Thành viên từ"
     },
-    "save": "Lưu thay đổi",
-    "cancel": "Hủy",
-    "saving": "Đang lưu..."
-  },
-  "achievements": {
-    "firstChat": "Cuộc trò chuyện đầu tiên",
-    "firstChatDesc": "Đã có cuộc trò chuyện đầu tiên",
-    "tenHoursSpoken": "10 giờ giao tiếp",
-    "tenHoursSpokenDesc": "Đã giao tiếp hơn 10 giờ"
-  },
-  "noData": "Chưa có dữ liệu",
-  "loading": "Đang tải hồ sơ..."
+    "xp": {
+      "toNextLevel": "XP đến cấp độ tiếp theo",
+      "label": "XP",
+      "untilLevel": "XP để đạt Cấp"
+    },
+    "streak": {
+      "day": "Ngày",
+      "days": "Ngày",
+      "label": "Chuỗi!",
+      "keepItUp": "Hãy tiếp tục!"
+    },
+    "timeAgo": {
+      "today": "Hôm nay",
+      "yesterday": "Hôm qua",
+      "daysAgo": "ngày trước",
+      "weeksAgo": "tuần trước",
+      "monthsAgo": "tháng trước"
+    },
+    "empty": {
+      "noLanguages": "Chưa thêm ngôn ngữ",
+      "noInterests": "Chưa thêm sở thích",
+      "noGifts": "Chưa nhận được quà nào"
+    },
+    "achievements": {
+      "unlocked": "Đã mở khóa",
+      "firstChat": "Cuộc trò chuyện đầu tiên",
+      "firstChatDesc": "Đã có cuộc trò chuyện đầu tiên",
+      "tenHoursSpoken": "10 giờ giao tiếp",
+      "tenHoursSpokenDesc": "Đã giao tiếp hơn 10 giờ"
+    },
+    "gifts": {
+      "from": "Từ"
+    },
+    "editDialog": {
+      "title": "Chỉnh sửa hồ sơ",
+      "description": "Thực hiện thay đổi hồ sơ của bạn tại đây. Nhấn lưu khi hoàn tất.",
+      "tabs": {
+        "personalInfo": "Thông tin cá nhân",
+        "languagesAndInterests": "Ngôn ngữ & Sở thích",
+        "changePassword": "Đổi mật khẩu"
+      },
+      "personalInfo": {
+        "name": "Họ và tên",
+        "namePlaceholder": "Nhập họ và tên của bạn",
+        "introduction": "Giới thiệu",
+        "introductionPlaceholder": "Kể về bản thân bạn...",
+        "gender": "Giới tính",
+        "genderPlaceholder": "Chọn giới tính",
+        "avatar": "Ảnh đại diện",
+        "changeAvatar": "Thay đổi ảnh đại diện"
+      },
+      "languagesAndInterests": {
+        "nativeLanguages": "Ngôn ngữ bản ngữ",
+        "nativeLanguagesPlaceholder": "Chọn ngôn ngữ bản ngữ của bạn",
+        "learningLanguages": "Ngôn ngữ đang học",
+        "learningLanguagesPlaceholder": "Chọn ngôn ngữ bạn đang học",
+        "interests": "Sở thích",
+        "interestsPlaceholder": "Chọn sở thích của bạn"
+      },
+      "changePassword": {
+        "currentPassword": "Mật khẩu hiện tại",
+        "currentPasswordPlaceholder": "Nhập mật khẩu hiện tại",
+        "newPassword": "Mật khẩu mới",
+        "newPasswordPlaceholder": "Nhập mật khẩu mới",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "confirmPasswordPlaceholder": "Xác nhận mật khẩu mới"
+      },
+      "save": "Lưu thay đổi",
+      "cancel": "Hủy",
+      "saving": "Đang lưu..."
+    },
+    "noData": "Chưa có dữ liệu",
+    "loading": "Đang tải hồ sơ..."
+  }
 }

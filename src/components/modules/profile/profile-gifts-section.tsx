@@ -24,7 +24,10 @@ type ProfileGiftsSectionProps = {
 };
 
 export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
-  const t = useTranslations("profile.sections");
+  const t = useTranslations("profile");
+  const tEmpty = useTranslations("profile");
+  const tTime = useTranslations("profile");
+  const tGifts = useTranslations("profile");
 
   // Calculate time ago
   const getTimeAgo = (dateString: string) => {
@@ -33,11 +36,12 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
     const diffInMs = now.getTime() - date.getTime();
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
-    if (diffInDays === 0) return "Today";
-    if (diffInDays === 1) return "Yesterday";
-    if (diffInDays < 7) return `${diffInDays}d ago`;
-    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)}w ago`;
-    return `${Math.floor(diffInDays / 30)}mo ago`;
+    if (diffInDays === 0) return tTime("timeAgo.today");
+    if (diffInDays === 1) return tTime("timeAgo.yesterday");
+    if (diffInDays < 7) return `${diffInDays}${tTime("timeAgo.daysAgo")}`;
+    if (diffInDays < 30)
+      return `${Math.floor(diffInDays / 7)}${tTime("timeAgo.weeksAgo")}`;
+    return `${Math.floor(diffInDays / 30)}${tTime("timeAgo.monthsAgo")}`;
   };
 
   if (gifts.length === 0) {
@@ -46,12 +50,12 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <IconGift className="h-5 w-5" />
-            {t("gifts")}
+            {t("sections.gifts")}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground text-center py-8">
-            No gifts received yet
+            {tEmpty("empty.noGifts")}
           </p>
         </CardContent>
       </Card>
@@ -63,7 +67,7 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <IconGift className="h-5 w-5" />
-          {t("gifts")} ({gifts.length})
+          {t("sections.gifts")} ({gifts.length})
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -90,7 +94,9 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
                           {gift.from.name[0]}
                         </AvatarFallback>
                       </Avatar>
-                      <span>From {gift.from.name}</span>
+                      <span>
+                        {tGifts("gifts.from")} {gift.from.name}
+                      </span>
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-1">

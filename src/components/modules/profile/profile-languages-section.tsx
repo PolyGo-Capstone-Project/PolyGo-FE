@@ -21,14 +21,17 @@ export function ProfileLanguagesSection({
   nativeLanguages,
   learningLanguages,
 }: ProfileLanguagesSectionProps) {
-  const t = useTranslations("profile.sections");
+  const t = useTranslations("profile");
+  const tEmpty = useTranslations("profile");
 
   return (
     <div className="space-y-4">
       {/* Native Languages */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">{t("nativeLanguages")}</CardTitle>
+          <CardTitle className="text-lg">
+            {t("sections.nativeLanguages")}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-3">
@@ -52,7 +55,7 @@ export function ProfileLanguagesSection({
               ))
             ) : (
               <p className="text-sm text-muted-foreground">
-                No languages added
+                {tEmpty("empty.noLanguages")}
               </p>
             )}
           </div>
@@ -62,7 +65,9 @@ export function ProfileLanguagesSection({
       {/* Learning Languages */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">{t("learningLanguages")}</CardTitle>
+          <CardTitle className="text-lg">
+            {t("sections.learningLanguages")}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-3">
@@ -86,7 +91,7 @@ export function ProfileLanguagesSection({
               ))
             ) : (
               <p className="text-sm text-muted-foreground">
-                No languages added
+                {tEmpty("empty.noLanguages")}
               </p>
             )}
           </div>
