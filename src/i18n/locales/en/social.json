@@ -1,0 +1,21 @@
+{
+  "social": {
+    "title": "PolyGo Community",
+    "subtitle": "Connect, share, and practice languages with people around the world.",
+    "createPost": {
+      "placeholder": "Share something today...",
+      "photoButton": "Photo",
+      "emojiButton": "Emoji",
+      "postButton": "Post"
+    },
+    "post": {
+      "reactions": "reactions",
+      "comment": "comment",
+      "comments": "comments",
+      "share": "Share",
+      "report": "Report",
+      "reply": "Reply",
+      "commentPlaceholder": "Write a comment..."
+    }
+  }
+}
