@@ -19,6 +19,7 @@
       "pageSize": "Page size",
       "refresh": "Refresh",
       "fallbackName": "Fallback name",
+      "deleting": "Deleting...",
       "columns": {
         "no": "No.",
         "id": "ID",
@@ -66,9 +67,88 @@
         "confirm": "Delete"
       }
     },
-    "gift": {
+    "gifts": {
       "title": "Gifts",
-      "description": "Manage user gifts and settings"
+      "description": "Manage gifts available on the PolyGo platform.",
+      "confirmDelete": "Are you sure you want to delete {name}?",
+      "error": "Unable to load gifts.",
+      "errorTitle": "Something went wrong",
+      "retry": "Try again",
+      "emptyTitle": "No gifts yet",
+      "emptyDescription": "Add a new gift to get started.",
+      "createButton": "Create gift",
+      "giftIdLabel": "Internal ID",
+      "edit": "Edit",
+      "delete": "Delete",
+      "viewDetails": "View details",
+      "tableTitle": "Gift catalogue",
+      "tableDescription": "Review, add or update available gifts.",
+      "languageFilter": "Locale",
+      "pageSize": "Page size",
+      "refresh": "Refresh",
+      "fallbackName": "this gift",
+      "deleting": "Deleting...",
+      "columns": {
+        "no": "No.",
+        "name": "Gift name",
+        "price": "Price",
+        "description": "Description",
+        "icon": "Icon",
+        "createdAt": "Created at",
+        "lastUpdatedAt": "Last updated at",
+        "actions": "Actions",
+        "iconAlt": "Gift icon image"
+      },
+      "pagination": {
+        "summary": "Showing {start}-{end} of {total} gifts",
+        "empty": "No gifts to display",
+        "previous": "Previous",
+        "page": "Page {page} of {total}",
+        "next": "Next"
+      },
+      "form": {
+        "langLabel": "Translation locale",
+        "langPlaceholder": "e.g. en",
+        "nameLabel": "Gift name",
+        "namePlaceholder": "e.g. Premium Badge",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Describe this gift",
+        "priceLabel": "Price (VND)",
+        "pricePlaceholder": "e.g. 50000",
+        "priceHint": "Price in Vietnamese Dong (VND)",
+        "iconLabel": "Gift icon",
+        "iconPlaceholder": "No file selected",
+        "iconPreviewAlt": "Icon preview",
+        "iconRemove": "Remove",
+        "iconHint": "Upload an image (PNG, JPG, SVG) or use an emoji 🎁 to represent this gift.",
+        "cancel": "Cancel",
+        "submitCreate": "Create",
+        "submitUpdate": "Save changes"
+      },
+      "sheet": {
+        "createTitle": "Create gift",
+        "createDescription": "Define the name, price, description and icon for the new gift.",
+        "editTitle": "Edit gift",
+        "editDescription": "Update the information for the selected gift or add a new translation."
+      },
+      "deleteDialog": {
+        "title": "Delete gift",
+        "description": "Are you sure you want to delete {name}? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "detailDialog": {
+        "title": "Gift details",
+        "name": "Name",
+        "price": "Price",
+        "description": "Description",
+        "locale": "Locale",
+        "icon": "Icon",
+        "createdAt": "Created at",
+        "lastUpdatedAt": "Last updated at",
+        "noDescription": "No description available",
+        "close": "Close"
+      }
     },
     "accounts": {
       "title": "User accounts",
@@ -242,7 +322,7 @@
         "currentPassword": {
           "required": "Current password is required.",
           "min": "Current password must be at least {length} characters.",
-          "max": "Current password must be at most {length} characters.",
+          "max": "Current password must be at least {length} characters.",
           "format": "Current password must include uppercase, lowercase, number, and special character."
         },
         "newPassword": {
