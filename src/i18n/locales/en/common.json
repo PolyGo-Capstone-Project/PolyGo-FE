@@ -112,6 +112,8 @@
     "search": "Search",
     "management": "Management",
     "gifts": "Gifts Management",
-    "interests": "Interests Management"
+    "interests": "Interests Management",
+    "badges": "Badges Management",
+    "subscriptions": "Subscriptions Management"
   }
 }

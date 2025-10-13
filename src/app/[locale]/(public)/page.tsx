@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -15,6 +15,7 @@ import {
 
 export default function HomePage() {
   const t = useTranslations("home");
+  const locale = useLocale();
 
   const navigation = [
     {
@@ -161,7 +162,7 @@ export default function HomePage() {
               variant="outline"
               className="bg-transparent text-primary-foreground border-primary-foreground/40"
             >
-              <Link href="/login">{t("bannerButtonTwo")}</Link>
+              <Link href={`/${locale}/login`}>{t("bannerButtonTwo")}</Link>
             </Button>
           </div>
         </div>
