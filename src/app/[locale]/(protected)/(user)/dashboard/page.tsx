@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { ComingSoon } from "@/components";
+
 export const metadata: Metadata = {
   title: "Dashboard - PolyGo",
   description: "User dashboard with account information and settings",
@@ -8,9 +10,10 @@ export const metadata: Metadata = {
 export default function DashboardPage() {
   return (
     <>
-      <div>
-        <h1>Dashboard Page - User Only</h1>
-      </div>
+      <ComingSoon
+        title="Dashboard Features"
+        description="We're building amazing dashboard features. Check back soon!"
+      />
     </>
   );
 }

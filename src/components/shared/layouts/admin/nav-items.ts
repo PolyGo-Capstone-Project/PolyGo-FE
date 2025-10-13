@@ -1,13 +1,13 @@
 import {
-  IconAdjustmentsBolt,
+  IconAward,
+  IconCreditCard,
   IconGift,
   IconHelpCircle,
-  IconLanguageHiragana,
+  IconLanguage,
   IconLayoutDashboard,
-  IconMoodHeart,
   IconSearch,
   IconSettings,
-  IconShieldLock,
+  IconSparkles,
   IconUsers,
   type Icon,
 } from "@tabler/icons-react";
@@ -35,7 +35,7 @@ const buildNavItems = (locale: string, t: TranslateFn): NavConfig => {
   const baseNavSecondary = [
     {
       title: t("settings"),
-      url: `/${locale}/manage/setting`,
+      url: `/${locale}/manage/settings`,
       icon: IconSettings,
     },
     {
@@ -60,31 +60,30 @@ const buildNavItems = (locale: string, t: TranslateFn): NavConfig => {
       {
         title: t("languages"),
         url: `/${locale}/manage/languages`,
-        icon: IconLanguageHiragana,
+        icon: IconLanguage,
       },
       {
         title: t("interests"),
         url: `/${locale}/manage/interests`,
-        icon: IconMoodHeart,
+        icon: IconSparkles,
       },
       {
         title: t("gifts"),
         url: `/${locale}/manage/gifts`,
         icon: IconGift,
       },
-    ],
-    navManagement: [
       {
-        title: t("permissions"),
-        url: `/${locale}/manage/permissions`,
-        icon: IconAdjustmentsBolt,
+        title: t("badges"),
+        url: `/${locale}/manage/badges`,
+        icon: IconAward,
       },
       {
-        title: t("roles"),
-        url: `/${locale}/manage/roles`,
-        icon: IconShieldLock,
+        title: t("subscriptions"),
+        url: `/${locale}/manage/subscriptions`,
+        icon: IconCreditCard,
       },
     ],
+    navManagement: [],
     navSecondary: baseNavSecondary,
   };
 };

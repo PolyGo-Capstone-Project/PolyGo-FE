@@ -292,6 +292,72 @@
         "confirm": "Xoá"
       },
       "deleting": "Đang xoá..."
+    },
+    "settings": {
+      "title": "Cài đặt quản trị",
+      "description": "Quản lý cài đặt tài khoản và tuỳ chọn cá nhân của bạn",
+      "sections": {
+        "personalInfo": "Thông tin cá nhân",
+        "personalInfoDescription": "Cập nhật thông tin hồ sơ và ảnh đại diện",
+        "security": "Bảo mật",
+        "securityDescription": "Thay đổi mật khẩu và quản lý cài đặt bảo mật"
+      },
+      "personalInfo": {
+        "name": "Họ và tên",
+        "namePlaceholder": "Nhập họ và tên của bạn",
+        "avatar": "Ảnh đại diện",
+        "changeAvatar": "Thay đổi ảnh đại diện",
+        "uploading": "Đang tải lên...",
+        "save": "Lưu thay đổi",
+        "saving": "Đang lưu..."
+      },
+      "changePassword": {
+        "title": "Đổi mật khẩu",
+        "currentPassword": "Mật khẩu hiện tại",
+        "currentPasswordPlaceholder": "Nhập mật khẩu hiện tại",
+        "newPassword": "Mật khẩu mới",
+        "newPasswordPlaceholder": "Nhập mật khẩu mới",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "confirmPasswordPlaceholder": "Xác nhận mật khẩu mới",
+        "requirements": {
+          "title": "Yêu cầu mật khẩu:",
+          "minLength": "Ít nhất 8 ký tự",
+          "uppercase": "Bao gồm chữ hoa và chữ thường",
+          "number": "Ít nhất một chữ số",
+          "special": "Ít nhất một ký tự đặc biệt"
+        },
+        "save": "Đổi mật khẩu",
+        "saving": "Đang thay đổi..."
+      },
+      "errors": {
+        "default": "Vui lòng kiểm tra trường này.",
+        "name": {
+          "required": "Họ và tên là bắt buộc.",
+          "min": "Họ và tên phải có ít nhất {length} ký tự.",
+          "max": "Họ và tên không được vượt quá {length} ký tự."
+        },
+        "avatarUrl": {
+          "invalid": "URL ảnh đại diện không hợp lệ."
+        },
+        "currentPassword": {
+          "required": "Mật khẩu hiện tại là bắt buộc.",
+          "min": "Mật khẩu hiện tại phải có ít nhất {length} ký tự.",
+          "max": "Mật khẩu hiện tại không được vượt quá {length} ký tự.",
+          "format": "Mật khẩu hiện tại phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt."
+        },
+        "newPassword": {
+          "required": "Mật khẩu mới là bắt buộc.",
+          "min": "Mật khẩu mới phải có ít nhất {length} ký tự.",
+          "max": "Mật khẩu mới không được vượt quá {length} ký tự.",
+          "format": "Mật khẩu mới phải bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt."
+        },
+        "confirmPassword": {
+          "required": "Vui lòng xác nhận mật khẩu mới.",
+          "min": "Xác nhận mật khẩu phải có ít nhất {length} ký tự.",
+          "max": "Xác nhận mật khẩu không được vượt quá {length} ký tự.",
+          "mismatch": "Mật khẩu mới và xác nhận mật khẩu phải khớp nhau."
+        }
+      }
     }
   }
 }
