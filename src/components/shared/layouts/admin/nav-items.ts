@@ -1,11 +1,13 @@
 import {
+  IconAward,
+  IconCreditCard,
   IconGift,
   IconHelpCircle,
-  IconLanguageHiragana,
+  IconLanguage,
   IconLayoutDashboard,
-  IconMoodHeart,
   IconSearch,
   IconSettings,
+  IconSparkles,
   IconUsers,
   type Icon,
 } from "@tabler/icons-react";
@@ -58,12 +60,12 @@ const buildNavItems = (locale: string, t: TranslateFn): NavConfig => {
       {
         title: t("languages"),
         url: `/${locale}/manage/languages`,
-        icon: IconLanguageHiragana,
+        icon: IconLanguage,
       },
       {
         title: t("interests"),
         url: `/${locale}/manage/interests`,
-        icon: IconMoodHeart,
+        icon: IconSparkles,
       },
       {
         title: t("gifts"),
@@ -73,12 +75,12 @@ const buildNavItems = (locale: string, t: TranslateFn): NavConfig => {
       {
         title: t("badges"),
         url: `/${locale}/manage/badges`,
-        icon: IconMoodHeart,
+        icon: IconAward,
       },
       {
         title: t("subscriptions"),
         url: `/${locale}/manage/subscriptions`,
-        icon: IconMoodHeart,
+        icon: IconCreditCard,
       },
     ],
     navManagement: [],

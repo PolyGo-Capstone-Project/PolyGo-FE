@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
 
+import { ComingSoon } from "@/components";
+
 export const metadata: Metadata = {
   title: "Chat - PolyGo",
-  description: "User chat with friends",
+  description: "Chat features and interactions",
 };
 
 export default function ChatPage() {
   return (
     <>
-      <div>
-        <h1>Chat Page - User Only</h1>
-      </div>
+      <ComingSoon
+        title="Chat Features"
+        description="We're building amazing chat features. Check back soon!"
+      />
     </>
   );
 }
