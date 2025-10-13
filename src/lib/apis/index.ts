@@ -1,4 +1,5 @@
 export { default as authApiRequest } from "./auth";
+export { default as badgeApiRequest } from "./badge";
 export * from "./factory";
 export { default as giftApiRequest } from "./gift";
 export { default as interestApiRequest } from "./interest";

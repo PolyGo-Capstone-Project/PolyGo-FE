@@ -19,6 +19,7 @@
       "pageSize": "Page size",
       "refresh": "Refresh",
       "fallbackName": "Fallback name",
+      "deleting": "Deleting...",
       "columns": {
         "no": "No.",
         "id": "ID",
@@ -66,9 +67,88 @@
         "confirm": "Delete"
       }
     },
-    "gift": {
+    "gifts": {
       "title": "Gifts",
-      "description": "Manage user gifts and settings"
+      "description": "Manage gifts available on the PolyGo platform.",
+      "confirmDelete": "Are you sure you want to delete {name}?",
+      "error": "Unable to load gifts.",
+      "errorTitle": "Something went wrong",
+      "retry": "Try again",
+      "emptyTitle": "No gifts yet",
+      "emptyDescription": "Add a new gift to get started.",
+      "createButton": "Create gift",
+      "giftIdLabel": "Internal ID",
+      "edit": "Edit",
+      "delete": "Delete",
+      "viewDetails": "View details",
+      "tableTitle": "Gift catalogue",
+      "tableDescription": "Review, add or update available gifts.",
+      "languageFilter": "Locale",
+      "pageSize": "Page size",
+      "refresh": "Refresh",
+      "fallbackName": "this gift",
+      "deleting": "Deleting...",
+      "columns": {
+        "no": "No.",
+        "name": "Gift name",
+        "price": "Price",
+        "description": "Description",
+        "icon": "Icon",
+        "createdAt": "Created at",
+        "lastUpdatedAt": "Last updated at",
+        "actions": "Actions",
+        "iconAlt": "Gift icon image"
+      },
+      "pagination": {
+        "summary": "Showing {start}-{end} of {total} gifts",
+        "empty": "No gifts to display",
+        "previous": "Previous",
+        "page": "Page {page} of {total}",
+        "next": "Next"
+      },
+      "form": {
+        "langLabel": "Translation locale",
+        "langPlaceholder": "e.g. en",
+        "nameLabel": "Gift name",
+        "namePlaceholder": "e.g. Premium Badge",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Describe this gift",
+        "priceLabel": "Price (VND)",
+        "pricePlaceholder": "e.g. 50000",
+        "priceHint": "Price in Vietnamese Dong (VND)",
+        "iconLabel": "Gift icon",
+        "iconPlaceholder": "No file selected",
+        "iconPreviewAlt": "Icon preview",
+        "iconRemove": "Remove",
+        "iconHint": "Upload an image (PNG, JPG, SVG) or use an emoji 🎁 to represent this gift.",
+        "cancel": "Cancel",
+        "submitCreate": "Create",
+        "submitUpdate": "Save changes"
+      },
+      "sheet": {
+        "createTitle": "Create gift",
+        "createDescription": "Define the name, price, description and icon for the new gift.",
+        "editTitle": "Edit gift",
+        "editDescription": "Update the information for the selected gift or add a new translation."
+      },
+      "deleteDialog": {
+        "title": "Delete gift",
+        "description": "Are you sure you want to delete {name}? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "detailDialog": {
+        "title": "Gift details",
+        "name": "Name",
+        "price": "Price",
+        "description": "Description",
+        "locale": "Locale",
+        "icon": "Icon",
+        "createdAt": "Created at",
+        "lastUpdatedAt": "Last updated at",
+        "noDescription": "No description available",
+        "close": "Close"
+      }
     },
     "accounts": {
       "title": "User accounts",
@@ -193,6 +273,100 @@
         "confirm": "Delete"
       }
     },
+    "badges": {
+      "title": "Badges",
+      "description": "Manage badges available on the PolyGo platform.",
+      "confirmDelete": "Are you sure you want to delete {name}?",
+      "error": "Unable to load badges.",
+      "errorTitle": "Something went wrong",
+      "retry": "Try again",
+      "emptyTitle": "No badges yet",
+      "emptyDescription": "Add a new badge to get started.",
+      "createButton": "Create badge",
+      "badgeIdLabel": "Internal ID",
+      "edit": "Edit",
+      "delete": "Delete",
+      "viewDetails": "View details",
+      "tableTitle": "Badge catalogue",
+      "tableDescription": "Review, add or update available badges.",
+      "languageFilter": "Locale",
+      "pageSize": "Page size",
+      "refresh": "Refresh",
+      "fallbackName": "this badge",
+      "deleting": "Deleting...",
+      "columns": {
+        "no": "No.",
+        "name": "Badge name",
+        "code": "Code",
+        "category": "Category",
+        "icon": "Icon",
+        "createdAt": "Created at",
+        "lastUpdatedAt": "Last updated at",
+        "actions": "Actions",
+        "iconAlt": "Badge icon image"
+      },
+      "pagination": {
+        "summary": "Showing {start}-{end} of {total} badges",
+        "empty": "No badges to display",
+        "previous": "Previous",
+        "page": "Page {page} of {total}",
+        "next": "Next"
+      },
+      "form": {
+        "langLabel": "Translation locale",
+        "langPlaceholder": "e.g. en",
+        "codeLabel": "Badge code",
+        "codePlaceholder": "e.g. FIRST_EVENT",
+        "codeHint": "Use SCREAMING_SNAKE_CASE format (e.g., FIRST_EVENT, ACCOUNT_VERIFIED)",
+        "nameLabel": "Badge name",
+        "namePlaceholder": "e.g. First Event",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Describe this badge",
+        "categoryLabel": "Category",
+        "categoryPlaceholder": "Select a category",
+        "iconLabel": "Badge icon",
+        "iconPlaceholder": "No file selected",
+        "iconPreviewAlt": "Icon preview",
+        "iconRemove": "Remove",
+        "iconHint": "Upload an image (PNG, JPG, SVG) or use an emoji 🏆 to represent this badge.",
+        "cancel": "Cancel",
+        "submitCreate": "Create",
+        "submitUpdate": "Save changes"
+      },
+      "categories": {
+        "Account": "Account",
+        "Commerce": "Commerce",
+        "Social": "Social",
+        "Event": "Event",
+        "Progression": "Progression",
+        "Exploration": "Exploration"
+      },
+      "sheet": {
+        "createTitle": "Create badge",
+        "createDescription": "Define the code, name, category, description and icon for the new badge.",
+        "editTitle": "Edit badge",
+        "editDescription": "Update the information for the selected badge or add a new translation."
+      },
+      "deleteDialog": {
+        "title": "Delete badge",
+        "description": "Are you sure you want to delete {name}? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "detailDialog": {
+        "title": "Badge details",
+        "name": "Name",
+        "code": "Code",
+        "category": "Category",
+        "description": "Description",
+        "locale": "Locale",
+        "icon": "Icon",
+        "createdAt": "Created at",
+        "lastUpdatedAt": "Last updated at",
+        "noDescription": "No description available",
+        "close": "Close"
+      }
+    },
     "settings": {
       "title": "Admin Settings",
       "description": "Manage your admin account settings and preferences",
@@ -242,7 +416,7 @@
         "currentPassword": {
           "required": "Current password is required.",
           "min": "Current password must be at least {length} characters.",
-          "max": "Current password must be at most {length} characters.",
+          "max": "Current password must be at least {length} characters.",
           "format": "Current password must include uppercase, lowercase, number, and special character."
         },
         "newPassword": {
