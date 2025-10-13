@@ -162,7 +162,8 @@ const request = async <Response>(
           } finally {
             removeTokensFromLocalStorage();
             clientLogoutRequest = null;
-            location.href = "/login";
+            const locale = window.location.pathname.split("/")[1];
+            location.href = `/${locale}/login`;
           }
         }
       } else {

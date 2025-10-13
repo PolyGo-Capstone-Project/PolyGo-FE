@@ -3,12 +3,14 @@
 import {
   Calendar,
   CalendarDays,
+  Gamepad2,
   Globe,
   Home,
   LogOut,
   Menu,
+  MessageCircle,
   MessageSquare,
-  Sparkles,
+  UserRoundSearch,
   Users,
   Users2,
 } from "lucide-react";
@@ -44,10 +46,11 @@ export function UserHeader() {
       href: `/${locale}/dashboard`,
       icon: Home,
     },
-    { name: t("chat"), href: `/${locale}/chat`, icon: MessageSquare },
+    { name: t("chat"), href: `/${locale}/chat`, icon: MessageCircle },
     { name: t("event"), href: `/${locale}/event`, icon: CalendarDays },
-    { name: t("matching"), href: `/${locale}/matching`, icon: Sparkles },
+    { name: t("matching"), href: `/${locale}/matching`, icon: UserRoundSearch },
     { name: t("social"), href: `/${locale}/social`, icon: Users2 },
+    { name: t("game"), href: `/${locale}/game`, icon: Gamepad2 },
   ];
 
   return (

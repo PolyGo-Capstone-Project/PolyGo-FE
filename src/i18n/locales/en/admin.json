@@ -192,6 +192,72 @@
         "cancel": "Cancel",
         "confirm": "Delete"
       }
+    },
+    "settings": {
+      "title": "Admin Settings",
+      "description": "Manage your admin account settings and preferences",
+      "sections": {
+        "personalInfo": "Personal Information",
+        "personalInfoDescription": "Update your profile information and avatar",
+        "security": "Security",
+        "securityDescription": "Change your password and manage security settings"
+      },
+      "personalInfo": {
+        "name": "Full Name",
+        "namePlaceholder": "Enter your full name",
+        "avatar": "Profile Picture",
+        "changeAvatar": "Change Avatar",
+        "uploading": "Uploading...",
+        "save": "Save Changes",
+        "saving": "Saving..."
+      },
+      "changePassword": {
+        "title": "Change Password",
+        "currentPassword": "Current Password",
+        "currentPasswordPlaceholder": "Enter your current password",
+        "newPassword": "New Password",
+        "newPasswordPlaceholder": "Enter your new password",
+        "confirmPassword": "Confirm Password",
+        "confirmPasswordPlaceholder": "Confirm your new password",
+        "requirements": {
+          "title": "Password requirements:",
+          "minLength": "At least 8 characters long",
+          "uppercase": "Include uppercase and lowercase letters",
+          "number": "Include at least one number",
+          "special": "Include at least one special character"
+        },
+        "save": "Change Password",
+        "saving": "Changing..."
+      },
+      "errors": {
+        "default": "Please check this field.",
+        "name": {
+          "required": "Full name is required.",
+          "min": "Full name must be at least {length} characters.",
+          "max": "Full name must be at most {length} characters."
+        },
+        "avatarUrl": {
+          "invalid": "Invalid avatar URL."
+        },
+        "currentPassword": {
+          "required": "Current password is required.",
+          "min": "Current password must be at least {length} characters.",
+          "max": "Current password must be at most {length} characters.",
+          "format": "Current password must include uppercase, lowercase, number, and special character."
+        },
+        "newPassword": {
+          "required": "New password is required.",
+          "min": "New password must be at least {length} characters.",
+          "max": "New password must be at most {length} characters.",
+          "format": "New password must include uppercase, lowercase, number, and special character."
+        },
+        "confirmPassword": {
+          "required": "Please confirm your new password.",
+          "min": "Confirm password must be at least {length} characters.",
+          "max": "Confirm password must be at most {length} characters.",
+          "mismatch": "New password and confirm password must match."
+        }
+      }
     }
   }
 }
