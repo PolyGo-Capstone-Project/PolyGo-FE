@@ -4,6 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import userApiRequest from "@/lib/apis/user";
 import {
+  GetUsersMatchingQueryType,
   GetUsersQueryType,
   SetRestrictionsBodyType,
   SetupProfileBodyType,
@@ -62,7 +63,7 @@ type SetRestrictionsResponse = Awaited<
   ReturnType<typeof userApiRequest.setRestrictions>
 >;
 
-// GET /users - Get all users with pagination
+// GET /admin/users - Get all users with pagination
 export const useGetUsers = (
   query: GetUsersQueryType,
   options?: {
@@ -76,7 +77,7 @@ export const useGetUsers = (
   });
 };
 
-// GET /users/:id - Get user by ID
+// GET /admin/users/:id - Get user by ID
 export const useGetUser = (
   id: string,
   options?: {
@@ -100,5 +101,35 @@ export const useSetRestrictionsMutation = (options?: {
       userApiRequest.setRestrictions(body, id),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
+  });
+};
+
+// ============= FOR USER NOT ADMIN =============
+
+// matching
+export const useGetUsersMatching = (
+  query: GetUsersMatchingQueryType,
+  options?: {
+    enabled?: boolean;
+  }
+) => {
+  return useQuery({
+    queryKey: ["users", query],
+    queryFn: () => userApiRequest.getUsersMatching(query),
+    enabled: options?.enabled,
+  });
+};
+
+// GET /users/:id - Get user by ID
+export const useGetUserProfile = (
+  id: string,
+  options?: {
+    enabled?: boolean;
+  }
+) => {
+  return useQuery({
+    queryKey: ["user", id],
+    queryFn: () => userApiRequest.getUserProfile(id),
+    enabled: options?.enabled,
   });
 };

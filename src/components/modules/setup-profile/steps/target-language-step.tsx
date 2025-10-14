@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui";
 import { useLanguagesQuery } from "@/hooks";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 type TargetLanguageStepProps = {
   selected: string[];
@@ -84,7 +85,7 @@ export function TargetLanguageStep({
                 </div>
               )}
               {language.iconUrl ? (
-                <img
+                <Image
                   src={language.iconUrl}
                   alt={language.name}
                   className="size-12 rounded-full object-cover"

@@ -29,6 +29,7 @@ export default function LoginForm() {
   const loginMutation = useLoginMutation();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const setRole = useAuthStore((state) => state.setRole);
+  const setIsNewUser = useAuthStore((state) => state.setIsNewUser);
   // const setSocket = useAuthStore((state) => state.setSocket);
   const errorMessages = useTranslations("auth.login.errors");
   const tSuccess = useTranslations("Success");
@@ -63,13 +64,19 @@ export default function LoginForm() {
     try {
       const result = await loginMutation.mutateAsync(data);
       showSuccessToast(result.payload?.message, tSuccess);
-      const role = decodeToken(result.payload.data).Role;
-      setRole(role);
+      const decoded = decodeToken(result.payload.data);
+      setRole(decoded.Role);
+      const isNew = String(decoded.IsNew).toLowerCase() === "true";
       // setSocket(generateSocketInstance(result.payload.data.accessToken));
-      if (role === Role.Admin) {
-        router.push(`/${locale}/manage/dashboard`);
-      } else if (role === Role.User) {
-        router.push(`/${locale}/dashboard`);
+      if (isNew) {
+        setIsNewUser(true);
+        router.push(`/${locale}/setup-profile`);
+      } else {
+        if (decoded.Role === Role.Admin) {
+          router.push(`/${locale}/manage/dashboard`);
+        } else if (decoded.Role === Role.User) {
+          router.push(`/${locale}/dashboard`);
+        }
       }
     } catch (error: any) {
       handleErrorApi({
