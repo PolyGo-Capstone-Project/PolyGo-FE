@@ -3,6 +3,8 @@ import http from "@/lib/http";
 import {
   GetUserByIdBodyType,
   GetUserByIdResType,
+  GetUserByMatchingResType,
+  GetUsersMatchingQueryType,
   GetUsersQueryType,
   GetUsersResType,
   MessageResType,
@@ -14,7 +16,7 @@ import {
 
 const prefix = "/users";
 const userApiRequest = {
-  //For User
+  //For current user
   //Update information of current user
   updateMe: (body: UpdateMeBodyType) =>
     http.put<MessageResType>(`${prefix}/me`, body),
@@ -32,5 +34,15 @@ const userApiRequest = {
   ),
   setRestrictions: (body: SetRestrictionsBodyType, id: string) =>
     http.put<MessageResType>(`${prefix}/set-restriction/${id}`, body),
+
+  //FOR USER not admin
+  // matching
+  getUsersMatching: createGetAll<
+    GetUserByMatchingResType,
+    GetUsersMatchingQueryType
+  >(`${prefix}`),
+  getUserProfile: createGetOne<GetUserByIdResType, GetUserByIdBodyType>(
+    `${prefix}`
+  ),
 };
 export default userApiRequest;

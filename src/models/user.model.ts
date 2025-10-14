@@ -27,6 +27,7 @@ export const UserSchema = z.object({
   lastLoginAt: z.iso.datetime(),
 });
 
+// =================== for your self
 //auth/me
 export const GetUserProfileResSchema = z.object({
   data: UserSchema.omit({
@@ -98,6 +99,10 @@ export const GetUserByIdResSchema = z.object({
 });
 
 // ===================
+// FOR USER not admin
+// matching
+export const GetUsersMatchingQuerySchema = GetUsersQuerySchema;
+export const GetUserByMatchingResSchema = GetUsersResSchema;
 
 //types
 export type UserType = z.infer<typeof UserSchema>;
@@ -111,3 +116,10 @@ export type GetUsersQueryType = z.infer<typeof GetUsersQuerySchema>;
 export type GetUsersResType = z.infer<typeof GetUsersResSchema>;
 export type GetUserByIdBodyType = z.infer<typeof GetUserByIdBodySchema>;
 export type GetUserByIdResType = z.infer<typeof GetUserByIdResSchema>;
+
+export type GetUsersMatchingQueryType = z.infer<
+  typeof GetUsersMatchingQuerySchema
+>;
+export type GetUserByMatchingResType = z.infer<
+  typeof GetUserByMatchingResSchema
+>;
