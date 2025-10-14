@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui";
 import { useInterestsQuery } from "@/hooks";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 type InterestsStepProps = {
   interests: string[];
@@ -80,7 +81,7 @@ export function InterestsStep({
                 </div>
               )}
               {interest.iconUrl ? (
-                <img
+                <Image
                   src={interest.iconUrl}
                   alt={interest.name}
                   className="size-10 rounded-full object-cover"
