@@ -14,6 +14,7 @@ export * from "./form";
 export * from "./input";
 export * from "./label";
 export * from "./logo";
+export * from "./popover";
 export * from "./progress";
 export * from "./radio-group";
 export * from "./select";

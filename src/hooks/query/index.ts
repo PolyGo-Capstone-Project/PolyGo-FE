@@ -4,4 +4,5 @@ export * from "./use-gift";
 export * from "./use-interest";
 export * from "./use-language";
 export * from "./use-media";
+export * from "./use-subscription";
 export * from "./use-user";

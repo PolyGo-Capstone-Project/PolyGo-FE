@@ -14,7 +14,11 @@ import {
   TargetLanguageStep,
 } from "@/components/modules/setup-profile/steps";
 import { Button, Progress } from "@/components/ui";
-import { useSetupProfileMutation, useUpdateMeMutation } from "@/hooks";
+import {
+  useAuthStore,
+  useSetupProfileMutation,
+  useUpdateMeMutation,
+} from "@/hooks";
 import { handleErrorApi } from "@/lib/utils";
 import {
   SetupProfileBodySchema,
@@ -48,7 +52,7 @@ export function SetupProfileForm() {
   const setupProfileMutation = useSetupProfileMutation();
 
   const errorMessages = useTranslations("setupProfile.errors");
-
+  const setIsNewUser = useAuthStore((state) => state.setIsNewUser);
   const personalInfoForm = useForm<UpdateMeBodyType>({
     resolver: zodResolver(UpdateMeBodySchema),
     defaultValues: {
@@ -198,6 +202,7 @@ export function SetupProfileForm() {
     try {
       const response = await setupProfileMutation.mutateAsync(setupData);
       toast.success(response.payload.message || tSuccess("setupComplete"));
+      setIsNewUser(false);
       router.push(`/${locale}/dashboard`);
     } catch (error) {
       handleErrorApi({

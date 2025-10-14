@@ -212,9 +212,9 @@ export function PersonalInfoStep({
       </div>
 
       {/* Optional Notice */}
-      <div className="rounded-xl border bg-muted/50 p-4">
+      {/* <div className="rounded-xl border bg-muted/50 p-4">
         <p className="text-sm text-muted-foreground">{t("skipNotice")}</p>
-      </div>
+      </div> */}
     </div>
   );
 }

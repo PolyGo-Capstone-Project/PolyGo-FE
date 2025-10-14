@@ -303,7 +303,7 @@ export function EditBadge({
                     defaultValue={field.value}
                     disabled={isFormDisabled}
                   >
-                    <FormControl>
+                    <FormControl className="w-full">
                       <SelectTrigger>
                         <SelectValue
                           placeholder={safeTranslate(
