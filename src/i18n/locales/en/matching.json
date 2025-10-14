@@ -1,0 +1,68 @@
+{
+  "matching": {
+    "title": "Find Language Partners",
+    "description": "Connect with language learners from around the world",
+    "filters": {
+      "title": "Filters",
+      "search": "Search by name",
+      "searchPlaceholder": "Enter name...",
+      "languages": "Languages",
+      "languagesPlaceholder": "Select languages",
+      "interests": "Interests",
+      "interestsPlaceholder": "Select interests",
+      "clear": "Clear Filters",
+      "apply": "Apply",
+      "allLanguages": "All Languages",
+      "allInterests": "All Interests"
+    },
+    "card": {
+      "online": "Online",
+      "offline": "Offline",
+      "addFriend": "Add Friend",
+      "viewProfile": "View Profile",
+      "speaks": "Speaks",
+      "learning": "Learning",
+      "interests": "Interests",
+      "noIntroduction": "No introduction yet"
+    },
+    "profile": {
+      "title": "User Profile",
+      "basicInfo": "Basic Information",
+      "languages": "Languages",
+      "interests": "Interests",
+      "stats": "Statistics",
+      "share": "Share Profile",
+      "linkCopied": "Profile link copied to clipboard!",
+      "back": "Back to Matching",
+      "addFriend": "Add Friend",
+      "name": "Name",
+      "email": "Email",
+      "gender": "Gender",
+      "meritLevel": "Merit Level",
+      "introduction": "Introduction",
+      "noIntroduction": "This user hasn't written an introduction yet.",
+      "speakingLanguages": "Speaking Languages",
+      "learningLanguages": "Learning Languages",
+      "noLanguages": "No languages added yet",
+      "noInterests": "No interests added yet",
+      "experiencePoints": "Experience Points",
+      "streakDays": "Streak Days",
+      "balance": "Balance",
+      "memberSince": "Member Since"
+    },
+    "empty": {
+      "title": "No users found",
+      "description": "Try adjusting your filters or search criteria",
+      "noResults": "No matching results"
+    },
+    "loading": {
+      "users": "Loading users...",
+      "profile": "Loading profile..."
+    },
+    "error": {
+      "loadUsers": "Failed to load users",
+      "loadProfile": "Failed to load profile",
+      "retry": "Retry"
+    }
+  }
+}

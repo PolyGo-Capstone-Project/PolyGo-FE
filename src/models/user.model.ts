@@ -63,20 +63,9 @@ export const SetRestrictionsBodySchema = z.object({
 });
 
 // Get All Users
-export const UserListItemSchema = UserSchema.pick({
-  id: true,
-  name: true,
-  mail: true,
-  avatarUrl: true,
-  meritLevel: true,
-  role: true,
-  gender: true,
-  experiencePoints: true,
-  autoRenewSubscription: true,
-  streakDays: true,
-  isNew: true,
-  balance: true,
-  lastLoginAt: true,
+export const UserListItemSchema = UserSchema.omit({
+  password: true,
+  totp: true,
 });
 
 export const GetUsersQuerySchema = PaginationLangQuerySchema.omit({
