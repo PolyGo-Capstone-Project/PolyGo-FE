@@ -65,13 +65,10 @@ export default function LoginForm() {
       const result = await loginMutation.mutateAsync(data);
       showSuccessToast(result.payload?.message, tSuccess);
       const decoded = decodeToken(result.payload.data);
-      console.log("🚀 ~ onSubmit ~ decoded:", decoded);
       setRole(decoded.Role);
+      const isNew = String(decoded.IsNew).toLowerCase() === "true";
       // setSocket(generateSocketInstance(result.payload.data.accessToken));
-      console.log("🚀 ~ onSubmit ~ decoded.IsNew:", decoded.IsNew);
-      if (decoded.IsNew) {
-        console.log("User is new:", decoded);
-
+      if (isNew) {
         setIsNewUser(true);
         router.push(`/${locale}/setup-profile`);
       } else {

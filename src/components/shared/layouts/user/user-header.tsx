@@ -1,17 +1,13 @@
 "use client";
 
 import {
-  Calendar,
   CalendarDays,
   Gamepad2,
-  Globe,
   Home,
   LogOut,
   Menu,
   MessageCircle,
-  MessageSquare,
   UserRoundSearch,
-  Users,
   Users2,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -113,22 +109,18 @@ export function UserHeader() {
                   </div>
 
                   {/* menu items */}
-                  <div className="flex flex-col gap-5 p-6">
-                    <Button variant="ghost" className="justify-start gap-4">
-                      <Home className="h-4 w-4" /> Home
-                    </Button>
-                    <Button variant="ghost" className="justify-start gap-4">
-                      <MessageSquare className="h-4 w-4" /> Chat
-                    </Button>
-                    <Button variant="ghost" className="justify-start gap-4">
-                      <Calendar className="h-4 w-4" /> Event
-                    </Button>
-                    <Button variant="ghost" className="justify-start gap-4">
-                      <Users className="h-4 w-4" /> Matching
-                    </Button>
-                    <Button variant="ghost" className="justify-start gap-4">
-                      <Globe className="h-4 w-4" /> Social
-                    </Button>
+                  <div className="flex flex-col gap-1 p-4">
+                    {navigation.map((item) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center gap-6 rounded-lg px-6 py-5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                      >
+                        <item.icon className="h-5 w-5" />
+                        {item.name}
+                      </Link>
+                    ))}
                   </div>
                 </div>
 
@@ -144,14 +136,19 @@ export function UserHeader() {
                   {/* User info */}
                   <div className="flex items-center gap-3 rounded-xl bg-muted/50 p-3">
                     <Avatar className="h-9 w-9">
-                      <AvatarImage src="/avatars/user.jpg" alt="@user" />
-                      <AvatarFallback>U</AvatarFallback>
+                      <AvatarImage
+                        src={user?.data.avatarUrl ?? undefined}
+                        alt={user?.data.name}
+                      />
+                      <AvatarFallback>
+                        {user?.data.name.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
                     </Avatar>
 
                     <div className="flex flex-col flex-1">
-                      <p className="text-sm font-medium">Lê Quang Huy</p>
+                      <p className="text-sm font-medium">{user?.data.name}</p>
                       <p className="text-xs text-muted-foreground truncate">
-                        huy@example.com
+                        {user?.data.mail}
                       </p>
                     </div>
 

@@ -119,16 +119,11 @@ export default function ManageAccountsPage() {
     id: string,
     values: SetRestrictionsBodyType
   ) => {
-    console.log("handleUpdateRestrictions called");
-    console.log("ID:", id);
-    console.log("Values:", values);
-
     try {
-      const result = await setRestrictionsMutation.mutateAsync({
+      await setRestrictionsMutation.mutateAsync({
         body: values,
         id,
       });
-      console.log("API Response:", result);
     } catch (error) {
       console.error("API Error:", error);
       handleErrorApi({ error, tError });

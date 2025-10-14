@@ -78,8 +78,6 @@ export default function SupportPage() {
       // Simulate real API call (500ms delay)
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      console.log("Submitting support request:", form);
-
       alert(t("success"));
 
       // Reset form sau khi gửi thành công
