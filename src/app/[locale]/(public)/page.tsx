@@ -4,7 +4,6 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
-import homeImage from "@/../public/assets/home.jpeg";
 import {
   Button,
   Card,
@@ -101,7 +100,7 @@ export default function HomePage() {
         <div className="relative mx-auto w-full max-w-xl">
           <div className="rounded-2xl border bg-card shadow-lg overflow-hidden">
             <Image
-              src={homeImage}
+              src="/assets/home.jpeg"
               alt="PolyGo live session"
               width={960}
               height={540}
