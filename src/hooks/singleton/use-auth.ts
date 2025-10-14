@@ -12,6 +12,8 @@ interface AuthState {
   socket: Socket | undefined;
   setSocket: (socket?: Socket | undefined) => void;
   disconnectSocket: () => void;
+  isNewUser: boolean;
+  setIsNewUser: (isNew: boolean) => void;
   reset: () => void;
 }
 
@@ -34,6 +36,8 @@ export const useAuthStore = create<AuthState>()(
           return { socket: undefined };
         }),
       reset: () => set({ isAuth: false, role: undefined, socket: undefined }),
+      isNewUser: false,
+      setIsNewUser: (isNew) => set({ isNewUser: isNew }),
     }),
     {
       name: "auth-storage",

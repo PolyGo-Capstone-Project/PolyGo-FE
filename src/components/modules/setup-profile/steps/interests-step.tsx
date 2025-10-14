@@ -58,7 +58,6 @@ export function InterestsStep({
         <h3 className="text-xl font-semibold">{t("heading")}</h3>
         <p className="text-sm text-muted-foreground">{t("subheading")}</p>
       </div>
-
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
         {interestList.map((interest) => {
           const isSelected = interests.includes(interest.id);
@@ -96,7 +95,6 @@ export function InterestsStep({
           );
         })}
       </div>
-
       {/* Selection Summary */}
       {interests.length > 0 && (
         <div className="flex items-center justify-between rounded-xl border bg-muted/50 p-4">
@@ -118,8 +116,7 @@ export function InterestsStep({
           </Button>
         </div>
       )}
-
-      {/* Optional Notice */}
+      {/* Optional Notice*/}
       <div className="rounded-xl border bg-muted/50 p-4">
         <p className="text-sm text-muted-foreground">{t("skipNotice")}</p>
       </div>

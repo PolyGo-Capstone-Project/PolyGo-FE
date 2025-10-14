@@ -32,7 +32,7 @@ import {
   SheetTrigger,
 } from "@/components";
 import { UserMenu } from "@/components/shared";
-import { useAuthMe } from "@/hooks";
+import { useAuthMe, useLogout } from "@/hooks";
 
 export function UserHeader() {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,6 +40,7 @@ export function UserHeader() {
   const t = useTranslations("header");
   const { data: userData } = useAuthMe();
   const user = userData?.payload;
+  const { logout, isLoggingOut } = useLogout();
   const navigation = [
     {
       name: t("userdashboard"),
@@ -52,6 +53,10 @@ export function UserHeader() {
     { name: t("social"), href: `/${locale}/social`, icon: Users2 },
     { name: t("game"), href: `/${locale}/game`, icon: Gamepad2 },
   ];
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -155,7 +160,8 @@ export function UserHeader() {
                       size="icon"
                       className="text-destructive hover:text-destructive"
                       onClick={() => {
-                        /* TODO: handle logout action */
+                        handleLogout();
+                        setIsOpen(false);
                       }}
                     >
                       <LogOut className="h-4 w-4" />

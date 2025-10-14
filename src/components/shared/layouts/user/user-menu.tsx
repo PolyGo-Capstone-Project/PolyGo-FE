@@ -17,7 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui";
-import { useLogout } from "@/hooks";
+import { useAuthStore, useLogout } from "@/hooks";
 import { GetUserProfileResType } from "@/models";
 
 export function UserMenu({ user }: { user: GetUserProfileResType }) {
@@ -25,7 +25,7 @@ export function UserMenu({ user }: { user: GetUserProfileResType }) {
   const locale = useLocale();
   const t = useTranslations("header");
   const { logout, isLoggingOut } = useLogout();
-
+  const isNewUser = useAuthStore((state) => state.isNewUser);
   const handleLogout = () => {
     logout();
   };
@@ -63,7 +63,13 @@ export function UserMenu({ user }: { user: GetUserProfileResType }) {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={() => router.push(`/${locale}/profile`)}>
+        <DropdownMenuItem
+          onClick={() => {
+            isNewUser
+              ? router.push(`/${locale}/setup-profile`)
+              : router.push(`/${locale}/profile`);
+          }}
+        >
           <User className="mr-2 h-4 w-4" />
           <span>{t("profile") || "Profile"}</span>
         </DropdownMenuItem>
