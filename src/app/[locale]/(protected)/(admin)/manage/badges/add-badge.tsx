@@ -272,7 +272,7 @@ export function AddBadge({
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <FormControl>
+                    <FormControl className="w-full">
                       <SelectTrigger>
                         <SelectValue
                           placeholder={safeTranslate(

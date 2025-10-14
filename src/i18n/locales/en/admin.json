@@ -432,6 +432,139 @@
           "mismatch": "New password and confirm password must match."
         }
       }
+    },
+    "subscriptions": {
+      "title": "Subscriptions",
+      "description": "Manage subscription plans available on the PolyGo platform.",
+      "confirmDelete": "Are you sure you want to delete {name}?",
+      "error": "Unable to load subscriptions.",
+      "errorTitle": "Something went wrong",
+      "retry": "Try again",
+      "emptyTitle": "No subscriptions yet",
+      "emptyDescription": "Add a new subscription plan to get started.",
+      "createButton": "Create subscription",
+      "subscriptionIdLabel": "Internal ID",
+      "edit": "Edit",
+      "delete": "Delete",
+      "viewDetails": "View details",
+      "tableTitle": "Subscription plans",
+      "tableDescription": "Review, add or update available subscription plans.",
+      "languageFilter": "Locale",
+      "pageSize": "Page size",
+      "refresh": "Refresh",
+      "fallbackName": "this subscription",
+      "deleting": "Deleting...",
+      "columns": {
+        "no": "No.",
+        "planType": "Plan type",
+        "name": "Name",
+        "description": "Description",
+        "price": "Price",
+        "duration": "Duration",
+        "status": "Status",
+        "features": "Features",
+        "createdAt": "Created at",
+        "lastUpdatedAt": "Last updated at",
+        "actions": "Actions"
+      },
+      "planTypes": {
+        "Free": "Free",
+        "Plus": "Plus",
+        "Premium": "Premium"
+      },
+      "featureTypes": {
+        "Chat": "Chat",
+        "Translation": "Translation",
+        "VoiceCall": "Voice Call",
+        "VideoCall": "Video Call",
+        "EventParticipation": "Event Participation",
+        "EventCreation": "Event Creation",
+        "PremiumBadges": "Premium Badges",
+        "Analytics": "Analytics",
+        "PrioritySupport": "Priority Support",
+        "AdvancedMatching": "Advanced Matching"
+      },
+      "limitTypes": {
+        "Daily": "Daily",
+        "Weekly": "Weekly",
+        "Monthly": "Monthly",
+        "Unlimited": "Unlimited"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "pagination": {
+        "summary": "Showing {start}-{end} of {total} subscriptions",
+        "empty": "No subscriptions to display",
+        "previous": "Previous",
+        "page": "Page {page} of {total}",
+        "next": "Next"
+      },
+      "form": {
+        "planTypeLabel": "Plan type",
+        "planTypePlaceholder": "Select a plan type",
+        "priceLabel": "Price (VND)",
+        "pricePlaceholder": "e.g. 99000",
+        "priceHint": "Price in Vietnamese Dong (VND). Use 0 for free plans.",
+        "durationLabel": "Duration (days)",
+        "durationPlaceholder": "e.g. 30",
+        "durationHint": "Number of days this subscription is valid.",
+        "isActiveLabel": "Active status",
+        "isActiveHint": "Enable or disable this subscription plan.",
+        "translationsLabel": "Translations",
+        "addTranslation": "Add translation",
+        "removeTranslation": "Remove",
+        "translationLangLabel": "Language",
+        "translationLangPlaceholder": "e.g. en",
+        "translationNameLabel": "Plan name",
+        "translationNamePlaceholder": "e.g. Premium",
+        "translationDescriptionLabel": "Description",
+        "translationDescriptionPlaceholder": "Describe this plan",
+        "featuresLabel": "Features",
+        "addFeature": "Add feature",
+        "removeFeature": "Remove",
+        "featureTypeLabel": "Feature type",
+        "featureTypePlaceholder": "Select feature",
+        "limitValueLabel": "Limit value",
+        "limitValuePlaceholder": "e.g. 100",
+        "limitTypeLabel": "Limit type",
+        "limitTypePlaceholder": "Select limit type",
+        "isEnabledLabel": "Enabled",
+        "cancel": "Cancel",
+        "submitCreate": "Create",
+        "submitUpdate": "Save changes"
+      },
+      "sheet": {
+        "createTitle": "Create subscription",
+        "createDescription": "Define the plan type, price, duration, translations and features for the new subscription.",
+        "editTitle": "Edit subscription",
+        "editDescription": "Update the information for the selected subscription plan."
+      },
+      "deleteDialog": {
+        "title": "Delete subscription",
+        "description": "Are you sure you want to delete {name}? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "detailDialog": {
+        "title": "Subscription details",
+        "planType": "Plan type",
+        "price": "Price",
+        "duration": "Duration",
+        "status": "Status",
+        "name": "Name",
+        "description": "Description",
+        "features": "Features",
+        "featureType": "Type",
+        "limitValue": "Limit",
+        "limitType": "Period",
+        "enabled": "Status",
+        "noDescription": "No description available",
+        "noFeatures": "No features configured",
+        "days": "days",
+        "close": "Close"
+      }
     }
   }
 }
