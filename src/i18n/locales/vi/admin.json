@@ -531,6 +531,139 @@
           "mismatch": "Mật khẩu mới và xác nhận mật khẩu phải khớp nhau."
         }
       }
+    },
+    "subscriptions": {
+      "title": "Gói đăng ký",
+      "description": "Quản lý các gói đăng ký trên nền tảng PolyGo.",
+      "confirmDelete": "Bạn có chắc muốn xoá {name}?",
+      "error": "Không thể tải danh sách gói đăng ký.",
+      "errorTitle": "Đã xảy ra lỗi",
+      "retry": "Thử lại",
+      "emptyTitle": "Chưa có gói đăng ký nào",
+      "emptyDescription": "Hãy thêm một gói đăng ký mới để bắt đầu.",
+      "createButton": "Thêm gói đăng ký",
+      "subscriptionIdLabel": "ID nội bộ",
+      "edit": "Chỉnh sửa",
+      "delete": "Xoá",
+      "viewDetails": "Xem chi tiết",
+      "tableTitle": "Các gói đăng ký",
+      "tableDescription": "Xem, thêm hoặc cập nhật các gói đăng ký có sẵn.",
+      "languageFilter": "Ngôn ngữ hiển thị",
+      "pageSize": "Số dòng",
+      "refresh": "Làm mới",
+      "fallbackName": "gói đăng ký này",
+      "deleting": "Đang xoá...",
+      "columns": {
+        "no": "STT",
+        "planType": "Loại gói",
+        "name": "Tên",
+        "description": "Mô tả",
+        "price": "Giá",
+        "duration": "Thời hạn",
+        "status": "Trạng thái",
+        "features": "Tính năng",
+        "createdAt": "Ngày tạo",
+        "lastUpdatedAt": "Cập nhật cuối",
+        "actions": "Thao tác"
+      },
+      "planTypes": {
+        "Free": "Miễn phí",
+        "Plus": "Plus",
+        "Premium": "Premium"
+      },
+      "featureTypes": {
+        "Chat": "Trò chuyện",
+        "Translation": "Dịch thuật",
+        "VoiceCall": "Gọi thoại",
+        "VideoCall": "Gọi video",
+        "EventParticipation": "Tham gia sự kiện",
+        "EventCreation": "Tạo sự kiện",
+        "PremiumBadges": "Huy hiệu cao cấp",
+        "Analytics": "Phân tích",
+        "PrioritySupport": "Hỗ trợ ưu tiên",
+        "AdvancedMatching": "Ghép đôi nâng cao"
+      },
+      "limitTypes": {
+        "Daily": "Hàng ngày",
+        "Weekly": "Hàng tuần",
+        "Monthly": "Hàng tháng",
+        "Unlimited": "Không giới hạn"
+      },
+      "status": {
+        "active": "Hoạt động",
+        "inactive": "Không hoạt động"
+      },
+      "pagination": {
+        "summary": "Hiển thị {start}-{end} / {total} gói đăng ký",
+        "empty": "Không có gói đăng ký để hiển thị",
+        "previous": "Trước",
+        "page": "Trang {page}/{total}",
+        "next": "Sau"
+      },
+      "form": {
+        "planTypeLabel": "Loại gói",
+        "planTypePlaceholder": "Chọn loại gói",
+        "priceLabel": "Giá (VND)",
+        "pricePlaceholder": "vd: 99000",
+        "priceHint": "Giá tính bằng đồng Việt Nam (VND). Dùng 0 cho gói miễn phí.",
+        "durationLabel": "Thời hạn (ngày)",
+        "durationPlaceholder": "vd: 30",
+        "durationHint": "Số ngày gói đăng ký này có hiệu lực.",
+        "isActiveLabel": "Trạng thái hoạt động",
+        "isActiveHint": "Bật hoặc tắt gói đăng ký này.",
+        "translationsLabel": "Bản dịch",
+        "addTranslation": "Thêm bản dịch",
+        "removeTranslation": "Xoá",
+        "translationLangLabel": "Ngôn ngữ",
+        "translationLangPlaceholder": "vd: vi",
+        "translationNameLabel": "Tên gói",
+        "translationNamePlaceholder": "vd: Cao cấp",
+        "translationDescriptionLabel": "Mô tả",
+        "translationDescriptionPlaceholder": "Mô tả chi tiết về gói này",
+        "featuresLabel": "Tính năng",
+        "addFeature": "Thêm tính năng",
+        "removeFeature": "Xoá",
+        "featureTypeLabel": "Loại tính năng",
+        "featureTypePlaceholder": "Chọn tính năng",
+        "limitValueLabel": "Giới hạn",
+        "limitValuePlaceholder": "vd: 100",
+        "limitTypeLabel": "Loại giới hạn",
+        "limitTypePlaceholder": "Chọn loại giới hạn",
+        "isEnabledLabel": "Kích hoạt",
+        "cancel": "Huỷ",
+        "submitCreate": "Tạo mới",
+        "submitUpdate": "Lưu thay đổi"
+      },
+      "sheet": {
+        "createTitle": "Thêm gói đăng ký",
+        "createDescription": "Khai báo loại gói, giá, thời hạn, bản dịch và tính năng cho gói đăng ký mới.",
+        "editTitle": "Chỉnh sửa gói đăng ký",
+        "editDescription": "Cập nhật thông tin cho gói đăng ký đã chọn."
+      },
+      "deleteDialog": {
+        "title": "Xoá gói đăng ký",
+        "description": "Bạn có chắc muốn xoá {name}? Hành động này không thể hoàn tác.",
+        "cancel": "Huỷ",
+        "confirm": "Xoá"
+      },
+      "detailDialog": {
+        "title": "Chi tiết gói đăng ký",
+        "planType": "Loại gói",
+        "price": "Giá",
+        "duration": "Thời hạn",
+        "status": "Trạng thái",
+        "name": "Tên",
+        "description": "Mô tả",
+        "features": "Tính năng",
+        "featureType": "Loại",
+        "limitValue": "Giới hạn",
+        "limitType": "Chu kỳ",
+        "enabled": "Trạng thái",
+        "noDescription": "Chưa có mô tả",
+        "noFeatures": "Chưa cấu hình tính năng",
+        "days": "ngày",
+        "close": "Đóng"
+      }
     }
   }
 }

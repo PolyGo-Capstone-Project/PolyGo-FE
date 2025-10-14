@@ -26,8 +26,10 @@ const userApiRequest = {
     http.put<MessageResType>(`${prefix}/profile/me`, body),
 
   //FOR ADMIN
-  getUsers: createGetAll<GetUsersResType, GetUsersQueryType>(prefix),
-  getOne: createGetOne<GetUserByIdResType, GetUserByIdBodyType>(prefix),
+  getUsers: createGetAll<GetUsersResType, GetUsersQueryType>(`admin${prefix}`),
+  getOne: createGetOne<GetUserByIdResType, GetUserByIdBodyType>(
+    `admin${prefix}`
+  ),
   setRestrictions: (body: SetRestrictionsBodyType, id: string) =>
     http.put<MessageResType>(`${prefix}/set-restriction/${id}`, body),
 };
