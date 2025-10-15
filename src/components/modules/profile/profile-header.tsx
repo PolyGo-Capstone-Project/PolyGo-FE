@@ -1,6 +1,6 @@
 "use client";
 
-import { IconEdit } from "@tabler/icons-react";
+import { IconEdit, IconGift, IconShare } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,7 +16,10 @@ type ProfileHeaderProps = {
   gender: string | null;
   introduction: string | null;
   isOnline?: boolean;
-  onEdit: () => void;
+  variant?: "own" | "other";
+  onEdit?: () => void;
+  onSendGift?: () => void;
+  onShare?: () => void;
 };
 
 export function ProfileHeader({
@@ -27,7 +30,10 @@ export function ProfileHeader({
   gender,
   introduction,
   isOnline = true,
+  variant = "own",
   onEdit,
+  onSendGift,
+  onShare,
 }: ProfileHeaderProps) {
   const t = useTranslations("profile");
   const tCommon = useTranslations("common.gender");
@@ -39,6 +45,12 @@ export function ProfileHeader({
     .toUpperCase()
     .slice(0, 2);
 
+  // Validate avatar URL
+  const isValidAvatarUrl = (url: string | null) => {
+    if (!url) return false;
+    return url.startsWith("http://") || url.startsWith("https://");
+  };
+
   return (
     <Card>
       <CardContent className="pt-6">
@@ -47,7 +59,13 @@ export function ProfileHeader({
           <div className="flex flex-col items-center gap-4 md:flex-row md:items-start">
             <div className="relative">
               <Avatar className="h-24 w-24 border-4 border-background shadow-lg md:h-32 md:w-32">
-                <AvatarImage src={avatarUrl || undefined} alt={name} />
+                <AvatarImage
+                  src={isValidAvatarUrl(avatarUrl) ? avatarUrl! : undefined}
+                  alt={name}
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
                 <AvatarFallback className="text-2xl font-semibold">
                   {initials}
                 </AvatarFallback>
@@ -80,11 +98,30 @@ export function ProfileHeader({
             </div>
           </div>
 
-          {/* Edit Button */}
-          <Button onClick={onEdit} size="sm" className="w-full md:w-auto">
-            <IconEdit className="mr-2 h-4 w-4" />
-            {t("edit")}
-          </Button>
+          {/* Action Buttons */}
+          {variant === "own" && onEdit && (
+            <Button onClick={onEdit} size="sm" className="w-full md:w-auto">
+              <IconEdit className="mr-2 h-4 w-4" />
+              {t("edit")}
+            </Button>
+          )}
+
+          {variant === "other" && (
+            <div className="flex w-full flex-col gap-2 md:w-auto md:flex-row">
+              {onSendGift && (
+                <Button onClick={onSendGift} size="sm" variant="outline">
+                  <IconGift className="mr-2 h-4 w-4" />
+                  {t("sendGift")}
+                </Button>
+              )}
+              {onShare && (
+                <Button onClick={onShare} size="sm">
+                  <IconShare className="mr-2 h-4 w-4" />
+                  {t("share")}
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

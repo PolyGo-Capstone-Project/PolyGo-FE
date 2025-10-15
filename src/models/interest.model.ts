@@ -23,11 +23,16 @@ export const InterestTranslationSchema = z.object({
   interestId: z.string(),
 });
 
-//FOR ADMIN ===========================================
-//GET ALL
+export const InterestWithTranslationsSchema = InterestSchema.extend({
+  translations: z.array(InterestTranslationSchema).default([]),
+});
+
 export const InterestListItemSchema = InterestSchema.merge(
   InterestTranslationSchema.pick({ lang: true, name: true, description: true })
 );
+
+//FOR ADMIN ===========================================
+//GET ALL
 
 export const GetInterestsQuerySchema = PaginationLangQuerySchema;
 
@@ -79,3 +84,6 @@ export type GetInterestByIdResType = z.infer<typeof GetInterestByIdResSchema>;
 export type CreateInterestBodyType = z.infer<typeof CreateInterestBodySchema>;
 export type UpdateInterestBodyType = z.infer<typeof UpdateInterestBodySchema>;
 export type UserInterestsResType = z.infer<typeof UserInterestsResSchema>;
+export type InterestWithTranslationsType = z.infer<
+  typeof InterestWithTranslationsSchema
+>;

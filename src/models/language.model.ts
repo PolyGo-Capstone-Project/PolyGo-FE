@@ -24,10 +24,15 @@ export const LanguageTranslationsSchema = z.object({
   languageId: z.string().max(2),
 });
 
-// ============= For Admin =====================
+export const LanguageWithTranslationsSchema = LanguageSchema.extend({
+  translations: z.array(LanguageTranslationsSchema).default([]),
+});
+
 export const LanguageListItemSchema = LanguageSchema.merge(
   LanguageTranslationsSchema.pick({ name: true, lang: true })
 );
+
+// ============= For Admin =====================
 
 export const GetLanguagesQuerySchema = PaginationLangQuerySchema;
 
@@ -86,4 +91,7 @@ export type UserLanguageSpeakingResType = z.infer<
 >;
 export type UserLanguageLearningResType = z.infer<
   typeof UserLanguageLearningResSchema
+>;
+export type LanguageWithTranslationsType = z.infer<
+  typeof LanguageWithTranslationsSchema
 >;

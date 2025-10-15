@@ -100,7 +100,7 @@ export default function HomePage() {
         <div className="relative mx-auto w-full max-w-xl">
           <div className="rounded-2xl border bg-card shadow-lg overflow-hidden">
             <Image
-              src="/assets/home.jpeg"
+              src="/assets/home.png"
               alt="PolyGo live session"
               width={960}
               height={540}
