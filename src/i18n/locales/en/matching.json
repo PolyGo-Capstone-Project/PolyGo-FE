@@ -33,7 +33,9 @@
       "speaks": "Speaks",
       "learning": "Learning",
       "interests": "Interests",
-      "noIntroduction": "No introduction yet"
+      "noIntroduction": "No introduction yet",
+      "noLanguages": "No languages added yet",
+      "noInterests": "No interests added yet"
     },
     "profile": {
       "title": "User Profile",

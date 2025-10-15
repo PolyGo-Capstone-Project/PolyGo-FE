@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 
 export type MatchingFilters = {
   search: string;
@@ -140,7 +141,7 @@ export function MatchingFilterSidebar({
                 className="flex items-center gap-2 cursor-pointer text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 {lang.iconUrl && (
-                  <img
+                  <Image
                     src={lang.iconUrl}
                     alt={lang.code}
                     className="h-4 w-4 rounded-sm object-cover"
@@ -184,7 +185,7 @@ export function MatchingFilterSidebar({
                 className="flex items-center gap-2 cursor-pointer text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 {lang.iconUrl && (
-                  <img
+                  <Image
                     src={lang.iconUrl}
                     alt={lang.code}
                     className="h-4 w-4 rounded-sm object-cover"

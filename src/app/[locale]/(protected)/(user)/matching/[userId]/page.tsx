@@ -1,43 +1,123 @@
 "use client";
 
-import {
-  IconArrowLeft,
-  IconCalendar,
-  IconCoin,
-  IconFlame,
-  IconShare,
-  IconSparkles,
-  IconTrophy,
-  IconUserPlus,
-} from "@tabler/icons-react";
-import { format } from "date-fns";
 import { useLocale, useTranslations } from "next-intl";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
+import { LoadingSpinner } from "@/components/modules/loading";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Badge,
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Separator,
-  Skeleton,
-} from "@/components";
+  ProfileAchievementsSection,
+  ProfileGiftsSection,
+  ProfileHeader,
+  ProfileInfoSection,
+  ProfileInterestsSection,
+  ProfileLanguagesSection,
+  ProfileStats,
+} from "@/components/modules/profile";
 import { useGetUserProfile } from "@/hooks";
 import { handleErrorApi } from "@/lib/utils";
 
+// Mock data for features not yet implemented
+const MOCK_STATS = {
+  totalSessions: 45,
+  averageRating: 4.8,
+  responseRate: 95,
+  totalHours: 150,
+  eventsHosted: 2,
+};
+
+const MOCK_GIFTS = [
+  {
+    id: "1",
+    name: "☕",
+    value: 5,
+    from: {
+      name: "AnnaFR",
+      avatarUrl: null,
+    },
+    message: "Thank you for the amazing Vietnamese cooking class!",
+    receivedAt: "2025-10-06T10:00:00Z",
+  },
+  {
+    id: "2",
+    name: "📚",
+    value: 12,
+    from: {
+      name: "JohnEN",
+      avatarUrl: null,
+    },
+    message: "Your teaching style is incredible! Keep inspiring others 📖",
+    receivedAt: "2025-10-09T14:30:00Z",
+  },
+];
+
+const MOCK_ACHIEVEMENTS = [
+  {
+    id: "1",
+    name: "First Chat",
+    description: "Had your first conversation",
+    icon: "💬",
+    unlockedAt: "2025-09-01T10:00:00Z",
+    isUnlocked: true,
+  },
+  {
+    id: "2",
+    name: "10 Hours Spoken",
+    description: "Spoken for 10+ hours",
+    icon: "🎤",
+    unlockedAt: "2025-09-15T16:30:00Z",
+    isUnlocked: true,
+  },
+  {
+    id: "3",
+    name: "Early Bird",
+    description: "Join a session before 8 AM",
+    icon: "🌅",
+    isUnlocked: false,
+  },
+  {
+    id: "4",
+    name: "Night Owl",
+    description: "Join a session after 10 PM",
+    icon: "🦉",
+    unlockedAt: "2025-10-01T22:45:00Z",
+    isUnlocked: true,
+  },
+  {
+    id: "5",
+    name: "Social Butterfly",
+    description: "Connect with 10 different people",
+    icon: "🦋",
+    isUnlocked: false,
+  },
+  {
+    id: "6",
+    name: "Polyglot",
+    description: "Learn 3 or more languages",
+    icon: "🌍",
+    isUnlocked: false,
+  },
+  {
+    id: "7",
+    name: "Helpful Hand",
+    description: "Receive 5 gifts from others",
+    icon: "🤝",
+    unlockedAt: "2025-10-10T09:00:00Z",
+    isUnlocked: true,
+  },
+  {
+    id: "8",
+    name: "Marathon",
+    description: "Complete a 3-hour session",
+    icon: "🏃",
+    isUnlocked: false,
+  },
+];
+
 export default function UserProfilePage() {
   const params = useParams();
-  const router = useRouter();
   const locale = useLocale();
-  const t = useTranslations("matching.profile");
-  const tGender = useTranslations("common.gender");
+  const t = useTranslations("profile");
   const tError = useTranslations("Error");
 
   const userId = params.userId as string;
@@ -49,31 +129,6 @@ export default function UserProfilePage() {
     error: userError,
   } = useGetUserProfile(userId, { enabled: !!userId });
 
-  const user = userData?.payload.data;
-
-  // Extract languages and interests from user data (now properly typed)
-  const speakingLanguages = user?.speakingLanguages || [];
-  const learningLanguages = user?.learningLanguages || [];
-  const interests = user?.interests || [];
-
-  // Handle share profile
-  const handleShare = () => {
-    const url = `${window.location.origin}/${locale}/matching/${userId}`;
-    navigator.clipboard.writeText(url);
-    toast.success(t("linkCopied"));
-  };
-
-  // Handle add friend
-  const handleAddFriend = () => {
-    // TODO: Implement add friend functionality
-    console.log("Add friend:", userId);
-  };
-
-  // Handle back
-  const handleBack = () => {
-    router.push(`/${locale}/matching`);
-  };
-
   // Handle error
   if (userError) {
     handleErrorApi({ error: userError, tError });
@@ -81,285 +136,98 @@ export default function UserProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto space-y-6 py-6">
-        <Skeleton className="h-10 w-48" />
-        <div className="space-y-6">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-start gap-6">
-                <Skeleton className="h-32 w-32 rounded-full" />
-                <div className="flex-1 space-y-3">
-                  <Skeleton className="h-8 w-48" />
-                  <Skeleton className="h-4 w-64" />
-                  <Skeleton className="h-20 w-full" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <div className="grid gap-6 md:grid-cols-2">
-            <Skeleton className="h-64" />
-            <Skeleton className="h-64" />
-          </div>
-        </div>
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
+
+  const user = userData?.payload.data;
 
   if (!user) {
     return (
-      <div className="container mx-auto py-12">
-        <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <p className="text-muted-foreground">{tError("GetOne")}</p>
-            <Button onClick={handleBack} className="mt-4">
-              {t("back")}
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
+        <p className="text-muted-foreground">{tError("GetOne")}</p>
       </div>
     );
   }
 
-  const initials = user.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
+  // Extract data
+  const speakingLanguages = user.speakingLanguages || [];
+  const learningLanguages = user.learningLanguages || [];
+  const interests = (user.interests || []).map((interest) => ({
+    ...interest,
+    description: interest.name, // Use name as description or provide a default
+  }));
 
-  // Validate avatar URL - must be a valid URL starting with http/https
-  const isValidAvatarUrl = (url: string | null) => {
-    if (!url) return false;
-    return url.startsWith("http://") || url.startsWith("https://");
+  // Handle share profile
+  const handleShare = () => {
+    const url = `${window.location.origin}/${locale}/matching/${userId}`;
+    navigator.clipboard.writeText(url);
+    toast.success(t("share") + " - " + "Link copied!");
+  };
+
+  // Handle send gift
+  const handleSendGift = () => {
+    // TODO: Implement send gift functionality
+    console.log("Send gift to:", userId);
+    toast.info("Send gift feature coming soon!");
   };
 
   return (
-    <div className="container mx-auto space-y-6 py-6">
-      {/* Header with Back Button */}
-      <div className="flex items-center justify-between">
-        <Button variant="ghost" onClick={handleBack}>
-          <IconArrowLeft className="mr-2 h-4 w-4" />
-          {t("back")}
-        </Button>
-        <Button variant="outline" onClick={handleShare}>
-          <IconShare className="mr-2 h-4 w-4" />
-          {t("share")}
-        </Button>
-      </div>
+    <div className="container mx-auto max-w-7xl space-y-6 p-4 md:p-6">
+      {/* Header Section */}
+      <ProfileHeader
+        name={user.name}
+        email={user.mail}
+        avatarUrl={user.avatarUrl}
+        meritLevel={user.meritLevel}
+        gender={user.gender}
+        introduction={user.introduction}
+        isOnline={true} // Mock online status
+        variant="other"
+        onSendGift={handleSendGift}
+        onShare={handleShare}
+      />
 
-      {/* Profile Header Card */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-            {/* Avatar & Basic Info */}
-            <div className="flex flex-col items-center gap-4 md:flex-row md:items-start">
-              <Avatar className="h-32 w-32 border-4 border-background shadow-lg">
-                <AvatarImage
-                  src={
-                    isValidAvatarUrl(user.avatarUrl)
-                      ? user.avatarUrl!
-                      : undefined
-                  }
-                  alt={user.name}
-                  onError={(e) => {
-                    // Hide broken image on error
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
-                <AvatarFallback className="text-3xl font-semibold">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
+      {/* Main Content Grid */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Left Column - Main Info */}
+        <div className="space-y-6 lg:col-span-2">
+          {/* Languages */}
+          <ProfileLanguagesSection
+            nativeLanguages={speakingLanguages}
+            learningLanguages={learningLanguages}
+          />
 
-              <div className="flex flex-col items-center gap-3 text-center md:items-start md:text-left">
-                <div className="space-y-1">
-                  <h1 className="text-3xl font-bold tracking-tight">
-                    {user.name}
-                  </h1>
-                  <p className="text-muted-foreground">{user.mail}</p>
-                </div>
+          {/* Interests */}
+          <ProfileInterestsSection interests={interests} />
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant="secondary">{user.meritLevel}</Badge>
-                  {user.gender && (
-                    <Badge variant="outline">
-                      {tGender(user.gender as any)}
-                    </Badge>
-                  )}
-                  {user.isNew && (
-                    <Badge variant="default" className="gap-1">
-                      <IconSparkles className="h-3 w-3" />
-                      New Member
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </div>
+          {/* Gifts */}
+          <ProfileGiftsSection gifts={MOCK_GIFTS} />
 
-            {/* Action Button */}
-            <Button
-              onClick={handleAddFriend}
-              size="lg"
-              className="w-full md:w-auto"
-            >
-              <IconUserPlus className="mr-2 h-5 w-5" />
-              {t("addFriend")}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          {/* Achievements */}
+          <ProfileAchievementsSection achievements={MOCK_ACHIEVEMENTS} />
+        </div>
 
-      {/* Stats Cards */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t("experiencePoints")}
-            </CardTitle>
-            <IconTrophy className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {user.experiencePoints ?? 0}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Right Column - Stats & XP */}
+        <div className="space-y-6">
+          {/* Stats */}
+          <ProfileStats
+            totalSessions={MOCK_STATS.totalSessions}
+            averageRating={MOCK_STATS.averageRating}
+            responseRate={MOCK_STATS.responseRate}
+            totalHours={MOCK_STATS.totalHours}
+            streakDays={user.streakDays ?? 0}
+            eventsHosted={MOCK_STATS.eventsHosted}
+          />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t("streakDays")}
-            </CardTitle>
-            <IconFlame className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {user.streakDays ?? 0} days
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t("balance")}
-            </CardTitle>
-            <IconCoin className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{user.balance ?? 0}</div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {t("memberSince")}
-            </CardTitle>
-            <IconCalendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {user.createdAt
-                ? (() => {
-                    try {
-                      return format(new Date(user.createdAt), "MMM yyyy");
-                    } catch {
-                      return "N/A";
-                    }
-                  })()
-                : "N/A"}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Basic Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("basicInfo")}</CardTitle>
-            <CardDescription>{t("introduction")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {user.introduction ? (
-              <p className="text-sm leading-relaxed">{user.introduction}</p>
-            ) : (
-              <p className="text-sm italic text-muted-foreground">
-                {t("noIntroduction")}
-              </p>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Languages */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("languages")}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {/* Speaking Languages */}
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium">{t("speakingLanguages")}</h4>
-              {speakingLanguages.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {speakingLanguages.map((lang) => (
-                    <Badge key={lang.id} variant="secondary">
-                      {lang.name}
-                    </Badge>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  {t("noLanguages")}
-                </p>
-              )}
-            </div>
-
-            <Separator />
-
-            {/* Learning Languages */}
-            <div className="space-y-2">
-              <h4 className="text-sm font-medium">{t("learningLanguages")}</h4>
-              {learningLanguages.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {learningLanguages.map((lang) => (
-                    <Badge key={lang.id} variant="outline">
-                      {lang.name}
-                    </Badge>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">
-                  {t("noLanguages")}
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Interests */}
-        <Card className="md:col-span-2">
-          <CardHeader>
-            <CardTitle>{t("interests")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {interests.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
-                {interests.map((interest) => (
-                  <Badge key={interest.id} variant="outline" className="gap-1">
-                    <IconSparkles className="h-3 w-3" />
-                    {interest.name}
-                  </Badge>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                {t("noInterests")}
-              </p>
-            )}
-          </CardContent>
-        </Card>
+          {/* XP & Level */}
+          <ProfileInfoSection
+            experiencePoints={user.experiencePoints ?? 0}
+            streakDays={user.streakDays ?? 0}
+          />
+        </div>
       </div>
     </div>
   );

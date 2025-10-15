@@ -33,7 +33,9 @@
       "speaks": "Nói được",
       "learning": "Đang học",
       "interests": "Sở thích",
-      "noIntroduction": "Chưa có giới thiệu"
+      "noIntroduction": "Chưa có giới thiệu",
+      "noLanguages": "Chưa thêm ngôn ngữ",
+      "noInterests": "Chưa thêm sở thích"
     },
     "profile": {
       "title": "Hồ Sơ Người Dùng",

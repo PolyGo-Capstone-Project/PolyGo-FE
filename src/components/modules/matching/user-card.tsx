@@ -1,6 +1,6 @@
 "use client";
 
-import { IconSearch, IconSparkles, IconUserPlus } from "@tabler/icons-react";
+import { IconSearch, IconUserPlus } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { UserMatchingItemType } from "@/models";
+import Image from "next/image";
 
 type UserCardProps = {
   user: UserMatchingItemType;
@@ -48,7 +49,7 @@ export function UserCard({ user, onViewProfile, onAddFriend }: UserCardProps) {
   };
 
   return (
-    <Card className="group transition-all hover:shadow-lg">
+    <Card className="group flex flex-col transition-all hover:shadow-lg">
       <CardHeader className="pb-4">
         <div className="flex items-start gap-4">
           {/* Avatar */}
@@ -95,74 +96,102 @@ export function UserCard({ user, onViewProfile, onAddFriend }: UserCardProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4 pb-4">
-        {/* Introduction */}
-        <p className="line-clamp-2 text-sm text-muted-foreground">
-          {user.introduction || t("noIntroduction")}
-        </p>
+      <CardContent className="flex-1 space-y-4 pb-4">
+        {/* Introduction - Fixed height */}
+        <div className="min-h-[2.5rem]">
+          <p className="line-clamp-2 text-sm text-muted-foreground">
+            {user.introduction || t("noIntroduction")}
+          </p>
+        </div>
 
         <Separator />
 
-        {/* Languages */}
-        {(speakingLanguages.length > 0 || learningLanguages.length > 0) && (
-          <div className="space-y-2">
-            {speakingLanguages.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-medium text-muted-foreground">
-                  {t("speaks")}:
-                </span>
-                {speakingLanguages.slice(0, 3).map((lang) => (
-                  <Badge key={lang.id} variant="outline" className="text-xs">
-                    {lang.name}
-                  </Badge>
-                ))}
-                {speakingLanguages.length > 3 && (
-                  <Badge variant="outline" className="text-xs">
-                    +{speakingLanguages.length - 3}
-                  </Badge>
-                )}
-              </div>
-            )}
+        {/* Languages - Fixed min height */}
+        <div className="min-h-[4rem] space-y-2">
+          {speakingLanguages.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-medium text-muted-foreground">
+                {t("speaks")}:
+              </span>
+              {speakingLanguages.slice(0, 3).map((lang) => (
+                <Badge key={lang.id} variant="outline" className="text-xs">
+                  {lang.name}
+                </Badge>
+              ))}
+              {speakingLanguages.length > 3 && (
+                <Badge variant="outline" className="text-xs">
+                  +{speakingLanguages.length - 3}
+                </Badge>
+              )}
+            </div>
+          )}
 
-            {learningLanguages.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-medium text-muted-foreground">
-                  {t("learning")}:
-                </span>
-                {learningLanguages.slice(0, 3).map((lang) => (
-                  <Badge key={lang.id} variant="secondary" className="text-xs">
-                    {lang.name}
-                  </Badge>
-                ))}
-                {learningLanguages.length > 3 && (
-                  <Badge variant="secondary" className="text-xs">
-                    +{learningLanguages.length - 3}
-                  </Badge>
-                )}
-              </div>
-            )}
-          </div>
-        )}
+          {learningLanguages.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-medium text-muted-foreground">
+                {t("learning")}:
+              </span>
+              {learningLanguages.slice(0, 3).map((lang) => (
+                <Badge key={lang.id} variant="secondary" className="text-xs">
+                  {lang.name}
+                </Badge>
+              ))}
+              {learningLanguages.length > 3 && (
+                <Badge variant="secondary" className="text-xs">
+                  +{learningLanguages.length - 3}
+                </Badge>
+              )}
+            </div>
+          )}
 
-        {/* Interests */}
-        {interests.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground">
-              {t("interests")}:
-            </span>
-            {interests.slice(0, 3).map((interest) => (
-              <Badge key={interest.id} variant="outline" className="text-xs">
-                <IconSparkles className="mr-1 h-3 w-3" />
-                {interest.name}
-              </Badge>
-            ))}
-            {interests.length > 3 && (
-              <Badge variant="outline" className="text-xs">
-                +{interests.length - 3}
-              </Badge>
-            )}
-          </div>
-        )}
+          {/* Show placeholder if no languages */}
+          {speakingLanguages.length === 0 && learningLanguages.length === 0 && (
+            <p className="text-xs italic text-muted-foreground">
+              {t("noLanguages")}
+            </p>
+          )}
+        </div>
+
+        <Separator />
+
+        {/* Interests - Fixed min height */}
+        <div className="min-h-[2rem]">
+          {interests.length > 0 ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-medium text-muted-foreground">
+                {t("interests")}:
+              </span>
+              {interests.slice(0, 3).map((interest) => (
+                <Badge
+                  key={interest.id}
+                  variant="outline"
+                  className="text-xs gap-1"
+                >
+                  {interest.iconUrl && (
+                    <Image
+                      src={interest.iconUrl}
+                      alt={interest.name}
+                      className="h-3 w-3 rounded-sm object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  )}
+                  {interest.name}
+                </Badge>
+              ))}
+              {interests.length > 3 && (
+                <Badge variant="outline" className="text-xs">
+                  +{interests.length - 3}
+                </Badge>
+              )}
+            </div>
+          ) : (
+            <p className="text-xs italic text-muted-foreground">
+              {t("noInterests")}
+            </p>
+          )}
+        </div>
       </CardContent>
 
       <CardFooter className="flex gap-2 pt-4">
