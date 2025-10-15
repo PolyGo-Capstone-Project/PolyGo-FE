@@ -1,0 +1,80 @@
+{
+  "matching": {
+    "title": "Tìm Bạn Học Ngôn Ngữ",
+    "description": "Kết nối với những người học ngôn ngữ từ khắp nơi trên thế giới",
+    "sorting": {
+      "label": "Sắp xếp theo",
+      "recommended": "Được đề xuất",
+      "newest": "Mới nhất",
+      "highestRating": "Rating cao nhất",
+      "onlineFirst": "Online trước"
+    },
+    "filters": {
+      "title": "Bộ Lọc",
+      "search": "Tìm theo tên",
+      "searchPlaceholder": "Nhập tên...",
+      "onlineOnly": "Chỉ người online",
+      "speakingLanguages": "Ngôn ngữ họ nói",
+      "learningLanguages": "Ngôn ngữ họ học",
+      "languages": "Ngôn ngữ",
+      "languagesPlaceholder": "Chọn ngôn ngữ",
+      "interests": "Sở thích",
+      "interestsPlaceholder": "Chọn sở thích",
+      "clear": "Xóa Bộ Lọc",
+      "apply": "Áp Dụng",
+      "allLanguages": "Tất Cả Ngôn Ngữ",
+      "allInterests": "Tất Cả Sở Thích"
+    },
+    "card": {
+      "online": "Trực tuyến",
+      "offline": "Ngoại tuyến",
+      "addFriend": "Kết Bạn",
+      "viewProfile": "Xem Hồ Sơ",
+      "speaks": "Nói được",
+      "learning": "Đang học",
+      "interests": "Sở thích",
+      "noIntroduction": "Chưa có giới thiệu",
+      "noLanguages": "Chưa thêm ngôn ngữ",
+      "noInterests": "Chưa thêm sở thích"
+    },
+    "profile": {
+      "title": "Hồ Sơ Người Dùng",
+      "basicInfo": "Thông Tin Cơ Bản",
+      "languages": "Ngôn Ngữ",
+      "interests": "Sở Thích",
+      "stats": "Thống Kê",
+      "share": "Chia Sẻ Hồ Sơ",
+      "linkCopied": "Đã sao chép liên kết hồ sơ!",
+      "back": "Quay Lại Tìm Kiếm",
+      "addFriend": "Kết Bạn",
+      "name": "Tên",
+      "email": "Email",
+      "gender": "Giới tính",
+      "meritLevel": "Cấp độ uy tín",
+      "introduction": "Giới thiệu",
+      "noIntroduction": "Người dùng này chưa viết giới thiệu.",
+      "speakingLanguages": "Ngôn Ngữ Nói Được",
+      "learningLanguages": "Ngôn Ngữ Đang Học",
+      "noLanguages": "Chưa thêm ngôn ngữ nào",
+      "noInterests": "Chưa thêm sở thích nào",
+      "experiencePoints": "Điểm Kinh Nghiệm",
+      "streakDays": "Ngày Liên Tiếp",
+      "balance": "Số Dư",
+      "memberSince": "Thành Viên Từ"
+    },
+    "empty": {
+      "title": "Không tìm thấy người dùng",
+      "description": "Thử điều chỉnh bộ lọc hoặc tiêu chí tìm kiếm của bạn",
+      "noResults": "Không có kết quả phù hợp"
+    },
+    "loading": {
+      "users": "Đang tải người dùng...",
+      "profile": "Đang tải hồ sơ..."
+    },
+    "error": {
+      "loadUsers": "Không thể tải danh sách người dùng",
+      "loadProfile": "Không thể tải hồ sơ",
+      "retry": "Thử Lại"
+    }
+  }
+}

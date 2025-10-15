@@ -2,6 +2,8 @@
   "profile": {
     "title": "Profile",
     "edit": "Edit Profile",
+    "sendGift": "Send Gift",
+    "share": "Share Profile",
     "stats": {
       "title": "Statistics",
       "totalSessions": "Total Sessions",

@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components";
+import MatchingPageContent from "./matching-page-content";
 
 export const metadata: Metadata = {
   title: "Matching - PolyGo",
-  description: "Matching features and interactions",
+  description: "Find language partners and make new friends",
 };
 
 export default function MatchingPage() {
-  return (
-    <>
-      <ComingSoon
-        title="Matching Features"
-        description="We're building amazing matching features. Check back soon!"
-      />
-    </>
-  );
+  return <MatchingPageContent />;
 }
