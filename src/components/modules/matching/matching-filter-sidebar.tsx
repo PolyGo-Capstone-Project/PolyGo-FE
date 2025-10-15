@@ -226,7 +226,7 @@ export function MatchingFilterSidebar({
                 className="flex items-center gap-2 cursor-pointer text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 {interest.iconUrl && (
-                  <img
+                  <Image
                     src={interest.iconUrl}
                     alt={interest.name}
                     className="h-4 w-4 rounded-sm object-cover"

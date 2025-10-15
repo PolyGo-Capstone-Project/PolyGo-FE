@@ -1,0 +1,75 @@
+{
+  "wallet": {
+    "title": "Ví của tôi",
+    "balance": {
+      "title": "Số dư hiện tại",
+      "show": "Hiện số dư",
+      "hide": "Ẩn số dư",
+      "totalEarned": "Tổng thu nhập",
+      "totalSpent": "Tổng chi tiêu"
+    },
+    "quickActions": {
+      "title": "Thao tác nhanh",
+      "deposit": "Nạp tiền",
+      "withdraw": "Rút tiền",
+      "buyGift": "Mua quà",
+      "upgradeSubscription": "Nâng cấp gói"
+    },
+    "subscription": {
+      "title": "Gói cước hiện tại",
+      "plan": "Gói",
+      "status": "Trạng thái",
+      "nextBilling": "Gia hạn tiếp theo",
+      "autoRenew": "Tự động gia hạn",
+      "free": "Miễn phí",
+      "basic": "Cơ bản",
+      "premium": "Cao cấp",
+      "active": "Đang hoạt động",
+      "inactive": "Không hoạt động",
+      "on": "Bật",
+      "off": "Tắt"
+    },
+    "transactions": {
+      "title": "Lịch sử giao dịch",
+      "filter": {
+        "all": "Tất cả giao dịch",
+        "earnings": "Thu nhập",
+        "spending": "Chi tiêu",
+        "withdrawals": "Rút tiền",
+        "subscriptions": "Gói cước",
+        "refunds": "Hoàn tiền"
+      },
+      "export": {
+        "button": "Xuất file",
+        "csv": "Xuất CSV",
+        "excel": "Xuất Excel"
+      },
+      "columns": {
+        "date": "Ngày",
+        "description": "Mô tả",
+        "type": "Loại",
+        "amount": "Số tiền",
+        "status": "Trạng thái"
+      },
+      "type": {
+        "earning": "Thu nhập",
+        "spending": "Chi tiêu",
+        "withdrawal": "Rút tiền",
+        "subscription": "Gói cước",
+        "refund": "Hoàn tiền"
+      },
+      "status": {
+        "completed": "Hoàn thành",
+        "pending": "Đang xử lý",
+        "failed": "Thất bại"
+      },
+      "empty": "Không có giao dịch nào",
+      "search": "Tìm kiếm giao dịch..."
+    },
+    "toast": {
+      "exportSuccess": "Xuất file thành công",
+      "exportError": "Xuất file thất bại",
+      "comingSoon": "Tính năng này sẽ sớm ra mắt"
+    }
+  }
+}
