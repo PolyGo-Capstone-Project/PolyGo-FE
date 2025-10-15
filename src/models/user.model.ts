@@ -5,6 +5,8 @@ import {
   PaginationLangQuerySchema,
   PaginationMetaSchema,
 } from "@/models/common.model";
+import { InterestListItemSchema } from "@/models/interest.model";
+import { LanguageListItemSchema } from "@/models/language.model";
 
 export const UserSchema = z.object({
   id: z.string(),
@@ -68,9 +70,33 @@ export const UserListItemSchema = UserSchema.omit({
   totp: true,
 });
 
-export const GetUsersQuerySchema = PaginationLangQuerySchema.omit({
+// ===================
+// Shared schemas for languages and interests
+export const LanguageItem = LanguageListItemSchema.pick({
+  id: true,
   lang: true,
+  code: true,
+  name: true,
+  iconUrl: true,
 });
+
+export const InterestItem = InterestListItemSchema.pick({
+  id: true,
+  lang: true,
+  name: true,
+  iconUrl: true,
+});
+
+// User item with languages and interests (used in matching and profile view)
+export const UserMatchingItemSchema = UserListItemSchema.extend({
+  speakingLanguages: z.array(LanguageItem).default([]),
+  learningLanguages: z.array(LanguageItem).default([]),
+  interests: z.array(InterestItem).default([]),
+});
+
+// ===================
+// ADMIN queries
+export const GetUsersQuerySchema = PaginationLangQuerySchema;
 
 export const GetUsersResSchema = z.object({
   data: z.object({
@@ -82,16 +108,23 @@ export const GetUsersResSchema = z.object({
 
 export const GetUserByIdBodySchema = UserSchema.pick({ id: true });
 
+// Get user by ID - returns user with languages and interests
 export const GetUserByIdResSchema = z.object({
-  data: UserListItemSchema,
+  data: UserMatchingItemSchema,
   message: z.string(),
 });
 
 // ===================
-// FOR USER not admin
-// matching
+// FOR USER not admin - matching
 export const GetUsersMatchingQuerySchema = GetUsersQuerySchema;
-export const GetUserByMatchingResSchema = GetUsersResSchema;
+
+export const GetUserByMatchingResSchema = z.object({
+  data: z.object({
+    items: z.array(UserMatchingItemSchema),
+    ...PaginationMetaSchema.shape,
+  }),
+  message: z.string(),
+});
 
 //types
 export type UserType = z.infer<typeof UserSchema>;
@@ -112,3 +145,6 @@ export type GetUsersMatchingQueryType = z.infer<
 export type GetUserByMatchingResType = z.infer<
   typeof GetUserByMatchingResSchema
 >;
+export type UserMatchingItemType = z.infer<typeof UserMatchingItemSchema>;
+export type LanguageItemType = z.infer<typeof LanguageItem>;
+export type InterestItemType = z.infer<typeof InterestItem>;

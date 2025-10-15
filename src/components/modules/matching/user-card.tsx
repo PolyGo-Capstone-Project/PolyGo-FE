@@ -16,25 +16,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { UserListItemType } from "@/models";
+import { UserMatchingItemType } from "@/models";
 
 type UserCardProps = {
-  user: UserListItemType;
+  user: UserMatchingItemType;
   onViewProfile: (userId: string) => void;
   onAddFriend?: (userId: string) => void;
-  speakingLanguages?: Array<{ id: string; name: string }>;
-  learningLanguages?: Array<{ id: string; name: string }>;
-  interests?: Array<{ id: string; name: string }>;
 };
 
-export function UserCard({
-  user,
-  onViewProfile,
-  onAddFriend,
-  speakingLanguages = [],
-  learningLanguages = [],
-  interests = [],
-}: UserCardProps) {
+export function UserCard({ user, onViewProfile, onAddFriend }: UserCardProps) {
+  const speakingLanguages = user.speakingLanguages || [];
+  const learningLanguages = user.learningLanguages || [];
+  const interests = user.interests || [];
   const t = useTranslations("matching.card");
   const tGender = useTranslations("common.gender");
   const [isOnline] = useState(Math.random() > 0.5); // Mock online status
@@ -48,6 +41,12 @@ export function UserCard({
       .slice(0, 2);
   }, [user.name]);
 
+  // Validate avatar URL
+  const isValidAvatarUrl = (url: string | null) => {
+    if (!url) return false;
+    return url.startsWith("http://") || url.startsWith("https://");
+  };
+
   return (
     <Card className="group transition-all hover:shadow-lg">
       <CardHeader className="pb-4">
@@ -55,7 +54,15 @@ export function UserCard({
           {/* Avatar */}
           <div className="relative">
             <Avatar className="h-16 w-16 border-2 border-background shadow-md transition-transform group-hover:scale-105">
-              <AvatarImage src={user.avatarUrl || undefined} alt={user.name} />
+              <AvatarImage
+                src={
+                  isValidAvatarUrl(user.avatarUrl) ? user.avatarUrl! : undefined
+                }
+                alt={user.name}
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
               <AvatarFallback className="text-lg font-semibold">
                 {initials}
               </AvatarFallback>

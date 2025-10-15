@@ -2,10 +2,20 @@
   "matching": {
     "title": "Find Language Partners",
     "description": "Connect with language learners from around the world",
+    "sorting": {
+      "label": "Sort by",
+      "recommended": "Recommended",
+      "newest": "Newest",
+      "highestRating": "Highest Rating",
+      "onlineFirst": "Online First"
+    },
     "filters": {
       "title": "Filters",
       "search": "Search by name",
       "searchPlaceholder": "Enter name...",
+      "onlineOnly": "Online only",
+      "speakingLanguages": "Languages they speak",
+      "learningLanguages": "Languages they learn",
       "languages": "Languages",
       "languagesPlaceholder": "Select languages",
       "interests": "Interests",

@@ -29,12 +29,7 @@ import {
   Separator,
   Skeleton,
 } from "@/components";
-import {
-  useGetUserProfile,
-  useUserInterestsQuery,
-  useUserLanguagesLearningQuery,
-  useUserLanguagesSpeakingQuery,
-} from "@/hooks";
+import { useGetUserProfile } from "@/hooks";
 import { handleErrorApi } from "@/lib/utils";
 
 export default function UserProfilePage() {
@@ -44,44 +39,22 @@ export default function UserProfilePage() {
   const t = useTranslations("matching.profile");
   const tGender = useTranslations("common.gender");
   const tError = useTranslations("Error");
-  const tSuccess = useTranslations("Success");
 
   const userId = params.userId as string;
 
   // Fetch user profile
   const {
     data: userData,
-    isLoading: isLoadingUser,
+    isLoading,
     error: userError,
   } = useGetUserProfile(userId, { enabled: !!userId });
 
   const user = userData?.payload.data;
 
-  // Fetch user's languages (mock - in real app, this should come from user endpoint)
-  const { data: speakingLanguagesData, isLoading: isLoadingSpeaking } =
-    useUserLanguagesSpeakingQuery({
-      params: { lang: locale, pageNumber: 1, pageSize: 100 },
-    });
-
-  const { data: learningLanguagesData, isLoading: isLoadingLearning } =
-    useUserLanguagesLearningQuery({
-      params: { lang: locale, pageNumber: 1, pageSize: 100 },
-    });
-
-  const { data: interestsData, isLoading: isLoadingInterests } =
-    useUserInterestsQuery({
-      params: { lang: locale, pageNumber: 1, pageSize: 100 },
-    });
-
-  const speakingLanguages = speakingLanguagesData?.payload.data?.items || [];
-  const learningLanguages = learningLanguagesData?.payload.data?.items || [];
-  const interests = interestsData?.payload.data?.items || [];
-
-  const isLoading =
-    isLoadingUser ||
-    isLoadingSpeaking ||
-    isLoadingLearning ||
-    isLoadingInterests;
+  // Extract languages and interests from user data (now properly typed)
+  const speakingLanguages = user?.speakingLanguages || [];
+  const learningLanguages = user?.learningLanguages || [];
+  const interests = user?.interests || [];
 
   // Handle share profile
   const handleShare = () => {
@@ -154,6 +127,12 @@ export default function UserProfilePage() {
     .toUpperCase()
     .slice(0, 2);
 
+  // Validate avatar URL - must be a valid URL starting with http/https
+  const isValidAvatarUrl = (url: string | null) => {
+    if (!url) return false;
+    return url.startsWith("http://") || url.startsWith("https://");
+  };
+
   return (
     <div className="container mx-auto space-y-6 py-6">
       {/* Header with Back Button */}
@@ -176,8 +155,16 @@ export default function UserProfilePage() {
             <div className="flex flex-col items-center gap-4 md:flex-row md:items-start">
               <Avatar className="h-32 w-32 border-4 border-background shadow-lg">
                 <AvatarImage
-                  src={user.avatarUrl || undefined}
+                  src={
+                    isValidAvatarUrl(user.avatarUrl)
+                      ? user.avatarUrl!
+                      : undefined
+                  }
                   alt={user.name}
+                  onError={(e) => {
+                    // Hide broken image on error
+                    e.currentTarget.style.display = "none";
+                  }}
                 />
                 <AvatarFallback className="text-3xl font-semibold">
                   {initials}
@@ -232,7 +219,9 @@ export default function UserProfilePage() {
             <IconTrophy className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{user.experiencePoints}</div>
+            <div className="text-2xl font-bold">
+              {user.experiencePoints ?? 0}
+            </div>
           </CardContent>
         </Card>
 
@@ -244,7 +233,9 @@ export default function UserProfilePage() {
             <IconFlame className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{user.streakDays} days</div>
+            <div className="text-2xl font-bold">
+              {user.streakDays ?? 0} days
+            </div>
           </CardContent>
         </Card>
 
@@ -256,7 +247,7 @@ export default function UserProfilePage() {
             <IconCoin className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{user.balance}</div>
+            <div className="text-2xl font-bold">{user.balance ?? 0}</div>
           </CardContent>
         </Card>
 
@@ -269,7 +260,15 @@ export default function UserProfilePage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {format(new Date(user.createdAt), "MMM yyyy")}
+              {user.createdAt
+                ? (() => {
+                    try {
+                      return format(new Date(user.createdAt), "MMM yyyy");
+                    } catch {
+                      return "N/A";
+                    }
+                  })()
+                : "N/A"}
             </div>
           </CardContent>
         </Card>
@@ -286,7 +285,7 @@ export default function UserProfilePage() {
             {user.introduction ? (
               <p className="text-sm leading-relaxed">{user.introduction}</p>
             ) : (
-              <p className="text-sm text-muted-foreground italic">
+              <p className="text-sm italic text-muted-foreground">
                 {t("noIntroduction")}
               </p>
             )}

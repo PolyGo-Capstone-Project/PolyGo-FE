@@ -2,10 +2,20 @@
   "matching": {
     "title": "Tìm Bạn Học Ngôn Ngữ",
     "description": "Kết nối với những người học ngôn ngữ từ khắp nơi trên thế giới",
+    "sorting": {
+      "label": "Sắp xếp theo",
+      "recommended": "Được đề xuất",
+      "newest": "Mới nhất",
+      "highestRating": "Rating cao nhất",
+      "onlineFirst": "Online trước"
+    },
     "filters": {
       "title": "Bộ Lọc",
       "search": "Tìm theo tên",
       "searchPlaceholder": "Nhập tên...",
+      "onlineOnly": "Chỉ người online",
+      "speakingLanguages": "Ngôn ngữ họ nói",
+      "learningLanguages": "Ngôn ngữ họ học",
       "languages": "Ngôn ngữ",
       "languagesPlaceholder": "Chọn ngôn ngữ",
       "interests": "Sở thích",
