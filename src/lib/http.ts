@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import envConfig from "@/config";
+import { useAuthStore } from "@/hooks";
 import {
   getSessionTokenFromLocalStorage,
   normalizePath,
@@ -11,7 +12,6 @@ import { LoginResType } from "@/models";
 
 const ENTITY_ERROR_STATUS = 422 as const;
 const AUTHENTICATION_ERROR_STATUS = 401 as const;
-
 type ValidationError = {
   origin?: string;
   code: string;
@@ -161,6 +161,7 @@ const request = async <Response>(
           } catch (error) {
           } finally {
             removeTokensFromLocalStorage();
+            useAuthStore.getState().reset();
             clientLogoutRequest = null;
             const locale = window.location.pathname.split("/")[1];
             location.href = `/${locale}/login`;
@@ -185,6 +186,7 @@ const request = async <Response>(
       setSessionTokenToLocalStorage(sessionToken);
     } else if (normalizeUrl === "api/auth/logout") {
       removeTokensFromLocalStorage();
+      useAuthStore.getState().reset();
     }
   }
   return data;

@@ -168,14 +168,17 @@ export function UserCard({ user, onViewProfile, onAddFriend }: UserCardProps) {
                   className="text-xs gap-1"
                 >
                   {interest.iconUrl && (
-                    <Image
-                      src={interest.iconUrl}
-                      alt={interest.name}
-                      className="h-3 w-3 rounded-sm object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                      }}
-                    />
+                    <div className="relative h-3 w-3 shrink-0 rounded-sm overflow-hidden">
+                      <Image
+                        src={interest.iconUrl}
+                        alt={interest.name}
+                        fill
+                        className="object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+                    </div>
                   )}
                   {interest.name}
                 </Badge>
