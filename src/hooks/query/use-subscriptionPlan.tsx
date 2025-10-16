@@ -4,7 +4,12 @@ import {
   GetPlansQueryType,
   GetSubscriptionUsageQueryType,
 } from "@/models/subscriptionPlan.model";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query"; // <-- BỔ SUNG
 
 type PlansQueryResponse = Awaited<
   ReturnType<typeof subscriptionApiRequest.getAll>
@@ -57,5 +62,18 @@ export const useSubscriptionUsageQuery = (
     queryFn: () => subscriptionApiRequest.getUsage(params),
     enabled,
     placeholderData: keepPreviousData,
+  });
+};
+
+// NEW: toggle auto-renew mutation
+export const useToggleAutoRenewMutation = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (autoRenew: boolean) =>
+      subscriptionApiRequest.toggleAutoRenew(autoRenew),
+    onSuccess: () => {
+      // refetch current subscription để đồng bộ trạng thái
+      qc.invalidateQueries({ queryKey: ["user-subscription-current"] });
+    },
   });
 };

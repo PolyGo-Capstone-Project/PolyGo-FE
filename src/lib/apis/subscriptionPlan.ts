@@ -1,17 +1,20 @@
 // src/lib/apis/subscription.ts
 import { createGetAll } from "@/lib/apis/factory";
+import http from "@/lib/http";
 import {
   GetCurrentSubscriptionResType,
   GetPlansQueryType,
   GetPlansResType,
   GetSubscriptionUsageQueryType,
   GetSubscriptionUsageResType,
+  UpdateAutoRenewResType,
 } from "@/models/subscriptionPlan.model";
 
 const prefix = "/subscriptions/plans";
 // NEW:
 const currentPrefix = "/subscriptions/current";
 const usagePrefix = "/subscriptions/usage";
+const autoRenewPrefix = "/subscriptions/auto-renew";
 
 export type GetPlansParams = GetPlansQueryType;
 // NEW:
@@ -32,6 +35,13 @@ const subscriptionApiRequest = {
   >(usagePrefix),
 
   // add other endpoints if needed (create/update/delete) using http.post/put/delete
+
+  // NEW: Toggle auto-renew
+  toggleAutoRenew: (autoRenew: boolean) =>
+    http.put<UpdateAutoRenewResType>(
+      `${autoRenewPrefix}?autoRenew=${autoRenew}`,
+      null
+    ),
 };
 
 export default subscriptionApiRequest;

@@ -23,7 +23,21 @@
       "unlimited": "Unlimited",
       "resetAt": "Resets at",
       "canUse": "Can use",
-      "cannotUse": "Cannot use"
+      "cannotUse": "Cannot use",
+      "turnOn": "Turn on auto-renew",
+      "turnOff": "Turn off auto-renew"
+    },
+    "features": {
+      "Chat": "Unlimited Chat",
+      "Translation": "Automatic Translation",
+      "VoiceCall": "Voice Call Access",
+      "VideoCall": "Video Call Access",
+      "EventParticipation": "Event Participation",
+      "EventCreation": "Event Creation",
+      "PremiumBadges": "Premium Badges",
+      "Analytics": "Statistics & Analytics",
+      "PrioritySupport": "Priority Support",
+      "AdvancedMatching": "Advanced Matching"
     },
     "stats": {
       "title": "Statistics",

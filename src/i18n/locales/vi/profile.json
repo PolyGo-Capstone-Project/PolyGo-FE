@@ -23,7 +23,21 @@
       "unlimited": "Không giới hạn",
       "resetAt": "Reset lúc",
       "canUse": "Có thể dùng",
-      "cannotUse": "Không thể dùng"
+      "cannotUse": "Không thể dùng",
+      "turnOn": "Bật gia hạn",
+      "turnOff": "Tắt gia hạn"
+    },
+    "features": {
+      "Chat": "Trò chuyện không giới hạn",
+      "Translation": "Dịch tự động",
+      "VoiceCall": "Gọi thoại",
+      "VideoCall": "Gọi video",
+      "EventParticipation": "Tham gia sự kiện",
+      "EventCreation": "Tạo sự kiện",
+      "PremiumBadges": "Huy hiệu Premium",
+      "Analytics": "Thống kê & Phân tích",
+      "PrioritySupport": "Hỗ trợ ưu tiên",
+      "AdvancedMatching": "Tìm kiếm nâng cao"
     },
     "stats": {
       "title": "Thống kê",
