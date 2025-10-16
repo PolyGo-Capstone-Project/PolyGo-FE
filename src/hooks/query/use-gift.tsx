@@ -9,6 +9,8 @@ import { giftApiRequest } from "@/lib/apis";
 import {
   CreateGiftBodyType,
   PaginationLangQueryType,
+  PresentGiftBodyType,
+  PurchaseGiftBodyType,
   UpdateGiftBodyType,
 } from "@/models";
 
@@ -124,6 +126,213 @@ export const useDeleteGiftMutation = (
       defaultOnSuccess(queryClient, params)?.();
       queryClient.removeQueries({
         queryKey: ["gift", variables, params?.lang ?? null],
+      });
+      options?.onSuccess?.(data);
+    },
+  });
+};
+
+// ==================== User APIs ====================
+
+// Purchase Gift
+type PurchaseGiftResponse = Awaited<ReturnType<typeof giftApiRequest.purchase>>;
+
+export const usePurchaseGiftMutation = (
+  params?: PaginationLangQueryType,
+  options?: {
+    onSuccess?: (response: PurchaseGiftResponse) => void;
+  }
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: PurchaseGiftBodyType) => giftApiRequest.purchase(body),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: ["my-purchased-gifts", params ?? null],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["my-purchased-gifts-history", params ?? null],
+      });
+      options?.onSuccess?.(data);
+    },
+  });
+};
+
+// My Purchased Gifts
+type MyPurchasedGiftsResponse = Awaited<
+  ReturnType<typeof giftApiRequest.myPurchasedGifts>
+>;
+
+type UseMyPurchasedGiftsQueryOptions = {
+  enabled?: boolean;
+  params?: PaginationLangQueryType;
+};
+
+export const useMyPurchasedGiftsQuery = ({
+  enabled = true,
+  params,
+}: UseMyPurchasedGiftsQueryOptions = {}) => {
+  return useQuery<MyPurchasedGiftsResponse>({
+    queryKey: ["my-purchased-gifts", params ?? null],
+    queryFn: () => giftApiRequest.myPurchasedGifts(params),
+    enabled,
+    placeholderData: keepPreviousData,
+  });
+};
+
+// My Purchased Gifts History (All)
+type MyPurchasedGiftHistoryResponse = Awaited<
+  ReturnType<typeof giftApiRequest.myAllPurchasedGiftsHistory>
+>;
+
+type UseMyPurchasedGiftHistoryQueryOptions = {
+  enabled?: boolean;
+  params?: PaginationLangQueryType;
+};
+
+export const useMyPurchasedGiftHistoryQuery = ({
+  enabled = true,
+  params,
+}: UseMyPurchasedGiftHistoryQueryOptions = {}) => {
+  return useQuery<MyPurchasedGiftHistoryResponse>({
+    queryKey: ["my-purchased-gifts-history", params ?? null],
+    queryFn: () => giftApiRequest.myAllPurchasedGiftsHistory(params),
+    enabled,
+    placeholderData: keepPreviousData,
+  });
+};
+
+// My Purchased Gift History Detail
+type MyPurchasedGiftHistoryDetailResponse = Awaited<
+  ReturnType<typeof giftApiRequest.myPurchasedGiftHistory>
+>;
+
+type UseMyPurchasedGiftHistoryDetailQueryOptions = {
+  enabled?: boolean;
+  id?: string;
+  lang?: string;
+};
+
+export const useMyPurchasedGiftHistoryDetailQuery = ({
+  id,
+  lang,
+  enabled = Boolean(id),
+}: UseMyPurchasedGiftHistoryDetailQueryOptions = {}) => {
+  return useQuery<MyPurchasedGiftHistoryDetailResponse>({
+    queryKey: ["my-purchased-gift-history-detail", id ?? null, lang ?? null],
+    queryFn: () =>
+      giftApiRequest.myPurchasedGiftHistory(id as string, {
+        lang,
+      }),
+    enabled: enabled && Boolean(id),
+    placeholderData: keepPreviousData,
+  });
+};
+
+// Present Gift
+type PresentGiftResponse = Awaited<ReturnType<typeof giftApiRequest.present>>;
+
+export const usePresentGiftMutation = (
+  params?: PaginationLangQueryType,
+  options?: {
+    onSuccess?: (response: PresentGiftResponse) => void;
+  }
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: PresentGiftBodyType) => giftApiRequest.present(body),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: ["my-sent-gifts", params ?? null],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["my-purchased-gifts", params ?? null],
+      });
+      options?.onSuccess?.(data);
+    },
+  });
+};
+
+// My Sent Gifts
+type MySentGiftsResponse = Awaited<
+  ReturnType<typeof giftApiRequest.mySentGifts>
+>;
+
+type UseMySentGiftsQueryOptions = {
+  enabled?: boolean;
+  params?: PaginationLangQueryType;
+};
+
+export const useMySentGiftsQuery = ({
+  enabled = true,
+  params,
+}: UseMySentGiftsQueryOptions = {}) => {
+  return useQuery<MySentGiftsResponse>({
+    queryKey: ["my-sent-gifts", params ?? null],
+    queryFn: () => giftApiRequest.mySentGifts(params),
+    enabled,
+    placeholderData: keepPreviousData,
+  });
+};
+
+// My Received Gifts
+type MyReceivedGiftsResponse = Awaited<
+  ReturnType<typeof giftApiRequest.myReceivedGifts>
+>;
+
+type UseMyReceivedGiftsQueryOptions = {
+  enabled?: boolean;
+  params?: PaginationLangQueryType;
+};
+
+export const useMyReceivedGiftsQuery = ({
+  enabled = true,
+  params,
+}: UseMyReceivedGiftsQueryOptions = {}) => {
+  return useQuery<MyReceivedGiftsResponse>({
+    queryKey: ["my-received-gifts", params ?? null],
+    queryFn: () => giftApiRequest.myReceivedGifts(params),
+    enabled,
+    placeholderData: keepPreviousData,
+  });
+};
+
+// Accept Gift
+type AcceptGiftResponse = Awaited<ReturnType<typeof giftApiRequest.acceptGift>>;
+
+export const useAcceptGiftMutation = (
+  params?: PaginationLangQueryType,
+  options?: {
+    onSuccess?: (response: AcceptGiftResponse) => void;
+  }
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => giftApiRequest.acceptGift(id),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: ["my-received-gifts", params ?? null],
+      });
+      options?.onSuccess?.(data);
+    },
+  });
+};
+
+// Reject Gift
+type RejectGiftResponse = Awaited<ReturnType<typeof giftApiRequest.rejectGift>>;
+
+export const useRejectGiftMutation = (
+  params?: PaginationLangQueryType,
+  options?: {
+    onSuccess?: (response: RejectGiftResponse) => void;
+  }
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => giftApiRequest.rejectGift(id),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({
+        queryKey: ["my-received-gifts", params ?? null],
       });
       options?.onSuccess?.(data);
     },
