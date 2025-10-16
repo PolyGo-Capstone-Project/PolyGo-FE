@@ -80,11 +80,12 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
               className="flex items-start gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
             >
               {/* Gift Icon/Image */}
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+              <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 overflow-hidden">
                 {gift.iconUrl ? (
                   <Image
                     src={gift.iconUrl}
                     alt={gift.name}
+                    fill
                     className="h-8 w-8 object-contain"
                   />
                 ) : (

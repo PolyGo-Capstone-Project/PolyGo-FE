@@ -8,9 +8,7 @@ export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <UserHeader />
-      <main className="flex-1 flex justify-center bg-gradient-to-br from-background via-muted/20 to-background p-2 py-4">
-        {children}
-      </main>
+      <main>{children}</main>
     </div>
   );
 }

@@ -9,8 +9,10 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -18,13 +20,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from "@/components";
 import { useLogout } from "@/hooks";
 import { GetUserProfileResType } from "@/models";
 
@@ -44,7 +44,7 @@ export function NavUser({ user }: { user: GetUserProfileResType }) {
   };
 
   const handleAccount = () => {
-    router.push(`/${locale}/manage/profile`);
+    router.push(`/${locale}/manage/setting`);
   };
 
   return (

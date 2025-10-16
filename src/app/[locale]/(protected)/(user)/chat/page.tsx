@@ -1,19 +1,15 @@
 import type { Metadata } from "next";
+import { getLocale } from "next-intl/server";
 
-import { ComingSoon } from "@/components";
+import { ChatPageContent } from "@/components/modules/chat";
 
 export const metadata: Metadata = {
   title: "Chat - PolyGo",
   description: "Chat features and interactions",
 };
 
-export default function ChatPage() {
-  return (
-    <>
-      <ComingSoon
-        title="Chat Features"
-        description="We're building amazing chat features. Check back soon!"
-      />
-    </>
-  );
+export default async function ChatPage() {
+  const locale = await getLocale();
+
+  return <ChatPageContent locale={locale} />;
 }

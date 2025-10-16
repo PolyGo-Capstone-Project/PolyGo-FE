@@ -3,9 +3,9 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { LoadingSpinner } from "@/components/modules/loading";
 import {
   EditProfileDialog,
+  LoadingSpinner,
   ProfileAchievementsSection,
   ProfileGiftsSection,
   ProfileHeader,
@@ -13,14 +13,14 @@ import {
   ProfileInterestsSection,
   ProfileLanguagesSection,
   ProfileStats,
-} from "@/components/modules/profile";
-import { useAuthMe } from "@/hooks/query/use-auth";
-import { useMyReceivedGiftsQuery } from "@/hooks/query/use-gift";
-import { useUserInterestsQuery } from "@/hooks/query/use-interest";
+} from "@/components";
 import {
+  useAuthMe,
+  useMyReceivedGiftsQuery,
+  useUserInterestsQuery,
   useUserLanguagesLearningQuery,
   useUserLanguagesSpeakingQuery,
-} from "@/hooks/query/use-language";
+} from "@/hooks";
 
 // Mock data for features not yet implemented
 const MOCK_STATS = {
@@ -161,7 +161,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto max-w-7xl space-y-6 p-4 md:p-0">
+    <div className="container mx-auto max-w-7xl space-y-6 p-4 md:p-4">
       {/* Header Section */}
       <ProfileHeader
         name={user.name}
