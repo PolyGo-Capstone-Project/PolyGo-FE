@@ -1,10 +1,14 @@
-// src/models/subscription.model.ts
+// src/models/subscriptionPlan.model.ts
 import {
   LangQuerySchema,
   PaginationLangQuerySchema,
   PaginationMetaSchema,
 } from "@/models/common.model";
 import z from "zod";
+
+/* =========================
+   KHU VỰC CŨ (GIỮ NGUYÊN)
+========================= */
 
 // Feature of a plan
 export const PlanFeatureSchema = z.object({
@@ -53,7 +57,60 @@ export const GetPlanByIdResSchema = z.object({
   message: z.string(),
 });
 
-// types
+/* =========================
+   BỔ SUNG: CURRENT & USAGE
+========================= */
+
+// Usage item of current subscription
+export const SubscriptionFeatureUsageSchema = z.object({
+  featureType: z.string(),
+  featureName: z.string(),
+  usageCount: z.number(),
+  limitValue: z.number(),
+  limitType: z.string().nullable().optional(),
+  isUnlimited: z.boolean(),
+  lastUsedAt: z.string().nullable().optional(), // ISO
+  resetAt: z.string().nullable().optional(), // ISO
+  canUse: z.boolean(),
+});
+
+// Current subscription payload
+export const CurrentSubscriptionSchema = z.object({
+  id: z.string(),
+  planType: z.string(),
+  planName: z.string(),
+  startAt: z.string(), // ISO
+  endAt: z.string(), // ISO
+  active: z.boolean(),
+  autoRenew: z.boolean(),
+  daysRemaining: z.number().int(),
+  featureUsages: z.array(SubscriptionFeatureUsageSchema).optional(),
+});
+
+// GET /subscriptions/current
+export const GetCurrentSubscriptionResSchema = z.object({
+  data: CurrentSubscriptionSchema,
+  message: z.string(),
+});
+
+// Query cho /subscriptions/usage (không có lang)
+export const GetSubscriptionUsageQuerySchema = z.object({
+  pageNumber: z.number().int().positive().default(1),
+  pageSize: z.number().int().positive().default(10),
+});
+
+// GET /subscriptions/usage
+export const GetSubscriptionUsageResSchema = z.object({
+  data: z.object({
+    items: z.array(SubscriptionFeatureUsageSchema),
+    ...PaginationMetaSchema.shape,
+  }),
+  message: z.string(),
+});
+
+/* =========================
+            TYPES
+========================= */
 export type PlanFeatureType = z.infer<typeof PlanFeatureSchema>;
 export type PlanType = z.infer<typeof PlanSchema>;
 export type PlanListItemType = z.infer<typeof PlanListItemSchema>;
@@ -61,3 +118,18 @@ export type GetPlansQueryType = z.infer<typeof GetPlansQuerySchema>;
 export type GetPlanByIdQueryType = z.infer<typeof GetPlanByIdQuerySchema>;
 export type GetPlansResType = z.infer<typeof GetPlansResSchema>;
 export type GetPlanByIdResType = z.infer<typeof GetPlanByIdResSchema>;
+
+// Current & Usage types
+export type SubscriptionFeatureUsageType = z.infer<
+  typeof SubscriptionFeatureUsageSchema
+>;
+export type CurrentSubscriptionType = z.infer<typeof CurrentSubscriptionSchema>;
+export type GetCurrentSubscriptionResType = z.infer<
+  typeof GetCurrentSubscriptionResSchema
+>;
+export type GetSubscriptionUsageQueryType = z.infer<
+  typeof GetSubscriptionUsageQuerySchema
+>;
+export type GetSubscriptionUsageResType = z.infer<
+  typeof GetSubscriptionUsageResSchema
+>;

@@ -125,14 +125,14 @@
 "use client";
 
 import {
+  Badge,
+  Button,
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { usePlansQuery } from "@/hooks/query/use-subscriptionPlan";
 import { PaginationLangQueryType } from "@/models";
 import { useLocale, useTranslations } from "next-intl";

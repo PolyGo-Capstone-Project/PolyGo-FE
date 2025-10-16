@@ -21,6 +21,22 @@ import {
   useUserLanguagesSpeakingQuery,
 } from "@/hooks/query/use-language";
 
+// NEW: UI cho mục mới
+import {
+  Badge,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Separator,
+} from "@/components/ui";
+// NEW: hooks subscription (cùng file use-subscriptionPlan.tsx)
+import {
+  useCurrentSubscriptionQuery,
+  useSubscriptionUsageQuery,
+} from "@/hooks/query/use-subscriptionPlan";
+import { locales } from "@/i18n/config";
+
 // Mock data for features not yet implemented
 const MOCK_STATS = {
   totalSessions: 45,
@@ -131,6 +147,12 @@ export default function ProfilePage() {
   const { data: interestsData, isLoading: isLoadingInterests } =
     useUserInterestsQuery();
 
+  const currentSubQuery = useCurrentSubscriptionQuery(true);
+  const usageQuery = useSubscriptionUsageQuery(
+    { pageNumber: 1, pageSize: 10 },
+    true
+  );
+
   const isLoading =
     isLoadingAuth || isLoadingNative || isLoadingLearning || isLoadingInterests;
 
@@ -154,6 +176,18 @@ export default function ProfilePage() {
       </div>
     );
   }
+
+  const formatDate = (iso?: string | null) => {
+    if (!iso) return "";
+    try {
+      return new Date(iso).toLocaleString(locales ?? "en");
+    } catch {
+      return iso ?? "";
+    }
+  };
+
+  const subData = currentSubQuery.data?.payload?.data;
+  const usageItems = usageQuery.data?.payload?.data?.items ?? [];
 
   return (
     <div className="container mx-auto max-w-7xl space-y-6 p-4 md:p-0">
@@ -206,6 +240,197 @@ export default function ProfilePage() {
             experiencePoints={user.experiencePoints}
             streakDays={user.streakDays}
           />
+          <Card className="overflow-hidden">
+            <CardHeader className="bg-muted/40 border-b px-4 sm:px-6 py-3">
+              {/* TITLE: Giảm từ lg/xl xuống base/lg */}
+              <CardTitle className="flex flex-wrap items-center gap-2 text-base sm:text-lg">
+                {t("subscription.title", { defaultValue: "Gói hiện tại" })}
+                {subData?.planType && (
+                  <Badge
+                    variant="outline"
+                    className="rounded-full px-2 py-0.5 text-[10px]"
+                  >
+                    {subData.planType}
+                  </Badge>
+                )}
+                {subData?.active ? (
+                  <Badge className="ml-auto sm:ml-0 rounded-full px-2 py-0.5 text-xs">
+                    {t("subscription.active", {
+                      defaultValue: "Đang hoạt động",
+                    })}
+                  </Badge>
+                ) : subData ? (
+                  <Badge
+                    variant="secondary"
+                    className="ml-auto sm:ml-0 rounded-full px-2 py-0.5 text-xs"
+                  >
+                    {t("subscription.inactive", {
+                      defaultValue: "Không hoạt động",
+                    })}
+                  </Badge>
+                ) : null}
+              </CardTitle>
+            </CardHeader>
+
+            <CardContent className="px-4 sm:px-6 py-4">
+              {/* Trạng thái gói */}
+              {currentSubQuery.isLoading ? (
+                <div className="py-2 text-xs text-muted-foreground">
+                  {t("subscription.loading", {
+                    defaultValue: "Đang tải gói hiện tại...",
+                  })}
+                </div>
+              ) : subData ? (
+                <div className="space-y-3">
+                  {/* Info grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="flex items-center justify-between rounded-lg border bg-background px-3 py-2">
+                      {/* LABEL: Giảm từ sm xuống xs */}
+                      <span className="text-xs text-muted-foreground">
+                        {t("subscription.planName", {
+                          defaultValue: "Tên gói",
+                        })}
+                      </span>
+                      {/* VALUE: Giảm từ base xuống sm */}
+                      <span className="text-xs sm:text-sm font-semibold truncate max-w-[60%] text-right">
+                        {subData.planName}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between rounded-lg border bg-background px-3 py-2">
+                      <span className="text-xs text-muted-foreground">
+                        {t("subscription.daysRemaining", {
+                          defaultValue: "Số ngày còn lại",
+                        })}
+                      </span>
+                      <span className="text-xs sm:text-sm font-semibold tabular-nums">
+                        {subData.daysRemaining}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between rounded-lg border bg-background px-3 py-2">
+                      <span className="text-xs text-muted-foreground">
+                        {t("subscription.autoRenew", {
+                          defaultValue: "Tự động gia hạn",
+                        })}
+                      </span>
+                      <span className="text-xs sm:text-sm font-semibold">
+                        {subData.autoRenew
+                          ? t("subscription.yes", { defaultValue: "Có" })
+                          : t("subscription.no", { defaultValue: "Không" })}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between rounded-lg border bg-background px-3 py-2">
+                      <span className="text-xs text-muted-foreground">
+                        {t("subscription.period", { defaultValue: "Thời hạn" })}
+                      </span>
+                      {/* PERIOD VALUE: Giữ ở xs */}
+                      <span className="text-sm font-medium text-right ">
+                        {/* {formatDate(subData.startAt)} <span className="mx-1 opacity-70">→</span> {formatDate(subData.endAt)} */}
+                        {formatDate(subData.endAt)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="py-2 text-xs text-muted-foreground">
+                  {t("subscription.empty", {
+                    defaultValue: "Chưa có thông tin gói.",
+                  })}
+                </div>
+              )}
+
+              <Separator className="my-4" />
+
+              {/* Danh sách chức năng */}
+              <div className="mb-3 flex items-center justify-between">
+                {/* TITLE: Giảm từ mặc định (base) xuống sm */}
+                <div className="font-semibold text-sm">
+                  {t("subscription.featuresTitle", {
+                    defaultValue: "Chức năng của gói",
+                  })}
+                </div>
+                {/* {!usageQuery.isLoading && usageItems.length > 0 && (
+        <div className="text-xs text-muted-foreground">
+          {usageItems.length} {t("items", { defaultValue: "mục" })}
+        </div>
+      )} */}
+              </div>
+
+              {usageQuery.isLoading ? (
+                <div className="py-2 text-xs text-muted-foreground">
+                  {t("subscription.featuresLoading", {
+                    defaultValue: "Đang tải chức năng...",
+                  })}
+                </div>
+              ) : usageItems.length === 0 ? (
+                <div className="py-2 text-xs text-muted-foreground">
+                  {t("subscription.noFeatures", {
+                    defaultValue: "Chưa có chức năng nào.",
+                  })}
+                </div>
+              ) : (
+                <ul className="space-y-2">
+                  {usageItems.map((f, idx) => {
+                    const limitLabel = f.isUnlimited
+                      ? t("subscription.unlimited", {
+                          defaultValue: "Không giới hạn",
+                        })
+                      : `${f.usageCount}/${f.limitValue}`;
+
+                    return (
+                      <li
+                        key={`${f.featureType}-${idx}`}
+                        className="rounded-lg border bg-background px-3 sm:px-4 py-2 hover:shadow-sm transition"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              {/* FEATURE NAME: Giảm từ sm xuống xs */}
+                              <span className="text-xs font-semibold truncate">
+                                {f.featureName}
+                              </span>
+                              {f.limitType && (
+                                <span className="text-[10px] uppercase tracking-wide rounded-full bg-muted px-2 py-0.5 text-muted-foreground">
+                                  {f.limitType}
+                                </span>
+                              )}
+                            </div>
+                            <div className="mt-1 text-[10px] text-muted-foreground">
+                              {t("subscription.resetAt", {
+                                defaultValue: "Reset lúc",
+                              })}
+                              : {formatDate(f.resetAt)}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 shrink-0">
+                            <Badge
+                              variant={f.canUse ? "default" : "secondary"}
+                              className="rounded-full px-2 py-0.5 my-2.5 text-[10px]"
+                            >
+                              {f.canUse
+                                ? t("subscription.canUse", {
+                                    defaultValue: "Có thể dùng",
+                                  })
+                                : t("subscription.cannotUse", {
+                                    defaultValue: "Không thể dùng",
+                                  })}
+                            </Badge>
+                            {/* LIMIT LABEL: Giảm từ sm xuống xs */}
+                            <span className="text-xs font-bold tabular-nums">
+                              {limitLabel}
+                            </span>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
 

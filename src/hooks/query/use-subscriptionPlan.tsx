@@ -1,6 +1,9 @@
 // src/hooks/query/use-subscriptions.ts
-import subscriptionApiRequest from "@/lib/apis/subscription";
-import { GetPlansQueryType } from "@/models/subscriptionPlan.model";
+import subscriptionApiRequest from "@/lib/apis/subscriptionPlan";
+import {
+  GetPlansQueryType,
+  GetSubscriptionUsageQueryType,
+} from "@/models/subscriptionPlan.model";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 type PlansQueryResponse = Awaited<
@@ -19,6 +22,39 @@ export const usePlansQuery = ({
   return useQuery<PlansQueryResponse>({
     queryKey: ["plans", params ?? null],
     queryFn: () => subscriptionApiRequest.getAll(params),
+    enabled,
+    placeholderData: keepPreviousData,
+  });
+};
+
+/* =========================
+        NEW HOOKS
+========================= */
+
+type CurrentSubscriptionResponse = Awaited<
+  ReturnType<typeof subscriptionApiRequest.getCurrent>
+>;
+
+export const useCurrentSubscriptionQuery = (enabled = true) => {
+  return useQuery<CurrentSubscriptionResponse>({
+    queryKey: ["user-subscription-current"],
+    queryFn: () => subscriptionApiRequest.getCurrent(),
+    enabled,
+    placeholderData: keepPreviousData,
+  });
+};
+
+type UsageResponse = Awaited<
+  ReturnType<typeof subscriptionApiRequest.getUsage>
+>;
+
+export const useSubscriptionUsageQuery = (
+  params: GetSubscriptionUsageQueryType = { pageNumber: 1, pageSize: 10 },
+  enabled = true
+) => {
+  return useQuery<UsageResponse>({
+    queryKey: ["user-subscription-usage", params],
+    queryFn: () => subscriptionApiRequest.getUsage(params),
     enabled,
     placeholderData: keepPreviousData,
   });
