@@ -3,9 +3,9 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { LoadingSpinner } from "@/components/modules/loading";
 import {
   EditProfileDialog,
-  LoadingSpinner,
   ProfileAchievementsSection,
   ProfileGiftsSection,
   ProfileHeader,
@@ -13,14 +13,14 @@ import {
   ProfileInterestsSection,
   ProfileLanguagesSection,
   ProfileStats,
-} from "@/components";
+} from "@/components/modules/profile";
+import { useAuthMe } from "@/hooks/query/use-auth";
+import { useMyReceivedGiftsQuery } from "@/hooks/query/use-gift";
+import { useUserInterestsQuery } from "@/hooks/query/use-interest";
 import {
-  useAuthMe,
-  useMyReceivedGiftsQuery,
-  useUserInterestsQuery,
   useUserLanguagesLearningQuery,
   useUserLanguagesSpeakingQuery,
-} from "@/hooks";
+} from "@/hooks/query/use-language";
 
 // Mock data for features not yet implemented
 const MOCK_STATS = {

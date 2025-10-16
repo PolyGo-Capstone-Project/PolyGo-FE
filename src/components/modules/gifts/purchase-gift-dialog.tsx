@@ -35,7 +35,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { PaymentMethod } from "@/constants";
 import { useAuthMe, useGiftQuery, usePurchaseGiftMutation } from "@/hooks";
-import { handleErrorApi } from "@/lib/utils";
+import { formatCurrency, handleErrorApi } from "@/lib/utils";
 import Image from "next/image";
 
 const purchaseFormSchema = z.object({
@@ -129,11 +129,12 @@ export function PurchaseGiftDialog({
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {/* Gift Preview */}
             <div className="flex items-center gap-3 rounded-lg border p-3">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+              <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 overflow-hidden">
                 {gift.iconUrl ? (
                   <Image
                     src={gift.iconUrl}
                     alt={gift.name}
+                    fill
                     className="h-10 w-10 object-contain"
                   />
                 ) : (
@@ -147,7 +148,9 @@ export function PurchaseGiftDialog({
                     {gift.description}
                   </p>
                 )}
-                <p className="mt-1 text-sm font-medium">{gift.price} PC</p>
+                <p className="mt-1 text-sm font-medium">
+                  {formatCurrency(gift.price)}
+                </p>
               </div>
             </div>
 
@@ -182,7 +185,7 @@ export function PurchaseGiftDialog({
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <FormControl>
+                    <FormControl className="w-full">
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -226,15 +229,24 @@ export function PurchaseGiftDialog({
             {/* Total */}
             <div className="flex items-center justify-between rounded-lg border p-3">
               <span className="font-semibold">{t("total")}</span>
-              <span className="text-lg font-bold">{totalPrice} PC</span>
+              <span className="text-lg font-bold">
+                {formatCurrency(totalPrice)}
+              </span>
             </div>
 
-            {/* Balance Warning */}
-            {!canAfford && (
-              <p className="text-sm text-destructive">
-                Insufficient balance. Your balance: {balance} PC
-              </p>
-            )}
+            {/* Balance Info */}
+            <div className="rounded-lg bg-muted p-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Your balance:</span>
+                <span className="font-medium">{formatCurrency(balance)}</span>
+              </div>
+              {!canAfford && (
+                <p className="mt-2 text-destructive">
+                  Insufficient balance. You need{" "}
+                  {formatCurrency(totalPrice - balance)} more.
+                </p>
+              )}
+            </div>
 
             <DialogFooter className="gap-2 sm:gap-0">
               <Button

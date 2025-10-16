@@ -56,6 +56,7 @@
       "selectGift": "Select a gift to send",
       "noGifts": "You don't have any gifts to send",
       "buyMore": "Buy More Gifts",
+      "sendingTo": "Sending to",
       "quantity": "Quantity",
       "message": "Message (optional)",
       "messagePlaceholder": "Write a message to the recipient...",

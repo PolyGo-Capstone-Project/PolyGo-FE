@@ -17,39 +17,40 @@ export default function GiftsPage() {
   const [activeTab, setActiveTab] = useState("available");
 
   return (
-    <div className="container mx-auto max-w-7xl space-y-4 p-4 md:space-y-6 md:p-6">
-      {/* Header */}
-      <div className="space-y-1 md:space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-          {t("title")}
-        </h1>
+    <div className="container mx-auto py-6">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+            {t("title")}
+          </h1>
+        </div>
+
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+            <TabsTrigger value="available">{t("tabs.available")}</TabsTrigger>
+            <TabsTrigger value="purchased">{t("tabs.purchased")}</TabsTrigger>
+            <TabsTrigger value="sent">{t("tabs.sent")}</TabsTrigger>
+            <TabsTrigger value="received">{t("tabs.received")}</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="available" className="mt-6">
+            <AvailableGiftsTab locale={locale} />
+          </TabsContent>
+
+          <TabsContent value="purchased" className="mt-6">
+            <MyPurchasedGiftsTab locale={locale} />
+          </TabsContent>
+
+          <TabsContent value="sent" className="mt-6">
+            <MySentGiftsTab locale={locale} />
+          </TabsContent>
+
+          <TabsContent value="received" className="mt-6">
+            <MyReceivedGiftsTab locale={locale} />
+          </TabsContent>
+        </Tabs>
       </div>
-
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
-          <TabsTrigger value="available">{t("tabs.available")}</TabsTrigger>
-          <TabsTrigger value="purchased">{t("tabs.purchased")}</TabsTrigger>
-          <TabsTrigger value="sent">{t("tabs.sent")}</TabsTrigger>
-          <TabsTrigger value="received">{t("tabs.received")}</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="available" className="mt-6">
-          <AvailableGiftsTab locale={locale} />
-        </TabsContent>
-
-        <TabsContent value="purchased" className="mt-6">
-          <MyPurchasedGiftsTab locale={locale} />
-        </TabsContent>
-
-        <TabsContent value="sent" className="mt-6">
-          <MySentGiftsTab locale={locale} />
-        </TabsContent>
-
-        <TabsContent value="received" className="mt-6">
-          <MyReceivedGiftsTab locale={locale} />
-        </TabsContent>
-      </Tabs>
     </div>
   );
 }

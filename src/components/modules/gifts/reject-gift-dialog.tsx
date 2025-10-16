@@ -66,11 +66,12 @@ export function RejectGiftDialog({
 
         {/* Gift Preview */}
         <div className="flex items-center gap-3 rounded-lg border p-3">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+          <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 overflow-hidden">
             {gift.giftIconUrl ? (
               <Image
                 src={gift.giftIconUrl}
                 alt={gift.giftName}
+                fill
                 className="h-10 w-10 object-contain"
               />
             ) : (

@@ -1,23 +1,20 @@
 "use client";
 
-import { IconGift, IconInbox } from "@tabler/icons-react";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconGift,
+  IconInbox,
+} from "@tabler/icons-react";
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import {
-  AcceptGiftDialog,
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Badge,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  RejectGiftDialog,
-} from "@/components";
+import { AcceptGiftDialog, RejectGiftDialog } from "@/components/modules/gifts";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useMyReceivedGiftsQuery } from "@/hooks";
 import Image from "next/image";
 
@@ -31,13 +28,16 @@ export function MyReceivedGiftsTab({ locale }: MyReceivedGiftsTabProps) {
   const [selectedGift, setSelectedGift] = useState<any>(null);
   const [acceptDialogOpen, setAcceptDialogOpen] = useState(false);
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
 
   // Fetch received gifts
   const { data, isLoading } = useMyReceivedGiftsQuery({
-    params: { lang: locale, pageNumber: 1, pageSize: 20 },
+    params: { lang: locale, pageNumber: currentPage, pageSize },
   });
 
   const gifts = data?.payload.data.items || [];
+  const pagination = data?.payload.data;
 
   const handleAcceptClick = (gift: any) => {
     setSelectedGift(gift);
@@ -77,7 +77,7 @@ export function MyReceivedGiftsTab({ locale }: MyReceivedGiftsTabProps) {
           <CardTitle>{t("title")}</CardTitle>
           <p className="text-sm text-muted-foreground">{t("description")}</p>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <div className="space-y-3">
             {gifts.map((gift) => (
               <div
@@ -161,6 +161,42 @@ export function MyReceivedGiftsTab({ locale }: MyReceivedGiftsTabProps) {
               </div>
             ))}
           </div>
+
+          {/* Pagination */}
+          {pagination && pagination.totalPages > 1 && (
+            <div className="flex items-center justify-between border-t pt-4">
+              <p className="text-sm text-muted-foreground">
+                Page {pagination.currentPage} of {pagination.totalPages} (
+                {pagination.totalItems} items)
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(1, prev - 1))
+                  }
+                  disabled={!pagination.hasPreviousPage}
+                >
+                  <IconChevronLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage((prev) =>
+                      Math.min(pagination.totalPages, prev + 1)
+                    )
+                  }
+                  disabled={!pagination.hasNextPage}
+                >
+                  Next
+                  <IconChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 

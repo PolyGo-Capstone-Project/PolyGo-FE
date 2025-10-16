@@ -8,15 +8,17 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Button,
-  Checkbox,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Form,
   FormControl,
   FormDescription,
@@ -24,14 +26,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Textarea,
-} from "@/components";
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { useMyPurchasedGiftsQuery, usePresentGiftMutation } from "@/hooks";
 import { handleErrorApi } from "@/lib/utils";
 import Image from "next/image";
@@ -119,7 +123,7 @@ export function SendGiftDialog({
         <DialogHeader>
           <DialogTitle>{t("title")}</DialogTitle>
           <DialogDescription>
-            Sending to: <strong>{receiverName}</strong>
+            {t("sendingTo")}: <strong>{receiverName}</strong>
           </DialogDescription>
         </DialogHeader>
 
@@ -145,7 +149,7 @@ export function SendGiftDialog({
                   <FormItem>
                     <FormLabel>{t("selectGift")}</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
+                      <FormControl className="w-full">
                         <SelectTrigger>
                           <SelectValue placeholder={t("selectGift")} />
                         </SelectTrigger>
@@ -254,7 +258,7 @@ export function SendGiftDialog({
                 {t("buyMore")}
               </Button>
 
-              <DialogFooter className="gap-2 sm:gap-0">
+              <DialogFooter className="flex justify-end gap-4">
                 <Button
                   type="button"
                   variant="outline"

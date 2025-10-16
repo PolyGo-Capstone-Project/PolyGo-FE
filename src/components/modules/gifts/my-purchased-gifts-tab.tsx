@@ -1,10 +1,19 @@
 "use client";
 
-import { IconGift, IconPackage } from "@tabler/icons-react";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconGift,
+  IconPackage,
+} from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
-import { Badge, Card, CardContent, CardHeader, CardTitle } from "@/components";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useMyPurchasedGiftsQuery } from "@/hooks";
+import { formatCurrency } from "@/lib/utils";
 import Image from "next/image";
 
 type MyPurchasedGiftsTabProps = {
@@ -14,13 +23,16 @@ type MyPurchasedGiftsTabProps = {
 export function MyPurchasedGiftsTab({ locale }: MyPurchasedGiftsTabProps) {
   const t = useTranslations("gift.purchased");
   const tCommon = useTranslations("gift.common");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 12;
 
   // Fetch purchased gifts
   const { data, isLoading } = useMyPurchasedGiftsQuery({
-    params: { lang: locale, pageSize: 1, pageNumber: 20 },
+    params: { lang: locale, pageNumber: currentPage, pageSize },
   });
 
   const gifts = data?.payload.data.items || [];
+  const pagination = data?.payload.data;
 
   if (isLoading) {
     return (
@@ -49,18 +61,19 @@ export function MyPurchasedGiftsTab({ locale }: MyPurchasedGiftsTabProps) {
         <CardTitle>{t("title")}</CardTitle>
         <p className="text-sm text-muted-foreground">{t("description")}</p>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {gifts.map((gift) => (
             <Card key={gift.id} className="overflow-hidden">
               <CardContent className="p-4">
                 <div className="flex flex-col items-center space-y-3">
                   {/* Gift Icon */}
-                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+                  <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 overflow-hidden">
                     {gift.iconUrl ? (
                       <Image
                         src={gift.iconUrl}
                         alt={gift.name}
+                        fill
                         className="h-12 w-12 object-contain"
                       />
                     ) : (
@@ -83,13 +96,49 @@ export function MyPurchasedGiftsTab({ locale }: MyPurchasedGiftsTabProps) {
                     <Badge variant="outline">
                       {t("quantity")}: {gift.quantity}
                     </Badge>
-                    <Badge variant="secondary">{gift.price} PC</Badge>
+                    <Badge variant="secondary">
+                      {formatCurrency(gift.price)}
+                    </Badge>
                   </div>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
+
+        {/* Pagination */}
+        {pagination && pagination.totalPages > 1 && (
+          <div className="flex items-center justify-between border-t pt-4">
+            <p className="text-sm text-muted-foreground">
+              Page {pagination.currentPage} of {pagination.totalPages} (
+              {pagination.totalItems} items)
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={!pagination.hasPreviousPage}
+              >
+                <IconChevronLeft className="h-4 w-4" />
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setCurrentPage((prev) =>
+                    Math.min(pagination.totalPages, prev + 1)
+                  )
+                }
+                disabled={!pagination.hasNextPage}
+              >
+                Next
+                <IconChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

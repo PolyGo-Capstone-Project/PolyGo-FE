@@ -1,10 +1,18 @@
 "use client";
 
-import { IconGift, IconSend } from "@tabler/icons-react";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconGift,
+  IconSend,
+} from "@tabler/icons-react";
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
-import { Badge, Card, CardContent, CardHeader, CardTitle } from "@/components";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useMySentGiftsQuery } from "@/hooks";
 import Image from "next/image";
 
@@ -15,13 +23,16 @@ type MySentGiftsTabProps = {
 export function MySentGiftsTab({ locale }: MySentGiftsTabProps) {
   const t = useTranslations("gift.sent");
   const tCommon = useTranslations("gift.common");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
 
   // Fetch sent gifts
   const { data, isLoading } = useMySentGiftsQuery({
-    params: { lang: locale, pageNumber: 1, pageSize: 20 },
+    params: { lang: locale, pageNumber: currentPage, pageSize },
   });
 
   const gifts = data?.payload.data.items || [];
+  const pagination = data?.payload.data;
 
   if (isLoading) {
     return (
@@ -50,7 +61,7 @@ export function MySentGiftsTab({ locale }: MySentGiftsTabProps) {
         <CardTitle>{t("title")}</CardTitle>
         <p className="text-sm text-muted-foreground">{t("description")}</p>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         <div className="space-y-3">
           {gifts.map((gift) => (
             <div
@@ -105,6 +116,40 @@ export function MySentGiftsTab({ locale }: MySentGiftsTabProps) {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        {pagination && pagination.totalPages > 1 && (
+          <div className="flex items-center justify-between border-t pt-4">
+            <p className="text-sm text-muted-foreground">
+              Page {pagination.currentPage} of {pagination.totalPages} (
+              {pagination.totalItems} items)
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={!pagination.hasPreviousPage}
+              >
+                <IconChevronLeft className="h-4 w-4" />
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setCurrentPage((prev) =>
+                    Math.min(pagination.totalPages, prev + 1)
+                  )
+                }
+                disabled={!pagination.hasNextPage}
+              >
+                Next
+                <IconChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

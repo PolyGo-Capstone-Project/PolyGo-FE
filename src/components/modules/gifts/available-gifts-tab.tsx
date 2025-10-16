@@ -1,6 +1,11 @@
 "use client";
 
-import { IconGift, IconShoppingCart } from "@tabler/icons-react";
+import {
+  IconChevronLeft,
+  IconChevronRight,
+  IconGift,
+  IconShoppingCart,
+} from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -9,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGiftsQuery } from "@/hooks";
+import { formatCurrency } from "@/lib/utils";
 import Image from "next/image";
 
 type AvailableGiftsTabProps = {
@@ -20,13 +26,16 @@ export function AvailableGiftsTab({ locale }: AvailableGiftsTabProps) {
   const tCommon = useTranslations("gift.common");
   const [selectedGiftId, setSelectedGiftId] = useState<string | null>(null);
   const [purchaseDialogOpen, setPurchaseDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 12;
 
   // Fetch available gifts
   const { data, isLoading } = useGiftsQuery({
-    params: { lang: locale, pageNumber: 1, pageSize: 20 },
+    params: { lang: locale, pageNumber: currentPage, pageSize },
   });
 
   const gifts = data?.payload.data.items || [];
+  const pagination = data?.payload.data;
 
   const handleBuyClick = (giftId: string) => {
     setSelectedGiftId(giftId);
@@ -61,7 +70,7 @@ export function AvailableGiftsTab({ locale }: AvailableGiftsTabProps) {
           <CardTitle>{t("title")}</CardTitle>
           <p className="text-sm text-muted-foreground">{t("description")}</p>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {gifts.map((gift) => (
               <Card key={gift.id} className="overflow-hidden">
@@ -93,7 +102,7 @@ export function AvailableGiftsTab({ locale }: AvailableGiftsTabProps) {
 
                     {/* Price */}
                     <Badge variant="secondary" className="text-sm">
-                      {gift.price} PC
+                      {formatCurrency(gift.price)}
                     </Badge>
 
                     {/* Buy Button */}
@@ -110,6 +119,42 @@ export function AvailableGiftsTab({ locale }: AvailableGiftsTabProps) {
               </Card>
             ))}
           </div>
+
+          {/* Pagination */}
+          {pagination && pagination.totalPages > 1 && (
+            <div className="flex items-center justify-between border-t pt-4">
+              <p className="text-sm text-muted-foreground">
+                Page {pagination.currentPage} of {pagination.totalPages} (
+                {pagination.totalItems} items)
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(1, prev - 1))
+                  }
+                  disabled={!pagination.hasPreviousPage}
+                >
+                  <IconChevronLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setCurrentPage((prev) =>
+                      Math.min(pagination.totalPages, prev + 1)
+                    )
+                  }
+                  disabled={!pagination.hasNextPage}
+                >
+                  Next
+                  <IconChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 

@@ -5,21 +5,18 @@ import { format } from "date-fns";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
+import { AcceptGiftDialog, RejectGiftDialog } from "@/components/modules/gifts";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
-  AcceptGiftDialog,
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Badge,
-  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  RejectGiftDialog,
-  ScrollArea,
-} from "@/components";
+} from "@/components/ui/dropdown-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMyReceivedGiftsQuery } from "@/hooks";
 import Image from "next/image";
 

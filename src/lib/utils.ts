@@ -146,6 +146,16 @@ export const clearLocalStorage = () => {
   localStorage.clear();
 };
 
+/**
+ * Format number to Vietnamese currency (VND)
+ * @param amount - Amount to format
+ * @returns Formatted string with VND suffix
+ * @example formatCurrency(50000) => "50.000 VND"
+ */
+export const formatCurrency = (amount: number): string => {
+  return new Intl.NumberFormat("vi-VN").format(amount) + " VND";
+};
+
 export {
   createMessageHandler,
   getAuthMessage,
