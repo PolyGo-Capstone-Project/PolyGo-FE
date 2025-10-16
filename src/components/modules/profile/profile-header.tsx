@@ -1,12 +1,19 @@
 "use client";
 
-import { IconEdit, IconGift, IconShare } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
+import {
+  IconEdit,
+  IconGift,
+  IconShare,
+  IconUserPlus,
+} from "@tabler/icons-react";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Gift } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type ProfileHeaderProps = {
   name: string;
@@ -20,6 +27,7 @@ type ProfileHeaderProps = {
   onEdit?: () => void;
   onSendGift?: () => void;
   onShare?: () => void;
+  onAddFriend?: () => void;
 };
 
 export function ProfileHeader({
@@ -34,10 +42,12 @@ export function ProfileHeader({
   onEdit,
   onSendGift,
   onShare,
+  onAddFriend,
 }: ProfileHeaderProps) {
   const t = useTranslations("profile");
   const tCommon = useTranslations("common.gender");
-
+  const locale = useLocale();
+  const router = useRouter();
   const initials = name
     .split(" ")
     .map((n) => n[0])
@@ -49,6 +59,9 @@ export function ProfileHeader({
   const isValidAvatarUrl = (url: string | null) => {
     if (!url) return false;
     return url.startsWith("http://") || url.startsWith("https://");
+  };
+  const handleBuyGift = () => {
+    router.push(`/${locale}/gifts`);
   };
 
   return (
@@ -100,20 +113,39 @@ export function ProfileHeader({
 
           {/* Action Buttons */}
           {variant === "own" && onEdit && (
-            <Button onClick={onEdit} size="sm" className="w-full md:w-auto">
-              <IconEdit className="mr-2 h-4 w-4" />
-              {t("edit")}
-            </Button>
+            <div className="flex w-full flex-col gap-4 md:w-auto">
+              <Button onClick={onEdit} size="sm" className="w-full md:w-auto">
+                <IconEdit className="mr-2 h-4 w-4" />
+                {t("edit")}
+              </Button>
+              <Button
+                onClick={handleBuyGift}
+                size="sm"
+                className="w-full md:w-auto"
+                variant="secondary"
+              >
+                <Gift className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                {t("manageGift")}
+              </Button>
+            </div>
           )}
 
           {variant === "other" && (
-            <div className="flex w-full flex-col gap-2 md:w-auto md:flex-row">
-              {onSendGift && (
-                <Button onClick={onSendGift} size="sm" variant="outline">
-                  <IconGift className="mr-2 h-4 w-4" />
-                  {t("sendGift")}
-                </Button>
-              )}
+            <div className="flex w-full flex-col gap-4 md:w-auto">
+              <div className="flex w-full flex-col gap-2 md:w-auto md:flex-row">
+                {onSendGift && (
+                  <Button onClick={onSendGift} size="sm" variant="outline">
+                    <IconGift className="mr-2 h-4 w-4" />
+                    {t("sendGift")}
+                  </Button>
+                )}
+                {onAddFriend && (
+                  <Button onClick={onAddFriend} size="sm" variant="link">
+                    <IconUserPlus className="mr-2 h-4 w-4" />
+                    {/* {t("addFriend")} */}
+                  </Button>
+                )}
+              </div>
               {onShare && (
                 <Button onClick={onShare} size="sm">
                   <IconShare className="mr-2 h-4 w-4" />
