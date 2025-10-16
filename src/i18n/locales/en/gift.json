@@ -1,0 +1,125 @@
+{
+  "gift": {
+    "title": "Gifts",
+    "tabs": {
+      "available": "Available Gifts",
+      "purchased": "My Purchased",
+      "sent": "Sent Gifts",
+      "received": "Received Gifts"
+    },
+    "available": {
+      "title": "Available Gifts",
+      "description": "Choose a gift to purchase",
+      "price": "Price",
+      "buy": "Buy Gift",
+      "buyNow": "Buy Now",
+      "empty": "No gifts available at the moment"
+    },
+    "purchased": {
+      "title": "My Purchased Gifts",
+      "description": "Gifts you have purchased",
+      "quantity": "Quantity",
+      "empty": "You haven't purchased any gifts yet"
+    },
+    "sent": {
+      "title": "Sent Gifts",
+      "description": "Gifts you have sent to others",
+      "to": "To",
+      "message": "Message",
+      "anonymous": "Anonymous",
+      "empty": "You haven't sent any gifts yet"
+    },
+    "received": {
+      "title": "Received Gifts",
+      "description": "Gifts you have received from others",
+      "from": "From",
+      "accept": "Accept",
+      "reject": "Reject",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "empty": "You haven't received any gifts yet"
+    },
+    "purchase": {
+      "title": "Purchase Gift",
+      "selectGift": "Select a gift",
+      "quantity": "Quantity",
+      "paymentMethod": "Payment Method",
+      "notes": "Notes (optional)",
+      "notesPlaceholder": "Add a note for your purchase...",
+      "total": "Total",
+      "confirm": "Confirm Purchase",
+      "cancel": "Cancel",
+      "purchasing": "Purchasing..."
+    },
+    "present": {
+      "title": "Send Gift",
+      "selectGift": "Select a gift to send",
+      "noGifts": "You don't have any gifts to send",
+      "buyMore": "Buy More Gifts",
+      "quantity": "Quantity",
+      "message": "Message (optional)",
+      "messagePlaceholder": "Write a message to the recipient...",
+      "anonymous": "Send anonymously",
+      "confirm": "Send Gift",
+      "cancel": "Cancel",
+      "sending": "Sending...",
+      "available": "Available"
+    },
+    "accept": {
+      "title": "Accept Gift",
+      "description": "Do you want to accept this gift?",
+      "from": "From",
+      "message": "Message",
+      "confirm": "Accept",
+      "cancel": "Cancel"
+    },
+    "reject": {
+      "title": "Reject Gift",
+      "description": "Are you sure you want to reject this gift?",
+      "from": "From",
+      "confirm": "Reject",
+      "cancel": "Cancel"
+    },
+    "history": {
+      "title": "Purchase History",
+      "transactionId": "Transaction ID",
+      "giftName": "Gift Name",
+      "quantity": "Quantity",
+      "unitPrice": "Unit Price",
+      "totalAmount": "Total Amount",
+      "status": "Status",
+      "paymentMethod": "Payment Method",
+      "createdAt": "Created At",
+      "completedAt": "Completed At",
+      "notes": "Notes",
+      "empty": "No purchase history"
+    },
+    "toast": {
+      "purchaseSuccess": "Gift purchased successfully!",
+      "purchaseError": "Failed to purchase gift",
+      "presentSuccess": "Gift sent successfully!",
+      "presentError": "Failed to send gift",
+      "acceptSuccess": "Gift accepted!",
+      "acceptError": "Failed to accept gift",
+      "rejectSuccess": "Gift rejected",
+      "rejectError": "Failed to reject gift"
+    },
+    "validation": {
+      "giftRequired": "Please select a gift",
+      "quantityMin": "Quantity must be at least 1",
+      "quantityMax": "Quantity cannot exceed available amount",
+      "messageMax": "Message must be at most 500 characters",
+      "notesMax": "Notes must be at most 500 characters"
+    },
+    "common": {
+      "loading": "Loading...",
+      "noData": "No data available",
+      "search": "Search gifts...",
+      "filter": "Filter",
+      "sort": "Sort by",
+      "date": "Date",
+      "price": "Price",
+      "name": "Name"
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "gift": {
+    "title": "Quà tặng",
+    "tabs": {
+      "available": "Quà có sẵn",
+      "purchased": "Đã mua",
+      "sent": "Đã tặng",
+      "received": "Đã nhận"
+    },
+    "available": {
+      "title": "Quà tặng có sẵn",
+      "description": "Chọn một món quà để mua",
+      "price": "Giá",
+      "buy": "Mua quà",
+      "buyNow": "Mua ngay",
+      "empty": "Hiện không có quà tặng nào"
+    },
+    "purchased": {
+      "title": "Quà đã mua",
+      "description": "Các món quà bạn đã mua",
+      "quantity": "Số lượng",
+      "empty": "Bạn chưa mua món quà nào"
+    },
+    "sent": {
+      "title": "Quà đã tặng",
+      "description": "Các món quà bạn đã tặng cho người khác",
+      "to": "Đến",
+      "message": "Tin nhắn",
+      "anonymous": "Ẩn danh",
+      "empty": "Bạn chưa tặng món quà nào"
+    },
+    "received": {
+      "title": "Quà đã nhận",
+      "description": "Các món quà bạn nhận được từ người khác",
+      "from": "Từ",
+      "accept": "Chấp nhận",
+      "reject": "Từ chối",
+      "accepted": "Đã chấp nhận",
+      "rejected": "Đã từ chối",
+      "empty": "Bạn chưa nhận được món quà nào"
+    },
+    "purchase": {
+      "title": "Mua quà",
+      "selectGift": "Chọn món quà",
+      "quantity": "Số lượng",
+      "paymentMethod": "Phương thức thanh toán",
+      "notes": "Ghi chú (không bắt buộc)",
+      "notesPlaceholder": "Thêm ghi chú cho giao dịch...",
+      "total": "Tổng cộng",
+      "confirm": "Xác nhận mua",
+      "cancel": "Hủy",
+      "purchasing": "Đang mua..."
+    },
+    "present": {
+      "title": "Tặng quà",
+      "selectGift": "Chọn món quà để tặng",
+      "noGifts": "Bạn không có món quà nào để tặng",
+      "buyMore": "Mua thêm quà",
+      "quantity": "Số lượng",
+      "message": "Lời nhắn (không bắt buộc)",
+      "messagePlaceholder": "Viết lời nhắn cho người nhận...",
+      "anonymous": "Tặng ẩn danh",
+      "confirm": "Gửi quà",
+      "cancel": "Hủy",
+      "sending": "Đang gửi...",
+      "available": "Có sẵn"
+    },
+    "accept": {
+      "title": "Chấp nhận quà",
+      "description": "Bạn có muốn chấp nhận món quà này không?",
+      "from": "Từ",
+      "message": "Lời nhắn",
+      "confirm": "Chấp nhận",
+      "cancel": "Hủy"
+    },
+    "reject": {
+      "title": "Từ chối quà",
+      "description": "Bạn có chắc chắn muốn từ chối món quà này không?",
+      "from": "Từ",
+      "confirm": "Từ chối",
+      "cancel": "Hủy"
+    },
+    "history": {
+      "title": "Lịch sử mua hàng",
+      "transactionId": "Mã giao dịch",
+      "giftName": "Tên quà",
+      "quantity": "Số lượng",
+      "unitPrice": "Đơn giá",
+      "totalAmount": "Tổng tiền",
+      "status": "Trạng thái",
+      "paymentMethod": "Phương thức thanh toán",
+      "createdAt": "Ngày tạo",
+      "completedAt": "Ngày hoàn thành",
+      "notes": "Ghi chú",
+      "empty": "Không có lịch sử mua hàng"
+    },
+    "toast": {
+      "purchaseSuccess": "Mua quà thành công!",
+      "purchaseError": "Mua quà thất bại",
+      "presentSuccess": "Tặng quà thành công!",
+      "presentError": "Tặng quà thất bại",
+      "acceptSuccess": "Đã chấp nhận quà!",
+      "acceptError": "Chấp nhận quà thất bại",
+      "rejectSuccess": "Đã từ chối quà",
+      "rejectError": "Từ chối quà thất bại"
+    },
+    "validation": {
+      "giftRequired": "Vui lòng chọn món quà",
+      "quantityMin": "Số lượng phải ít nhất là 1",
+      "quantityMax": "Số lượng không được vượt quá số lượng có sẵn",
+      "messageMax": "Lời nhắn không được quá 500 ký tự",
+      "notesMax": "Ghi chú không được quá 500 ký tự"
+    },
+    "common": {
+      "loading": "Đang tải...",
+      "noData": "Không có dữ liệu",
+      "search": "Tìm kiếm quà...",
+      "filter": "Lọc",
+      "sort": "Sắp xếp theo",
+      "date": "Ngày",
+      "price": "Giá",
+      "name": "Tên"
+    }
+  }
+}

@@ -54,9 +54,9 @@ const giftApiRequest = {
   ),
   // accept/reject gift
   acceptGift: (id: string) =>
-    http.put<MessageResType>(`${prefix}/${id}/accept`, null),
+    http.put<MessageResType>(`${prefix}/received/${id}/accept`, null),
   rejectGift: (id: string) =>
-    http.put<MessageResType>(`${prefix}/${id}/reject`, null),
+    http.put<MessageResType>(`${prefix}/received/${id}/reject`, null),
 };
 
 export default giftApiRequest;

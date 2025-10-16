@@ -6,17 +6,19 @@ import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
 
 type Gift = {
   id: string;
   name: string;
-  value: number;
+  value?: number;
   from: {
     name: string;
     avatarUrl: string | null;
   };
   message?: string;
   receivedAt: string;
+  iconUrl?: string;
 };
 
 type ProfileGiftsSectionProps = {
@@ -79,7 +81,15 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
             >
               {/* Gift Icon/Image */}
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-                <span className="text-2xl">{gift.name}</span>
+                {gift.iconUrl ? (
+                  <Image
+                    src={gift.iconUrl}
+                    alt={gift.name}
+                    className="h-8 w-8 object-contain"
+                  />
+                ) : (
+                  <span className="text-2xl">{gift.name}</span>
+                )}
               </div>
 
               {/* Gift Details */}
@@ -100,9 +110,11 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-1">
-                    <Badge variant="secondary" className="text-xs">
-                      {gift.value} PC
-                    </Badge>
+                    {gift.value !== undefined && gift.value > 0 && (
+                      <Badge variant="secondary" className="text-xs">
+                        {gift.value} PC
+                      </Badge>
+                    )}
                     <span className="text-xs text-muted-foreground">
                       {getTimeAgo(gift.receivedAt)}
                     </span>

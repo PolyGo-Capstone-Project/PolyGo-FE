@@ -1,7 +1,8 @@
 "use client";
 
 import { ArrowDownToLine, ArrowUpFromLine, Gift, Sparkles } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -10,9 +11,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export function QuickActionsCard() {
   const t = useTranslations("wallet.quickActions");
   const tToast = useTranslations("wallet.toast");
+  const locale = useLocale();
+  const router = useRouter();
 
   const handleAction = (action: string) => {
     toast.info(tToast("comingSoon"));
+  };
+
+  const handleBuyGift = () => {
+    router.push(`/${locale}/gifts`);
   };
 
   return (
@@ -46,7 +53,7 @@ export function QuickActionsCard() {
         </div>
 
         <Button
-          onClick={() => handleAction("buyGift")}
+          onClick={handleBuyGift}
           className="h-9 w-full gap-2 text-sm md:h-10"
           variant="secondary"
         >
