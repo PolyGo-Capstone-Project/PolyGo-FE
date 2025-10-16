@@ -17,14 +17,14 @@ export function QuickActionsCard() {
 
   return (
     <Card className="shadow-sm">
-      <CardHeader className="pb-3 md:pb-6">
+      <CardHeader>
         <CardTitle className="text-base md:text-lg">{t("title")}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-2.5 md:space-y-3">
-        <div className="grid grid-cols-2 gap-2.5 md:gap-3">
+        <div className="grid grid-cols-2 gap-2.5 mb-6 md:gap-3">
           <Button
             onClick={() => handleAction("deposit")}
-            className="flex h-auto flex-col gap-1.5 py-3 md:gap-2 md:py-4"
+            className="flex h-auto  gap-1.5 py-3 md:gap-2 md:py-4"
             variant="default"
           >
             <ArrowDownToLine className="h-4 w-4 md:h-5 md:w-5" />
@@ -35,7 +35,7 @@ export function QuickActionsCard() {
 
           <Button
             onClick={() => handleAction("withdraw")}
-            className="flex h-auto flex-col gap-1.5 py-3 md:gap-2 md:py-4"
+            className="flex h-auto  gap-1.5 py-3 md:gap-2 md:py-4"
             variant="outline"
           >
             <ArrowUpFromLine className="h-4 w-4 md:h-5 md:w-5" />

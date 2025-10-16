@@ -27,7 +27,7 @@ export function BalanceCard({
 
   return (
     <Card className="shadow-sm">
-      <CardHeader className="pb-3 md:pb-6">
+      <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg md:text-xl">
             <Wallet className="h-4 w-4 md:h-5 md:w-5" />
