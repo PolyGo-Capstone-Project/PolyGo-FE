@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
 import { LoadingSpinner } from "@/components/modules/loading";
@@ -15,6 +15,7 @@ import {
   ProfileStats,
 } from "@/components/modules/profile";
 import { useAuthMe } from "@/hooks/query/use-auth";
+import { useMyReceivedGiftsQuery } from "@/hooks/query/use-gift";
 import { useUserInterestsQuery } from "@/hooks/query/use-interest";
 import {
   useUserLanguagesLearningQuery,
@@ -29,31 +30,6 @@ const MOCK_STATS = {
   totalHours: 150,
   eventsHosted: 2,
 };
-
-const MOCK_GIFTS = [
-  {
-    id: "1",
-    name: "☕",
-    value: 5,
-    from: {
-      name: "AnnaFR",
-      avatarUrl: null,
-    },
-    message: "Thank you for the amazing Vietnamese cooking class!",
-    receivedAt: "2025-10-06T10:00:00Z",
-  },
-  {
-    id: "2",
-    name: "📚",
-    value: 12,
-    from: {
-      name: "JohnEN",
-      avatarUrl: null,
-    },
-    message: "Your teaching style is incredible! Keep inspiring others 📖",
-    receivedAt: "2025-10-09T14:30:00Z",
-  },
-];
 
 const MOCK_ACHIEVEMENTS = [
   {
@@ -120,6 +96,7 @@ const MOCK_ACHIEVEMENTS = [
 
 export default function ProfilePage() {
   const t = useTranslations("profile");
+  const locale = useLocale();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   // Fetch user data
@@ -131,8 +108,18 @@ export default function ProfilePage() {
   const { data: interestsData, isLoading: isLoadingInterests } =
     useUserInterestsQuery();
 
+  // Fetch received gifts (only accepted ones - isRead: true)
+  const { data: receivedGiftsData, isLoading: isLoadingGifts } =
+    useMyReceivedGiftsQuery({
+      params: { lang: locale, pageNumber: 1, pageSize: 20 },
+    });
+
   const isLoading =
-    isLoadingAuth || isLoadingNative || isLoadingLearning || isLoadingInterests;
+    isLoadingAuth ||
+    isLoadingNative ||
+    isLoadingLearning ||
+    isLoadingInterests ||
+    isLoadingGifts;
 
   if (isLoading) {
     return (
@@ -146,6 +133,24 @@ export default function ProfilePage() {
   const nativeLanguages = nativeLanguagesData?.payload.data?.items || [];
   const learningLanguages = learningLanguagesData?.payload.data?.items || [];
   const interests = interestsData?.payload.data?.items || [];
+
+  // Filter only accepted gifts (isRead: true)
+  const acceptedGifts =
+    receivedGiftsData?.payload.data.items.filter((gift) => gift.isRead) || [];
+
+  // Transform gifts to match ProfileGiftsSection format
+  const transformedGifts = acceptedGifts.map((gift) => ({
+    id: gift.presentationId,
+    name: gift.giftName,
+    value: 0, // Price not provided in received gifts
+    from: {
+      name: gift.isAnonymous ? "Anonymous" : gift.senderName,
+      avatarUrl: gift.isAnonymous ? null : gift.senderAvatarUrl,
+    },
+    message: gift.message,
+    receivedAt: gift.createdAt,
+    iconUrl: gift.giftIconUrl,
+  }));
 
   if (!user) {
     return (
@@ -183,7 +188,7 @@ export default function ProfilePage() {
           <ProfileInterestsSection interests={interests} />
 
           {/* Gifts */}
-          <ProfileGiftsSection gifts={MOCK_GIFTS} />
+          <ProfileGiftsSection gifts={transformedGifts} />
 
           {/* Achievements */}
           <ProfileAchievementsSection achievements={MOCK_ACHIEVEMENTS} />

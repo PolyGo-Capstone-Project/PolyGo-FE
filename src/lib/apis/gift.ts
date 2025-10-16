@@ -6,7 +6,13 @@ import {
   GetGiftByIdResType,
   GetGiftsQueryType,
   GetGiftsResType,
+  GetMyPurchasedGiftHistoryResType,
+  GetMyPurchasedGiftsResType,
+  GetMyReceivedGiftsResType,
+  GetMySentGiftsResType,
   MessageResType,
+  PresentGiftBodyType,
+  PurchaseGiftBodyType,
   UpdateGiftBodyType,
 } from "@/models";
 
@@ -23,6 +29,34 @@ const giftApiRequest = {
   update: (id: string, body: UpdateGiftBodyType) =>
     http.put<MessageResType>(`${prefix}/${id}`, body),
   delete: (id: string) => http.delete<MessageResType>(`${prefix}/${id}`),
+  //User
+  purchase: (body: PurchaseGiftBodyType) =>
+    http.post<MessageResType>(`${prefix}/purchase`, body),
+  myPurchasedGifts: createGetAll<GetMyPurchasedGiftsResType, GetGiftsQueryType>(
+    `${prefix}/me`
+  ),
+  myAllPurchasedGiftsHistory: createGetAll<
+    GetMyPurchasedGiftHistoryResType,
+    GetGiftsQueryType
+  >(`${prefix}/purchase-history`),
+  myPurchasedGiftHistory: createGetOne<GetGiftByIdResType, GetGiftParams>(
+    prefix
+  ),
+  //present
+  present: (body: PresentGiftBodyType) =>
+    http.post<MessageResType>(`${prefix}/present`, body),
+  // my sent/received gifts
+  mySentGifts: createGetAll<GetMySentGiftsResType, GetGiftsQueryType>(
+    `${prefix}/sent`
+  ),
+  myReceivedGifts: createGetAll<GetMyReceivedGiftsResType, GetGiftsQueryType>(
+    `${prefix}/received`
+  ),
+  // accept/reject gift
+  acceptGift: (id: string) =>
+    http.put<MessageResType>(`${prefix}/received/${id}/accept`, null),
+  rejectGift: (id: string) =>
+    http.put<MessageResType>(`${prefix}/received/${id}/reject`, null),
 };
 
 export default giftApiRequest;
