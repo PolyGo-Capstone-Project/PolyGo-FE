@@ -25,7 +25,9 @@
       "canUse": "Có thể dùng",
       "cannotUse": "Không thể dùng",
       "turnOn": "Bật gia hạn",
-      "turnOff": "Tắt gia hạn"
+      "turnOff": "Tắt gia hạn",
+      "cancel": "Hủy gói",
+      "cancelDefaultReason": "Người dùng yêu cầu hủy gói"
     },
     "features": {
       "Chat": "Trò chuyện không giới hạn",

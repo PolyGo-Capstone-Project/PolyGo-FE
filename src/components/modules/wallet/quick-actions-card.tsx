@@ -6,10 +6,14 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 
 export function QuickActionsCard() {
   const t = useTranslations("wallet.quickActions");
   const tToast = useTranslations("wallet.toast");
+  const router = useRouter();
+  const locale = useLocale();
 
   const handleAction = (action: string) => {
     toast.info(tToast("comingSoon"));
@@ -55,7 +59,7 @@ export function QuickActionsCard() {
         </Button>
 
         <Button
-          onClick={() => handleAction("upgradeSubscription")}
+          onClick={() => router.push(`/${locale}/pricing`)}
           className="h-9 w-full gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-sm hover:from-purple-600 hover:to-pink-600 md:h-10"
         >
           <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" />

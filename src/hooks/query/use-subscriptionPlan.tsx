@@ -77,3 +77,17 @@ export const useToggleAutoRenewMutation = () => {
     },
   });
 };
+
+// NEW: Cancel current subscription
+export const useCancelSubscriptionMutation = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (reason: string) =>
+      subscriptionApiRequest.cancelCurrent(reason),
+    onSuccess: () => {
+      // Sau khi hủy, refresh current + usage để UI đồng bộ
+      qc.invalidateQueries({ queryKey: ["user-subscription-current"] });
+      qc.invalidateQueries({ queryKey: ["user-subscription-usage"] });
+    },
+  });
+};

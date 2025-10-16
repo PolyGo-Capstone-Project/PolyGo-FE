@@ -2,6 +2,7 @@
 import { createGetAll } from "@/lib/apis/factory";
 import http from "@/lib/http";
 import {
+  CancelSubscriptionResType,
   GetCurrentSubscriptionResType,
   GetPlansQueryType,
   GetPlansResType,
@@ -15,6 +16,7 @@ const prefix = "/subscriptions/plans";
 const currentPrefix = "/subscriptions/current";
 const usagePrefix = "/subscriptions/usage";
 const autoRenewPrefix = "/subscriptions/auto-renew";
+const cancelPrefix = "/subscriptions/cancel";
 
 export type GetPlansParams = GetPlansQueryType;
 // NEW:
@@ -42,6 +44,11 @@ const subscriptionApiRequest = {
       `${autoRenewPrefix}?autoRenew=${autoRenew}`,
       null
     ),
+
+  // NEW: Cancel subscription
+  // NEW: Cancel current subscription (POST body: { reason })
+  cancelCurrent: (reason: string) =>
+    http.post<CancelSubscriptionResType>(cancelPrefix, { reason }),
 };
 
 export default subscriptionApiRequest;

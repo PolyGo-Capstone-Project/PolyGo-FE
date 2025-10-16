@@ -108,6 +108,7 @@ export const GetSubscriptionUsageResSchema = z.object({
   message: z.string(),
 });
 
+//Auto-renew
 export const UpdateAutoRenewQuerySchema = z.object({
   autoRenew: z.boolean(),
 });
@@ -116,6 +117,16 @@ export const UpdateAutoRenewResSchema = z.object({
   data: z.object({
     autoRenew: z.boolean(),
   }),
+  message: z.string(),
+});
+
+//Cancel subscription
+export const CancelSubscriptionBodySchema = z.object({
+  reason: z.string().min(1),
+});
+
+export const CancelSubscriptionResSchema = z.object({
+  data: z.any().optional(),
   message: z.string(),
 });
 
@@ -150,3 +161,11 @@ export type UpdateAutoRenewQueryType = z.infer<
   typeof UpdateAutoRenewQuerySchema
 >;
 export type UpdateAutoRenewResType = z.infer<typeof UpdateAutoRenewResSchema>;
+
+// Cancel subscription types
+export type CancelSubscriptionBodyType = z.infer<
+  typeof CancelSubscriptionBodySchema
+>;
+export type CancelSubscriptionResType = z.infer<
+  typeof CancelSubscriptionResSchema
+>;

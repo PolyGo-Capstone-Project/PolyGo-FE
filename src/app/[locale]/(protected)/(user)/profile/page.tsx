@@ -33,6 +33,7 @@ import {
 } from "@/components/ui";
 // NEW: hooks subscription (cùng file use-subscriptionPlan.tsx)
 import {
+  useCancelSubscriptionMutation,
   useCurrentSubscriptionQuery,
   useSubscriptionUsageQuery,
   useToggleAutoRenewMutation,
@@ -149,6 +150,7 @@ export default function ProfilePage() {
   const { data: interestsData, isLoading: isLoadingInterests } =
     useUserInterestsQuery();
   const toggleAutoRenew = useToggleAutoRenewMutation();
+  const cancelSubscription = useCancelSubscriptionMutation();
 
   const currentSubQuery = useCurrentSubscriptionQuery(true);
   const usageQuery = useSubscriptionUsageQuery(
@@ -315,8 +317,8 @@ export default function ProfilePage() {
                         {t("subscription.period", { defaultValue: "Thời hạn" })}
                       </span>
                       <span className="text-xs sm:text-sm font-medium text-right">
-                        {formatDate(subData.startAt)}{" "}
-                        <span className="mx-1 opacity-70">→</span>{" "}
+                        {/* {formatDate(subData.startAt)}{" "}
+                        <span className="mx-1 opacity-70">→</span>{" "} */}
                         {formatDate(subData.endAt)}
                       </span>
                     </div>
@@ -359,6 +361,30 @@ export default function ProfilePage() {
                             })}
                     </Button>
                   </div>
+                  {/* 3. Cancel Subscription Action (chỉ hiển thị với gói Plus) */}
+                  {String(subData.planType ?? "").toLowerCase() === "plus" && (
+                    <div className="pt-1">
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        className="h-8 w-full sm:w-100% text-xs"
+                        disabled={cancelSubscription.isPending}
+                        onClick={() =>
+                          cancelSubscription.mutate(
+                            t("subscription.cancelDefaultReason", {
+                              defaultValue: "Người dùng yêu cầu hủy gói",
+                            })
+                          )
+                        }
+                      >
+                        {cancelSubscription.isPending
+                          ? t("loading", { defaultValue: "Đang xử lý..." })
+                          : t("subscription.cancel", {
+                              defaultValue: "Hủy gói",
+                            })}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="py-2 text-sm text-muted-foreground">

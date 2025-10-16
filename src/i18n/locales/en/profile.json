@@ -25,7 +25,9 @@
       "canUse": "Can use",
       "cannotUse": "Cannot use",
       "turnOn": "Turn on auto-renew",
-      "turnOff": "Turn off auto-renew"
+      "turnOff": "Turn off auto-renew",
+      "cancel": "Cancel Plan",
+      "cancelDefaultReason": "User requested plan cancellation"
     },
     "features": {
       "Chat": "Unlimited Chat",
