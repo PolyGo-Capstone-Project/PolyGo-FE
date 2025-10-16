@@ -1,0 +1,75 @@
+{
+  "wallet": {
+    "title": "My Wallet",
+    "balance": {
+      "title": "Current Balance",
+      "show": "Show Balance",
+      "hide": "Hide Balance",
+      "totalEarned": "Total Earned",
+      "totalSpent": "Total Spent"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "deposit": "Deposit Money",
+      "withdraw": "Withdraw Money",
+      "buyGift": "Buy Gift",
+      "upgradeSubscription": "Upgrade Subscription"
+    },
+    "subscription": {
+      "title": "Current Subscription",
+      "plan": "Plan",
+      "status": "Status",
+      "nextBilling": "Next Billing",
+      "autoRenew": "Auto Renew",
+      "free": "Free",
+      "basic": "Basic",
+      "premium": "Premium",
+      "active": "Active",
+      "inactive": "Inactive",
+      "on": "On",
+      "off": "Off"
+    },
+    "transactions": {
+      "title": "Transaction History",
+      "filter": {
+        "all": "All Transactions",
+        "earnings": "Earnings",
+        "spending": "Spending",
+        "withdrawals": "Withdrawals",
+        "subscriptions": "Subscriptions",
+        "refunds": "Refunds"
+      },
+      "export": {
+        "button": "Export",
+        "csv": "Export as CSV",
+        "excel": "Export as Excel"
+      },
+      "columns": {
+        "date": "Date",
+        "description": "Description",
+        "type": "Type",
+        "amount": "Amount",
+        "status": "Status"
+      },
+      "type": {
+        "earning": "Earning",
+        "spending": "Spending",
+        "withdrawal": "Withdrawal",
+        "subscription": "Subscription",
+        "refund": "Refund"
+      },
+      "status": {
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed"
+      },
+      "empty": "No transactions found",
+      "search": "Search transactions..."
+    },
+    "toast": {
+      "exportSuccess": "Exported successfully",
+      "exportError": "Failed to export",
+      "comingSoon": "This feature is coming soon"
+    }
+  }
+}

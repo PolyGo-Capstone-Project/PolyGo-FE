@@ -24,12 +24,17 @@ export const GiftTranslationsSchema = z.object({
   giftId: z.string(),
 });
 
-//Admin ==============================
+export const GiftWithTranslationsSchema = GiftSchema.extend({
+  translations: z.array(GiftTranslationsSchema),
+});
 
-//list item
 export const GiftListItemSchema = GiftSchema.merge(
   GiftTranslationsSchema.pick({ name: true, lang: true, description: true })
 );
+
+//Admin ==============================
+
+//list item
 
 export const GetGiftsQuerySchema = PaginationLangQuerySchema;
 
@@ -65,9 +70,6 @@ export const UpdateGiftBodySchema = CreateGiftBodySchema;
 //=====================================
 
 //for user
-//get my gifts
-export const GetMyGiftsResSchema = GetGiftsResSchema;
-
 //post purchase gift
 export const PurchaseGiftBodySchema = z.object({
   giftId: z.string(),
@@ -76,11 +78,17 @@ export const PurchaseGiftBodySchema = z.object({
   notes: z.string().max(500).optional(),
 });
 
+//get my purchased gifts
+export const GetMyPurchasedGiftsResSchema = GetGiftsResSchema.extend({});
+
 // SOON
 
 //types
 export type GiftType = z.infer<typeof GiftSchema>;
 export type GiftTranslationsType = z.infer<typeof GiftTranslationsSchema>;
+export type GiftWithTranslationsType = z.infer<
+  typeof GiftWithTranslationsSchema
+>;
 export type GiftListItemType = z.infer<typeof GiftListItemSchema>;
 export type GetGiftsQueryType = z.infer<typeof GetGiftsQuerySchema>;
 export type GetGiftByIdQueryType = z.infer<typeof GetGiftByIdQuerySchema>;
@@ -90,3 +98,6 @@ export type GetGiftByIdResType = z.infer<typeof GetGiftByIdResSchema>;
 export type CreateGiftBodyType = z.infer<typeof CreateGiftBodySchema>;
 export type UpdateGiftBodyType = z.infer<typeof UpdateGiftBodySchema>;
 export type PurchaseGiftBodyType = z.infer<typeof PurchaseGiftBodySchema>;
+export type GetMyPurchasedGiftsResType = z.infer<
+  typeof GetMyPurchasedGiftsResSchema
+>;

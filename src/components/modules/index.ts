@@ -4,3 +4,4 @@ export * from "./loading";
 export * from "./matching";
 export * from "./profile";
 export * from "./setup-profile";
+export * from "./wallet";
