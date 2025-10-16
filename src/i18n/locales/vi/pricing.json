@@ -1,0 +1,80 @@
+{
+  "pricing": {
+    "title": "Lựa chọn gói dịch vụ hoàn hảo cho bạn",
+    "subtitle": "Bắt đầu miễn phí và nâng cấp bất cứ lúc nào để mở khóa các tính năng mạnh mẽ hơn. Tất cả các gói đều có tính năng cốt lõi cơ bản.",
+    "mostPopular": "Phổ biến nhất",
+    "noFeatures": "Không có tính năng nào được liệt kê",
+    "loading": "Đang tải...",
+
+    "freeTier": {
+      "name": "Miễn phí",
+      "price": "Miễn phí",
+      "button": "Bắt đầu với Free",
+      "features": {
+        "matching": "Ghép đôi cơ bản",
+        "chat": "Trò chuyện (Giới hạn)",
+        "calls": "Cuộc gọi (Giới hạn)",
+        "events": "Tham gia sự kiện (Giới hạn)",
+        "gamification": "Hệ thống Gamification",
+        "ads": "Có quảng cáo"
+      }
+    },
+
+    "plusTier": {
+      "name": "Plus",
+      "price": "9.99 USD",
+      "period": "/tháng",
+      "periodYearly": "/năm",
+      "days": "ngày",
+      "button": "Nâng cấp ngay",
+      "features": {
+        "chat": "Trò chuyện Không giới hạn",
+        "calls": "Cuộc gọi Không giới hạn",
+        "matching": "Ghép đôi Nâng cao",
+        "events": "Tạo & Tham gia Sự kiện",
+        "gamification": "Hệ thống Gamification cao cấp",
+        "tools": "Công cụ phân tích và dịch thuật",
+        "adFree": "Không quảng cáo"
+      }
+    },
+
+    "features": {
+      "PremiumBadges": "Huy hiệu Premium",
+      "premiumbadges": "Huy hiệu Premium",
+      "PrioritySupport": "Hỗ trợ Ưu tiên",
+      "prioritysupport": "Hỗ trợ Ưu tiên",
+      "EventParticipation": "Tham gia Sự kiện",
+      "eventparticipation": "Tham gia Sự kiện",
+      "Chat": "Trò chuyện Không giới hạn",
+      "chat": "Trò chuyện Không giới hạn",
+      "AdvancedMatching": "Ghép đôi Nâng cao",
+      "advancedmatching": "Ghép đôi Nâng cao",
+      "EventCreation": "Tạo Sự kiện",
+      "eventcreation": "Tạo Sự kiện",
+      "VoiceCall": "Cuộc gọi Thoại Không giới hạn",
+      "voicecall": "Cuộc gọi Thoại Không giới hạn",
+      "Analytics": "Phân tích Dữ liệu",
+      "analytics": "Phân tích Dữ liệu",
+      "Translation": "Dịch thuật Tức thời",
+      "translation": "Dịch thuật Tức thời",
+      "VideoCall": "Cuộc gọi Video Không giới hạn",
+      "videocall": "Cuộc gọi Video Không giới hạn"
+    },
+
+    "faq": {
+      "title": "Câu hỏi Thường gặp",
+      "q1": {
+        "question": "Tôi có thể hủy gói đăng ký bất cứ lúc nào không?",
+        "answer": "Hoàn toàn có thể. Bạn có thể hủy gói đăng ký trực tiếp từ trang tài khoản của mình. Việc hủy sẽ có hiệu lực vào cuối chu kỳ thanh toán hiện tại của bạn."
+      },
+      "q2": {
+        "question": "Có chính sách hoàn tiền không?",
+        "answer": "Chúng tôi cung cấp chính sách hoàn tiền trong 7 ngày đầu tiên nếu bạn chưa sử dụng bất kỳ tính năng trả phí nào. Vui lòng liên hệ bộ phận hỗ trợ để biết thêm chi tiết."
+      },
+      "q3": {
+        "question": "Tôi có thể thay đổi gói dịch vụ không?",
+        "answer": "Bạn có thể nâng cấp hoặc hạ cấp gói dịch vụ bất cứ lúc nào. Thay đổi sẽ được tính toán theo tỷ lệ tương ứng."
+      }
+    }
+  }
+}

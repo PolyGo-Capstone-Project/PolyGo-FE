@@ -1,0 +1,80 @@
+{
+  "pricing": {
+    "title": "Find the Perfect Plan for You",
+    "subtitle": "Start free and upgrade anytime to unlock more powerful features. All plans include core basic features.",
+    "mostPopular": "Most Popular",
+    "noFeatures": "No features available",
+    "loading": "Loading...",
+
+    "freeTier": {
+      "name": "Free",
+      "price": "Free",
+      "button": "Start with Free",
+      "features": {
+        "matching": "Basic Matching",
+        "chat": "Chat (Limited)",
+        "calls": "Calls (Limited)",
+        "events": "Event Participation (Limited)",
+        "gamification": "Gamification System",
+        "ads": "Ad Supported"
+      }
+    },
+
+    "plusTier": {
+      "name": "Plus",
+      "price": "$9.99",
+      "period": "/month",
+      "periodYearly": "/year",
+      "days": "days",
+      "button": "Upgrade Now",
+      "features": {
+        "chat": "Unlimited Chat",
+        "calls": "Unlimited Calls",
+        "matching": "Advanced Matching",
+        "events": "Create & Join Events",
+        "gamification": "Premium Gamification System",
+        "tools": "Analytics and Translation Tools",
+        "adFree": "Ad-Free Experience"
+      }
+    },
+
+    "features": {
+      "PremiumBadges": "Premium Badges",
+      "premiumbadges": "Premium Badges",
+      "PrioritySupport": "Priority Support",
+      "prioritysupport": "Priority Support",
+      "EventParticipation": "Event Participation",
+      "eventparticipation": "Event Participation",
+      "Chat": "Unlimited Chat",
+      "chat": "Unlimited Chat",
+      "AdvancedMatching": "Advanced Matching",
+      "advancedmatching": "Advanced Matching",
+      "EventCreation": "Event Creation",
+      "eventcreation": "Event Creation",
+      "VoiceCall": "Unlimited Voice Call",
+      "voicecall": "Unlimited Voice Call",
+      "Analytics": "Analytics Dashboard",
+      "analytics": "Analytics Dashboard",
+      "Translation": "Instant Translation",
+      "translation": "Instant Translation",
+      "VideoCall": "Unlimited Video Call",
+      "videocall": "Unlimited Video Call"
+    },
+
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "q1": {
+        "question": "Can I cancel my subscription anytime?",
+        "answer": "Absolutely. You can cancel your subscription directly from your account page. The cancellation will take effect at the end of your current billing cycle."
+      },
+      "q2": {
+        "question": "Do you offer a refund policy?",
+        "answer": "We offer a 7-day money-back guarantee if you haven't utilized any of the paid features. Please contact support for more details."
+      },
+      "q3": {
+        "question": "Can I change my plan?",
+        "answer": "You can upgrade or downgrade your plan at any time. Changes will be prorated accordingly."
+      }
+    }
+  }
+}
