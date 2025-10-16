@@ -157,6 +157,10 @@ export default function UserProfilePage() {
     toast.success(t("share") + " - " + "Link copied!");
   };
 
+  const handleAddFriend = () => {
+    toast("Feature coming soon!");
+  };
+
   // Handle send gift
   const handleSendGift = () => {
     setSendGiftDialogOpen(true);
@@ -177,6 +181,7 @@ export default function UserProfilePage() {
           variant="other"
           onSendGift={handleSendGift}
           onShare={handleShare}
+          onAddFriend={handleAddFriend}
         />
 
         {/* Main Content Grid */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, Globe2 } from "lucide-react";
+import { Languages } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -8,9 +8,7 @@ import {
   Button,
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components";
 import {
@@ -52,40 +50,22 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="h-9 gap-1 px-2">
-          <span className="text-lg leading-none">
-            {localeFlags[activeLocale]}
-          </span>
-          <ChevronsUpDown className="ml-1 size-3 opacity-60" />
+        <Button variant="ghost" size="sm" className="h-8 w-8 px-0">
+          <Languages className="h-[1.2rem] w-[1.2rem]" />
           <span className="sr-only">{t("label")}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56 p-2">
-        <div className="px-3 py-2 flex items-center gap-2 text-sm text-muted-foreground font-medium">
-          <Globe2 className="size-4" />
-          {t("label") || "Language"}
-        </div>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup
-          value={activeLocale}
-          onValueChange={(value) => switchLocale(value as Locale)}
-        >
-          {locales.map((loc) => (
-            <DropdownMenuRadioItem
-              key={loc}
-              value={loc}
-              className="flex items-center gap-3"
-            >
-              <span className="text-lg leading-none">{localeFlags[loc]}</span>
-              <span className="flex flex-col text-left">
-                <span className="text-sm font-medium">{localeNames[loc]}</span>
-                <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                  {loc}
-                </span>
-              </span>
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
+      <DropdownMenuContent align="end" className="w-40 p-2">
+        {locales.map((loc) => (
+          <DropdownMenuItem
+            key={loc}
+            onClick={() => switchLocale(loc)}
+            disabled={activeLocale === loc}
+          >
+            <span className="mr-2 text-base">{localeFlags[loc]}</span>
+            <span>{localeNames[loc]}</span>
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );

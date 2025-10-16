@@ -205,7 +205,7 @@ export default function MatchingPageContent() {
   }
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="container mx-auto py-6 p-4">
       {/* Header */}
       <div className="mb-6 space-y-2">
         <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
