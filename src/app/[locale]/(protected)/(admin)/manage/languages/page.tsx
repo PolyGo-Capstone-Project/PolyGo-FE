@@ -31,6 +31,7 @@ import {
 
 import { AddLanguage } from "./add-language";
 import { EditLanguage } from "./edit-language";
+import { LanguageDetailDialog } from "./language-detail-dialog";
 import { LanguageTable } from "./language-table";
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -77,6 +78,9 @@ export default function ManageLanguagesPage() {
   const [itemToDelete, setItemToDelete] = useState<LanguageListItemType | null>(
     null
   );
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] =
+    useState<LanguageListItemType | null>(null);
 
   const queryParams = useMemo<PaginationLangQueryType>(
     () => ({ pageNumber, pageSize, lang }),
@@ -148,6 +152,11 @@ export default function ManageLanguagesPage() {
   const handleOpenEdit = (id: string) => {
     setEditingId(id);
     setIsEditOpen(true);
+  };
+
+  const handleOpenDetail = (language: LanguageListItemType) => {
+    setSelectedLanguage(language);
+    setDetailOpen(true);
   };
 
   const handleEditOpenChange = (open: boolean) => {
@@ -305,6 +314,7 @@ export default function ManageLanguagesPage() {
         onRefresh={refreshList}
         onOpenCreate={handleOpenCreate}
         onOpenEdit={handleOpenEdit}
+        onOpenDetail={handleOpenDetail}
         onDelete={handleDeleteLanguage}
         isDeletePending={deleteMutation.isPending}
         deletingId={deletingId}
@@ -338,6 +348,14 @@ export default function ManageLanguagesPage() {
         isSubmitting={updateMutation.isPending}
         tError={tError}
         isUploading={uploadMediaMutation.isPending}
+      />
+
+      <LanguageDetailDialog
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+        language={selectedLanguage}
+        safeTranslate={safeTranslate}
+        lang={lang}
       />
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

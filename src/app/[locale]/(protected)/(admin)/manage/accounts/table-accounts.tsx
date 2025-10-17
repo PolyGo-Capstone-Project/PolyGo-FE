@@ -3,6 +3,7 @@
 import {
   IconArrowLeft,
   IconArrowRight,
+  IconEye,
   IconPencil,
   IconRefresh,
 } from "@tabler/icons-react";
@@ -64,6 +65,7 @@ type TableAccountsProps = {
   error: unknown;
   onRefresh: () => void;
   onOpenEdit: (id: string) => void;
+  onOpenDetail: (id: string) => void;
   pageSize: number;
   onPageSizeChange: (value: string) => void;
   pageSizeOptions: number[];
@@ -80,6 +82,7 @@ export function TableAccounts({
   error,
   onRefresh,
   onOpenEdit,
+  onOpenDetail,
   pageSize,
   onPageSizeChange,
   pageSizeOptions,
@@ -245,6 +248,14 @@ export function TableAccounts({
           </td>
           <td className="px-4 py-3">
             <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onOpenDetail(user.id)}
+              >
+                <IconEye className="size-4" />
+                <span className="sr-only">{safeTranslate("view", "View")}</span>
+              </Button>
               <Button
                 variant="ghost"
                 size="sm"
