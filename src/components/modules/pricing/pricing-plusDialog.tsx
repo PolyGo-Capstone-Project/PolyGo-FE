@@ -17,6 +17,20 @@ import {
 } from "@/components/ui/dialog";
 import { useTranslations } from "next-intl";
 
+// Hàm định dạng tiền tệ Việt Nam
+const formatVnd = (amount: number | string | null | undefined) => {
+  if (amount == null) return "—";
+  const num = Number(amount);
+  if (isNaN(num)) return amount;
+
+  // Sử dụng Intl.NumberFormat để định dạng VNĐ chuẩn
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+    minimumFractionDigits: 0, // Bỏ số thập phân nếu không cần
+  }).format(num);
+};
+
 export default function PlusListDialog({
   open,
   onOpenChange,
@@ -61,8 +75,11 @@ export default function PlusListDialog({
                   <CardTitle className="text-base">
                     {plan.name ?? plan.planType}
                   </CardTitle>
-                  <div className="mt-1 text-sm text-muted-foreground">
-                    <span className="font-semibold">{plan.price} VNĐ</span>
+                  <div className="mt-1 text-lg text-foreground">
+                    <span className="font-bold">
+                      {/* ĐÃ SỬA: Sử dụng formatVnd */}
+                      {formatVnd(plan.price)}
+                    </span>
                     {plan.durationInDays ? (
                       <span className="ml-1">
                         {plan.durationInDays === 30

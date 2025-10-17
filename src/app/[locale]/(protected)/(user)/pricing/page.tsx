@@ -11,18 +11,21 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useMemo, useState } from "react";
 
 // UI
-import ConfirmBuyDialog from "./pricing-confirmDialog";
-import CurrentPlanSummary from "./pricing-curentPlan";
-import FreeCard from "./pricing-freeCard";
-import HeaderSection from "./pricing-header";
-import PlusCard from "./pricing-plusCard";
-import PlusListDialog from "./pricing-plusDialog";
-
-// Sections & Components
+import ConfirmBuyDialog from "@/components/modules/pricing/pricing-confirmDialog";
+import FreeCard from "@/components/modules/pricing/pricing-freeCard";
+import HeaderSection from "@/components/modules/pricing/pricing-header";
+import PlusCard from "@/components/modules/pricing/pricing-plusCard";
+import PlusListDialog from "@/components/modules/pricing/pricing-plusDialog";
+// ✅ Card mới cho gói hiện tại (không phải free)
+import CurrentPlanCard from "@/components/modules/pricing/pricing-currentCard";
 
 export default function PricingPage() {
   const t = useTranslations("pricing");
   const tBuy = useTranslations("pricing.buy");
+
+  const tSuccess = useTranslations("pricing.buy");
+  const tError = useTranslations("pricing.buy");
+
   const locale = useLocale();
   const lang = useMemo(() => (locale ? locale.split("-")[0] : "en"), [locale]);
 
@@ -98,33 +101,30 @@ export default function PricingPage() {
     setConfirmOpen(true);
   }, []);
 
-  const onConfirmBuy = useCallback(() => {
-    if (!selectedPlan?.id) return;
-    subscribeMutation.mutate(
-      { subscriptionPlanId: selectedPlan.id, autoRenew },
-      {
-        onSuccess: (response: any) => {
-          showSuccessToast(
-            response?.payload?.message ??
-              tBuy("success", { defaultValue: "Plan purchased successfully!" }),
-            tBuy
-          );
-          setConfirmOpen(false);
-          setSelectedPlan(null);
-        },
-        onError: (err: any) => {
-          showErrorToast(
-            err?.payload?.message ??
-              tBuy("error", {
-                defaultValue:
-                  "Unable to complete purchase. Please try again later.",
-              }),
-            tBuy
-          );
-        },
-      }
-    );
-  }, [selectedPlan, autoRenew, subscribeMutation, tBuy]);
+  const onConfirmBuyAsync = useCallback(async () => {
+    if (!selectedPlan?.id) return false;
+
+    try {
+      // Sử dụng mutateAsync để chờ kết quả và dùng try/catch
+      const response = await subscribeMutation.mutateAsync({
+        subscriptionPlanId: selectedPlan.id,
+        autoRenew,
+      }); // ĐÃ SỬA: Sử dụng tSuccess
+
+      showSuccessToast(response.payload?.message, tSuccess);
+      return true; // TRẢ VỀ TRUE để kích hoạt chuyển trang
+    } catch (err: any) {
+      showErrorToast(
+        err?.payload?.message ??
+          tBuy("error", {
+            defaultValue:
+              "Unable to complete purchase. Please try again later.",
+          }),
+        tError // ĐÃ SỬA: Thay tBuy bằng tError
+      );
+      return false; // TRẢ VỀ FALSE nếu có lỗi
+    }
+  }, [selectedPlan, autoRenew, subscribeMutation, tBuy, tSuccess, tError]); // ĐÃ SỬA: Thêm dependency tSuccess, tError
 
   const apiPlusPlans = useMemo(
     () =>
@@ -134,19 +134,22 @@ export default function PricingPage() {
     [plans]
   );
 
+  // Quyết định hiển thị card bên trái: FreeCard hoặc CurrentPlanCard (nếu không phải free)
+  const isCurrentFree =
+    String(subData?.planType ?? "").toLowerCase() === "free" || !subData;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <HeaderSection />
-        <CurrentPlanSummary
-          isLoading={currentSubQuery.isLoading}
-          subData={subData}
-          formatDate={formatDate}
-        />
 
-        {/* Two cards only: Free + Plus (hardcoded) */}
+        {/* Two cards only: Left (Free OR CurrentPlan) + Plus (hardcoded) */}
         <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-2 mb-12 sm:mb-16 lg:mb-20">
-          <FreeCard freeFeatures={freeFeatures} />
+          {isCurrentFree ? (
+            <FreeCard freeFeatures={freeFeatures} />
+          ) : (
+            <CurrentPlanCard subData={subData} formatDate={formatDate} />
+          )}
           <PlusCard plusFeatures={plusFeatures} onOpenList={openPlusList} />
         </div>
 
@@ -186,7 +189,8 @@ export default function PricingPage() {
         autoRenew={autoRenew}
         setAutoRenew={setAutoRenew}
         isPending={subscribeMutation.isPending}
-        onConfirm={onConfirmBuy}
+        onConfirmAsync={onConfirmBuyAsync}
+        onConfirm={() => {}} // ĐÃ SỬA: Truyền hàm async mới vào prop `onConfirmAsync`
       />
     </div>
   );

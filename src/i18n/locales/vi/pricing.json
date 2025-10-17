@@ -5,6 +5,49 @@
     "mostPopular": "Phổ biến nhất",
     "noFeatures": "Không có tính năng nào được liệt kê",
     "loading": "Đang tải...",
+
+    "plan": "Gói",
+    "status": "Trạng thái",
+    "nextBilling": "Ngày gia hạn",
+    "autoRenew": "Tự động gia hạn",
+    "on": "BẬT",
+    "off": "TẮT",
+
+    "planName": "Tên gói",
+    "daysRemaining": "Số ngày còn lại",
+    "period": "Thời hạn",
+    "turnOff": "Tắt gia hạn",
+    "turnOn": "Bật gia hạn",
+
+    "featuresTitle": "Chức năng của gói",
+    "featuresLoading": "Đang tải chức năng...",
+    "unlimited": "Không giới hạn",
+    "resetAt": "Reset lúc",
+    "canUse": "Có thể dùng",
+    "cannotUse": "Không thể dùng",
+
+    "cancel": "Hủy gói",
+    "cancelDefaultReason": "Người dùng yêu cầu hủy gói (Không có lý do chi tiết)",
+    "cancelDialogTitle": "Xác nhận hủy gói",
+    "cancelDialogDescription": "Xin vui lòng nhập lý do hủy gói để chúng tôi cải thiện dịch vụ (nếu không nhập sẽ dùng lý do mặc định).",
+    "cancelReasonPlaceholder": "Lý do hủy gói...",
+    "cancelDialogCancel": "Đóng",
+    "cancelDialogConfirm": "Xác nhận Hủy",
+
+    "free": "Miễn phí",
+    "basic": "Cơ bản",
+    "premium": "Cao cấp",
+    "thankyou": {
+      "badge": "Cảm ơn bạn!",
+      "title": "Thanh toán thành công 🎉",
+      "subtitle": "Cảm ơn bạn đã nâng cấp! Quyền lợi của bạn đã được kích hoạt. Hóa đơn sẽ được gửi qua email trong giây lát.",
+      "cardTitle": "Giao dịch thành công",
+      "cardDesc": "Gói đăng ký của bạn đã hoạt động. Tận hưởng trải nghiệm cao cấp!",
+      "orderId": "Mã đơn / Mã gói",
+      "goHome": "Về trang chủ",
+      "help": "Cần hỗ trợ? Bạn có thể liên hệ Trung tâm Trợ giúp bất cứ lúc nào."
+    },
+
     "buy": {
       "confirmTitle": "Xác nhận mua gói",
       "desc": "Vui lòng kiểm tra thông tin gói trước khi xác nhận.",
@@ -12,10 +55,10 @@
       "cancel": "Đóng",
       "confirm": "Xác nhận mua",
       "processing": "Đang xử lý...",
-      "Subscribe": "Mua gói thành công!",
+      "Subscribe": "Đã mua gói thành công!",
+      "success": "Mua gói thành công!",
       "error": "Không thể mua gói, vui lòng thử lại sau."
     },
-    "planName": "Tên gói",
     "price": "Giá",
     "duration": "Thời hạn",
     "current": {
@@ -31,7 +74,8 @@
       "button": "Đang sử dụng",
       "empty": "Bạn hiện không có gói đăng ký nào.",
       "loading": "Đang tải gói hiện tại...",
-      "stackNote": "Mua thêm sẽ cộng dồn vào thời hạn hiện tại của bạn"
+      "stackNote": "Mua thêm sẽ cộng dồn vào thời hạn hiện tại của bạn",
+      "daysRemaining": "Số ngày còn lại"
     },
 
     "freeTier": {

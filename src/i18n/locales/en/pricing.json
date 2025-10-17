@@ -1,41 +1,86 @@
 {
   "pricing": {
     "title": "Find the Perfect Plan for You",
-    "subtitle": "Start free and upgrade anytime to unlock more powerful features. All plans include core basic features.",
+    "subtitle": "Start free and upgrade anytime to unlock more powerful features. All plans include core basic functionality.",
     "mostPopular": "Most Popular",
-    "noFeatures": "No features available",
+    "noFeatures": "No features listed",
     "loading": "Loading...",
-    "buy": {
-      "confirmTitle": "Confirm purchase",
-      "desc": "Please review the plan details before confirming your purchase.",
-      "autoRenewHint": "The system will automatically renew when the plan expires.",
-      "cancel": "Close",
-      "confirm": "Confirm purchase",
-      "processing": "Processing...",
-      "Subscribe": "Plan purchased successfully!",
-      "error": "Unable to complete purchase. Please try again later."
+
+    "plan": "Plan",
+    "status": "Status",
+    "nextBilling": "Next Billing Date",
+    "autoRenew": "Auto-Renew",
+    "on": "ON",
+    "off": "OFF",
+
+    "planName": "Plan Name",
+    "daysRemaining": "Days Remaining",
+    "period": "Duration",
+    "turnOff": "Turn Off Renewal",
+    "turnOn": "Turn On Renewal",
+
+    "featuresTitle": "Plan Features",
+    "featuresLoading": "Loading features...",
+    "unlimited": "Unlimited",
+    "resetAt": "Resets at",
+    "canUse": "Usable",
+    "cannotUse": "Not Usable",
+
+    "cancel": "Cancel Plan",
+    "cancelDefaultReason": "User requested plan cancellation (No detailed reason provided)",
+    "cancelDialogTitle": "Confirm Plan Cancellation",
+    "cancelDialogDescription": "Please enter a reason for cancellation so we can improve our service (a default reason will be used if left blank).",
+    "cancelReasonPlaceholder": "Reason for cancellation...",
+    "cancelDialogCancel": "Close",
+    "cancelDialogConfirm": "Confirm Cancel",
+
+    "free": "Free",
+    "basic": "Basic",
+    "premium": "Premium",
+    "thankyou": {
+      "badge": "Thank You!",
+      "title": "Payment Successful 🎉",
+      "subtitle": "Thank you for upgrading! Your benefits have been activated. A receipt will be sent via email shortly.",
+      "cardTitle": "Transaction Successful",
+      "cardDesc": "Your subscription is now active. Enjoy the premium experience!",
+      "orderId": "Order ID / Plan ID",
+      "goHome": "Go to Home",
+      "help": "Need support? You can contact the Help Center anytime."
     },
-    "planName": "Plan name",
+
+    "buy": {
+      "confirmTitle": "Confirm Purchase",
+      "desc": "Please review the plan details before confirming.",
+      "autoRenewHint": "The system will automatically renew your subscription when due.",
+      "cancel": "Close",
+      "confirm": "Confirm Purchase",
+      "processing": "Processing...",
+      "Subscribe": "Successfully subscribed to plan!",
+      "success": "Purchase successful!",
+      "error": "Unable to complete purchase, please try again later."
+    },
     "price": "Price",
     "duration": "Duration",
     "current": {
       "title": "Current Plan",
       "active": "Active",
       "plan": "Plan",
-      "ends": "End at",
-      "autoRenew": "Auto Renew",
+      "ends": "Ends",
+      "autoRenew": "Auto-Renew",
       "yes": "Yes",
       "no": "No",
-      "description": "Your current plan",
-      "badge": "Current",
+      "description": "Your current subscription plan",
+      "badge": "In Use",
       "button": "In Use",
-      "empty": "You currently have no active subscriptions.",
+      "empty": "You currently do not have an active subscription.",
       "loading": "Loading current plan...",
-      "stackNote": "Purchasing more will stack onto your current plan's duration"
+      "stackNote": "Purchasing more will stack onto your current duration",
+      "daysRemaining": "Days Remaining"
     },
+
     "freeTier": {
       "name": "Free",
-      "price": "0 VNĐ",
+      "price": "0 VND",
       "period": "/month",
       "button": "Start with Free",
       "features": {
@@ -44,13 +89,13 @@
         "calls": "Calls (Limited)",
         "events": "Event Participation (Limited)",
         "gamification": "Gamification System",
-        "ads": "Ad Supported"
+        "ads": "Includes Ads"
       }
     },
 
     "plusTier": {
       "name": "Plus",
-      "price": "100,000 VNĐ",
+      "price": "100,000 VND",
       "period": "/month",
       "periodYearly": "/year",
       "periodPopup": "month",
@@ -58,17 +103,17 @@
       "days": "days",
       "button": "Upgrade Now",
       "buttonRenew": "Renew Now",
-      "listButton": "View All Plus Plans",
+      "listButton": "View Plus Plans",
       "listTitle": "Plus Plans",
-      "listDesc": "Unlock advanced features and enhance your experience with our Plus plans.",
+      "listDesc": "Unlock advanced features and enhance your experience",
       "features": {
         "chat": "Unlimited Chat",
         "calls": "Unlimited Calls",
         "matching": "Advanced Matching",
-        "events": "Create & Join Events",
+        "events": "Create & Participate in Events",
         "gamification": "Premium Gamification System",
         "tools": "Analytics and Translation Tools",
-        "adFree": "Ad-Free Experience"
+        "adFree": "Ad-Free"
       }
     },
 
@@ -87,8 +132,8 @@
       "eventcreation": "Event Creation",
       "VoiceCall": "Unlimited Voice Call",
       "voicecall": "Unlimited Voice Call",
-      "Analytics": "Analytics Dashboard",
-      "analytics": "Analytics Dashboard",
+      "Analytics": "Data Analytics",
+      "analytics": "Data Analytics",
       "Translation": "Instant Translation",
       "translation": "Instant Translation",
       "VideoCall": "Unlimited Video Call",
@@ -102,12 +147,12 @@
         "answer": "Absolutely. You can cancel your subscription directly from your account page. The cancellation will take effect at the end of your current billing cycle."
       },
       "q2": {
-        "question": "Do you offer a refund policy?",
-        "answer": "We offer a 7-day money-back guarantee if you haven't utilized any of the paid features. Please contact support for more details."
+        "question": "Is there a refund policy?",
+        "answer": "We offer a 7-day refund policy if you haven't used any paid features. Please contact support for more details."
       },
       "q3": {
         "question": "Can I change my plan?",
-        "answer": "You can upgrade or downgrade your plan at any time. Changes will be prorated accordingly."
+        "answer": "You can upgrade or downgrade your plan anytime. Changes will be calculated on a prorated basis."
       }
     }
   }

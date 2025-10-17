@@ -75,7 +75,7 @@ export function SubscriptionCard({
   loadingCurrent = false,
   loadingUsage = false,
 }: SubscriptionCardProps) {
-  const t = useTranslations("wallet.subscription");
+  const t = useTranslations("pricing");
   const locale = useLocale();
 
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);

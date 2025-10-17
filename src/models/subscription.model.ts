@@ -197,8 +197,8 @@ export const SubscriptionFeatureUsageSchema = z.object({
   limitValue: z.number(),
   limitType: z.string().nullable().optional(),
   isUnlimited: z.boolean(),
-  lastUsedAt: z.string().nullable().optional(), // ISO
-  resetAt: z.string().nullable().optional(), // ISO
+  lastUsedAt: z.iso.datetime().optional(), // ISO
+  resetAt: z.iso.datetime().optional(), // ISO
   canUse: z.boolean(),
 });
 
@@ -207,8 +207,8 @@ export const CurrentSubscriptionSchema = z.object({
   id: z.string(),
   planType: z.string(),
   planName: z.string(),
-  startAt: z.string(), // ISO
-  endAt: z.string(), // ISO
+  startAt: z.iso.datetime(), // ISO
+  endAt: z.iso.datetime(), // ISO
   active: z.boolean(),
   autoRenew: z.boolean(),
   daysRemaining: z.number().int(),

@@ -1,6 +1,5 @@
 "use client";
 import {
-  Badge,
   Button,
   Card,
   CardContent,
@@ -21,9 +20,9 @@ export default function PlusCard({
   const t = useTranslations("pricing");
   return (
     <Card className="relative flex flex-col border-primary shadow-lg">
-      <Badge className="absolute -top-3 right-3 bg-primary text-primary-foreground px-3 py-1 text-xs sm:text-sm">
+      {/* <Badge className="absolute -top-3 right-3 bg-primary text-primary-foreground px-3 py-1 text-xs sm:text-sm">
         {t("mostPopular")}
-      </Badge>
+      </Badge> */}
       <CardHeader className="pb-6 sm:pb-0">
         <CardTitle className="text-xl sm:text-2xl min-h-[2.25rem]">
           {t("plusTier.name")}
