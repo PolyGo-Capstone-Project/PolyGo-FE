@@ -117,5 +117,12 @@
     "interests": "Interests Management",
     "badges": "Badges Management",
     "subscriptions": "Subscriptions Management"
+  },
+  "pagination": {
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "items": "items",
+    "perPage": "/ page"
   }
 }
