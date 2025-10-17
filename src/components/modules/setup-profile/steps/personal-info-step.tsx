@@ -185,7 +185,7 @@ export function PersonalInfoStep({
       {/* Introduction */}
       <div className="space-y-2">
         <Label htmlFor="introduction" className="text-base">
-          {t("introductionLabel")}
+          {t("introductionLabel")}{" "}
         </Label>
         <Textarea
           id="introduction"

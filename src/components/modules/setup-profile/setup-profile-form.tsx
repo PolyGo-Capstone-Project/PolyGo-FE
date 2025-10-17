@@ -15,6 +15,7 @@ import {
 } from "@/components/modules/setup-profile/steps";
 import { Button, Progress } from "@/components/ui";
 import {
+  useAuthMe,
   useAuthStore,
   useSetupProfileMutation,
   useUpdateMeMutation,
@@ -40,6 +41,7 @@ type FormData = {
 };
 
 export function SetupProfileForm() {
+  const { data: authData } = useAuthMe();
   const t = useTranslations("setupProfile");
   const tError = useTranslations("Error");
   const tSuccess = useTranslations("Success");
@@ -63,6 +65,7 @@ export function SetupProfileForm() {
     },
   });
 
+  const user = authData?.payload.data;
   const setupProfileForm = useForm<SetupProfileBodyType>({
     resolver: zodResolver(SetupProfileBodySchema),
     defaultValues: {
@@ -81,6 +84,27 @@ export function SetupProfileForm() {
     knownLanguages: [],
     interests: [],
   });
+
+  // Sync authData to formData when user data is loaded
+  useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: user.name || "",
+        gender: user.gender || null,
+        introduction: user.introduction || null,
+        avatarUrl: user.avatarUrl || null,
+      }));
+
+      // Also update personalInfoForm
+      personalInfoForm.reset({
+        name: user.name || "",
+        gender: user.gender || null,
+        introduction: user.introduction || null,
+        avatarUrl: user.avatarUrl || null,
+      });
+    }
+  }, [user, personalInfoForm]);
 
   const STEPS = [
     {
