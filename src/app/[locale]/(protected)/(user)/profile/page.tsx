@@ -28,7 +28,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Separator,
 } from "@/components/ui";
 // NEW: hooks subscription (cùng file use-subscriptionPlan.tsx)
 import {
@@ -322,69 +321,6 @@ export default function ProfilePage() {
                       </span>
                     </div>
                   </div>
-
-                  {/* 2. Auto-Renew Action (Nằm riêng biệt dưới cùng) */}
-                  {/* <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg border bg-secondary/10">
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-medium">
-                        {t("subscription.autoRenew", {
-                          defaultValue: "Tự động gia hạn",
-                        })}
-                        :
-                      </span>
-                      <Badge
-                        variant={subData.autoRenew ? "default" : "secondary"}
-                        className="text-xs font-semibold"
-                      >
-                        {subData.autoRenew
-                          ? t("subscription.yes", { defaultValue: "Có" })
-                          : t("subscription.no", { defaultValue: "Không" })}
-                      </Badge>
-                    </div>
-
-                    <Button
-                      size="sm"
-                      variant={subData.autoRenew ? "secondary" : "default"}
-                      className="h-8 w-full sm:w-auto text-xs"
-                      disabled={toggleAutoRenew.isPending}
-                      onClick={() => toggleAutoRenew.mutate(!subData.autoRenew)}
-                    >
-                      {toggleAutoRenew.isPending
-                        ? t("loading", { defaultValue: "Đang xử lý..." })
-                        : subData.autoRenew
-                          ? t("subscription.turnOff", {
-                              defaultValue: "Tắt gia hạn",
-                            })
-                          : t("subscription.turnOn", {
-                              defaultValue: "Bật gia hạn",
-                            })}
-                    </Button>
-                  </div> */}
-
-                  {/* 3. Cancel Subscription Action (chỉ hiển thị với gói Plus) */}
-                  {/* {String(subData.planType ?? "").toLowerCase() === "plus" && (
-                    <div className="pt-1">
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        className="h-8 w-full sm:w-100% text-xs"
-                        disabled={cancelSubscription.isPending}
-                        onClick={() =>
-                          cancelSubscription.mutate(
-                            t("subscription.cancelDefaultReason", {
-                              defaultValue: "Người dùng yêu cầu hủy gói",
-                            })
-                          )
-                        }
-                      >
-                        {cancelSubscription.isPending
-                          ? t("loading", { defaultValue: "Đang xử lý..." })
-                          : t("subscription.cancel", {
-                              defaultValue: "Hủy gói",
-                            })}
-                      </Button>
-                    </div>
-                  )} */}
                 </div>
               ) : (
                 <div className="py-2 text-sm text-muted-foreground">
@@ -393,92 +329,6 @@ export default function ProfilePage() {
                   })}
                 </div>
               )}
-
-              <Separator className="my-5" />
-
-              {/* Danh sách chức năng */}
-              {/* <div className="mb-3 flex items-center justify-between">
-                <div className="font-semibold text-sm">
-                  {t("subscription.featuresTitle", {
-                    defaultValue: "Chức năng của gói",
-                  })}
-                </div> */}
-              {/* {!usageQuery.isLoading && usageItems.length > 0 && (
-                <div className="text-xs text-muted-foreground">
-                    {usageItems.length} {t("items", { defaultValue: "mục" })}
-                </div>
-            )} */}
-              {/* </div> */}
-
-              {/* {usageQuery.isLoading ? (
-                <div className="py-2 text-sm text-muted-foreground">
-                  {t("subscription.featuresLoading", {
-                    defaultValue: "Đang tải chức năng...",
-                  })}
-                </div>
-              ) : usageItems.length === 0 ? (
-                <div className="py-2 text-sm text-muted-foreground">
-                  {t("subscription.noFeatures", {
-                    defaultValue: "Chưa có chức năng nào.",
-                  })}
-                </div>
-              ) : (
-                <ul className="space-y-3">
-                  {usageItems.map((f, idx) => {
-                    const limitLabel = f.isUnlimited
-                      ? t("subscription.unlimited", {
-                          defaultValue: "Không giới hạn",
-                        })
-                      : `${f.usageCount}/${f.limitValue}${f.limitType ? ` (${f.limitType})` : ""}`;
-
-                    return (
-                      <li
-                        key={`${f.featureType}-${idx}`}
-                        className="rounded-xl border bg-background px-3 sm:px-4 py-3 hover:shadow-sm transition"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-semibold truncate">
-                                {t(`features.${f.featureName}`)}
-                              </span> */}
-              {/* {f.limitType && (
-                                            <span className="text-[10px] tracking-wide rounded-full bg-muted px-2 py-0.5 text-muted-foreground">
-                                                {f.limitType}
-                                            </span>
-                                        )} */}
-              {/* </div>
-                            <div className="mt-1 text-xs text-muted-foreground">
-                              {t("subscription.resetAt", {
-                                defaultValue: "Reset lúc",
-                              })}
-                              : {formatDate(f.resetAt)}
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-2 my-4 shrink-0">
-                            <Badge
-                              variant={f.canUse ? "default" : "secondary"}
-                              className="rounded-full px-2 py-0.5 text-xs"
-                            >
-                              {f.canUse
-                                ? t("subscription.canUse", {
-                                    defaultValue: "Có thể dùng",
-                                  })
-                                : t("subscription.cannotUse", {
-                                    defaultValue: "Không thể dùng",
-                                  })}
-                            </Badge>
-                            <span className="text-xs font-bold tabular-nums">
-                              {limitLabel}
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )} */}
             </CardContent>
           </Card>
         </div>

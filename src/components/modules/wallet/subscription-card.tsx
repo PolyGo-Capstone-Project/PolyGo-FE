@@ -121,7 +121,6 @@ export function SubscriptionCard({
         setIsCancelDialogOpen(false);
         setCancelReason("");
       },
-      // Có thể thêm onError, onSettled nếu cần
     });
   };
 
@@ -247,49 +246,56 @@ export function SubscriptionCard({
             {t("noFeatures", { defaultValue: "Chưa có chức năng nào." })}
           </div>
         ) : (
-          <ul className="space-y-3">
-            {usage.map((f, idx) => {
-              const limitLabel = f.isUnlimited
-                ? t("unlimited", { defaultValue: "Không giới hạn" })
-                : `${f.usageCount}/${f.limitValue}${
-                    f.limitType ? ` (${f.limitType})` : ""
-                  }`;
-              return (
-                <li
-                  key={`${f.featureType}-${idx}`}
-                  className="rounded-xl border bg-background px-3 sm:px-4 py-3 hover:shadow-sm transition"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold truncate">
-                          {translateFeatureKey(f.featureName)}
+          // 👇 Nếu nhiều hơn 4 feature, giới hạn chiều cao ~4 item và cho cuộn
+          <div
+            className={usage.length > 4 ? "max-h-90 overflow-y-auto pr-1" : ""}
+          >
+            <ul className="space-y-3">
+              {usage.map((f, idx) => {
+                const limitLabel = f.isUnlimited
+                  ? t("unlimited", { defaultValue: "Không giới hạn" })
+                  : `${f.usageCount}/${f.limitValue}${
+                      f.limitType ? ` (${f.limitType})` : ""
+                    }`;
+                return (
+                  <li
+                    key={`${f.featureType}-${idx}`}
+                    className="rounded-xl border bg-background px-3 sm:px-4 py-3 hover:shadow-sm transition"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-semibold truncate">
+                            {translateFeatureKey(f.featureName)}
+                          </span>
+                        </div>
+                        <div className="mt-1 text-xs text-muted-foreground">
+                          {t("resetAt", { defaultValue: "Reset lúc" })}:{" "}
+                          {formatDate(f.resetAt)}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 my-4 shrink-0">
+                        <Badge
+                          variant={f.canUse ? "default" : "secondary"}
+                          className="rounded-full px-2 py-0.5 text-xs"
+                        >
+                          {f.canUse
+                            ? t("canUse", { defaultValue: "Có thể dùng" })
+                            : t("cannotUse", {
+                                defaultValue: "Không thể dùng",
+                              })}
+                        </Badge>
+                        <span className="text-xs font-bold tabular-nums">
+                          {limitLabel}
                         </span>
                       </div>
-                      <div className="mt-1 text-xs text-muted-foreground">
-                        {t("resetAt", { defaultValue: "Reset lúc" })}:{" "}
-                        {formatDate(f.resetAt)}
-                      </div>
                     </div>
-
-                    <div className="flex items-center gap-2 my-4 shrink-0">
-                      <Badge
-                        variant={f.canUse ? "default" : "secondary"}
-                        className="rounded-full px-2 py-0.5 text-xs"
-                      >
-                        {f.canUse
-                          ? t("canUse", { defaultValue: "Có thể dùng" })
-                          : t("cannotUse", { defaultValue: "Không thể dùng" })}
-                      </Badge>
-                      <span className="text-xs font-bold tabular-nums">
-                        {limitLabel}
-                      </span>
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         )}
       </div>
 
@@ -297,7 +303,6 @@ export function SubscriptionCard({
       {String(current?.planType ?? "").toLowerCase() === "plus" ||
       String(current?.planType ?? "").toLowerCase() === "premium" ? (
         <div className="pt-1">
-          {/* 👈 Thay thế Button bằng AlertDialogTrigger */}
           <AlertDialog
             open={isCancelDialogOpen}
             onOpenChange={setIsCancelDialogOpen}
@@ -340,14 +345,14 @@ export function SubscriptionCard({
                 <AlertDialogCancel
                   onClick={() => {
                     setIsCancelDialogOpen(false);
-                    setCancelReason(""); // Xóa input khi hủy
+                    setCancelReason("");
                   }}
                   disabled={cancelSubscription.isPending}
                 >
                   {t("cancelDialogCancel", { defaultValue: "Đóng" })}
                 </AlertDialogCancel>
                 <AlertDialogAction
-                  onClick={handleCancelSubscription} // 👈 Gọi hàm xử lý hủy gói
+                  onClick={handleCancelSubscription}
                   disabled={cancelSubscription.isPending}
                 >
                   {cancelSubscription.isPending
