@@ -132,8 +132,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  Separator, // Import Separator
 } from "@/components/ui";
-import { usePlansQuery } from "@/hooks/query/use-subscriptionPlan";
+import {
+  useCurrentSubscriptionQuery,
+  usePlansQuery,
+} from "@/hooks/query/use-subscriptionPlan";
 import { PaginationLangQueryType } from "@/models";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
@@ -153,18 +157,11 @@ export default function PricingPage() {
   const plansPayload = plansQuery.data?.payload?.data;
   const plans = plansPayload?.items ?? [];
 
-  // LỌC: Chỉ giữ lại các gói Plus có thời hạn 30 ngày hoặc 365 ngày
-  const paidPlans = plans.filter((plan: any) => {
-    // Loại bỏ nếu planType là 'free' (case-insensitive) hoặc giá lớn bất thường
-    const isExplicitlyFree = plan.planType?.toLowerCase() === "free";
-    const isImplicitlyFree = Number(plan.price) > 100000;
+  // NEW: current subscription
+  const currentSubQuery = useCurrentSubscriptionQuery(true);
+  const subData = currentSubQuery.data?.payload?.data;
 
-    // CHỈ GIỮ LẠI: plans có thời hạn là 30 ngày hoặc 365 ngày
-    const duration = Number(plan.durationInDays);
-    const isDesiredDuration = duration === 30 || duration === 365;
-
-    return !(isExplicitlyFree || isImplicitlyFree) && isDesiredDuration;
-  });
+  const displayedPlans = plans;
 
   // humanize: PremiumBadges -> "Premium Badges"
   const humanize = (s?: string) => {
@@ -205,7 +202,12 @@ export default function PricingPage() {
   };
 
   // format price nicely using user's locale if available
-  const formatPrice = (price: number | string | undefined) => {
+  const formatPrice = (
+    price: number | string | undefined,
+    planType?: string
+  ) => {
+    const isFreeType = planType?.toLowerCase?.() === "free";
+    if (isFreeType) return t("freeTier.price");
     if (price === undefined || price === null) return "";
     const num = typeof price === "string" ? Number(price) : price;
     if (num > 100000) return t("freeTier.price");
@@ -224,6 +226,30 @@ export default function PricingPage() {
   const isMostPopular = (plan: any) =>
     plan?.planType?.toLowerCase() === "plus" &&
     Number(plan?.durationInDays) === 30;
+
+  // NEW: format date ngắn gọn (Được thêm từ ProfilePage)
+  const formatDate = (iso?: string | null) => {
+    if (!iso) return "";
+    try {
+      return new Date(iso).toLocaleDateString(locale ?? "en", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch {
+      return iso ?? "";
+    }
+  };
+
+  // NEW: xác định card nào là gói hiện tại (Được thêm từ ProfilePage)
+  const isCurrentPlan = (plan: any, current?: any) => {
+    if (!plan || !current) return false;
+    const a = String(plan.planType ?? "").toLowerCase();
+    const b = String(current.planType ?? "").toLowerCase();
+    const nameA = String(plan.name ?? "").toLowerCase();
+    const nameB = String(current.planName ?? "").toLowerCase();
+    return a === b || (nameA && nameB && nameA === nameB);
+  };
 
   // FAQs (unchanged)
   const faqs = [
@@ -245,27 +271,115 @@ export default function PricingPage() {
           </p>
         </div>
 
+        {/* NEW: Current plan summary - Thẻ Gói hiện tại đặt lên đầu tiên */}
+        <div className="mb-8 sm:mb-10">
+          <Card className="border-primary/30">
+            <CardHeader className="py-3 sm:py-4">
+              <CardTitle className="flex flex-wrap items-center font-semibold gap-3 text-base sm:text-lg">
+                {t("current.title", { defaultValue: "Gói hiện tại của bạn" })}
+                {currentSubQuery.isLoading ? null : subData?.active ? (
+                  <Badge className="rounded-full px-2 py-0.5 text-xs">
+                    {t("current.active", { defaultValue: "Đang hoạt động" })}
+                  </Badge>
+                ) : subData ? (
+                  <Badge
+                    variant="secondary"
+                    className="rounded-full px-2 py-0.5 text-xs"
+                  >
+                    {t("current.inactive", { defaultValue: "Không hoạt động" })}
+                  </Badge>
+                ) : null}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="py-4 sm:py-5">
+              {currentSubQuery.isLoading ? (
+                <div className="text-sm text-muted-foreground">
+                  {t("current.loading", {
+                    defaultValue: "Đang tải gói hiện tại...",
+                  })}
+                </div>
+              ) : subData ? (
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-md text-muted-foreground">
+                      {t("current.plan", { defaultValue: "Gói" })}:
+                    </span>
+                    <span className="text-lg font-semibold">
+                      {subData.planName}{" "}
+                    </span>
+                    {subData.planType && (
+                      <Badge
+                        variant="outline"
+                        className="rounded-full px-2 py-0.5 text-[10px] background-primary text-primary"
+                      >
+                        {subData.planType}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="text-md sm:text-sm text-muted-foreground">
+                    {t("current.ends", { defaultValue: "Hết hạn" })}:{" "}
+                    <span className="font-medium text-foreground">
+                      {formatDate(subData.endAt)}
+                    </span>
+                    <Separator
+                      className="inline-block mx-3 h-4 align-middle"
+                      orientation="vertical"
+                    />
+                    {t("current.autoRenew", {
+                      defaultValue: "Gia hạn tự động",
+                    })}
+                    :{" "}
+                    <Badge
+                      variant={subData.autoRenew ? "default" : "secondary"}
+                      className="align-middle px-2 mx-2"
+                    >
+                      {subData.autoRenew
+                        ? t("current.yes", { defaultValue: "Có" })
+                        : t("current.no", { defaultValue: "Không" })}
+                    </Badge>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-sm text-muted-foreground">
+                  {t("current.empty", { defaultValue: "Bạn chưa có gói nào." })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Pricing Cards: render all paid plans with 30 or 365 days duration */}
-        <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-2 mb-12 sm:mb-16 lg:mb-20">
-          {paidPlans.length === 0 ? (
+        <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3 mb-12 sm:mb-16 lg:mb-20">
+          {displayedPlans.length === 0 ? (
             // Nếu không có plans có phí nào thỏa mãn điều kiện, hiển thị một thông báo
             <div className="lg:col-span-3 sm:col-span-2 text-center py-10 text-muted-foreground">
               {"No paid subscription plans (monthly or yearly) available yet."}
             </div>
           ) : (
             // Map all filtered paid plans to cards
-            paidPlans.map((plan: any) => {
+            displayedPlans.map((plan: any) => {
               const features = buildFeatureList(plan);
-              const priceLabel = formatPrice(plan.price);
-              const isFree = false; // Luôn là false vì đã lọc
+              // Sử dụng formatPrice với plan.planType để xử lý gói Free nếu có
+              const priceLabel = formatPrice(plan.price, plan.planType);
+              // Kiểm tra xem gói này có phải gói hiện tại không
+              const current = isCurrentPlan(plan, subData);
 
               return (
                 <Card
                   key={plan.id}
-                  className={`relative flex flex-col ${isMostPopular(plan) ? "border-primary shadow-lg" : ""}`}
+                  className={`relative flex flex-col ${
+                    isMostPopular(plan) ? "border-primary shadow-lg" : ""
+                  }`}
                 >
+                  {/* NEW: đánh dấu gói hiện tại - Được thêm từ ProfilePage */}
+                  {current && (
+                    <Badge className="absolute -top-3 left-3 bg-primary text-primary-foreground px-3 py-1 text-xs sm:text-xs rounded-full">
+                      {t("current.badge", { defaultValue: "Current" })}
+                    </Badge>
+                  )}
+
                   {isMostPopular(plan) && (
-                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 text-xs sm:text-sm">
+                    <Badge className="absolute -top-3 right-3 bg-primary text-primary-foreground px-3 py-1 text-xs sm:text-sm">
                       {t("mostPopular")}
                     </Badge>
                   )}
@@ -325,9 +439,14 @@ export default function PricingPage() {
                   </CardContent>
 
                   <CardFooter>
-                    {/* Nút luôn là default vì đây là gói trả phí */}
-                    <Button variant="default" className="w-full">
-                      {`${t("plusTier.button")} →`}
+                    <Button
+                      variant={current ? "secondary" : "default"}
+                      className="w-full"
+                      disabled={!!current} // Vẫn giữ nguyên logic disable khi là gói hiện tại
+                    >
+                      {current
+                        ? t("current.button", { defaultValue: "Đang sử dụng" })
+                        : `${t("plusTier.button")} →`}
                     </Button>
                   </CardFooter>
                 </Card>

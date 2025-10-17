@@ -5,7 +5,19 @@
     "mostPopular": "Most Popular",
     "noFeatures": "No features available",
     "loading": "Loading...",
-
+    "current": {
+      "title": "Current Plan",
+      "active": "Active",
+      "plan": "Plan",
+      "ends": "End at",
+      "autoRenew": "Auto Renew",
+      "yes": "Yes",
+      "description": "Your current plan",
+      "badge": "Current",
+      "button": "In Use",
+      "empty": "You currently have no active subscriptions.",
+      "loading": "Loading current plan..."
+    },
     "freeTier": {
       "name": "Free",
       "price": "Free",

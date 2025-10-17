@@ -6,6 +6,20 @@
     "noFeatures": "Không có tính năng nào được liệt kê",
     "loading": "Đang tải...",
 
+    "current": {
+      "title": "Gói hiện tại",
+      "active": "Đang hoạt động",
+      "plan": "Gói",
+      "ends": "Kết thúc",
+      "autoRenew": "Tự động gia hạn",
+      "yes": "Có",
+      "description": "Your current plan",
+      "badge": "Current",
+      "button": "Đang sử dụng",
+      "empty": "Bạn hiện không có gói đăng ký nào.",
+      "loading": "Đang tải gói hiện tại..."
+    },
+
     "freeTier": {
       "name": "Miễn phí",
       "price": "Miễn phí",
