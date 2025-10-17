@@ -69,7 +69,7 @@
     "userdashboard": "Trang chủ",
     "chat": "Trò chuyện",
     "event": "Sự kiện",
-    "matching": "Ghép đôi",
+    "matching": "Kết nối",
     "social": "Mạng xã hội",
     "game": "Trò chơi",
     "account": "Tài khoản",
@@ -78,7 +78,7 @@
     "logout": "Đăng xuất",
     "loggingOut": "Đang đăng xuất...",
     "events": "Sự kiện của tôi",
-    "wallet": "Ví"
+    "wallet": "Ví cá nhân"
   },
   "common": {
     "gender": {

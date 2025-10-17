@@ -74,6 +74,9 @@
     "error": {
       "loadUsers": "Failed to load users",
       "loadProfile": "Failed to load profile",
+      "userNotFound": "User not found",
+      "userNotFoundDescription": "The user you're looking for doesn't exist or has been removed.",
+      "backToMatching": "Back to Matching",
       "retry": "Retry"
     }
   }
