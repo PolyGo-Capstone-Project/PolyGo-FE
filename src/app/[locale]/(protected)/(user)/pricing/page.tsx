@@ -1,127 +1,3 @@
-// "use client"
-
-// import { useTranslations } from "next-intl"
-// import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui"
-// import { Button } from "@/components/ui/button"
-// import { Badge } from "@/components/ui/badge"
-
-// export default function PricingPage() {
-//   const t = useTranslations("pricing")
-
-//   const freeTierFeatures = [
-//     t("freeTier.features.matching"),
-//     t("freeTier.features.chat"),
-//     t("freeTier.features.calls"),
-//     t("freeTier.features.events"),
-//     t("freeTier.features.gamification"),
-//     t("freeTier.features.ads"),
-//   ]
-
-//   const plusTierFeatures = [
-//     t("plusTier.features.chat"),
-//     t("plusTier.features.calls"),
-//     t("plusTier.features.matching"),
-//     t("plusTier.features.events"),
-//     t("plusTier.features.gamification"),
-//     t("plusTier.features.tools"),
-//     t("plusTier.features.adFree"),
-//   ]
-
-//   const faqs = [
-//     {
-//       question: t("faq.q1.question"),
-//       answer: t("faq.q1.answer"),
-//     },
-//     {
-//       question: t("faq.q2.question"),
-//       answer: t("faq.q2.answer"),
-//     },
-//     {
-//       question: t("faq.q3.question"),
-//       answer: t("faq.q3.answer"),
-//     },
-//   ]
-
-//   return (
-//     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
-//       <div className="mx-auto max-w-6xl">
-//         {/* Header */}
-//         <div className="text-center mb-8 sm:mb-12">
-//           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-3 sm:mb-4">{t("title")}</h1>
-//           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">{t("subtitle")}</p>
-//         </div>
-
-//         {/* Pricing Cards */}
-//         <div className="grid gap-6 sm:gap-8 lg:grid-cols-2 mb-12 sm:mb-16 lg:mb-20">
-//           {/* Free Tier */}
-//           <Card className="relative flex flex-col">
-//             <CardHeader className="pb-6 sm:pb-8">
-//               <CardTitle className="text-xl sm:text-2xl">{t("freeTier.name")}</CardTitle>
-//               <div className="mt-3 sm:mt-4">
-//                 <span className="text-4xl sm:text-5xl font-bold">{t("freeTier.price")}</span>
-//               </div>
-//             </CardHeader>
-//             <CardContent className="flex-1 pb-6">
-//               <ul className="space-y-3 sm:space-y-4">
-//                 {freeTierFeatures.map((feature, index) => (
-//                   <li key={index} className="flex gap-2 sm:gap-3 text-sm sm:text-base">
-//                     <span className="text-green-600 flex-shrink-0 mt-0.5">✓</span>
-//                     <span className="text-muted-foreground leading-relaxed">{feature}</span>
-//                   </li>
-//                 ))}
-//               </ul>
-//             </CardContent>
-//             <CardFooter>
-//               <Button variant="outline" className="w-full bg-transparent" disabled>
-//                 {t("freeTier.button")}
-//               </Button>
-//             </CardFooter>
-//           </Card>
-
-//           {/* Plus Tier */}
-//           <Card className="relative flex flex-col border-primary shadow-lg">
-//             <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 text-xs sm:text-sm">
-//               {t("mostPopular")}
-//             </Badge>
-//             <CardHeader className="pb-6 sm:pb-8">
-//               <CardTitle className="text-xl sm:text-2xl">{t("plusTier.name")}</CardTitle>
-//               <div className="mt-3 sm:mt-4">
-//                 <span className="text-4xl sm:text-5xl font-bold">{t("plusTier.price")}</span>
-//                 <span className="text-base sm:text-lg text-muted-foreground ml-1">{t("plusTier.period")}</span>
-//               </div>
-//             </CardHeader>
-//             <CardContent className="flex-1 pb-6">
-//               <ul className="space-y-3 sm:space-y-4">
-//                 {plusTierFeatures.map((feature, index) => (
-//                   <li key={index} className="flex gap-2 sm:gap-3 text-sm sm:text-base">
-//                     <span className="text-green-600 flex-shrink-0 mt-0.5">✓</span>
-//                     <span className="text-foreground leading-relaxed">{feature}</span>
-//                   </li>
-//                 ))}
-//               </ul>
-//             </CardContent>
-//             <CardFooter>
-//               <Button className="w-full">{t("plusTier.button")} →</Button>
-//             </CardFooter>
-//           </Card>
-//         </div>
-
-//         {/* FAQ Section */}
-//         <div className="max-w-3xl mx-auto">
-//           <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">{t("faq.title")}</h2>
-//           <div className="space-y-4 sm:space-y-6">
-//             {faqs.map((faq, index) => (
-//               <div key={index} className="border-b pb-4 sm:pb-6 last:border-b-0">
-//                 <h3 className="font-semibold text-base sm:text-lg mb-2 sm:mb-3">{faq.question}</h3>
-//                 <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{faq.answer}</p>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
 "use client";
 
 import {
@@ -132,19 +8,40 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  Separator, // Import Separator
+  Separator,
 } from "@/components/ui";
 import {
   useCurrentSubscriptionQuery,
   usePlansQuery,
+  useSubscribeMutation, // NEW
 } from "@/hooks/query/use-subscriptionPlan";
 import { PaginationLangQueryType } from "@/models";
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
+
+// NEW: Dialog + Switch + Label
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter as DialogFooterUI,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+
+// NEW: toast helpers (theo ví dụ của bạn)
+import { showErrorToast, showSuccessToast } from "@/lib/utils";
 
 export default function PricingPage() {
   const t = useTranslations("pricing");
+  const tWallet = useTranslations("wallet.subscription"); // dùng text cho auto-renew label
+  const tBuy = useTranslations("pricing.buy");
+
   const locale = useLocale();
+  const router = useRouter();
   const lang = useMemo(() => (locale ? locale.split("-")[0] : "en"), [locale]);
 
   const defaultParams: PaginationLangQueryType = {
@@ -157,13 +54,13 @@ export default function PricingPage() {
   const plansPayload = plansQuery.data?.payload?.data;
   const plans = plansPayload?.items ?? [];
 
-  // NEW: current subscription
+  // Current subscription
   const currentSubQuery = useCurrentSubscriptionQuery(true);
   const subData = currentSubQuery.data?.payload?.data;
 
   const displayedPlans = plans;
 
-  // humanize: PremiumBadges -> "Premium Badges"
+  // Helpers
   const humanize = (s?: string) => {
     if (!s) return "";
     const spaced = s
@@ -174,7 +71,6 @@ export default function PricingPage() {
     return spaced.charAt(0).toUpperCase() + spaced.slice(1);
   };
 
-  // safe translate feature: try a few keys, fallback to humanize
   const translateFeature = (featureName?: string, featureType?: string) => {
     const candidates = [
       featureName,
@@ -182,18 +78,14 @@ export default function PricingPage() {
       featureType,
       featureType?.toLowerCase?.(),
     ].filter(Boolean) as string[];
-
     for (const c of candidates) {
       const key = `features.${c}`;
-      // Sử dụng key làm giá trị mặc định để kiểm tra bản dịch
       const res = t(key, { defaultValue: key });
       if (res && res !== key) return res;
     }
-
     return humanize(featureName ?? featureType);
   };
 
-  // build feature list for a plan
   const buildFeatureList = (plan: any | undefined) => {
     if (!plan?.features || plan.features.length === 0) return [];
     return plan.features.map((f: any) =>
@@ -201,7 +93,6 @@ export default function PricingPage() {
     );
   };
 
-  // format price nicely using user's locale if available
   const formatPrice = (
     price: number | string | undefined,
     planType?: string
@@ -222,12 +113,10 @@ export default function PricingPage() {
     }
   };
 
-  // Determine whether a plan should show "Most popular" badge.
   const isMostPopular = (plan: any) =>
     plan?.planType?.toLowerCase() === "plus" &&
     Number(plan?.durationInDays) === 30;
 
-  // NEW: format date ngắn gọn (Được thêm từ ProfilePage)
   const formatDate = (iso?: string | null) => {
     if (!iso) return "";
     try {
@@ -241,15 +130,45 @@ export default function PricingPage() {
     }
   };
 
-  // NEW: xác định card nào là gói hiện tại (Được thêm từ ProfilePage)
-  const isCurrentPlan = (plan: any, current?: any) => {
-    if (!plan || !current) return false;
-    const a = String(plan.planType ?? "").toLowerCase();
-    const b = String(current.planType ?? "").toLowerCase();
-    const nameA = String(plan.name ?? "").toLowerCase();
-    const nameB = String(current.planName ?? "").toLowerCase();
-    return a === b || (nameA && nameB && nameA === nameB);
-  };
+  // ❌ isCurrentPlan đã loại bỏ theo yêu cầu
+  // ✅ Thay vì redirect checkout, mở popup xác nhận mua
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<any | null>(null);
+  const [autoRenew, setAutoRenew] = useState(true);
+
+  const subscribeMutation = useSubscribeMutation();
+
+  const openBuyDialog = useCallback((plan: any) => {
+    setSelectedPlan(plan);
+    setAutoRenew(true);
+    setConfirmOpen(true);
+  }, []);
+
+  const onConfirmBuy = useCallback(() => {
+    if (!selectedPlan?.id) return;
+    subscribeMutation.mutate(
+      { subscriptionPlanId: selectedPlan.id, autoRenew },
+      {
+        onSuccess: (response: any) => {
+          // Theo mẫu của bạn:
+          showSuccessToast(response?.payload?.message ?? "Subscribe", tBuy);
+          setConfirmOpen(false);
+          setSelectedPlan(null);
+        },
+        onError: (err: any) => {
+          showErrorToast(err?.payload?.message ?? "Purchase failed", tBuy);
+        },
+      }
+    );
+  }, [selectedPlan, autoRenew, subscribeMutation, tBuy]);
+
+  const handlePurchase = useCallback(
+    (plan: any) => {
+      // Mở dialog xác nhận mua thay vì chuyển trang
+      openBuyDialog(plan);
+    },
+    [openBuyDialog]
+  );
 
   // FAQs (unchanged)
   const faqs = [
@@ -271,7 +190,7 @@ export default function PricingPage() {
           </p>
         </div>
 
-        {/* NEW: Current plan summary - Thẻ Gói hiện tại đặt lên đầu tiên */}
+        {/* Current plan summary */}
         <div className="mb-8 sm:mb-10">
           <Card className="border-primary/30">
             <CardHeader className="py-3 sm:py-4">
@@ -348,21 +267,18 @@ export default function PricingPage() {
           </Card>
         </div>
 
-        {/* Pricing Cards: render all paid plans with 30 or 365 days duration */}
+        {/* Plans grid */}
         <div className="grid gap-6 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3 mb-12 sm:mb-16 lg:mb-20">
           {displayedPlans.length === 0 ? (
-            // Nếu không có plans có phí nào thỏa mãn điều kiện, hiển thị một thông báo
             <div className="lg:col-span-3 sm:col-span-2 text-center py-10 text-muted-foreground">
               {"No paid subscription plans (monthly or yearly) available yet."}
             </div>
           ) : (
-            // Map all filtered paid plans to cards
             displayedPlans.map((plan: any) => {
               const features = buildFeatureList(plan);
-              // Sử dụng formatPrice với plan.planType để xử lý gói Free nếu có
-              const priceLabel = formatPrice(plan.price, plan.planType);
-              // Kiểm tra xem gói này có phải gói hiện tại không
-              const current = isCurrentPlan(plan, subData);
+              const priceLabel = plan.price; // Giữ VNĐ như bạn đang hiển thị
+              const planType = String(plan.planType ?? "").toLowerCase();
+              const isFreePlan = planType === "free";
 
               return (
                 <Card
@@ -371,35 +287,26 @@ export default function PricingPage() {
                     isMostPopular(plan) ? "border-primary shadow-lg" : ""
                   }`}
                 >
-                  {/* NEW: đánh dấu gói hiện tại - Được thêm từ ProfilePage */}
-                  {current && (
-                    <Badge className="absolute -top-3 left-3 bg-primary text-primary-foreground px-3 py-1 text-xs sm:text-xs rounded-full">
-                      {t("current.badge", { defaultValue: "Current" })}
-                    </Badge>
-                  )}
-
                   {isMostPopular(plan) && (
                     <Badge className="absolute -top-3 right-3 bg-primary text-primary-foreground px-3 py-1 text-xs sm:text-sm">
                       {t("mostPopular")}
                     </Badge>
                   )}
+
                   <CardHeader className="pb-6 sm:pb-8">
-                    {/* Tiêu đề */}
                     <CardTitle className="text-xl sm:text-2xl min-h-[2.25rem]">
                       {plan.name ?? plan.planType}
                     </CardTitle>
 
-                    {/* Giá tiền và thời hạn */}
                     <div className="mt-3 sm:mt-4">
-                      <span className="text-3xl sm:text-3xl font-bold">
-                        {priceLabel}
+                      <span className="text-2xl sm:text-2xl font-bold">
+                        {priceLabel} VNĐ
                       </span>
                       <span className="text-base sm:text-lg text-muted-foreground ml-1">
                         {plan.durationInDays
                           ? plan.durationInDays === 30
                             ? t("plusTier.period")
-                            : // Cập nhật: Sử dụng t("plusTier.periodYearly") cho gói 365 ngày
-                              plan.durationInDays === 365
+                            : plan.durationInDays === 365
                               ? t("plusTier.periodYearly", {
                                   defaultValue: "/năm",
                                 })
@@ -408,7 +315,6 @@ export default function PricingPage() {
                       </span>
                     </div>
 
-                    {/* Sử dụng min-h-[1.25rem] và placeholder &nbsp; để căn chỉnh UI */}
                     <p className="text-sm text-muted-foreground mt-2 min-h-[2.25rem]">
                       {plan.description || <>&nbsp;</>}
                     </p>
@@ -438,17 +344,18 @@ export default function PricingPage() {
                     </ul>
                   </CardContent>
 
-                  <CardFooter>
-                    <Button
-                      variant={current ? "secondary" : "default"}
-                      className="w-full"
-                      disabled={!!current} // Vẫn giữ nguyên logic disable khi là gói hiện tại
-                    >
-                      {current
-                        ? t("current.button", { defaultValue: "Đang sử dụng" })
-                        : `${t("plusTier.button")} →`}
-                    </Button>
-                  </CardFooter>
+                  {!isFreePlan && (
+                    <CardFooter className="flex flex-col gap-1">
+                      <Button
+                        variant="default"
+                        className="w-full"
+                        disabled={subscribeMutation.isPending}
+                        onClick={() => handlePurchase(plan)}
+                      >
+                        {`${t("plusTier.button")} →`}
+                      </Button>
+                    </CardFooter>
+                  )}
                 </Card>
               );
             })
@@ -477,6 +384,98 @@ export default function PricingPage() {
           </div>
         </section>
       </div>
+
+      {/* NEW: Dialog xác nhận mua */}
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {t("buy.confirmTitle", { defaultValue: "Xác nhận mua gói" })}
+            </DialogTitle>
+            <DialogDescription>
+              {t("buy.desc", {
+                defaultValue:
+                  "Vui lòng kiểm tra thông tin gói trước khi xác nhận.",
+              })}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3">
+            <div className="flex items-center justify-between rounded-lg border bg-muted/30 px-3 py-2">
+              <span className="text-sm text-muted-foreground">
+                {t("planName", { defaultValue: "Tên gói" })}
+              </span>
+              <span className="text-sm font-semibold">
+                {selectedPlan?.name ?? selectedPlan?.planType ?? "—"}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between rounded-lg border bg-muted/30 px-3 py-2">
+              <span className="text-sm text-muted-foreground">
+                {t("price", { defaultValue: "Giá" })}
+              </span>
+              <span className="text-sm font-semibold">
+                {selectedPlan?.price != null
+                  ? `${selectedPlan.price} VNĐ`
+                  : "—"}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between rounded-lg border bg-muted/30 px-3 py-2">
+              <span className="text-sm text-muted-foreground">
+                {t("duration", { defaultValue: "Thời hạn" })}
+              </span>
+              <span className="text-sm font-semibold">
+                {selectedPlan?.durationInDays
+                  ? selectedPlan.durationInDays === 30
+                    ? t("plusTier.periodPopup", { defaultValue: "/tháng" })
+                    : selectedPlan.durationInDays === 365
+                      ? t("plusTier.periodYearlyPopup", {
+                          defaultValue: "/năm",
+                        })
+                      : ` ${selectedPlan.durationInDays} ${t("plusTier.days") ?? "days"}`
+                  : "—"}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between rounded-lg border px-3 py-2">
+              <div className="flex flex-col">
+                <Label htmlFor="auto-renew" className="text-sm font-medium">
+                  {tWallet("autoRenew", { defaultValue: "Tự động gia hạn" })}
+                </Label>
+                <span className="text-xs text-muted-foreground">
+                  {t("buy.autoRenewHint", {
+                    defaultValue: "Hệ thống sẽ tự gia hạn khi đến hạn.",
+                  })}
+                </span>
+              </div>
+              <Switch
+                id="auto-renew"
+                checked={autoRenew}
+                onCheckedChange={setAutoRenew}
+              />
+            </div>
+          </div>
+
+          <DialogFooterUI className="gap-2 sm:gap-0">
+            <Button
+              variant="outline"
+              onClick={() => setConfirmOpen(false)}
+              disabled={subscribeMutation.isPending}
+            >
+              {t("buy.cancel", { defaultValue: "Đóng" })}
+            </Button>
+            <Button
+              onClick={onConfirmBuy}
+              disabled={!selectedPlan?.id || subscribeMutation.isPending}
+            >
+              {subscribeMutation.isPending
+                ? t("buy.processing", { defaultValue: "Đang xử lý..." })
+                : t("buy.confirm", { defaultValue: "Xác nhận mua" })}
+            </Button>
+          </DialogFooterUI>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -5,7 +5,19 @@
     "mostPopular": "Phổ biến nhất",
     "noFeatures": "Không có tính năng nào được liệt kê",
     "loading": "Đang tải...",
-
+    "buy": {
+      "confirmTitle": "Xác nhận mua gói",
+      "desc": "Vui lòng kiểm tra thông tin gói trước khi xác nhận.",
+      "autoRenewHint": "Hệ thống sẽ tự động gia hạn khi đến hạn.",
+      "cancel": "Đóng",
+      "confirm": "Xác nhận mua",
+      "processing": "Đang xử lý...",
+      "Subscribe": "Mua gói thành công!",
+      "error": "Không thể mua gói, vui lòng thử lại sau."
+    },
+    "planName": "Tên gói",
+    "price": "Giá",
+    "duration": "Thời hạn",
     "current": {
       "title": "Gói hiện tại",
       "active": "Đang hoạt động",
@@ -13,11 +25,13 @@
       "ends": "Kết thúc",
       "autoRenew": "Tự động gia hạn",
       "yes": "Có",
-      "description": "Your current plan",
-      "badge": "Current",
+      "no": "Không",
+      "description": "Gói hiện tại của bạn",
+      "badge": "Đang sử dụng",
       "button": "Đang sử dụng",
       "empty": "Bạn hiện không có gói đăng ký nào.",
-      "loading": "Đang tải gói hiện tại..."
+      "loading": "Đang tải gói hiện tại...",
+      "stackNote": "Mua thêm sẽ cộng dồn vào thời hạn hiện tại của bạn"
     },
 
     "freeTier": {
@@ -39,8 +53,11 @@
       "price": "9.99 USD",
       "period": "/tháng",
       "periodYearly": "/năm",
+      "periodPopup": "tháng",
+      "periodYearlyPopup": "năm",
       "days": "ngày",
       "button": "Nâng cấp ngay",
+      "buttonRenew": "Gia hạn ngay",
       "features": {
         "chat": "Trò chuyện Không giới hạn",
         "calls": "Cuộc gọi Không giới hạn",

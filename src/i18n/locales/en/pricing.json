@@ -5,6 +5,19 @@
     "mostPopular": "Most Popular",
     "noFeatures": "No features available",
     "loading": "Loading...",
+    "buy": {
+      "confirmTitle": "Confirm purchase",
+      "desc": "Please review the plan details before confirming your purchase.",
+      "autoRenewHint": "The system will automatically renew when the plan expires.",
+      "cancel": "Close",
+      "confirm": "Confirm purchase",
+      "processing": "Processing...",
+      "Subscribe": "Plan purchased successfully!",
+      "error": "Unable to complete purchase. Please try again later."
+    },
+    "planName": "Plan name",
+    "price": "Price",
+    "duration": "Duration",
     "current": {
       "title": "Current Plan",
       "active": "Active",
@@ -12,11 +25,13 @@
       "ends": "End at",
       "autoRenew": "Auto Renew",
       "yes": "Yes",
+      "no": "No",
       "description": "Your current plan",
       "badge": "Current",
       "button": "In Use",
       "empty": "You currently have no active subscriptions.",
-      "loading": "Loading current plan..."
+      "loading": "Loading current plan...",
+      "stackNote": "Purchasing more will stack onto your current plan's duration"
     },
     "freeTier": {
       "name": "Free",
@@ -37,8 +52,11 @@
       "price": "$9.99",
       "period": "/month",
       "periodYearly": "/year",
+      "periodPopup": "month",
+      "periodYearlyPopup": "year",
       "days": "days",
       "button": "Upgrade Now",
+      "buttonRenew": "Renew Now",
       "features": {
         "chat": "Unlimited Chat",
         "calls": "Unlimited Calls",

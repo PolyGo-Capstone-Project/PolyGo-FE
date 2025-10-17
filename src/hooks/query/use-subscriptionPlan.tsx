@@ -3,6 +3,7 @@ import subscriptionApiRequest from "@/lib/apis/subscriptionPlan";
 import {
   GetPlansQueryType,
   GetSubscriptionUsageQueryType,
+  SubscribeBodyType,
 } from "@/models/subscriptionPlan.model";
 import {
   keepPreviousData,
@@ -86,6 +87,20 @@ export const useCancelSubscriptionMutation = () => {
       subscriptionApiRequest.cancelCurrent(reason),
     onSuccess: () => {
       // Sau khi hủy, refresh current + usage để UI đồng bộ
+      qc.invalidateQueries({ queryKey: ["user-subscription-current"] });
+      qc.invalidateQueries({ queryKey: ["user-subscription-usage"] });
+    },
+  });
+};
+
+// NEW: subscribe to a plan
+export const useSubscribeMutation = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: SubscribeBodyType) =>
+      subscriptionApiRequest.subscribe(body),
+    onSuccess: () => {
+      // Refetch để cập nhật gói hiện tại & usage
       qc.invalidateQueries({ queryKey: ["user-subscription-current"] });
       qc.invalidateQueries({ queryKey: ["user-subscription-usage"] });
     },

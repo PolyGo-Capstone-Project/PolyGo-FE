@@ -8,6 +8,8 @@ import {
   GetPlansResType,
   GetSubscriptionUsageQueryType,
   GetSubscriptionUsageResType,
+  SubscribeBodyType,
+  SubscribeResType,
   UpdateAutoRenewResType,
 } from "@/models/subscriptionPlan.model";
 
@@ -17,6 +19,7 @@ const currentPrefix = "/subscriptions/current";
 const usagePrefix = "/subscriptions/usage";
 const autoRenewPrefix = "/subscriptions/auto-renew";
 const cancelPrefix = "/subscriptions/cancel";
+const subscribePrefix = "/subscriptions/subscribe";
 
 export type GetPlansParams = GetPlansQueryType;
 // NEW:
@@ -49,6 +52,10 @@ const subscriptionApiRequest = {
   // NEW: Cancel current subscription (POST body: { reason })
   cancelCurrent: (reason: string) =>
     http.post<CancelSubscriptionResType>(cancelPrefix, { reason }),
+
+  // NEW: subscribe to a plan
+  subscribe: (body: SubscribeBodyType) =>
+    http.post<SubscribeResType>(subscribePrefix, body),
 };
 
 export default subscriptionApiRequest;

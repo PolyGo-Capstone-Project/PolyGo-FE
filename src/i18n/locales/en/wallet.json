@@ -16,6 +16,12 @@
       "upgradeSubscription": "Upgrade Subscription"
     },
     "subscription": {
+      "cancelDialogTitle": "Confirm Subscription Cancellation",
+      "cancelDialogDescription": "Please enter the reason for cancellation to help us improve our service.",
+      "cancelReasonPlaceholder": "Reason for cancellation...",
+      "cancelDialogCancel": "Close",
+      "cancelDialogConfirm": "Confirm Cancel",
+      "cancelDefaultReason": "User requested subscription cancellation (No detailed reason provided)",
       "title": "Current Subscription",
       "plan": "Plan",
       "status": "Status",
@@ -27,7 +33,33 @@
       "active": "Active",
       "inactive": "Inactive",
       "on": "On",
-      "off": "Off"
+      "off": "Off",
+      "loading": "Loading current plan...",
+      "planName": "Plan name",
+      "daysRemaining": "Days remaining",
+      "period": "Period",
+      "featuresTitle": "Plan features",
+      "featuresLoading": "Loading features...",
+      "noFeatures": "No features yet.",
+      "resetAt": "Reset at",
+      "canUse": "Available",
+      "cannotUse": "Unavailable",
+      "unlimited": "Unlimited",
+      "turnOn": "Turn on auto-renew",
+      "turnOff": "Turn off auto-renew",
+      "cancel": "Cancel subscription",
+      "features": {
+        "Chat": "Unlimited Chat",
+        "Translation": "Auto Translation",
+        "VoiceCall": "Voice Call",
+        "VideoCall": "Video Call",
+        "EventParticipation": "Event Participation",
+        "EventCreation": "Event Creation",
+        "PremiumBadges": "Premium Badges",
+        "Analytics": "Analytics & Insights",
+        "PrioritySupport": "Priority Support",
+        "AdvancedMatching": "Advanced Matching"
+      }
     },
     "transactions": {
       "title": "Transaction History",

@@ -130,6 +130,15 @@ export const CancelSubscriptionResSchema = z.object({
   message: z.string(),
 });
 
+// --- BỔ SUNG: Subscribe ---
+export const SubscribeBodySchema = z.object({
+  subscriptionPlanId: z.string(),
+  autoRenew: z.boolean().default(true),
+});
+
+export const SubscribeResSchema = z.object({
+  message: z.string(),
+});
 /* =========================
             TYPES
 ========================= */
@@ -169,3 +178,8 @@ export type CancelSubscriptionBodyType = z.infer<
 export type CancelSubscriptionResType = z.infer<
   typeof CancelSubscriptionResSchema
 >;
+
+// Subscribe types
+
+export type SubscribeBodyType = z.infer<typeof SubscribeBodySchema>;
+export type SubscribeResType = z.infer<typeof SubscribeResSchema>;

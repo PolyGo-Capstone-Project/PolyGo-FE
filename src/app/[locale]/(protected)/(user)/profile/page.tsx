@@ -24,7 +24,6 @@ import {
 // NEW: UI cho mục mới
 import {
   Badge,
-  Button,
   Card,
   CardContent,
   CardHeader,
@@ -325,7 +324,7 @@ export default function ProfilePage() {
                   </div>
 
                   {/* 2. Auto-Renew Action (Nằm riêng biệt dưới cùng) */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg border bg-secondary/10">
+                  {/* <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg border bg-secondary/10">
                     <div className="flex items-center gap-3">
                       <span className="text-sm font-medium">
                         {t("subscription.autoRenew", {
@@ -360,9 +359,10 @@ export default function ProfilePage() {
                               defaultValue: "Bật gia hạn",
                             })}
                     </Button>
-                  </div>
+                  </div> */}
+
                   {/* 3. Cancel Subscription Action (chỉ hiển thị với gói Plus) */}
-                  {String(subData.planType ?? "").toLowerCase() === "plus" && (
+                  {/* {String(subData.planType ?? "").toLowerCase() === "plus" && (
                     <div className="pt-1">
                       <Button
                         size="sm"
@@ -384,7 +384,7 @@ export default function ProfilePage() {
                             })}
                       </Button>
                     </div>
-                  )}
+                  )} */}
                 </div>
               ) : (
                 <div className="py-2 text-sm text-muted-foreground">
@@ -397,20 +397,20 @@ export default function ProfilePage() {
               <Separator className="my-5" />
 
               {/* Danh sách chức năng */}
-              <div className="mb-3 flex items-center justify-between">
+              {/* <div className="mb-3 flex items-center justify-between">
                 <div className="font-semibold text-sm">
                   {t("subscription.featuresTitle", {
                     defaultValue: "Chức năng của gói",
                   })}
-                </div>
-                {/* {!usageQuery.isLoading && usageItems.length > 0 && (
+                </div> */}
+              {/* {!usageQuery.isLoading && usageItems.length > 0 && (
                 <div className="text-xs text-muted-foreground">
                     {usageItems.length} {t("items", { defaultValue: "mục" })}
                 </div>
             )} */}
-              </div>
+              {/* </div> */}
 
-              {usageQuery.isLoading ? (
+              {/* {usageQuery.isLoading ? (
                 <div className="py-2 text-sm text-muted-foreground">
                   {t("subscription.featuresLoading", {
                     defaultValue: "Đang tải chức năng...",
@@ -441,13 +441,13 @@ export default function ProfilePage() {
                             <div className="flex items-center gap-2">
                               <span className="text-sm font-semibold truncate">
                                 {t(`features.${f.featureName}`)}
-                              </span>
-                              {/* {f.limitType && (
+                              </span> */}
+              {/* {f.limitType && (
                                             <span className="text-[10px] tracking-wide rounded-full bg-muted px-2 py-0.5 text-muted-foreground">
                                                 {f.limitType}
                                             </span>
                                         )} */}
-                            </div>
+              {/* </div>
                             <div className="mt-1 text-xs text-muted-foreground">
                               {t("subscription.resetAt", {
                                 defaultValue: "Reset lúc",
@@ -478,7 +478,7 @@ export default function ProfilePage() {
                     );
                   })}
                 </ul>
-              )}
+              )} */}
             </CardContent>
           </Card>
         </div>

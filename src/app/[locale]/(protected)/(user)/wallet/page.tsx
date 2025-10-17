@@ -11,6 +11,10 @@ import {
   TransactionHistory,
 } from "@/components";
 import { useAuthMe } from "@/hooks";
+import {
+  useCurrentSubscriptionQuery,
+  useSubscriptionUsageQuery,
+} from "@/hooks/query/use-subscriptionPlan"; // NEW
 
 // Mock data for transactions
 const mockTransactions: Transaction[] = [
@@ -116,6 +120,16 @@ export default function WalletPage() {
   const t = useTranslations("wallet");
   const { data: userData, isLoading } = useAuthMe();
 
+  // NEW: fetch current subscription & usage
+  const currentSubQuery = useCurrentSubscriptionQuery(true);
+  const usageQuery = useSubscriptionUsageQuery(
+    { pageNumber: 1, pageSize: 10 },
+    true
+  );
+
+  const subData = currentSubQuery.data?.payload?.data ?? null;
+  const usageItems = usageQuery.data?.payload?.data?.items ?? [];
+
   // Calculate total earned and spent from transactions
   const { totalEarned, totalSpent } = useMemo(() => {
     const earned = mockTransactions
@@ -172,10 +186,16 @@ export default function WalletPage() {
 
           {/* Current Subscription */}
           <SubscriptionCard
+            // legacy fallback props ( vẫn support )
             plan="free"
-            status="active"
-            nextBilling="N/A"
-            autoRenew={autoRenewSubscription}
+            status={subData?.active ? "active" : "inactive"}
+            nextBilling={subData?.endAt ?? "N/A"}
+            autoRenew={subData?.autoRenew ?? autoRenewSubscription}
+            // NEW: rich data to render giống Profile
+            current={subData}
+            usage={usageItems}
+            loadingCurrent={currentSubQuery.isLoading}
+            loadingUsage={usageQuery.isLoading}
           />
         </div>
       </div>
