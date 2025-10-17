@@ -69,7 +69,7 @@
     "userdashboard": "Trang chủ",
     "chat": "Trò chuyện",
     "event": "Sự kiện",
-    "matching": "Ghép đôi",
+    "matching": "Kết nối",
     "social": "Mạng xã hội",
     "game": "Trò chơi",
     "account": "Tài khoản",
@@ -78,7 +78,7 @@
     "logout": "Đăng xuất",
     "loggingOut": "Đang đăng xuất...",
     "events": "Sự kiện của tôi",
-    "wallet": "Ví"
+    "wallet": "Ví cá nhân"
   },
   "common": {
     "gender": {
@@ -117,5 +117,12 @@
     "interests": "Quản lý sở thích",
     "badges": "Quản lý huy hiệu",
     "subscriptions": "Quản lý đăng ký"
+  },
+  "pagination": {
+    "showing": "Hiển thị",
+    "to": "đến",
+    "of": "trong tổng số",
+    "items": "mục",
+    "perPage": "/ trang"
   }
 }

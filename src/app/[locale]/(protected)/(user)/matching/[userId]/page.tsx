@@ -16,8 +16,8 @@ import {
   ProfileStats,
   SendGiftDialog,
 } from "@/components";
+import { UserNotFound } from "@/components/modules/matching";
 import { useGetUserProfile, useMyReceivedGiftsQuery } from "@/hooks";
-import { handleErrorApi } from "@/lib/utils";
 
 // Mock data for features not yet implemented
 const MOCK_STATS = {
@@ -95,7 +95,6 @@ export default function UserProfilePage() {
   const params = useParams();
   const locale = useLocale();
   const t = useTranslations("profile");
-  const tError = useTranslations("Error");
   const [sendGiftDialogOpen, setSendGiftDialogOpen] = useState(false);
 
   const userId = params.userId as string;
@@ -105,6 +104,7 @@ export default function UserProfilePage() {
     data: userData,
     isLoading,
     error: userError,
+    refetch,
   } = useGetUserProfile(userId, { enabled: !!userId });
 
   // Fetch this user's received gifts (only accepted ones - isRead: true)
@@ -115,11 +115,7 @@ export default function UserProfilePage() {
     enabled: false, // Disable for other users' profiles
   });
 
-  // Handle error
-  if (userError) {
-    handleErrorApi({ error: userError, tError });
-  }
-
+  // Handle loading state
   if (isLoading) {
     return (
       <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
@@ -128,13 +124,32 @@ export default function UserProfilePage() {
     );
   }
 
+  // Handle error - Check if it's a 404 or other error
+  if (userError) {
+    const is404Error =
+      userError.message?.includes("404") ||
+      userError.message?.includes("not found") ||
+      !userData;
+
+    return (
+      <UserNotFound
+        locale={locale}
+        errorType={is404Error ? "notFound" : "loadFailed"}
+        onRetry={() => refetch()}
+      />
+    );
+  }
+
   const user = userData?.payload.data;
 
+  // Additional check if user data is null/undefined
   if (!user) {
     return (
-      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
-        <p className="text-muted-foreground">{tError("GetOne")}</p>
-      </div>
+      <UserNotFound
+        locale={locale}
+        errorType="notFound"
+        onRetry={() => refetch()}
+      />
     );
   }
 

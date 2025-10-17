@@ -74,6 +74,9 @@
     "error": {
       "loadUsers": "Không thể tải danh sách người dùng",
       "loadProfile": "Không thể tải hồ sơ",
+      "userNotFound": "Không tìm thấy người dùng",
+      "userNotFoundDescription": "Người dùng bạn đang tìm không tồn tại hoặc đã bị xóa.",
+      "backToMatching": "Quay Lại Tìm Kiếm",
       "retry": "Thử Lại"
     }
   }
