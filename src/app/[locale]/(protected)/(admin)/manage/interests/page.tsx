@@ -31,6 +31,7 @@ import {
 
 import { AddInterest } from "./add-interest";
 import { EditInterest } from "./edit-interest";
+import { InterestDetailDialog } from "./interest-detail-dialog";
 import { InterestTable } from "./interest-table";
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -77,6 +78,9 @@ export default function ManageInterestsPage() {
   const [itemToDelete, setItemToDelete] = useState<InterestListItemType | null>(
     null
   );
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedInterest, setSelectedInterest] =
+    useState<InterestListItemType | null>(null);
 
   const queryParams = useMemo<PaginationLangQueryType>(
     () => ({ pageNumber, pageSize, lang }),
@@ -148,6 +152,11 @@ export default function ManageInterestsPage() {
   const handleOpenEdit = (id: string) => {
     setEditingId(id);
     setIsEditOpen(true);
+  };
+
+  const handleOpenDetail = (interest: InterestListItemType) => {
+    setSelectedInterest(interest);
+    setDetailOpen(true);
   };
 
   const handleEditOpenChange = (open: boolean) => {
@@ -305,6 +314,7 @@ export default function ManageInterestsPage() {
         onRefresh={refreshList}
         onOpenCreate={handleOpenCreate}
         onOpenEdit={handleOpenEdit}
+        onOpenDetail={handleOpenDetail}
         onDelete={handleDeleteInterest}
         isDeletePending={deleteMutation.isPending}
         deletingId={deletingId}
@@ -338,6 +348,14 @@ export default function ManageInterestsPage() {
         isSubmitting={updateMutation.isPending}
         tError={tError}
         isUploading={uploadMediaMutation.isPending}
+      />
+
+      <InterestDetailDialog
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+        interest={selectedInterest}
+        safeTranslate={safeTranslate}
+        lang={lang}
       />
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

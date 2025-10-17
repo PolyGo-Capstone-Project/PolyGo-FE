@@ -3,6 +3,7 @@
 import {
   IconArrowLeft,
   IconArrowRight,
+  IconEye,
   IconPencil,
   IconPlus,
   IconRefresh,
@@ -66,6 +67,7 @@ type LanguageTableProps = {
   onRefresh: () => void;
   onOpenCreate: () => void;
   onOpenEdit: (id: string) => void;
+  onOpenDetail: (language: LanguageListItemType) => void;
   onDelete: (language: LanguageListItemType) => void | Promise<void>;
   isDeletePending: boolean;
   deletingId: string | null;
@@ -88,6 +90,7 @@ export function LanguageTable({
   onRefresh,
   onOpenCreate,
   onOpenEdit,
+  onOpenDetail,
   onDelete,
   isDeletePending,
   deletingId,
@@ -240,6 +243,14 @@ export function LanguageTable({
           </td>
           <td className="px-4 py-3">
             <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onOpenDetail(language)}
+              >
+                <IconEye className="size-4" />
+                <span className="sr-only">{safeTranslate("view", "View")}</span>
+              </Button>
               <Button
                 variant="ghost"
                 size="sm"

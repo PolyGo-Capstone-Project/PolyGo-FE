@@ -3,6 +3,7 @@
 import {
   IconArrowLeft,
   IconArrowRight,
+  IconEye,
   IconPencil,
   IconPlus,
   IconRefresh,
@@ -66,6 +67,7 @@ type InterestTableProps = {
   onRefresh: () => void;
   onOpenCreate: () => void;
   onOpenEdit: (id: string) => void;
+  onOpenDetail: (interest: InterestListItemType) => void;
   onDelete: (interest: InterestListItemType) => void | Promise<void>;
   isDeletePending: boolean;
   deletingId: string | null;
@@ -88,6 +90,7 @@ export function InterestTable({
   onRefresh,
   onOpenCreate,
   onOpenEdit,
+  onOpenDetail,
   onDelete,
   isDeletePending,
   deletingId,
@@ -250,6 +253,14 @@ export function InterestTable({
           </td>
           <td className="px-4 py-3">
             <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onOpenDetail(interest)}
+              >
+                <IconEye className="size-4" />
+                <span className="sr-only">{safeTranslate("view", "View")}</span>
+              </Button>
               <Button
                 variant="ghost"
                 size="sm"
