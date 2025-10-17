@@ -36,7 +36,8 @@
 
     "freeTier": {
       "name": "Miễn phí",
-      "price": "Miễn phí",
+      "price": "0 VNĐ",
+      "period": "/tháng",
       "button": "Bắt đầu với Free",
       "features": {
         "matching": "Ghép đôi cơ bản",
@@ -50,7 +51,7 @@
 
     "plusTier": {
       "name": "Plus",
-      "price": "9.99 USD",
+      "price": "100.000 VNĐ",
       "period": "/tháng",
       "periodYearly": "/năm",
       "periodPopup": "tháng",
@@ -58,6 +59,9 @@
       "days": "ngày",
       "button": "Nâng cấp ngay",
       "buttonRenew": "Gia hạn ngay",
+      "listButton": "Xem các gói Plus",
+      "listTitle": "Các gói Plus",
+      "listDesc": "Mở khóa các tính năng nâng cao và cải thiện trải nghiệm",
       "features": {
         "chat": "Trò chuyện Không giới hạn",
         "calls": "Cuộc gọi Không giới hạn",

@@ -35,7 +35,8 @@
     },
     "freeTier": {
       "name": "Free",
-      "price": "Free",
+      "price": "0 VNĐ",
+      "period": "/month",
       "button": "Start with Free",
       "features": {
         "matching": "Basic Matching",
@@ -49,7 +50,7 @@
 
     "plusTier": {
       "name": "Plus",
-      "price": "$9.99",
+      "price": "100,000 VNĐ",
       "period": "/month",
       "periodYearly": "/year",
       "periodPopup": "month",
@@ -57,6 +58,9 @@
       "days": "days",
       "button": "Upgrade Now",
       "buttonRenew": "Renew Now",
+      "listButton": "View All Plus Plans",
+      "listTitle": "Plus Plans",
+      "listDesc": "Unlock advanced features and enhance your experience with our Plus plans.",
       "features": {
         "chat": "Unlimited Chat",
         "calls": "Unlimited Calls",
