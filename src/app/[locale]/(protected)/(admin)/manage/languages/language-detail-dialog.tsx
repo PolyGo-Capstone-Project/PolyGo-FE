@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui";
-import { GiftListItemType } from "@/models";
+import { LanguageListItemType } from "@/models";
 
 const EMPTY_ICON = "—";
 
@@ -23,22 +23,22 @@ type SafeTranslate = (
   values?: TranslationValues
 ) => string;
 
-type GiftDetailDialogProps = {
+type LanguageDetailDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  gift: GiftListItemType | null;
+  language: LanguageListItemType | null;
   safeTranslate: SafeTranslate;
   lang: string;
 };
 
-export function GiftDetailDialog({
+export function LanguageDetailDialog({
   open,
   onOpenChange,
-  gift,
+  language,
   safeTranslate,
   lang,
-}: GiftDetailDialogProps) {
-  if (!gift) return null;
+}: LanguageDetailDialogProps) {
+  if (!language) return null;
 
   const formatDateTime = (value?: string | null) => {
     if (!value) return EMPTY_ICON;
@@ -62,38 +62,26 @@ export function GiftDetailDialog({
     }
   };
 
-  const formatPrice = (price: number) => {
-    try {
-      return new Intl.NumberFormat(lang, {
-        style: "decimal",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(price);
-    } catch {
-      return price.toLocaleString();
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl">
-            {safeTranslate("detailDialog.title", "Gift details")}
+            {safeTranslate("detailDialog.title", "Language details")}
           </DialogTitle>
           <DialogDescription className="text-base">
-            {gift.name}
+            {language.name}
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-6 py-4">
-          {/* Gift Icon Preview */}
-          {gift.iconUrl && (
+          {/* Language Icon/Flag Preview */}
+          {language.iconUrl && (
             <div className="flex justify-center p-6 border rounded-lg bg-muted/30">
               <div className="relative h-32 w-32 overflow-hidden rounded-lg bg-background shadow-sm">
                 <Image
-                  src={gift.iconUrl}
-                  alt={gift.name}
+                  src={language.iconUrl}
+                  alt={language.name}
                   fill
                   sizes="128px"
                   className="object-cover"
@@ -104,51 +92,70 @@ export function GiftDetailDialog({
           )}
 
           {/* Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="flex flex-col gap-2 p-4 border rounded-lg bg-muted/30">
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                {safeTranslate("detailDialog.price", "Price")}
+                {safeTranslate("detailDialog.name", "Language Name")}
               </span>
-              <span className="text-2xl font-bold">
-                {formatPrice(gift.price)}
-                <span className="text-sm font-normal text-muted-foreground ml-1">
-                  VND
-                </span>
-              </span>
+              <span className="text-lg font-semibold">{language.name}</span>
             </div>
 
             <div className="flex flex-col gap-2 p-4 border rounded-lg bg-muted/30">
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                {safeTranslate("detailDialog.locale", "Locale")}
+                {safeTranslate("detailDialog.code", "Language Code")}
+              </span>
+              <Badge
+                variant="outline"
+                className="w-fit text-base py-1 font-mono"
+              >
+                {language.code?.toUpperCase()}
+              </Badge>
+            </div>
+
+            <div className="flex flex-col gap-2 p-4 border rounded-lg bg-muted/30">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                {safeTranslate("detailDialog.locale", "Display Locale")}
               </span>
               <Badge variant="secondary" className="w-fit text-base py-1">
-                {gift.lang?.toUpperCase()}
+                {language.lang?.toUpperCase()}
               </Badge>
             </div>
           </div>
 
-          {/* Description */}
-          {gift.description && (
-            <div className="flex flex-col gap-2 p-4 border rounded-lg">
-              <span className="text-sm font-semibold">
-                {safeTranslate("detailDialog.description", "Description")}
-              </span>
-              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                {gift.description}
-              </p>
+          {/* Information Note */}
+          <div className="flex flex-col gap-2 p-4 border rounded-lg bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900">
+            <div className="flex items-start gap-3">
+              <div className="shrink-0 mt-0.5">
+                <svg
+                  className="h-5 w-5 text-blue-600 dark:text-blue-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <div className="flex flex-col gap-1">
+                <span className="text-sm font-semibold text-blue-900 dark:text-blue-100">
+                  {safeTranslate(
+                    "detailDialog.aboutLanguage",
+                    "About this language"
+                  )}
+                </span>
+                <p className="text-sm text-blue-700 dark:text-blue-200">
+                  {safeTranslate(
+                    "detailDialog.languageInfo",
+                    "This language can be selected by users for learning or as their speaking language."
+                  )}
+                </p>
+              </div>
             </div>
-          )}
-
-          {!gift.description && (
-            <div className="flex items-center justify-center p-6 border border-dashed rounded-lg">
-              <span className="text-sm text-muted-foreground">
-                {safeTranslate(
-                  "detailDialog.noDescription",
-                  "No description available"
-                )}
-              </span>
-            </div>
-          )}
+          </div>
 
           {/* Timestamps */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -157,7 +164,7 @@ export function GiftDetailDialog({
                 {safeTranslate("detailDialog.createdAt", "Created at")}
               </span>
               <span className="text-sm font-mono">
-                {formatDateTime(gift.createdAt)}
+                {formatDateTime(language.createdAt)}
               </span>
             </div>
 
@@ -166,7 +173,7 @@ export function GiftDetailDialog({
                 {safeTranslate("detailDialog.lastUpdatedAt", "Last updated at")}
               </span>
               <span className="text-sm font-mono">
-                {formatDateTime(gift.lastUpdatedAt)}
+                {formatDateTime(language.lastUpdatedAt)}
               </span>
             </div>
           </div>

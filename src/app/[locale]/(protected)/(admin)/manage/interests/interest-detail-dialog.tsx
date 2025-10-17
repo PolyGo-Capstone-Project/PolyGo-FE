@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui";
-import { GiftListItemType } from "@/models";
+import { InterestListItemType } from "@/models";
 
 const EMPTY_ICON = "—";
 
@@ -23,22 +23,22 @@ type SafeTranslate = (
   values?: TranslationValues
 ) => string;
 
-type GiftDetailDialogProps = {
+type InterestDetailDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  gift: GiftListItemType | null;
+  interest: InterestListItemType | null;
   safeTranslate: SafeTranslate;
   lang: string;
 };
 
-export function GiftDetailDialog({
+export function InterestDetailDialog({
   open,
   onOpenChange,
-  gift,
+  interest,
   safeTranslate,
   lang,
-}: GiftDetailDialogProps) {
-  if (!gift) return null;
+}: InterestDetailDialogProps) {
+  if (!interest) return null;
 
   const formatDateTime = (value?: string | null) => {
     if (!value) return EMPTY_ICON;
@@ -62,38 +62,26 @@ export function GiftDetailDialog({
     }
   };
 
-  const formatPrice = (price: number) => {
-    try {
-      return new Intl.NumberFormat(lang, {
-        style: "decimal",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(price);
-    } catch {
-      return price.toLocaleString();
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl">
-            {safeTranslate("detailDialog.title", "Gift details")}
+            {safeTranslate("detailDialog.title", "Interest details")}
           </DialogTitle>
           <DialogDescription className="text-base">
-            {gift.name}
+            {interest.name}
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-6 py-4">
-          {/* Gift Icon Preview */}
-          {gift.iconUrl && (
+          {/* Interest Icon Preview */}
+          {interest.iconUrl && (
             <div className="flex justify-center p-6 border rounded-lg bg-muted/30">
               <div className="relative h-32 w-32 overflow-hidden rounded-lg bg-background shadow-sm">
                 <Image
-                  src={gift.iconUrl}
-                  alt={gift.name}
+                  src={interest.iconUrl}
+                  alt={interest.name}
                   fill
                   sizes="128px"
                   className="object-cover"
@@ -107,14 +95,9 @@ export function GiftDetailDialog({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex flex-col gap-2 p-4 border rounded-lg bg-muted/30">
               <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                {safeTranslate("detailDialog.price", "Price")}
+                {safeTranslate("detailDialog.name", "Interest Name")}
               </span>
-              <span className="text-2xl font-bold">
-                {formatPrice(gift.price)}
-                <span className="text-sm font-normal text-muted-foreground ml-1">
-                  VND
-                </span>
-              </span>
+              <span className="text-lg font-semibold">{interest.name}</span>
             </div>
 
             <div className="flex flex-col gap-2 p-4 border rounded-lg bg-muted/30">
@@ -122,24 +105,24 @@ export function GiftDetailDialog({
                 {safeTranslate("detailDialog.locale", "Locale")}
               </span>
               <Badge variant="secondary" className="w-fit text-base py-1">
-                {gift.lang?.toUpperCase()}
+                {interest.lang?.toUpperCase()}
               </Badge>
             </div>
           </div>
 
           {/* Description */}
-          {gift.description && (
+          {interest.description && (
             <div className="flex flex-col gap-2 p-4 border rounded-lg">
               <span className="text-sm font-semibold">
                 {safeTranslate("detailDialog.description", "Description")}
               </span>
               <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                {gift.description}
+                {interest.description}
               </p>
             </div>
           )}
 
-          {!gift.description && (
+          {!interest.description && (
             <div className="flex items-center justify-center p-6 border border-dashed rounded-lg">
               <span className="text-sm text-muted-foreground">
                 {safeTranslate(
@@ -157,7 +140,7 @@ export function GiftDetailDialog({
                 {safeTranslate("detailDialog.createdAt", "Created at")}
               </span>
               <span className="text-sm font-mono">
-                {formatDateTime(gift.createdAt)}
+                {formatDateTime(interest.createdAt)}
               </span>
             </div>
 
@@ -166,7 +149,7 @@ export function GiftDetailDialog({
                 {safeTranslate("detailDialog.lastUpdatedAt", "Last updated at")}
               </span>
               <span className="text-sm font-mono">
-                {formatDateTime(gift.lastUpdatedAt)}
+                {formatDateTime(interest.lastUpdatedAt)}
               </span>
             </div>
           </div>
