@@ -24,7 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   useCancelSubscriptionMutation,
   useToggleAutoRenewMutation,
-} from "@/hooks/query/use-subscriptionPlan";
+} from "@/hooks/query/use-subscription";
 
 // NEW: types (tuỳ dự án, có thể import từ models)
 type FeatureUsage = {

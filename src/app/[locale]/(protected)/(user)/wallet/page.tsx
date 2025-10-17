@@ -14,7 +14,7 @@ import { useAuthMe } from "@/hooks";
 import {
   useCurrentSubscriptionQuery,
   useSubscriptionUsageQuery,
-} from "@/hooks/query/use-subscriptionPlan"; // NEW
+} from "@/hooks/query/use-subscription"; // NEW
 
 // Mock data for transactions
 const mockTransactions: Transaction[] = [

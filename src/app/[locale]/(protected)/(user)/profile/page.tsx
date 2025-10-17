@@ -36,7 +36,7 @@ import {
   useCurrentSubscriptionQuery,
   useSubscriptionUsageQuery,
   useToggleAutoRenewMutation,
-} from "@/hooks/query/use-subscriptionPlan";
+} from "@/hooks/query/use-subscription";
 import { locales } from "@/i18n/config";
 
 // Mock data for features not yet implemented
