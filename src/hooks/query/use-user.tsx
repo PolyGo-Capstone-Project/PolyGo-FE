@@ -6,6 +6,7 @@ import userApiRequest from "@/lib/apis/user";
 import {
   GetUsersMatchingQueryType,
   GetUsersQueryType,
+  SearchUserQueryType,
   SetRestrictionsBodyType,
   SetupProfileBodyType,
   UpdateMeBodyType,
@@ -106,7 +107,7 @@ export const useSetRestrictionsMutation = (options?: {
 
 // ============= FOR USER NOT ADMIN =============
 
-// matching
+// GET /users/matching - Get users matching criteria
 export const useGetUsersMatching = (
   query: GetUsersMatchingQueryType,
   options?: {
@@ -130,6 +131,20 @@ export const useGetUserProfile = (
   return useQuery({
     queryKey: ["user", id],
     queryFn: () => userApiRequest.getUserProfile(id),
+    enabled: options?.enabled,
+  });
+};
+
+// GET /users/search - Search users by name/languages/interests
+export const useSearchUsers = (
+  query: SearchUserQueryType,
+  options?: {
+    enabled?: boolean;
+  }
+) => {
+  return useQuery({
+    queryKey: ["users", "search", query],
+    queryFn: () => userApiRequest.searchUsers(query),
     enabled: options?.enabled,
   });
 };
