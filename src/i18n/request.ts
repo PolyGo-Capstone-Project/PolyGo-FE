@@ -20,6 +20,8 @@ const messageNamespaces = [
   "matching",
   "wallet",
   "pricing",
+  "gift",
+  "chat",
 ];
 
 async function loadMessages(locale: string): Promise<AbstractIntlMessages> {

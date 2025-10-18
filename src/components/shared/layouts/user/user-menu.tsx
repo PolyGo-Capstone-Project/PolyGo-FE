@@ -1,7 +1,7 @@
 "use client";
 
 import { IconCalendarEvent } from "@tabler/icons-react";
-import { LogOut, Settings, User, Wallet } from "lucide-react";
+import { LogOut, User, Wallet } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
@@ -50,7 +50,7 @@ export function UserMenu({ user }: { user: GetUserProfileResType }) {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        className="w-56 mt-2 z-[9999]" // tăng z-index cao
+        className="w-46 mt-2 z-[9999]" // tăng z-index cao
         align="end"
         sideOffset={8}
       >
@@ -65,25 +65,23 @@ export function UserMenu({ user }: { user: GetUserProfileResType }) {
 
         <DropdownMenuItem
           onClick={() => {
-            isNewUser
-              ? router.push(`/${locale}/setup-profile`)
-              : router.push(`/${locale}/profile`);
+            if (isNewUser) {
+              router.push(`/${locale}/setup-profile`);
+            } else {
+              router.push(`/${locale}/profile`);
+            }
           }}
         >
           <User className="mr-2 h-4 w-4" />
           <span>{t("profile") || "Profile"}</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push(`/${locale}/events`)}>
+        <DropdownMenuItem onClick={() => router.push(`/${locale}/my-event`)}>
           <IconCalendarEvent className="mr-2 h-4 w-4" />
           <span>{t("events") || "My Events"}</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push(`/${locale}/wallet`)}>
           <Wallet className="mr-2 h-4 w-4" />
           <span>{t("wallet") || "Wallet"}</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => router.push(`/${locale}/settings`)}>
-          <Settings className="mr-2 h-4 w-4" />
-          <span>{t("settings") || "Settings"}</span>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

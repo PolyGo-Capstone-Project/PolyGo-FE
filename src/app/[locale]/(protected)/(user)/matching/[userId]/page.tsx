@@ -2,10 +2,11 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 
-import { LoadingSpinner } from "@/components/modules/loading";
 import {
+  LoadingSpinner,
   ProfileAchievementsSection,
   ProfileGiftsSection,
   ProfileHeader,
@@ -13,9 +14,10 @@ import {
   ProfileInterestsSection,
   ProfileLanguagesSection,
   ProfileStats,
-} from "@/components/modules/profile";
-import { useGetUserProfile } from "@/hooks";
-import { handleErrorApi } from "@/lib/utils";
+  SendGiftDialog,
+} from "@/components";
+import { UserNotFound } from "@/components/modules/matching";
+import { useGetUserProfile, useMyReceivedGiftsQuery } from "@/hooks";
 
 // Mock data for features not yet implemented
 const MOCK_STATS = {
@@ -25,31 +27,6 @@ const MOCK_STATS = {
   totalHours: 150,
   eventsHosted: 2,
 };
-
-const MOCK_GIFTS = [
-  {
-    id: "1",
-    name: "☕",
-    value: 5,
-    from: {
-      name: "AnnaFR",
-      avatarUrl: null,
-    },
-    message: "Thank you for the amazing Vietnamese cooking class!",
-    receivedAt: "2025-10-06T10:00:00Z",
-  },
-  {
-    id: "2",
-    name: "📚",
-    value: 12,
-    from: {
-      name: "JohnEN",
-      avatarUrl: null,
-    },
-    message: "Your teaching style is incredible! Keep inspiring others 📖",
-    receivedAt: "2025-10-09T14:30:00Z",
-  },
-];
 
 const MOCK_ACHIEVEMENTS = [
   {
@@ -118,7 +95,7 @@ export default function UserProfilePage() {
   const params = useParams();
   const locale = useLocale();
   const t = useTranslations("profile");
-  const tError = useTranslations("Error");
+  const [sendGiftDialogOpen, setSendGiftDialogOpen] = useState(false);
 
   const userId = params.userId as string;
 
@@ -127,13 +104,18 @@ export default function UserProfilePage() {
     data: userData,
     isLoading,
     error: userError,
+    refetch,
   } = useGetUserProfile(userId, { enabled: !!userId });
 
-  // Handle error
-  if (userError) {
-    handleErrorApi({ error: userError, tError });
-  }
+  // Fetch this user's received gifts (only accepted ones - isRead: true)
+  // Note: This should ideally be a separate API endpoint for viewing another user's gifts
+  // For now, we'll show mock data or empty
+  const { data: receivedGiftsData } = useMyReceivedGiftsQuery({
+    params: { lang: locale, pageNumber: 1, pageSize: 20 },
+    enabled: false, // Disable for other users' profiles
+  });
 
+  // Handle loading state
   if (isLoading) {
     return (
       <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
@@ -142,13 +124,32 @@ export default function UserProfilePage() {
     );
   }
 
+  // Handle error - Check if it's a 404 or other error
+  if (userError) {
+    const is404Error =
+      userError.message?.includes("404") ||
+      userError.message?.includes("not found") ||
+      !userData;
+
+    return (
+      <UserNotFound
+        locale={locale}
+        errorType={is404Error ? "notFound" : "loadFailed"}
+        onRetry={() => refetch()}
+      />
+    );
+  }
+
   const user = userData?.payload.data;
 
+  // Additional check if user data is null/undefined
   if (!user) {
     return (
-      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
-        <p className="text-muted-foreground">{tError("GetOne")}</p>
-      </div>
+      <UserNotFound
+        locale={locale}
+        errorType="notFound"
+        onRetry={() => refetch()}
+      />
     );
   }
 
@@ -157,8 +158,12 @@ export default function UserProfilePage() {
   const learningLanguages = user.learningLanguages || [];
   const interests = (user.interests || []).map((interest) => ({
     ...interest,
-    description: interest.name, // Use name as description or provide a default
+    description: interest.name,
   }));
+
+  // For other users, we don't show their gifts
+  // In a real app, you'd need a separate endpoint to get public gifts
+  const transformedGifts: any[] = [];
 
   // Handle share profile
   const handleShare = () => {
@@ -167,68 +172,84 @@ export default function UserProfilePage() {
     toast.success(t("share") + " - " + "Link copied!");
   };
 
+  const handleAddFriend = () => {
+    toast("Feature coming soon!");
+  };
+
   // Handle send gift
   const handleSendGift = () => {
-    // TODO: Implement send gift functionality
-    console.log("Send gift to:", userId);
-    toast.info("Send gift feature coming soon!");
+    setSendGiftDialogOpen(true);
   };
 
   return (
-    <div className="container mx-auto max-w-7xl space-y-6 p-4 md:p-6">
-      {/* Header Section */}
-      <ProfileHeader
-        name={user.name}
-        email={user.mail}
-        avatarUrl={user.avatarUrl}
-        meritLevel={user.meritLevel}
-        gender={user.gender}
-        introduction={user.introduction}
-        isOnline={true} // Mock online status
-        variant="other"
-        onSendGift={handleSendGift}
-        onShare={handleShare}
-      />
+    <>
+      <div className="container mx-auto max-w-7xl space-y-6 p-4 md:p-6">
+        {/* Header Section */}
+        <ProfileHeader
+          name={user.name}
+          email={user.mail}
+          avatarUrl={user.avatarUrl}
+          meritLevel={user.meritLevel}
+          gender={user.gender}
+          introduction={user.introduction}
+          isOnline={true}
+          variant="other"
+          onSendGift={handleSendGift}
+          onShare={handleShare}
+          onAddFriend={handleAddFriend}
+        />
 
-      {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Left Column - Main Info */}
-        <div className="space-y-6 lg:col-span-2">
-          {/* Languages */}
-          <ProfileLanguagesSection
-            nativeLanguages={speakingLanguages}
-            learningLanguages={learningLanguages}
-          />
+        {/* Main Content Grid */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* Left Column - Main Info */}
+          <div className="space-y-6 lg:col-span-2">
+            {/* Languages */}
+            <ProfileLanguagesSection
+              nativeLanguages={speakingLanguages}
+              learningLanguages={learningLanguages}
+            />
 
-          {/* Interests */}
-          <ProfileInterestsSection interests={interests} />
+            {/* Interests */}
+            <ProfileInterestsSection interests={interests} />
 
-          {/* Gifts */}
-          <ProfileGiftsSection gifts={MOCK_GIFTS} />
+            {/* Gifts - Hidden for other users or show public gifts */}
+            {transformedGifts.length > 0 && (
+              <ProfileGiftsSection gifts={transformedGifts} />
+            )}
 
-          {/* Achievements */}
-          <ProfileAchievementsSection achievements={MOCK_ACHIEVEMENTS} />
-        </div>
+            {/* Achievements */}
+            <ProfileAchievementsSection achievements={MOCK_ACHIEVEMENTS} />
+          </div>
 
-        {/* Right Column - Stats & XP */}
-        <div className="space-y-6">
-          {/* Stats */}
-          <ProfileStats
-            totalSessions={MOCK_STATS.totalSessions}
-            averageRating={MOCK_STATS.averageRating}
-            responseRate={MOCK_STATS.responseRate}
-            totalHours={MOCK_STATS.totalHours}
-            streakDays={user.streakDays ?? 0}
-            eventsHosted={MOCK_STATS.eventsHosted}
-          />
+          {/* Right Column - Stats & XP */}
+          <div className="space-y-6">
+            {/* Stats */}
+            <ProfileStats
+              totalSessions={MOCK_STATS.totalSessions}
+              averageRating={MOCK_STATS.averageRating}
+              responseRate={MOCK_STATS.responseRate}
+              totalHours={MOCK_STATS.totalHours}
+              streakDays={user.streakDays ?? 0}
+              eventsHosted={MOCK_STATS.eventsHosted}
+            />
 
-          {/* XP & Level */}
-          <ProfileInfoSection
-            experiencePoints={user.experiencePoints ?? 0}
-            streakDays={user.streakDays ?? 0}
-          />
+            {/* XP & Level */}
+            <ProfileInfoSection
+              experiencePoints={user.experiencePoints ?? 0}
+              streakDays={user.streakDays ?? 0}
+            />
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Send Gift Dialog */}
+      <SendGiftDialog
+        open={sendGiftDialogOpen}
+        onOpenChange={setSendGiftDialogOpen}
+        receiverId={userId}
+        receiverName={user.name}
+        locale={locale}
+      />
+    </>
   );
 }

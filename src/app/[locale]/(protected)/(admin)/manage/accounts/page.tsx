@@ -13,6 +13,7 @@ import {
 
 import { EditAccounts } from "./edit-accounts";
 import { TableAccounts } from "./table-accounts";
+import { UserDetailDialog } from "./user-detail-dialog";
 
 const DEFAULT_PAGE_SIZE = 10;
 const PAGE_SIZE_OPTIONS = [5, 10, 20, 50];
@@ -47,6 +48,8 @@ export default function ManageAccountsPage() {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   const queryParams = useMemo<GetUsersQueryType>(
     () => ({ pageNumber, pageSize }),
@@ -56,6 +59,10 @@ export default function ManageAccountsPage() {
   const usersQuery = useGetUsers(queryParams);
   const userQuery = useGetUser(editingId ?? "", {
     enabled: isEditOpen && Boolean(editingId),
+  });
+
+  const detailUserQuery = useGetUser(selectedUserId ?? "", {
+    enabled: detailOpen && Boolean(selectedUserId),
   });
 
   const usersPayload = usersQuery.data?.payload;
@@ -91,6 +98,11 @@ export default function ManageAccountsPage() {
   const handleOpenEdit = (id: string) => {
     setEditingId(id);
     setIsEditOpen(true);
+  };
+
+  const handleOpenDetail = (id: string) => {
+    setSelectedUserId(id);
+    setDetailOpen(true);
   };
 
   const handleEditOpenChange = (open: boolean) => {
@@ -172,6 +184,7 @@ export default function ManageAccountsPage() {
         error={usersQuery.error}
         onRefresh={refreshList}
         onOpenEdit={handleOpenEdit}
+        onOpenDetail={handleOpenDetail}
         pageSize={pageSize}
         onPageSizeChange={handlePageSizeChange}
         pageSizeOptions={PAGE_SIZE_OPTIONS}
@@ -189,6 +202,14 @@ export default function ManageAccountsPage() {
         isLoading={userQuery.isLoading}
         isSubmitting={setRestrictionsMutation.isPending}
         tError={tError}
+      />
+
+      <UserDetailDialog
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+        user={detailUserQuery.data?.payload?.data ?? null}
+        safeTranslate={safeTranslate}
+        lang={locale}
       />
     </div>
   );

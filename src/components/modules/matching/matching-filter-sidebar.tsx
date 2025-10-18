@@ -141,14 +141,17 @@ export function MatchingFilterSidebar({
                 className="flex items-center gap-2 cursor-pointer text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 {lang.iconUrl && (
-                  <Image
-                    src={lang.iconUrl}
-                    alt={lang.code}
-                    className="h-4 w-4 rounded-sm object-cover"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
+                  <div className="relative h-4 w-4 shrink-0 rounded-sm overflow-hidden">
+                    <Image
+                      src={lang.iconUrl}
+                      alt={lang.code}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </div>
                 )}
                 <span className="text-xs font-mono text-muted-foreground">
                   {lang.code}
@@ -185,14 +188,17 @@ export function MatchingFilterSidebar({
                 className="flex items-center gap-2 cursor-pointer text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 {lang.iconUrl && (
-                  <Image
-                    src={lang.iconUrl}
-                    alt={lang.code}
-                    className="h-4 w-4 rounded-sm object-cover"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
+                  <div className="relative h-4 w-4 shrink-0 rounded-sm overflow-hidden">
+                    <Image
+                      src={lang.iconUrl}
+                      alt={lang.code}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </div>
                 )}
                 <span className="text-xs font-mono text-muted-foreground">
                   {lang.code}
@@ -226,14 +232,17 @@ export function MatchingFilterSidebar({
                 className="flex items-center gap-2 cursor-pointer text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 {interest.iconUrl && (
-                  <Image
-                    src={interest.iconUrl}
-                    alt={interest.name}
-                    className="h-4 w-4 rounded-sm object-cover"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
+                  <div className="relative h-4 w-4 shrink-0 rounded-sm overflow-hidden">
+                    <Image
+                      src={interest.iconUrl}
+                      alt={interest.name}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </div>
                 )}
                 <span>{interest.name}</span>
               </Label>

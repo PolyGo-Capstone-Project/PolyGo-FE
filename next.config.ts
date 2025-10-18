@@ -12,6 +12,16 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "loopcraft.tech",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
         hostname: "loopcraft.tech",
         pathname: "/**",
       },

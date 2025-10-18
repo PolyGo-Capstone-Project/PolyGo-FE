@@ -64,25 +64,26 @@ export function BadgeDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-[700px] max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-2xl">
             {safeTranslate("detailDialog.title", "Badge details")}
           </DialogTitle>
-          <DialogDescription>
-            {safeTranslate("detailDialog.locale", "Locale")}: {badge.lang}
+          <DialogDescription className="text-base">
+            {badge.name}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="flex flex-col gap-6 py-4">
+          {/* Badge Icon Preview */}
           {badge.iconUrl && (
-            <div className="flex justify-center">
-              <div className="relative h-24 w-24 overflow-hidden rounded-lg bg-muted">
+            <div className="flex justify-center p-6 border rounded-lg bg-muted/30">
+              <div className="relative h-32 w-32 overflow-hidden rounded-lg bg-background shadow-sm">
                 <Image
                   src={badge.iconUrl}
                   alt={badge.name}
                   fill
-                  sizes="96px"
+                  sizes="128px"
                   className="object-cover"
                   unoptimized
                 />
@@ -90,59 +91,76 @@ export function BadgeDetailDialog({
             </div>
           )}
 
-          <div className="grid gap-3">
-            <div className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-muted-foreground">
-                {safeTranslate("detailDialog.name", "Name")}
-              </span>
-              <span className="text-base">{badge.name}</span>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-muted-foreground">
-                {safeTranslate("detailDialog.code", "Code")}
-              </span>
-              <code className="text-base font-mono px-2 py-1 bg-muted rounded w-fit">
-                {badge.code}
-              </code>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-muted-foreground">
+          {/* Overview Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2 p-4 border rounded-lg bg-muted/30">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 {safeTranslate("detailDialog.category", "Category")}
               </span>
-              <Badge variant="secondary" className="w-fit">
+              <Badge variant="outline" className="w-fit text-base py-1">
                 {badge.badgeCategory}
               </Badge>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-muted-foreground">
+            <div className="flex flex-col gap-2 p-4 border rounded-lg bg-muted/30">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                {safeTranslate("detailDialog.locale", "Locale")}
+              </span>
+              <Badge variant="secondary" className="w-fit text-base py-1">
+                {badge.lang?.toUpperCase()}
+              </Badge>
+            </div>
+          </div>
+
+          {/* Code Section */}
+          <div className="flex flex-col gap-2 p-4 border rounded-lg bg-muted/30">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              {safeTranslate("detailDialog.code", "Badge Code")}
+            </span>
+            <code className="text-lg font-mono px-3 py-2 bg-background rounded-md border w-fit font-semibold">
+              {badge.code}
+            </code>
+          </div>
+
+          {/* Description */}
+          {badge.description && (
+            <div className="flex flex-col gap-2 p-4 border rounded-lg">
+              <span className="text-sm font-semibold">
                 {safeTranslate("detailDialog.description", "Description")}
               </span>
-              <span className="text-base">
-                {badge.description ||
-                  safeTranslate(
-                    "detailDialog.noDescription",
-                    "No description available"
-                  )}
+              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                {badge.description}
+              </p>
+            </div>
+          )}
+
+          {!badge.description && (
+            <div className="flex items-center justify-center p-6 border border-dashed rounded-lg">
+              <span className="text-sm text-muted-foreground">
+                {safeTranslate(
+                  "detailDialog.noDescription",
+                  "No description available"
+                )}
               </span>
             </div>
+          )}
 
-            <div className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-muted-foreground">
+          {/* Timestamps */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2 p-4 border rounded-lg">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 {safeTranslate("detailDialog.createdAt", "Created at")}
               </span>
-              <span className="text-base">
+              <span className="text-sm font-mono">
                 {formatDateTime(badge.createdAt)}
               </span>
             </div>
 
-            <div className="flex flex-col gap-1">
-              <span className="text-sm font-medium text-muted-foreground">
+            <div className="flex flex-col gap-2 p-4 border rounded-lg">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 {safeTranslate("detailDialog.lastUpdatedAt", "Last updated at")}
               </span>
-              <span className="text-base">
+              <span className="text-sm font-mono">
                 {formatDateTime(badge.lastUpdatedAt)}
               </span>
             </div>
@@ -150,7 +168,10 @@ export function BadgeDetailDialog({
         </div>
 
         <DialogFooter>
-          <Button onClick={() => onOpenChange(false)}>
+          <Button
+            onClick={() => onOpenChange(false)}
+            className="w-full sm:w-auto"
+          >
             {safeTranslate("detailDialog.close", "Close")}
           </Button>
         </DialogFooter>
