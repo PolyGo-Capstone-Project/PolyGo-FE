@@ -99,7 +99,82 @@ export const CreateSubscriptionBodySchema = SubscriptionSchema.pick({
 //PUT for update and add translation
 export const UpdateSubscriptionBodySchema = CreateSubscriptionBodySchema;
 
-// =================================================================
+//FOR USER =================================================================
+
+export const UserSubscriptionSchema = z.object({
+  id: z.string(),
+  startAt: z.iso.datetime(),
+  endAt: z.iso.datetime(),
+  active: z.boolean(),
+  userId: z.string(),
+  subscriptionId: z.string(),
+  cancellationReason: z.string().max(1000).optional(),
+  cancelledAt: z.iso.datetime().optional(),
+  planType: z.enum(PlanTypeEnum),
+});
+
+const SubscriptionPlanItemSchema = SubscriptionSchema.extend({
+  features: z.array(SubscriptionFeatureSchema.omit({ id: true })).default([]),
+});
+
+//GET ALL plans
+export const GetSubscriptionPlansResSchema = z.object({
+  data: z.object({
+    items: z.array(SubscriptionPlanItemSchema),
+    ...PaginationMetaSchema.shape,
+  }),
+  message: z.string(),
+});
+
+//GET current plan / usage
+const GetUserSubscriptionItemSchema = z.object({
+  featureType: z.enum(FeatureTypeEnum),
+  featureName: z.string().min(3).max(100),
+  usageCount: z.number().min(0),
+  limitValue: z.number().min(0),
+  limitType: z.enum(LimitTypeEnum),
+  isUnlimited: z.boolean().default(false),
+  lastUsedAt: z.iso.datetime().optional(),
+  resetAt: z.iso.datetime().optional(),
+  canUse: z.boolean().default(true),
+});
+
+// current
+export const GetCurrentSubscriptionResSchema = z.object({
+  id: z.string(),
+  planType: z.enum(PlanTypeEnum),
+  startAt: z.iso.datetime(),
+  endAt: z.iso.datetime(),
+  active: z.boolean().default(true),
+  autoRenew: z.boolean().default(false),
+  daysRemaining: z.number().min(0).default(0),
+  featureUsages: z.array(GetUserSubscriptionItemSchema).default([]),
+});
+
+//usage
+export const GetUsageSubscriptionResSchema = z.object({
+  data: z.object({
+    items: z.array(GetUserSubscriptionItemSchema),
+    ...PaginationMetaSchema.shape,
+  }),
+  message: z.string(),
+});
+
+//POST subscribe
+export const SubscribeBodySchema = z.object({
+  subscriptionPlanId: z.string(),
+  autoRenew: z.boolean().default(true),
+});
+
+//POST cancel
+export const CancelSubscriptionBodySchema = z.object({
+  reason: z.string().max(1000).optional(),
+});
+
+//PUT AUTO RENEW
+export const UpdateAutoRenewBodySchema = SubscribeBodySchema.pick({
+  autoRenew: true,
+});
 
 //types
 export type SubscriptionType = z.infer<typeof SubscriptionSchema>;
@@ -129,3 +204,17 @@ export type CreateSubscriptionBodyType = z.infer<
 export type UpdateSubscriptionBodyType = z.infer<
   typeof UpdateSubscriptionBodySchema
 >;
+export type GetSubscriptionPlansResType = z.infer<
+  typeof GetSubscriptionPlansResSchema
+>;
+export type GetCurrentSubscriptionResType = z.infer<
+  typeof GetCurrentSubscriptionResSchema
+>;
+export type GetUsageSubscriptionResType = z.infer<
+  typeof GetUsageSubscriptionResSchema
+>;
+export type SubscribeBodyType = z.infer<typeof SubscribeBodySchema>;
+export type CancelSubscriptionBodyType = z.infer<
+  typeof CancelSubscriptionBodySchema
+>;
+export type UpdateAutoRenewBodyType = z.infer<typeof UpdateAutoRenewBodySchema>;
