@@ -22,12 +22,60 @@
       "nextBilling": "Next Billing",
       "autoRenew": "Auto Renew",
       "free": "Free",
-      "basic": "Basic",
+      "plus": "Plus",
       "premium": "Premium",
       "active": "Active",
       "inactive": "Inactive",
+      "expired": "Expired",
       "on": "On",
-      "off": "Off"
+      "off": "Off",
+      "daysRemaining": "{{days}} days remaining",
+      "noSubscription": "No active subscription",
+      "usage": "Usage",
+      "features": "Features",
+      "viewDetails": "View Details",
+      "cancelSubscription": "Cancel Subscription",
+      "manageSubscription": "Manage Subscription",
+      "upgradeNow": "Upgrade Now"
+    },
+    "cancelSubscription": {
+      "title": "Cancel Subscription",
+      "description": "We're sorry to see you go. Please let us know why you're canceling:",
+      "reasons": {
+        "tooExpensive": "Too expensive",
+        "notUsingEnough": "Not using enough",
+        "foundAlternative": "Found an alternative",
+        "technicalIssues": "Technical issues",
+        "lackOfFeatures": "Lack of features",
+        "other": "Other (please specify)"
+      },
+      "otherReasonPlaceholder": "Please tell us more about your reason...",
+      "cancel": "Keep Subscription",
+      "confirm": "Cancel Subscription",
+      "processing": "Processing...",
+      "toast": {
+        "success": "Subscription cancelled successfully",
+        "error": "Failed to cancel subscription"
+      }
+    },
+    "autoRenew": {
+      "enable": {
+        "title": "Enable Auto Renew",
+        "description": "Your subscription will be automatically renewed when it expires. You can cancel anytime.",
+        "cancel": "Cancel",
+        "confirm": "Enable Auto Renew"
+      },
+      "disable": {
+        "title": "Disable Auto Renew",
+        "description": "Your subscription will not be renewed automatically. You can renew it manually before it expires.",
+        "cancel": "Cancel",
+        "confirm": "Disable Auto Renew"
+      },
+      "toast": {
+        "enableSuccess": "Auto renew enabled successfully",
+        "disableSuccess": "Auto renew disabled successfully",
+        "error": "Failed to update auto renew"
+      }
     },
     "transactions": {
       "title": "Transaction History",

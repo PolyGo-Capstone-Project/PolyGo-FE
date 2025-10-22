@@ -1,85 +1,258 @@
 "use client";
 
-import { Crown } from "lucide-react";
-import { useTranslations } from "next-intl";
+import {
+  IconCalendar,
+  IconCrown,
+  IconLoader2,
+  IconSettings,
+  IconX,
+} from "@tabler/icons-react";
+import { format } from "date-fns";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
+import { useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { AutoRenewDialog, CancelSubscriptionDialog } from "@/components";
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Progress,
+  ScrollArea,
+  Separator,
+  Switch,
+} from "@/components/ui";
+import { PlanTypeEnum } from "@/constants";
+import {
+  useCurrentSubscriptionQuery,
+  useSubscriptionUsageQuery,
+} from "@/hooks";
 
-interface SubscriptionCardProps {
-  plan?: "free" | "basic" | "premium";
-  status?: "active" | "inactive";
-  nextBilling?: string;
-  autoRenew?: boolean;
-}
-
-export function SubscriptionCard({
-  plan = "free",
-  status = "active",
-  nextBilling = "N/A",
-  autoRenew = false,
-}: SubscriptionCardProps) {
+export function SubscriptionCard() {
   const t = useTranslations("wallet.subscription");
+  const locale = useLocale();
+
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showAutoRenewDialog, setShowAutoRenewDialog] = useState(false);
+
+  // Fetch data
+  const { data: currentSubscriptionData, isLoading } =
+    useCurrentSubscriptionQuery({
+      params: { lang: locale },
+    });
+
+  const { data: usageData, isLoading: isLoadingUsage } =
+    useSubscriptionUsageQuery({
+      params: { lang: locale },
+    });
+
+  if (isLoading || isLoadingUsage) {
+    return (
+      <Card className="shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <IconCrown className="size-5" />
+            {t("title")}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center h-[200px]">
+          <IconLoader2 className="size-6 animate-spin text-muted-foreground" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const subscription = currentSubscriptionData?.payload?.data;
+  const usage = usageData?.payload?.data?.items ?? [];
 
   const planColors = {
-    free: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-    basic: "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300",
-    premium:
-      "bg-gradient-to-r from-purple-500 to-pink-500 text-white dark:from-purple-600 dark:to-pink-600",
+    [PlanTypeEnum.FREE]:
+      "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
+    [PlanTypeEnum.PLUS]:
+      "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300",
+    [PlanTypeEnum.PREMIUM]:
+      "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
+  };
+
+  const isFreeplan = subscription?.planType === PlanTypeEnum.FREE;
+  const statusVariant = subscription?.active ? "default" : "secondary";
+
+  const handleAutoRenewToggle = () => {
+    setShowAutoRenewDialog(true);
   };
 
   return (
-    <Card className="shadow-sm">
-      <CardHeader className="pb-3 md:pb-6">
-        <CardTitle className="flex items-center gap-2 text-base md:text-lg">
-          <Crown className="h-4 w-4 md:h-5 md:w-5" />
-          {t("title")}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3 md:space-y-4">
-        <div className="space-y-2.5 md:space-y-3">
+    <>
+      <Card className="shadow-sm">
+        <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground md:text-sm">
-              {t("plan")}
-            </span>
-            <Badge className={planColors[plan]}>{t(plan)}</Badge>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <IconCrown className="size-5" />
+              {t("title")}
+            </CardTitle>
+            {!isFreeplan && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 gap-1.5"
+                onClick={() => setShowCancelDialog(true)}
+              >
+                <IconX className="size-4" />
+                <span className="hidden sm:inline">
+                  {t("cancelSubscription")}
+                </span>
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+
+        <CardContent className="space-y-4">
+          {/* Plan Info */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">{t("plan")}</span>
+              <Badge
+                className={
+                  planColors[subscription?.planType ?? PlanTypeEnum.FREE]
+                }
+              >
+                {t(
+                  subscription?.planType?.toLowerCase() ??
+                    PlanTypeEnum.FREE.toLowerCase()
+                )}
+              </Badge>
+            </div>
+
+            <Separator />
+
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">
+                {t("status")}
+              </span>
+              <Badge variant={statusVariant}>
+                {t(subscription?.active ? "active" : "inactive")}
+              </Badge>
+            </div>
+
+            <Separator />
+
+            {subscription?.endAt && (
+              <>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground flex items-center gap-1.5">
+                    <IconCalendar className="size-4" />
+                    {t("nextBilling")}
+                  </span>
+                  <span className="text-sm font-medium">
+                    {format(new Date(subscription.endAt), "MMM dd, yyyy")}
+                  </span>
+                </div>
+
+                <Separator />
+
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    {t("daysRemaining", {
+                      days: subscription.daysRemaining ?? 0,
+                    })}
+                  </span>
+                </div>
+
+                <Separator />
+              </>
+            )}
+
+            {!isFreeplan && (
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">
+                  {t("autoRenew")}
+                </span>
+                <Switch
+                  checked={subscription?.autoRenew ?? false}
+                  onCheckedChange={handleAutoRenewToggle}
+                />
+              </div>
+            )}
           </div>
 
-          <Separator />
+          {/* Usage Section */}
+          {usage.length > 0 && (
+            <>
+              <Separator />
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-semibold">{t("features")}</h4>
+                  <IconSettings className="size-4 text-muted-foreground" />
+                </div>
 
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground md:text-sm">
-              {t("status")}
-            </span>
-            <Badge variant={status === "active" ? "default" : "secondary"}>
-              {t(status)}
-            </Badge>
-          </div>
+                <ScrollArea className="h-[250px] pr-3">
+                  <div className="space-y-4">
+                    {usage.map((feature, index) => {
+                      // For unlimited features, show full progress
+                      const percentage = feature.isUnlimited
+                        ? 0
+                        : feature.limitValue > 0
+                          ? (feature.usageCount / feature.limitValue) * 100
+                          : 0;
 
-          <Separator />
+                      return (
+                        <div key={index} className="space-y-2">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-medium">
+                              {feature.featureName}
+                            </span>
+                            <span className="text-muted-foreground">
+                              {feature.isUnlimited
+                                ? "Unlimited"
+                                : `${feature.usageCount}/${feature.limitValue}`}
+                            </span>
+                          </div>
+                          <Progress
+                            value={feature.isUnlimited ? 100 : percentage}
+                            className="h-2"
+                            indicatorClassName={
+                              feature.isUnlimited
+                                ? "bg-green-500"
+                                : percentage > 80
+                                  ? "bg-destructive"
+                                  : percentage > 50
+                                    ? "bg-yellow-500"
+                                    : "bg-primary"
+                            }
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              </div>
+            </>
+          )}
 
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground md:text-sm">
-              {t("nextBilling")}
-            </span>
-            <span className="text-xs font-medium md:text-sm">
-              {nextBilling}
-            </span>
-          </div>
+          {/* Upgrade Button for Free Plan */}
+          {isFreeplan && (
+            <Link href={`/${locale}/pricing`} className="block">
+              <Button className="w-full" variant="default">
+                {t("upgradeNow")}
+              </Button>
+            </Link>
+          )}
+        </CardContent>
+      </Card>
 
-          <Separator />
-
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-muted-foreground md:text-sm">
-              {t("autoRenew")}
-            </span>
-            <Badge variant={autoRenew ? "default" : "outline"}>
-              {t(autoRenew ? "on" : "off")}
-            </Badge>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+      {/* Dialogs */}
+      <CancelSubscriptionDialog
+        open={showCancelDialog}
+        onOpenChange={setShowCancelDialog}
+      />
+      <AutoRenewDialog
+        open={showAutoRenewDialog}
+        onOpenChange={setShowAutoRenewDialog}
+        currentAutoRenew={subscription?.autoRenew ?? false}
+      />
+    </>
   );
 }

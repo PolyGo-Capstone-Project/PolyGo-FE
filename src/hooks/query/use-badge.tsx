@@ -33,6 +33,18 @@ export const useBadgesQuery = ({
   });
 };
 
+export const useUserBadgesQuery = ({
+  enabled = true,
+  params,
+}: UseBadgesQueryOptions = {}) => {
+  return useQuery<BadgesQueryResponse>({
+    queryKey: ["user-badges", params ?? null],
+    queryFn: () => badgeApiRequest.getUserBadges(params),
+    enabled,
+    placeholderData: keepPreviousData,
+  });
+};
+
 type UseBadgeQueryOptions = {
   enabled?: boolean;
   id?: string;

@@ -14,8 +14,8 @@ export function QuickActionsCard() {
   const locale = useLocale();
   const router = useRouter();
 
-  const handleAction = (action: string) => {
-    toast.info(tToast("comingSoon"));
+  const handleUpgradeSubscription = () => {
+    router.push(`/${locale}/pricing`);
   };
 
   const handleBuyGift = () => {
@@ -30,7 +30,7 @@ export function QuickActionsCard() {
       <CardContent className="space-y-2.5 md:space-y-3">
         <div className="grid grid-cols-2 gap-2.5 mb-6 md:gap-3">
           <Button
-            onClick={() => handleAction("deposit")}
+            onClick={() => toast.info(tToast("comingSoon"))}
             className="flex h-auto  gap-1.5 py-3 md:gap-2 md:py-4"
             variant="default"
           >
@@ -41,7 +41,7 @@ export function QuickActionsCard() {
           </Button>
 
           <Button
-            onClick={() => handleAction("withdraw")}
+            onClick={() => toast.info(tToast("comingSoon"))}
             className="flex h-auto  gap-1.5 py-3 md:gap-2 md:py-4"
             variant="outline"
           >
@@ -62,7 +62,7 @@ export function QuickActionsCard() {
         </Button>
 
         <Button
-          onClick={() => handleAction("upgradeSubscription")}
+          onClick={handleUpgradeSubscription}
           className="h-9 w-full gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-sm hover:from-purple-600 hover:to-pink-600 md:h-10"
         >
           <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" />

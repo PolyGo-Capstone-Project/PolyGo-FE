@@ -8,6 +8,7 @@ import {
   GetBadgesResType,
   MessageResType,
   UpdateBadgeBodyType,
+  UserBadgeResType,
 } from "@/models";
 
 const prefix = "/badges";
@@ -23,6 +24,10 @@ const badgeApiRequest = {
   update: (id: string, body: UpdateBadgeBodyType) =>
     http.put<MessageResType>(`${prefix}/${id}`, body),
   delete: (id: string) => http.delete<MessageResType>(`${prefix}/${id}`),
+  //User
+  getUserBadges: createGetAll<UserBadgeResType, GetBadgesParams>(
+    `${prefix}/me`
+  ),
 };
 
 export default badgeApiRequest;

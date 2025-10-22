@@ -1,0 +1,82 @@
+{
+  "pricing": {
+    "title": "Chọn Gói Cước",
+    "subtitle": "Chọn gói phù hợp cho hành trình học ngôn ngữ của bạn",
+    "backToWallet": "Quay lại Ví",
+    "free": {
+      "name": "Miễn phí",
+      "description": "Hoàn hảo để bắt đầu",
+      "price": "Miễn phí",
+      "duration": "Mãi mãi",
+      "cta": "Gói Hiện Tại",
+      "features": {
+        "chat": "{{count}} tin nhắn/ngày",
+        "translation": "{{count}} bản dịch/ngày",
+        "voiceCall": "{{count}} cuộc gọi thoại/ngày",
+        "videoCall": "{{count}} cuộc gọi video/ngày",
+        "eventParticipation": "{{count}} sự kiện/tuần",
+        "basicSupport": "Hỗ trợ cộng đồng"
+      }
+    },
+    "plus": {
+      "name": "Plus",
+      "popular": "Phổ biến nhất",
+      "description": "Mở khóa tính năng không giới hạn",
+      "monthly": {
+        "name": "Tháng",
+        "price": "{{price}}",
+        "duration": "mỗi tháng",
+        "save": ""
+      },
+      "quarterly": {
+        "name": "Quý",
+        "price": "{{price}}",
+        "duration": "mỗi 3 tháng",
+        "save": "Tiết kiệm 7%"
+      },
+      "yearly": {
+        "name": "Năm",
+        "price": "{{price}}",
+        "duration": "mỗi năm",
+        "save": "Tiết kiệm 25%"
+      },
+      "cta": "Nâng cấp ngay",
+      "features": {
+        "chat": "{{count}} tin nhắn/ngày",
+        "translation": "{{count}} bản dịch/ngày",
+        "voiceCall": "{{count}} cuộc gọi thoại/ngày",
+        "videoCall": "{{count}} cuộc gọi video/ngày",
+        "eventParticipation": "{{count}} sự kiện/tuần",
+        "eventCreation": "{{count}} sự kiện/tuần",
+        "advancedMatching": "Tìm kiếm nâng cao",
+        "premiumBadges": "Huy hiệu cao cấp",
+        "analytics": "Bảng phân tích",
+        "prioritySupport": "Hỗ trợ ưu tiên"
+      }
+    },
+    "confirmPurchase": {
+      "title": "Xác nhận mua",
+      "plan": "Gói",
+      "duration": "Thời hạn",
+      "price": "Giá",
+      "currentBalance": "Số dư hiện tại",
+      "afterPurchase": "Số dư sau khi mua",
+      "insufficientBalance": "Số dư không đủ. Vui lòng nạp tiền trước.",
+      "cancel": "Hủy",
+      "confirm": "Xác nhận mua",
+      "processing": "Đang xử lý..."
+    },
+    "toast": {
+      "purchaseSuccess": "Nâng cấp gói thành công!",
+      "purchaseError": "Nâng cấp gói thất bại",
+      "insufficientBalance": "Số dư không đủ"
+    },
+    "thankYou": {
+      "title": "Cảm ơn!",
+      "message": "Gói cước của bạn đã được nâng cấp thành công",
+      "description": "Bạn có thể tận hưởng tất cả tính năng cao cấp",
+      "backToWallet": "Quay lại Ví",
+      "backHome": "Về Trang chủ"
+    }
+  }
+}
