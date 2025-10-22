@@ -171,12 +171,7 @@ export default function WalletPage() {
           <QuickActionsCard />
 
           {/* Current Subscription */}
-          <SubscriptionCard
-            plan="free"
-            status="active"
-            nextBilling="N/A"
-            autoRenew={autoRenewSubscription}
-          />
+          <SubscriptionCard />
         </div>
       </div>
     </div>

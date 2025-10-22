@@ -1,5 +1,6 @@
 import { createGetAll, createGetOne } from "@/lib/apis/factory";
 import http from "@/lib/http";
+import { buildQueryString } from "@/lib/utils";
 import {
   CancelSubscriptionBodyType,
   CreateSubscriptionBodyType,
@@ -36,10 +37,10 @@ const subscriptionApiRequest = {
   getPlan: createGetAll<GetSubscriptionPlansResType, GetSubscriptionsParams>(
     `${prefix}/plans`
   ),
-  getCurrent: createGetAll<
-    GetCurrentSubscriptionResType,
-    GetSubscriptionsParams
-  >(`${prefix}/current`),
+  getCurrent: (params?: GetSubscriptionsParams) =>
+    http.get<GetCurrentSubscriptionResType>(
+      `${prefix}/current${buildQueryString(params)}`
+    ),
   getUsage: createGetAll<GetUsageSubscriptionResType, GetSubscriptionsParams>(
     `${prefix}/usage`
   ),
@@ -48,7 +49,10 @@ const subscriptionApiRequest = {
   cancel: (body: CancelSubscriptionBodyType) =>
     http.post<MessageResType>(`${prefix}/cancel`, body),
   updateAutoRenew: (body: UpdateAutoRenewBodyType) =>
-    http.put<MessageResType>(`${prefix}/auto-renew`, body),
+    http.put<MessageResType>(
+      `${prefix}/auto-renew?autoRenew=${body.autoRenew}`,
+      null
+    ),
 };
 
 export default subscriptionApiRequest;

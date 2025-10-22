@@ -147,13 +147,24 @@ export const clearLocalStorage = () => {
 };
 
 /**
- * Format number to Vietnamese currency (VND)
+ * Format number to currency with locale support
  * @param amount - Amount to format
- * @returns Formatted string with VND suffix
- * @example formatCurrency(50000) => "50.000 VND"
+ * @param locale - Locale string (default: 'vi-VN')
+ * @returns Formatted string with currency suffix
+ * @example formatCurrency(50000, 'vi') => "50.000 VND"
+ * @example formatCurrency(50000, 'en') => "50,000 VND"
  */
-export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat("vi-VN").format(amount) + " VND";
+export const formatCurrency = (
+  amount: number,
+  locale: string = "vi"
+): string => {
+  const localeMap: Record<string, string> = {
+    vi: "vi-VN",
+    en: "en-US",
+  };
+
+  const localeCode = localeMap[locale] || "vi-VN";
+  return new Intl.NumberFormat(localeCode).format(amount) + " VND";
 };
 
 export {

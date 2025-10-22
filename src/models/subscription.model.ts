@@ -26,6 +26,7 @@ export const SubscriptionTranslationsSchema = z.object({
 export const SubscriptionFeatureSchema = z.object({
   id: z.string(),
   featureType: z.enum(FeatureTypeEnum),
+  featureName: z.string().min(3).max(100),
   limitValue: z.number().min(0).default(0),
   limitType: z.enum(LimitTypeEnum),
   isEnable: z.boolean().default(true),
@@ -113,8 +114,24 @@ export const UserSubscriptionSchema = z.object({
   planType: z.enum(PlanTypeEnum),
 });
 
-const SubscriptionPlanItemSchema = SubscriptionSchema.extend({
-  features: z.array(SubscriptionFeatureSchema.omit({ id: true })).default([]),
+const SubscriptionPlanItemSchema = SubscriptionSchema.merge(
+  SubscriptionTranslationsSchema.pick({
+    name: true,
+    lang: true,
+    description: true,
+  })
+).extend({
+  features: z
+    .array(
+      z.object({
+        featureType: z.enum(FeatureTypeEnum),
+        featureName: z.string().min(3).max(100),
+        limitValue: z.number().min(0).default(0),
+        limitType: z.enum(LimitTypeEnum),
+        isEnabled: z.boolean().default(true),
+      })
+    )
+    .default([]),
 });
 
 //GET ALL plans
@@ -141,14 +158,18 @@ const GetUserSubscriptionItemSchema = z.object({
 
 // current
 export const GetCurrentSubscriptionResSchema = z.object({
-  id: z.string(),
-  planType: z.enum(PlanTypeEnum),
-  startAt: z.iso.datetime(),
-  endAt: z.iso.datetime(),
-  active: z.boolean().default(true),
-  autoRenew: z.boolean().default(false),
-  daysRemaining: z.number().min(0).default(0),
-  featureUsages: z.array(GetUserSubscriptionItemSchema).default([]),
+  data: z.object({
+    id: z.string(),
+    planType: z.enum(PlanTypeEnum),
+    planName: z.string().optional(),
+    startAt: z.iso.datetime(),
+    endAt: z.iso.datetime(),
+    active: z.boolean().default(true),
+    autoRenew: z.boolean().default(false),
+    daysRemaining: z.number().min(0).default(0),
+    featureUsages: z.array(GetUserSubscriptionItemSchema).default([]),
+  }),
+  message: z.string(),
 });
 
 //usage
@@ -218,3 +239,6 @@ export type CancelSubscriptionBodyType = z.infer<
   typeof CancelSubscriptionBodySchema
 >;
 export type UpdateAutoRenewBodyType = z.infer<typeof UpdateAutoRenewBodySchema>;
+export type SubscriptionPlanItemType = z.infer<
+  typeof SubscriptionPlanItemSchema
+>;
