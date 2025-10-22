@@ -2,6 +2,8 @@
   "matching": {
     "title": "Tìm Bạn Học Ngôn Ngữ",
     "description": "Kết nối với những người học ngôn ngữ từ khắp nơi trên thế giới",
+    "loadMore": "Tải Thêm",
+    "showingResults": "Hiển thị {current} trong tổng số {total} người dùng",
     "sorting": {
       "label": "Sắp xếp theo",
       "recommended": "Được đề xuất",
@@ -69,7 +71,8 @@
     },
     "loading": {
       "users": "Đang tải người dùng...",
-      "profile": "Đang tải hồ sơ..."
+      "profile": "Đang tải hồ sơ...",
+      "more": "Đang tải thêm người dùng..."
     },
     "error": {
       "loadUsers": "Không thể tải danh sách người dùng",

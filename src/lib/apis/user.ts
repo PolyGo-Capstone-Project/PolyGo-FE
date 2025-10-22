@@ -8,6 +8,8 @@ import {
   GetUsersQueryType,
   GetUsersResType,
   MessageResType,
+  SearchUserQueryType,
+  SearchUserResType,
   SetRestrictionsBodyType,
   SetupProfileBodyType,
   UpdateMeBodyType,
@@ -40,8 +42,11 @@ const userApiRequest = {
   getUsersMatching: createGetAll<
     GetUserByMatchingResType,
     GetUsersMatchingQueryType
-  >(`${prefix}`),
+  >(`${prefix}/matching`),
   getUserProfile: createGetOne<GetUserByIdResType, GetUserByIdBodyType>(
+    `${prefix}`
+  ),
+  searchUsers: createGetAll<SearchUserResType, SearchUserQueryType>(
     `${prefix}`
   ),
 };

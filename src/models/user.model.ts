@@ -1,10 +1,12 @@
 import z from "zod";
 
 import { Gender, MeritLevel } from "@/constants";
+import { BadgeListItemSchema } from "@/models/badge.model";
 import {
   PaginationLangQuerySchema,
   PaginationMetaSchema,
 } from "@/models/common.model";
+import { GiftListItemSchema } from "@/models/gift.model";
 import { InterestListItemSchema } from "@/models/interest.model";
 import { LanguageListItemSchema } from "@/models/language.model";
 
@@ -87,11 +89,28 @@ export const InterestItem = InterestListItemSchema.pick({
   iconUrl: true,
 });
 
+export const BadgeItem = BadgeListItemSchema.pick({
+  id: true,
+  lang: true,
+  name: true,
+  iconUrl: true,
+});
+
+export const GiftItem = GiftListItemSchema.pick({
+  id: true,
+  lang: true,
+  name: true,
+  quantity: true,
+  iconUrl: true,
+});
+
 // User item with languages and interests (used in matching and profile view)
 export const UserMatchingItemSchema = UserListItemSchema.extend({
   speakingLanguages: z.array(LanguageItem).default([]),
   learningLanguages: z.array(LanguageItem).default([]),
   interests: z.array(InterestItem).default([]),
+  badges: z.array(BadgeItem).default([]),
+  gifts: z.array(GiftItem).default([]),
 });
 
 // ===================
@@ -126,6 +145,15 @@ export const GetUserByMatchingResSchema = z.object({
   message: z.string(),
 });
 
+export const SearchUserQuerySchema = GetUsersQuerySchema.extend({
+  name: z.string().min(1).max(100).optional(),
+  speakingLanguageIds: z.union([z.string(), z.array(z.string())]).optional(),
+  learningLanguageIds: z.union([z.string(), z.array(z.string())]).optional(),
+  interestIds: z.union([z.string(), z.array(z.string())]).optional(),
+});
+
+export const SearchUserResSchema = GetUserByMatchingResSchema;
+
 //types
 export type UserType = z.infer<typeof UserSchema>;
 export type GetUserProfileResType = z.infer<typeof GetUserProfileResSchema>;
@@ -146,5 +174,5 @@ export type GetUserByMatchingResType = z.infer<
   typeof GetUserByMatchingResSchema
 >;
 export type UserMatchingItemType = z.infer<typeof UserMatchingItemSchema>;
-export type LanguageItemType = z.infer<typeof LanguageItem>;
-export type InterestItemType = z.infer<typeof InterestItem>;
+export type SearchUserQueryType = z.infer<typeof SearchUserQuerySchema>;
+export type SearchUserResType = z.infer<typeof SearchUserResSchema>;

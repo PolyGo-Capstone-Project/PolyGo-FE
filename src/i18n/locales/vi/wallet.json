@@ -22,12 +22,60 @@
       "nextBilling": "Gia hạn tiếp theo",
       "autoRenew": "Tự động gia hạn",
       "free": "Miễn phí",
-      "basic": "Cơ bản",
+      "plus": "Plus",
       "premium": "Cao cấp",
       "active": "Đang hoạt động",
       "inactive": "Không hoạt động",
+      "expired": "Đã hết hạn",
       "on": "Bật",
-      "off": "Tắt"
+      "off": "Tắt",
+      "daysRemaining": "Còn {{days}} ngày",
+      "noSubscription": "Chưa có gói đăng ký",
+      "usage": "Sử dụng",
+      "features": "Tính năng",
+      "viewDetails": "Xem chi tiết",
+      "cancelSubscription": "Hủy gói cước",
+      "manageSubscription": "Quản lý gói cước",
+      "upgradeNow": "Nâng cấp ngay"
+    },
+    "cancelSubscription": {
+      "title": "Hủy gói cước",
+      "description": "Chúng tôi rất tiếc khi bạn rời đi. Vui lòng cho biết lý do hủy gói:",
+      "reasons": {
+        "tooExpensive": "Quá đắt",
+        "notUsingEnough": "Không sử dụng nhiều",
+        "foundAlternative": "Tìm được giải pháp khác",
+        "technicalIssues": "Vấn đề kỹ thuật",
+        "lackOfFeatures": "Thiếu tính năng",
+        "other": "Khác (vui lòng ghi rõ)"
+      },
+      "otherReasonPlaceholder": "Vui lòng cho biết thêm lý do của bạn...",
+      "cancel": "Giữ gói cước",
+      "confirm": "Hủy gói cước",
+      "processing": "Đang xử lý...",
+      "toast": {
+        "success": "Hủy gói cước thành công",
+        "error": "Hủy gói cước thất bại"
+      }
+    },
+    "autoRenew": {
+      "enable": {
+        "title": "Bật tự động gia hạn",
+        "description": "Gói cước của bạn sẽ được tự động gia hạn khi hết hạn. Bạn có thể hủy bất cứ lúc nào.",
+        "cancel": "Hủy",
+        "confirm": "Bật tự động gia hạn"
+      },
+      "disable": {
+        "title": "Tắt tự động gia hạn",
+        "description": "Gói cước của bạn sẽ không được tự động gia hạn. Bạn có thể gia hạn thủ công trước khi hết hạn.",
+        "cancel": "Hủy",
+        "confirm": "Tắt tự động gia hạn"
+      },
+      "toast": {
+        "enableSuccess": "Bật tự động gia hạn thành công",
+        "disableSuccess": "Tắt tự động gia hạn thành công",
+        "error": "Cập nhật tự động gia hạn thất bại"
+      }
     },
     "transactions": {
       "title": "Lịch sử giao dịch",

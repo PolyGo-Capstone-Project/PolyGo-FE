@@ -27,7 +27,10 @@
     "avatarUploaded": "Avatar uploaded successfully!",
     "SetUserRestriction": "User restriction updated successfully!",
     "UserBanned": "You have been banned from the platform.",
-    "SetUpProfile": "Profile setup successful!"
+    "SetUpProfile": "Profile setup successful!",
+    "Subscription": "Subscription successful!",
+    "Subscribe": "Subscription upgraded successfully!",
+    "Cancel": "Subscription cancelled successfully!"
   },
   "Error": {
     "default": "An error occurred. Please try again.",

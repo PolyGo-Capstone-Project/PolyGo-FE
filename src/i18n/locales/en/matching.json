@@ -2,6 +2,8 @@
   "matching": {
     "title": "Find Language Partners",
     "description": "Connect with language learners from around the world",
+    "loadMore": "Load More",
+    "showingResults": "Showing {current} of {total} users",
     "sorting": {
       "label": "Sort by",
       "recommended": "Recommended",
@@ -69,7 +71,8 @@
     },
     "loading": {
       "users": "Loading users...",
-      "profile": "Loading profile..."
+      "profile": "Loading profile...",
+      "more": "Loading more users..."
     },
     "error": {
       "loadUsers": "Failed to load users",

@@ -75,7 +75,8 @@ export const CreateBadgeBodySchema = BadgeSchema.pick({
 //PUT for update and add translation
 export const UpdateBadgeBodySchema = CreateBadgeBodySchema;
 
-//==============================
+//USER ==============================
+export const UserBadgeResSchema = GetBadgesResSchema;
 
 //types
 export type BadgeType = z.infer<typeof BadgeSchema>;
@@ -87,3 +88,4 @@ export type GetBadgesResType = z.infer<typeof GetBadgesResSchema>;
 export type GetBadgeByIdResType = z.infer<typeof GetBadgeByIdResSchema>;
 export type CreateBadgeBodyType = z.infer<typeof CreateBadgeBodySchema>;
 export type UpdateBadgeBodyType = z.infer<typeof UpdateBadgeBodySchema>;
+export type UserBadgeResType = z.infer<typeof UserBadgeResSchema>;
