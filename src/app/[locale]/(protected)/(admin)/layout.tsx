@@ -2,19 +2,18 @@
 
 import { useLocale } from "next-intl";
 
-import { UserHeader } from "@/components";
 import { AuthLoading } from "@/components/shared/auth-loading";
 import { Role } from "@/constants";
 import { useAuthGuard } from "@/hooks";
 
-interface ProtectedLayoutProps {
+interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
-export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
+export default function AdminLayout({ children }: AdminLayoutProps) {
   const locale = useLocale();
   const { isLoading, isAuthorized } = useAuthGuard({
-    requiredRole: Role.User,
+    requiredRole: Role.Admin,
     redirectTo: `/${locale}/login`,
   });
 
@@ -28,11 +27,11 @@ export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
     return null;
   }
 
-  // Render user content
+  // Render admin content
   return (
     <div className="min-h-screen flex flex-col">
-      <UserHeader />
-      <main>{children}</main>
+      {/* TODO: Add AdminHeader component here when ready */}
+      <main className="flex-1">{children}</main>
     </div>
   );
 }
