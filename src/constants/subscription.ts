@@ -4,6 +4,8 @@ export const PlanTypeEnum = {
   PREMIUM: "Premium",
 } as const;
 
+export type PlanTypeEnumType = (typeof PlanTypeEnum)[keyof typeof PlanTypeEnum];
+
 export const FeatureTypeEnum = {
   CHAT: "Chat",
   TRANSLATION: "Translation",

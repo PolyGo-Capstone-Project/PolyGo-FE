@@ -29,7 +29,7 @@
       "expired": "Expired",
       "on": "On",
       "off": "Off",
-      "daysRemaining": "{{days}} days remaining",
+      "daysRemaining": "{days} days remaining",
       "noSubscription": "No active subscription",
       "usage": "Usage",
       "features": "Features",

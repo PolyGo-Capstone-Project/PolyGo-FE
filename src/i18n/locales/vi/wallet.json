@@ -29,7 +29,7 @@
       "expired": "Đã hết hạn",
       "on": "Bật",
       "off": "Tắt",
-      "daysRemaining": "Còn {{days}} ngày",
+      "daysRemaining": "Còn {days} ngày",
       "noSubscription": "Chưa có gói đăng ký",
       "usage": "Sử dụng",
       "features": "Tính năng",

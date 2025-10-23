@@ -154,7 +154,8 @@ export function SubscriptionCard() {
                 <Separator />
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
+                  <div></div>
+                  <span className="font-bold text-sm text-muted-foreground">
                     {t("daysRemaining", {
                       days: subscription.daysRemaining ?? 0,
                     })}
