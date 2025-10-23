@@ -3,7 +3,10 @@
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
+import { AuthLoading } from "@/components/shared/auth-loading";
 import {
   Button,
   Card,
@@ -11,10 +14,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui";
+import { Role } from "@/constants";
+import { useAuthStore } from "@/hooks";
 
 export default function HomePage() {
   const t = useTranslations("home");
   const locale = useLocale();
+  const router = useRouter();
+  const { isAuth, role } = useAuthStore();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useEffect(() => {
+    if (isAuth && role) {
+      setIsRedirecting(true);
+
+      const timer = setTimeout(() => {
+        if (role === Role.Admin) {
+          router.push(`/${locale}/manage/dashboard`);
+        } else if (role === Role.User) {
+          router.push(`/${locale}/dashboard`);
+        }
+      }, 500); // Small delay for smooth UX
+
+      return () => clearTimeout(timer);
+    }
+  }, [isAuth, role, router, locale]);
+
+  // Show loading state while redirecting
+  if (isRedirecting) {
+    return <AuthLoading message="Redirecting to dashboard..." />;
+  }
 
   const navigation = [
     {
