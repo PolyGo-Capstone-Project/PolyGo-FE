@@ -233,13 +233,17 @@ export function SubscriptionCard() {
             </>
           )}
 
-          {/* Upgrade Button for Free Plan */}
+          {/* Upgrade Button - Only show for Free Plan */}
           {isFreeplan && (
-            <Link href={`/${locale}/pricing`} className="block">
-              <Button className="w-full" variant="default">
-                {t("upgradeNow")}
-              </Button>
-            </Link>
+            <>
+              <Separator />
+              <Link href={`/${locale}/pricing`} className="block">
+                <Button className="w-full" variant="default" size="lg">
+                  <IconCrown className="size-4 mr-2" />
+                  {t("upgradeNow")}
+                </Button>
+              </Link>
+            </>
           )}
         </CardContent>
       </Card>

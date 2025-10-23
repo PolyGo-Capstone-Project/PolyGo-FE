@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useMemo } from "react";
 
-import { PricingCard } from "@/components/modules/pricing";
+import { PlusPricingCard, PricingCard } from "@/components/modules/pricing";
 import { Button } from "@/components/ui";
 import { PlanTypeEnum } from "@/constants";
 import {
@@ -81,18 +81,13 @@ export default function PricingPage() {
           />
         )}
 
-        {/* Plus Plans - Show as one card with variants */}
+        {/* Plus Plans - Show as one card with tabs */}
         {plusPlans.length > 0 && (
-          <div className="space-y-4">
-            {plusPlans.map((plan) => (
-              <PricingCard
-                key={plan.id}
-                plan={plan}
-                isCurrent={currentPlanType === PlanTypeEnum.PLUS}
-                userBalance={userBalance}
-              />
-            ))}
-          </div>
+          <PlusPricingCard
+            plans={plusPlans}
+            isCurrent={currentPlanType === PlanTypeEnum.PLUS}
+            userBalance={userBalance}
+          />
         )}
       </div>
     </div>

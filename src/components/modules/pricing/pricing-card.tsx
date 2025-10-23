@@ -37,8 +37,9 @@ export function PricingCard({
     return t("free.duration");
   };
 
-  // Tính save percentage
+  // Tính save percentage - chỉ cho Plus plan
   const getSaveText = () => {
+    if (!isPlusPlan) return ""; // Free plan không có save badge
     const days = plan.durationInDays;
     if (days === 90) return t("plus.quarterly.save");
     if (days === 365) return t("plus.yearly.save");
@@ -82,8 +83,8 @@ export function PricingCard({
             </p>
           </div>
 
-          {/* Save Badge */}
-          {getSaveText() && (
+          {/* Save Badge - chỉ hiển thị cho Plus plan */}
+          {isPlusPlan && getSaveText() && (
             <Badge className="mb-4 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
               {getSaveText()}
             </Badge>

@@ -7,12 +7,22 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PlanTypeEnum } from "@/constants";
+import { useCurrentSubscriptionQuery } from "@/hooks";
 
 export function QuickActionsCard() {
   const t = useTranslations("wallet.quickActions");
   const tToast = useTranslations("wallet.toast");
   const locale = useLocale();
   const router = useRouter();
+
+  // Fetch current subscription to check plan type
+  const { data: currentSubscriptionData } = useCurrentSubscriptionQuery({
+    params: { lang: locale },
+  });
+
+  const subscription = currentSubscriptionData?.payload?.data;
+  const isFreeplan = subscription?.planType === PlanTypeEnum.FREE;
 
   const handleUpgradeSubscription = () => {
     router.push(`/${locale}/pricing`);
@@ -61,13 +71,16 @@ export function QuickActionsCard() {
           {t("buyGift")}
         </Button>
 
-        <Button
-          onClick={handleUpgradeSubscription}
-          className="h-9 w-full gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-sm hover:from-purple-600 hover:to-pink-600 md:h-10"
-        >
-          <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" />
-          {t("upgradeSubscription")}
-        </Button>
+        {/* Only show Upgrade button for Free plan users */}
+        {isFreeplan && (
+          <Button
+            onClick={handleUpgradeSubscription}
+            className="h-9 w-full gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-sm hover:from-purple-600 hover:to-pink-600 md:h-10"
+          >
+            <Sparkles className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            {t("upgradeSubscription")}
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
