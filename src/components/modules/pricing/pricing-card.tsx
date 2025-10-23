@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge, Button, Card, ScrollArea } from "@/components/ui";
-import { PlanTypeEnum } from "@/constants";
+import { PlanTypeEnum, PlanTypeEnumType } from "@/constants";
 import { formatCurrency } from "@/lib/utils";
 import { SubscriptionPlanItemType } from "@/models";
 import { IconCheck, IconSparkles } from "@tabler/icons-react";
@@ -37,8 +37,9 @@ export function PricingCard({
     return t("free.duration");
   };
 
-  // Tính save percentage
+  // Tính save percentage - chỉ cho Plus plan
   const getSaveText = () => {
+    if (!isPlusPlan) return ""; // Free plan không có save badge
     const days = plan.durationInDays;
     if (days === 90) return t("plus.quarterly.save");
     if (days === 365) return t("plus.yearly.save");
@@ -82,8 +83,8 @@ export function PricingCard({
             </p>
           </div>
 
-          {/* Save Badge */}
-          {getSaveText() && (
+          {/* Save Badge - chỉ hiển thị cho Plus plan */}
+          {isPlusPlan && getSaveText() && (
             <Badge className="mb-4 bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
               {getSaveText()}
             </Badge>
@@ -110,12 +111,18 @@ export function PricingCard({
           {/* Features */}
           <ScrollArea className="h-[300px] pr-4">
             <ul className="space-y-3 mb-6">
-              {plan.features.map((feature, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <IconCheck className="size-5 text-primary flex-shrink-0 mt-0.5" />
-                  <span className="text-sm">{getFeatureText(feature, t)}</span>
-                </li>
-              ))}
+              {plan.features.map((feature, index) => {
+                const featureText = getFeatureText(feature, t, plan.planType);
+                // Only render if feature text is not empty
+                if (!featureText) return null;
+
+                return (
+                  <li key={index} className="flex items-start gap-3">
+                    <IconCheck className="size-5 text-primary flex-shrink-0 mt-0.5" />
+                    <span className="text-sm">{featureText}</span>
+                  </li>
+                );
+              })}
             </ul>
           </ScrollArea>
 
@@ -153,36 +160,67 @@ export function PricingCard({
 // Helper function to get feature text
 function getFeatureText(
   feature: SubscriptionPlanItemType["features"][0],
-  t: any
+  t: any,
+  planType: PlanTypeEnumType
 ): string {
   const { featureType, limitValue } = feature;
 
   const featureKey = featureType.toLowerCase();
+  const planKey = planType === PlanTypeEnum.FREE ? "free" : "plus";
 
-  // Map feature types to translation keys
-  const featureMap: Record<string, string> = {
-    chat: limitValue > 0 ? t("plus.features.chat", { count: limitValue }) : "",
-    translation:
-      limitValue > 0
-        ? t("plus.features.translation", { count: limitValue })
-        : "",
-    voicecall:
-      limitValue > 0 ? t("plus.features.voiceCall", { count: limitValue }) : "",
-    videocall:
-      limitValue > 0 ? t("plus.features.videoCall", { count: limitValue }) : "",
-    eventparticipation:
-      limitValue > 0
-        ? t("plus.features.eventParticipation", { count: limitValue })
-        : "",
-    eventcreation:
-      limitValue > 0
-        ? t("plus.features.eventCreation", { count: limitValue })
-        : "",
-    advancedmatching: t("plus.features.advancedMatching"),
-    premiumbadges: t("plus.features.premiumBadges"),
-    analytics: t("plus.features.analytics"),
-    prioritysupport: t("plus.features.prioritySupport"),
+  // Define which features should show count
+  const featuresWithCount = [
+    "chat",
+    "translation",
+    "voicecall",
+    "videocall",
+    "eventparticipation",
+    "eventcreation",
+  ];
+
+  // Define which features are boolean (no count)
+  const booleanFeatures = [
+    "advancedmatching",
+    "premiumbadges",
+    "analytics",
+    "prioritysupport",
+    "basicsupport",
+  ];
+
+  // Check if this feature should show count
+  if (featuresWithCount.includes(featureKey)) {
+    if (limitValue > 0) {
+      return t(`${planKey}.features.${getFeatureTranslationKey(featureKey)}`, {
+        count: limitValue,
+      });
+    }
+    return ""; // Don't show features with 0 or negative limit
+  }
+
+  // Check if this is a boolean feature
+  if (booleanFeatures.includes(featureKey)) {
+    return t(`${planKey}.features.${getFeatureTranslationKey(featureKey)}`);
+  }
+
+  // Fallback to feature name from API
+  return feature.featureName;
+}
+
+// Helper to map feature type to translation key
+function getFeatureTranslationKey(featureKey: string): string {
+  const keyMap: Record<string, string> = {
+    chat: "chat",
+    translation: "translation",
+    voicecall: "voiceCall",
+    videocall: "videoCall",
+    eventparticipation: "eventParticipation",
+    eventcreation: "eventCreation",
+    advancedmatching: "advancedMatching",
+    premiumbadges: "premiumBadges",
+    analytics: "analytics",
+    prioritysupport: "prioritySupport",
+    basicsupport: "basicSupport",
   };
 
-  return featureMap[featureKey] || feature.featureName;
+  return keyMap[featureKey] || featureKey;
 }

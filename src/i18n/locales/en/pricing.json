@@ -10,11 +10,11 @@
       "duration": "Forever",
       "cta": "Current Plan",
       "features": {
-        "chat": "{{count}} messages/day",
-        "translation": "{{count}} translations/day",
-        "voiceCall": "{{count}} voice calls/day",
-        "videoCall": "{{count}} video calls/day",
-        "eventParticipation": "{{count}} events/week",
+        "chat": "{count} messages/day",
+        "translation": "{count} translations/day",
+        "voiceCall": "{count} voice calls/day",
+        "videoCall": "{count} video calls/day",
+        "eventParticipation": "{count} events/week",
         "basicSupport": "Community support"
       }
     },
@@ -24,30 +24,30 @@
       "description": "Unlock unlimited features",
       "monthly": {
         "name": "Monthly",
-        "price": "{{price}}",
+        "price": "{price}",
         "duration": "per month",
         "save": ""
       },
       "quarterly": {
         "name": "Quarterly",
-        "price": "{{price}}",
+        "price": "{price}",
         "duration": "per 3 months",
         "save": "Save 7%"
       },
       "yearly": {
         "name": "Yearly",
-        "price": "{{price}}",
+        "price": "{price}",
         "duration": "per year",
         "save": "Save 25%"
       },
       "cta": "Upgrade Now",
       "features": {
-        "chat": "{{count}} messages/day",
-        "translation": "{{count}} translations/day",
-        "voiceCall": "{{count}} voice calls/day",
-        "videoCall": "{{count}} video calls/day",
-        "eventParticipation": "{{count}} events/week",
-        "eventCreation": "{{count}} events/week",
+        "chat": "{count} messages/day",
+        "translation": "{count} translations/day",
+        "voiceCall": "{count} voice calls/day",
+        "videoCall": "{count} video calls/day",
+        "eventParticipation": "{count} events/week",
+        "eventCreation": "{count} events/week",
         "advancedMatching": "Advanced matching",
         "premiumBadges": "Premium badges",
         "analytics": "Analytics dashboard",

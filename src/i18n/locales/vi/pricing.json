@@ -10,11 +10,11 @@
       "duration": "Mãi mãi",
       "cta": "Gói Hiện Tại",
       "features": {
-        "chat": "{{count}} tin nhắn/ngày",
-        "translation": "{{count}} bản dịch/ngày",
-        "voiceCall": "{{count}} cuộc gọi thoại/ngày",
-        "videoCall": "{{count}} cuộc gọi video/ngày",
-        "eventParticipation": "{{count}} sự kiện/tuần",
+        "chat": "{count} tin nhắn/ngày",
+        "translation": "{count} bản dịch/ngày",
+        "voiceCall": "{count} cuộc gọi thoại/ngày",
+        "videoCall": "{count} cuộc gọi video/ngày",
+        "eventParticipation": "{count} sự kiện/tuần",
         "basicSupport": "Hỗ trợ cộng đồng"
       }
     },
@@ -24,30 +24,30 @@
       "description": "Mở khóa tính năng không giới hạn",
       "monthly": {
         "name": "Tháng",
-        "price": "{{price}}",
+        "price": "{price}",
         "duration": "mỗi tháng",
         "save": ""
       },
       "quarterly": {
         "name": "Quý",
-        "price": "{{price}}",
+        "price": "{price}",
         "duration": "mỗi 3 tháng",
         "save": "Tiết kiệm 7%"
       },
       "yearly": {
         "name": "Năm",
-        "price": "{{price}}",
+        "price": "{price}",
         "duration": "mỗi năm",
         "save": "Tiết kiệm 25%"
       },
       "cta": "Nâng cấp ngay",
       "features": {
-        "chat": "{{count}} tin nhắn/ngày",
-        "translation": "{{count}} bản dịch/ngày",
-        "voiceCall": "{{count}} cuộc gọi thoại/ngày",
-        "videoCall": "{{count}} cuộc gọi video/ngày",
-        "eventParticipation": "{{count}} sự kiện/tuần",
-        "eventCreation": "{{count}} sự kiện/tuần",
+        "chat": "{count} tin nhắn/ngày",
+        "translation": "{count} bản dịch/ngày",
+        "voiceCall": "{count} cuộc gọi thoại/ngày",
+        "videoCall": "{count} cuộc gọi video/ngày",
+        "eventParticipation": "{count} sự kiện/tuần",
+        "eventCreation": "{count} sự kiện/tuần",
         "advancedMatching": "Tìm kiếm nâng cao",
         "premiumBadges": "Huy hiệu cao cấp",
         "analytics": "Bảng phân tích",
