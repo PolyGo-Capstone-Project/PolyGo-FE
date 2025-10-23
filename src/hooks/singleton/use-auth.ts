@@ -2,6 +2,7 @@ import type { Socket } from "socket.io-client";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+import { Role } from "@/constants";
 import { removeTokensFromLocalStorage } from "@/lib/utils";
 import { RoleType } from "@/types";
 
@@ -15,11 +16,17 @@ interface AuthState {
   isNewUser: boolean;
   setIsNewUser: (isNew: boolean) => void;
   reset: () => void;
+
+  // Computed helpers
+  isAdmin: () => boolean;
+  isUser: () => boolean;
+  canAccessAdminRoutes: () => boolean;
+  canAccessUserRoutes: () => boolean;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       isAuth: false,
       role: undefined,
       setRole: (role) => {
@@ -38,6 +45,12 @@ export const useAuthStore = create<AuthState>()(
       reset: () => set({ isAuth: false, role: undefined, socket: undefined }),
       isNewUser: false,
       setIsNewUser: (isNew) => set({ isNewUser: isNew }),
+
+      // Computed helpers
+      isAdmin: () => get().role === Role.Admin,
+      isUser: () => get().role === Role.User,
+      canAccessAdminRoutes: () => get().isAuth && get().role === Role.Admin,
+      canAccessUserRoutes: () => get().isAuth && get().role === Role.User,
     }),
     {
       name: "auth-storage",
