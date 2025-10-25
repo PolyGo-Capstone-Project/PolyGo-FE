@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   EditProfileDialog,
@@ -36,16 +36,17 @@ const MOCK_STATS = {
 export default function ProfilePage() {
   const t = useTranslations("profile");
   const locale = useLocale();
+  const lang = useMemo(() => (locale ? locale.split("-")[0] : "en"), [locale]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   // Fetch user data
   const { data: authData, isLoading: isLoadingAuth } = useAuthMe();
   const { data: nativeLanguagesData, isLoading: isLoadingNative } =
-    useUserLanguagesSpeakingQuery();
+    useUserLanguagesSpeakingQuery({ params: { lang } });
   const { data: learningLanguagesData, isLoading: isLoadingLearning } =
-    useUserLanguagesLearningQuery();
+    useUserLanguagesLearningQuery({ params: { lang } });
   const { data: interestsData, isLoading: isLoadingInterests } =
-    useUserInterestsQuery();
+    useUserInterestsQuery({ params: { lang } });
 
   // Fetch subscription to get planType
   const { data: subscriptionData, isLoading: isLoadingSubscription } =

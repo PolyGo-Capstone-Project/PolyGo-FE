@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import {
@@ -31,8 +31,13 @@ const MOCK_STATS = {
 export default function UserProfilePage() {
   const params = useParams();
   const locale = useLocale();
+  const initialLang = useMemo(
+    () => (locale ? locale.split("-")[0] : "en"),
+    [locale]
+  );
   const t = useTranslations("profile");
   const [sendGiftDialogOpen, setSendGiftDialogOpen] = useState(false);
+  const [lang] = useState(initialLang);
 
   const userId = params.userId as string;
 
@@ -42,7 +47,7 @@ export default function UserProfilePage() {
     isLoading,
     error: userError,
     refetch,
-  } = useGetUserProfile(userId, { enabled: !!userId });
+  } = useGetUserProfile(userId, lang, { enabled: !!userId });
 
   // Handle loading state
   if (isLoading) {

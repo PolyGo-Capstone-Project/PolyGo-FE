@@ -3,6 +3,7 @@ import z from "zod";
 import { Gender, MeritLevel, PlanTypeEnum } from "@/constants";
 import { BadgeListItemSchema } from "@/models/badge.model";
 import {
+  LangQuerySchema,
   PaginationLangQuerySchema,
   PaginationMetaSchema,
 } from "@/models/common.model";
@@ -126,7 +127,7 @@ export const GetUsersResSchema = z.object({
   message: z.string(),
 });
 
-export const GetUserByIdBodySchema = UserSchema.pick({ id: true });
+export const GetUserByIdBodySchema = LangQuerySchema;
 
 // Get user by ID - returns user with languages and interests
 export const GetUserByIdResSchema = z.object({

@@ -1,4 +1,18 @@
 "use client";
+import { Button, Input, Label, Separator } from "@/components";
+import { TypeOfVerificationCode } from "@/constants";
+import {
+  useAuthStore,
+  useLoginMutation,
+  useRegisterMutation,
+  useSendOTPMutation,
+} from "@/hooks";
+import { handleErrorApi, showSuccessToast } from "@/lib/utils";
+import {
+  RegisterBodySchema,
+  RegisterBodyType,
+  SendOTPBodyType,
+} from "@/models";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   IconCheck,
@@ -15,20 +29,6 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { Button, Input, Label, Separator } from "@/components/ui";
-import { TypeOfVerificationCode } from "@/constants";
-import {
-  useLoginMutation,
-  useRegisterMutation,
-  useSendOTPMutation,
-} from "@/hooks";
-import { handleErrorApi, showSuccessToast } from "@/lib/utils";
-import {
-  RegisterBodySchema,
-  RegisterBodyType,
-  SendOTPBodyType,
-} from "@/models";
-
 export default function RegisterForm() {
   const t = useTranslations("auth.register");
   const tSuccess = useTranslations("Success");
@@ -40,6 +40,7 @@ export default function RegisterForm() {
   const [otpSent, setOtpSent] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const router = useRouter();
+  const setIsNewUser = useAuthStore((state) => state.setIsNewUser);
 
   const registerMutation = useRegisterMutation();
   const loginMutation = useLoginMutation();
@@ -118,6 +119,7 @@ export default function RegisterForm() {
         mail: data.mail,
         password: data.password,
       });
+      setIsNewUser(true);
       showSuccessToast(response.payload.message, tSuccess);
       router.push(`/${locale}/setup-profile`);
     } catch (error) {

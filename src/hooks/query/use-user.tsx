@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 
 import userApiRequest from "@/lib/apis/user";
 import {
@@ -124,16 +124,19 @@ export const useGetUsersMatching = (
 };
 
 // GET /users/:id - Get user by ID
+
 export const useGetUserProfile = (
   id: string,
+  lang: string,
   options?: {
     enabled?: boolean;
   }
 ) => {
   return useQuery({
-    queryKey: ["user", "profile", id],
-    queryFn: () => userApiRequest.getUserProfile(id),
+    queryKey: ["user", "profile", id ?? null, lang ?? null],
+    queryFn: () => userApiRequest.getUserProfile(id as string, { lang }),
     enabled: options?.enabled,
+    placeholderData: keepPreviousData,
   });
 };
 
