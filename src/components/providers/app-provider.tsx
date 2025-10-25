@@ -50,7 +50,7 @@ export default function AppProvider({
       }
       count.current++;
     }
-  }, [setRole, setSocket]);
+  }, [reset, setRole, setSocket]);
 
   return (
     <QueryClientProvider client={queryClient}>
