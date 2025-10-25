@@ -25,7 +25,6 @@ import {
   useSearchUsers,
 } from "@/hooks";
 import { handleErrorApi } from "@/lib/utils";
-import { UserMatchingItemType } from "@/models";
 
 type SortOption = "recommended" | "newest" | "highestRating" | "onlineFirst";
 
@@ -62,11 +61,6 @@ export default function MatchingPageContent() {
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-
-  // Accumulated users from all loaded pages
-  const [accumulatedUsers, setAccumulatedUsers] = useState<
-    UserMatchingItemType[]
-  >([]);
 
   // Debounce search input
   useEffect(() => {
@@ -171,30 +165,22 @@ export default function MatchingPageContent() {
 
   const hasMore = currentPage < totalPages;
 
-  // Accumulate users when new data arrives
-  useEffect(() => {
-    if (newUsers.length > 0) {
-      if (currentPage === 1) {
-        // Reset accumulated users on first page
-        setAccumulatedUsers(newUsers);
-      } else {
-        // Append new users, avoiding duplicates
-        setAccumulatedUsers((prev) => {
-          const existingIds = new Set(prev.map((u) => u.id));
-          const uniqueNewUsers = newUsers.filter((u) => !existingIds.has(u.id));
-          return [...prev, ...uniqueNewUsers];
-        });
-      }
-    } else if (currentPage === 1 && !isLoadingUsers) {
-      // Clear accumulated users if first page returns empty
-      setAccumulatedUsers([]);
+  // ✅ FIX: Directly use newUsers for rendering instead of accumulated state
+  // This ensures we always show the latest data from the API
+  const displayUsers = useMemo(() => {
+    let result = [...newUsers];
+
+    // Client-side filtering for onlineOnly (since API doesn't support it yet)
+    if (filters.onlineOnly) {
+      result = result.filter(() => Math.random() > 0.3);
     }
-  }, [newUsers, currentPage, isLoadingUsers]);
+
+    return result;
+  }, [newUsers, filters.onlineOnly]);
 
   // Reset page when debounced search or other filters change
   useEffect(() => {
     setCurrentPage(1);
-    setAccumulatedUsers([]);
   }, [
     debouncedSearch,
     filters.speakingLanguageIds,
@@ -202,21 +188,9 @@ export default function MatchingPageContent() {
     filters.interestIds,
   ]);
 
-  // Client-side filtering for onlineOnly (since API doesn't support it yet)
-  const filteredUsers = useMemo(() => {
-    let result = [...accumulatedUsers];
-
-    // Filter online only (mock - will be removed when API supports it)
-    if (filters.onlineOnly) {
-      result = result.filter(() => Math.random() > 0.3);
-    }
-
-    return result;
-  }, [accumulatedUsers, filters.onlineOnly]);
-
   // Sorting (mock - will be removed when API supports it)
   const sortedUsers = useMemo(() => {
-    const users = [...filteredUsers];
+    const users = [...displayUsers];
 
     switch (sortBy) {
       case "newest":
@@ -246,7 +220,7 @@ export default function MatchingPageContent() {
       default:
         return users;
     }
-  }, [filteredUsers, sortBy]);
+  }, [displayUsers, sortBy]);
 
   // Handle navigation
   const handleViewProfile = (userId: string) => {
@@ -267,7 +241,6 @@ export default function MatchingPageContent() {
     });
     setDebouncedSearch("");
     setCurrentPage(1);
-    setAccumulatedUsers([]);
   };
 
   const handleLoadMore = () => {

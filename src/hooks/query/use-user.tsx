@@ -72,7 +72,7 @@ export const useGetUsers = (
   }
 ) => {
   return useQuery({
-    queryKey: ["users", query],
+    queryKey: ["admin", "users", query],
     queryFn: () => userApiRequest.getUsers(query),
     enabled: options?.enabled,
   });
@@ -86,7 +86,7 @@ export const useGetUser = (
   }
 ) => {
   return useQuery({
-    queryKey: ["user", id],
+    queryKey: ["admin", "user", id],
     queryFn: () => userApiRequest.getOne(id),
     enabled: options?.enabled,
   });
@@ -115,9 +115,11 @@ export const useGetUsersMatching = (
   }
 ) => {
   return useQuery({
-    queryKey: ["users", query],
+    queryKey: ["users", "matching", query],
     queryFn: () => userApiRequest.getUsersMatching(query),
     enabled: options?.enabled,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 };
 
@@ -129,7 +131,7 @@ export const useGetUserProfile = (
   }
 ) => {
   return useQuery({
-    queryKey: ["user", id],
+    queryKey: ["user", "profile", id],
     queryFn: () => userApiRequest.getUserProfile(id),
     enabled: options?.enabled,
   });
@@ -146,5 +148,7 @@ export const useSearchUsers = (
     queryKey: ["users", "search", query],
     queryFn: () => userApiRequest.searchUsers(query),
     enabled: options?.enabled,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 };

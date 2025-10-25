@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { Gender, MeritLevel } from "@/constants";
+import { Gender, MeritLevel, PlanTypeEnum } from "@/constants";
 import { BadgeListItemSchema } from "@/models/badge.model";
 import {
   PaginationLangQuerySchema,
@@ -18,6 +18,7 @@ export const UserSchema = z.object({
   avatarUrl: z.string().nullable(),
   meritLevel: z.enum(Object.values(MeritLevel)),
   gender: z.enum(Object.values(Gender)).nullable(),
+  planType: z.enum(PlanTypeEnum),
   experiencePoints: z.number().min(0).default(0),
   autoRenewSubscription: z.boolean().default(false),
   totp: z.string().nullable(),
