@@ -25,6 +25,7 @@ import {
   useSearchUsers,
 } from "@/hooks";
 import { handleErrorApi } from "@/lib/utils";
+import type { SearchUserQueryType, UserMatchingItemType } from "@/models";
 
 type SortOption = "recommended" | "newest" | "highestRating" | "onlineFirst";
 
@@ -61,6 +62,12 @@ export default function MatchingPageContent() {
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loadedUsers, setLoadedUsers] = useState<UserMatchingItemType[]>([]);
+  const [paginationMeta, setPaginationMeta] = useState({
+    totalItems: 0,
+    hasNextPage: false,
+  });
+  const [isLoadMorePending, setIsLoadMorePending] = useState(false);
 
   // Debounce search input
   useEffect(() => {
@@ -114,11 +121,26 @@ export default function MatchingPageContent() {
   );
 
   // Fetch search results (when filters applied)
+  const fallbackSearchQuery = useMemo(
+    () =>
+      ({
+        pageNumber: 1,
+        pageSize: PAGE_SIZE,
+        lang: locale,
+      }) as SearchUserQueryType,
+    [locale]
+  );
+
   const {
     data: searchData,
     isLoading: isLoadingSearch,
     error: searchError,
-  } = useSearchUsers(searchParams!, { enabled: hasActiveFilters });
+  } = useSearchUsers(
+    (searchParams ?? fallbackSearchQuery) as SearchUserQueryType,
+    {
+      enabled: hasActiveFilters,
+    }
+  );
 
   // Fetch languages for filters
   const { data: languagesData, isLoading: isLoadingLanguages } =
@@ -148,27 +170,9 @@ export default function MatchingPageContent() {
   const currentError = hasActiveFilters ? searchError : matchingError;
   const isLoadingUsers = hasActiveFilters ? isLoadingSearch : isLoadingMatching;
 
-  const newUsers = useMemo(
-    () => currentData?.payload.data?.items || [],
-    [currentData]
-  );
-
-  const totalItems = useMemo(
-    () => currentData?.payload.data?.totalItems || 0,
-    [currentData]
-  );
-
-  const totalPages = useMemo(
-    () => currentData?.payload.data?.totalPages || 0,
-    [currentData]
-  );
-
-  const hasMore = currentPage < totalPages;
-
-  // ✅ FIX: Directly use newUsers for rendering instead of accumulated state
-  // This ensures we always show the latest data from the API
+  // Maintain accumulated list so "Load more" appends instead of replacing
   const displayUsers = useMemo(() => {
-    let result = [...newUsers];
+    let result = [...loadedUsers];
 
     // Client-side filtering for onlineOnly (since API doesn't support it yet)
     if (filters.onlineOnly) {
@@ -176,16 +180,83 @@ export default function MatchingPageContent() {
     }
 
     return result;
-  }, [newUsers, filters.onlineOnly]);
+  }, [loadedUsers, filters.onlineOnly]);
 
   // Reset page when debounced search or other filters change
   useEffect(() => {
     setCurrentPage(1);
+    setLoadedUsers([]);
+    setPaginationMeta({ totalItems: 0, hasNextPage: false });
+    setIsLoadMorePending(false);
   }, [
     debouncedSearch,
     filters.speakingLanguageIds,
     filters.learningLanguageIds,
     filters.interestIds,
+    locale,
+    hasActiveFilters,
+  ]);
+
+  useEffect(() => {
+    const items = (currentData?.payload.data?.items ??
+      []) as UserMatchingItemType[];
+    if (!currentData) return;
+
+    setLoadedUsers((prev) => {
+      if (currentPage === 1) {
+        return items;
+      }
+
+      const existingIds = new Set(prev.map((user) => user.id));
+      const newItems = items.filter((user) => !existingIds.has(user.id));
+      return [...prev, ...newItems];
+    });
+
+    if (isLoadMorePending) {
+      setIsLoadMorePending(false);
+    }
+  }, [currentData, currentPage, isLoadMorePending]);
+
+  useEffect(() => {
+    const payload = currentData?.payload.data;
+    if (!payload) return;
+
+    setPaginationMeta({
+      totalItems: payload.totalItems ?? 0,
+      hasNextPage: payload.hasNextPage ?? false,
+    });
+  }, [currentData]);
+
+  useEffect(() => {
+    if (!currentError) {
+      return;
+    }
+
+    if (isLoadMorePending) {
+      setIsLoadMorePending(false);
+    }
+
+    if (currentPage === 1) return;
+
+    setCurrentPage((prev) => Math.max(1, prev - 1));
+  }, [currentError, currentPage, isLoadMorePending]);
+
+  const hasMore = useMemo(() => {
+    if (isLoadingUsers) {
+      return true;
+    }
+
+    if (!paginationMeta.hasNextPage) {
+      return false;
+    }
+
+    const total = paginationMeta.totalItems;
+    return total === 0 || loadedUsers.length < total;
+  }, [
+    isLoadingUsers,
+    paginationMeta.hasNextPage,
+    paginationMeta.totalItems,
+    loadedUsers.length,
   ]);
 
   // Sorting (mock - will be removed when API supports it)
@@ -241,12 +312,16 @@ export default function MatchingPageContent() {
     });
     setDebouncedSearch("");
     setCurrentPage(1);
+    setIsLoadMorePending(false);
   };
 
   const handleLoadMore = () => {
-    if (hasMore && !isLoadingUsers) {
-      setCurrentPage((prev) => prev + 1);
+    if (!hasMore || isLoadingUsers || isLoadMorePending) {
+      return;
     }
+
+    setIsLoadMorePending(true);
+    setCurrentPage((prev) => prev + 1);
   };
 
   // Update filters (for non-search filters)
@@ -416,9 +491,11 @@ export default function MatchingPageContent() {
                     variant="outline"
                     size="lg"
                     onClick={handleLoadMore}
-                    disabled={isLoadingUsers}
+                    disabled={isLoadingUsers || isLoadMorePending}
                   >
-                    {isLoadingUsers ? t("loading") : t("loadMore")}
+                    {isLoadingUsers || isLoadMorePending
+                      ? t("loading")
+                      : t("loadMore")}
                   </Button>
                 </div>
               )}
@@ -427,7 +504,7 @@ export default function MatchingPageContent() {
               <div className="mt-4 text-center text-sm text-muted-foreground">
                 {t("showingResults", {
                   current: sortedUsers.length,
-                  total: totalItems,
+                  total: paginationMeta.totalItems,
                 })}
               </div>
             </>
@@ -442,7 +519,7 @@ export default function MatchingPageContent() {
           )}
 
           {/* Loading More State */}
-          {isLoadingUsers && currentPage > 1 && (
+          {(isLoadingUsers || isLoadMorePending) && currentPage > 1 && (
             <div className="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {Array.from({ length: 3 }).map((_, i) => (
                 <div key={i} className="space-y-4 rounded-xl border p-6">

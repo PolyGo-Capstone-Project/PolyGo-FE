@@ -57,6 +57,7 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground text-center py-8">
+            <IconGift className="mb-2 h-12 w-12 text-muted-foreground" />
             {tEmpty("empty.noGifts")}
           </p>
         </CardContent>
@@ -69,7 +70,10 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <IconGift className="h-5 w-5" />
-          {t("sections.gifts")} ({gifts.length})
+          {t("sections.gifts")}
+          <Badge variant="secondary" className="ml-auto">
+            {gifts.length}
+          </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
