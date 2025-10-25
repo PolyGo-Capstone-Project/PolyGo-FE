@@ -42,7 +42,7 @@ export default function HomePage() {
 
   // Show loading state while redirecting
   if (isRedirecting) {
-    return <AuthLoading message="Redirecting to dashboard..." />;
+    return <AuthLoading message="" />;
   }
 
   const navigation = [

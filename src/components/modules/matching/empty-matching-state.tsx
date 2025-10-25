@@ -1,6 +1,6 @@
 "use client";
 
-import { IconSearch, IconUserOff } from "@tabler/icons-react";
+import { IconReload, IconUserOff } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,7 @@ export function EmptyMatchingState({
         </div>
         {hasFilters && onClearFilters && (
           <Button variant="outline" onClick={onClearFilters}>
-            <IconSearch className="mr-2 h-4 w-4" />
+            <IconReload className="mr-2 h-4 w-4" />
             {t("noResults")}
           </Button>
         )}

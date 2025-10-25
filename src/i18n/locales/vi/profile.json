@@ -22,7 +22,7 @@
       "experiencePoints": "Điểm kinh nghiệm",
       "level": "Cấp độ",
       "gifts": "Quà từ cộng đồng",
-      "achievements": "Thành tích & Huy hiệu"
+      "badges": "Thành tích & Huy hiệu"
     },
     "info": {
       "name": "Tên",
@@ -56,6 +56,9 @@
       "noLanguages": "Chưa thêm ngôn ngữ",
       "noInterests": "Chưa thêm sở thích",
       "noGifts": "Chưa nhận được quà nào"
+    },
+    "badges": {
+      "noBadges": "Chưa đạt được huy hiệu nào"
     },
     "achievements": {
       "unlocked": "Đã mở khóa",

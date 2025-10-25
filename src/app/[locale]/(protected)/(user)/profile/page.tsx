@@ -6,7 +6,7 @@ import { useState } from "react";
 import {
   EditProfileDialog,
   LoadingSpinner,
-  ProfileAchievementsSection,
+  ProfileBadgesSection,
   ProfileGiftsSection,
   ProfileHeader,
   ProfileInfoSection,
@@ -16,7 +16,9 @@ import {
 } from "@/components";
 import {
   useAuthMe,
+  useCurrentSubscriptionQuery,
   useMyReceivedGiftsQuery,
+  useUserBadgesQuery,
   useUserInterestsQuery,
   useUserLanguagesLearningQuery,
   useUserLanguagesSpeakingQuery,
@@ -30,69 +32,6 @@ const MOCK_STATS = {
   totalHours: 150,
   eventsHosted: 2,
 };
-
-const MOCK_ACHIEVEMENTS = [
-  {
-    id: "1",
-    name: "First Chat",
-    description: "Had your first conversation",
-    icon: "💬",
-    unlockedAt: "2025-09-01T10:00:00Z",
-    isUnlocked: true,
-  },
-  {
-    id: "2",
-    name: "10 Hours Spoken",
-    description: "Spoken for 10+ hours",
-    icon: "🎤",
-    unlockedAt: "2025-09-15T16:30:00Z",
-    isUnlocked: true,
-  },
-  {
-    id: "3",
-    name: "Early Bird",
-    description: "Join a session before 8 AM",
-    icon: "🌅",
-    isUnlocked: false,
-  },
-  {
-    id: "4",
-    name: "Night Owl",
-    description: "Join a session after 10 PM",
-    icon: "🦉",
-    unlockedAt: "2025-10-01T22:45:00Z",
-    isUnlocked: true,
-  },
-  {
-    id: "5",
-    name: "Social Butterfly",
-    description: "Connect with 10 different people",
-    icon: "🦋",
-    isUnlocked: false,
-  },
-  {
-    id: "6",
-    name: "Polyglot",
-    description: "Learn 3 or more languages",
-    icon: "🌍",
-    isUnlocked: false,
-  },
-  {
-    id: "7",
-    name: "Helpful Hand",
-    description: "Receive 5 gifts from others",
-    icon: "🤝",
-    unlockedAt: "2025-10-10T09:00:00Z",
-    isUnlocked: true,
-  },
-  {
-    id: "8",
-    name: "Marathon",
-    description: "Complete a 3-hour session",
-    icon: "🏃",
-    isUnlocked: false,
-  },
-];
 
 export default function ProfilePage() {
   const t = useTranslations("profile");
@@ -108,6 +47,17 @@ export default function ProfilePage() {
   const { data: interestsData, isLoading: isLoadingInterests } =
     useUserInterestsQuery();
 
+  // Fetch subscription to get planType
+  const { data: subscriptionData, isLoading: isLoadingSubscription } =
+    useCurrentSubscriptionQuery({
+      params: { lang: locale },
+    });
+
+  // Fetch user badges
+  const { data: badgesData, isLoading: isLoadingBadges } = useUserBadgesQuery({
+    params: { lang: locale, pageNumber: 1, pageSize: 100 },
+  });
+
   // Fetch received gifts (only accepted ones - isRead: true)
   const { data: receivedGiftsData, isLoading: isLoadingGifts } =
     useMyReceivedGiftsQuery({
@@ -119,7 +69,9 @@ export default function ProfilePage() {
     isLoadingNative ||
     isLoadingLearning ||
     isLoadingInterests ||
-    isLoadingGifts;
+    isLoadingGifts ||
+    isLoadingSubscription ||
+    isLoadingBadges;
 
   if (isLoading) {
     return (
@@ -133,6 +85,13 @@ export default function ProfilePage() {
   const nativeLanguages = nativeLanguagesData?.payload.data?.items || [];
   const learningLanguages = learningLanguagesData?.payload.data?.items || [];
   const interests = interestsData?.payload.data?.items || [];
+  const badges = (badgesData?.payload.data?.items || []).map((badge) => ({
+    ...badge,
+    iconUrl: badge.iconUrl ?? null,
+  }));
+
+  // Get planType from subscription
+  const planType = subscriptionData?.payload.data?.planType;
 
   // Filter only accepted gifts (isRead: true)
   const acceptedGifts =
@@ -187,11 +146,11 @@ export default function ProfilePage() {
           {/* Interests */}
           <ProfileInterestsSection interests={interests} />
 
+          {/* Badges */}
+          <ProfileBadgesSection badges={badges} />
+
           {/* Gifts */}
           <ProfileGiftsSection gifts={transformedGifts} />
-
-          {/* Achievements */}
-          <ProfileAchievementsSection achievements={MOCK_ACHIEVEMENTS} />
         </div>
 
         {/* Right Column - Stats & XP */}
@@ -204,6 +163,7 @@ export default function ProfilePage() {
             totalHours={MOCK_STATS.totalHours}
             streakDays={user.streakDays}
             eventsHosted={MOCK_STATS.eventsHosted}
+            planType={planType}
           />
 
           {/* XP & Level */}
