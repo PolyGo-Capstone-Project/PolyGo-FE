@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 import {
   LoadingSpinner,
-  ProfileAchievementsSection,
+  ProfileBadgesSection,
   ProfileGiftsSection,
   ProfileHeader,
   ProfileInfoSection,
@@ -17,7 +17,7 @@ import {
   SendGiftDialog,
 } from "@/components";
 import { UserNotFound } from "@/components/modules/matching";
-import { useGetUserProfile, useMyReceivedGiftsQuery } from "@/hooks";
+import { useGetUserProfile } from "@/hooks";
 
 // Mock data for features not yet implemented
 const MOCK_STATS = {
@@ -27,69 +27,6 @@ const MOCK_STATS = {
   totalHours: 150,
   eventsHosted: 2,
 };
-
-const MOCK_ACHIEVEMENTS = [
-  {
-    id: "1",
-    name: "First Chat",
-    description: "Had your first conversation",
-    icon: "💬",
-    unlockedAt: "2025-09-01T10:00:00Z",
-    isUnlocked: true,
-  },
-  {
-    id: "2",
-    name: "10 Hours Spoken",
-    description: "Spoken for 10+ hours",
-    icon: "🎤",
-    unlockedAt: "2025-09-15T16:30:00Z",
-    isUnlocked: true,
-  },
-  {
-    id: "3",
-    name: "Early Bird",
-    description: "Join a session before 8 AM",
-    icon: "🌅",
-    isUnlocked: false,
-  },
-  {
-    id: "4",
-    name: "Night Owl",
-    description: "Join a session after 10 PM",
-    icon: "🦉",
-    unlockedAt: "2025-10-01T22:45:00Z",
-    isUnlocked: true,
-  },
-  {
-    id: "5",
-    name: "Social Butterfly",
-    description: "Connect with 10 different people",
-    icon: "🦋",
-    isUnlocked: false,
-  },
-  {
-    id: "6",
-    name: "Polyglot",
-    description: "Learn 3 or more languages",
-    icon: "🌍",
-    isUnlocked: false,
-  },
-  {
-    id: "7",
-    name: "Helpful Hand",
-    description: "Receive 5 gifts from others",
-    icon: "🤝",
-    unlockedAt: "2025-10-10T09:00:00Z",
-    isUnlocked: true,
-  },
-  {
-    id: "8",
-    name: "Marathon",
-    description: "Complete a 3-hour session",
-    icon: "🏃",
-    isUnlocked: false,
-  },
-];
 
 export default function UserProfilePage() {
   const params = useParams();
@@ -106,14 +43,6 @@ export default function UserProfilePage() {
     error: userError,
     refetch,
   } = useGetUserProfile(userId, { enabled: !!userId });
-
-  // Fetch this user's received gifts (only accepted ones - isRead: true)
-  // Note: This should ideally be a separate API endpoint for viewing another user's gifts
-  // For now, we'll show mock data or empty
-  const { data: receivedGiftsData } = useMyReceivedGiftsQuery({
-    params: { lang: locale, pageNumber: 1, pageSize: 20 },
-    enabled: false, // Disable for other users' profiles
-  });
 
   // Handle loading state
   if (isLoading) {
@@ -161,9 +90,25 @@ export default function UserProfilePage() {
     description: interest.name,
   }));
 
-  // For other users, we don't show their gifts
-  // In a real app, you'd need a separate endpoint to get public gifts
-  const transformedGifts: any[] = [];
+  // Get badges from user data and normalise icon to null when missing
+  const badges = (user.badges || []).map((badge) => ({
+    ...badge,
+    iconUrl: badge.iconUrl ?? null,
+  }));
+
+  // Transform gifts from user data
+  const transformedGifts = (user.gifts || []).map((gift) => ({
+    id: gift.id,
+    name: gift.name,
+    value: 0,
+    from: {
+      name: "Anonymous", // We don't have sender info in this context
+      avatarUrl: null,
+    },
+    message: "",
+    receivedAt: new Date().toISOString(),
+    iconUrl: gift.iconUrl,
+  }));
 
   // Handle share profile
   const handleShare = () => {
@@ -212,13 +157,13 @@ export default function UserProfilePage() {
             {/* Interests */}
             <ProfileInterestsSection interests={interests} />
 
-            {/* Gifts - Hidden for other users or show public gifts */}
+            {/* Badges */}
+            <ProfileBadgesSection badges={badges} />
+
+            {/* Gifts */}
             {transformedGifts.length > 0 && (
               <ProfileGiftsSection gifts={transformedGifts} />
             )}
-
-            {/* Achievements */}
-            <ProfileAchievementsSection achievements={MOCK_ACHIEVEMENTS} />
           </div>
 
           {/* Right Column - Stats & XP */}
@@ -231,6 +176,7 @@ export default function UserProfilePage() {
               totalHours={MOCK_STATS.totalHours}
               streakDays={user.streakDays ?? 0}
               eventsHosted={MOCK_STATS.eventsHosted}
+              planType={user.planType}
             />
 
             {/* XP & Level */}

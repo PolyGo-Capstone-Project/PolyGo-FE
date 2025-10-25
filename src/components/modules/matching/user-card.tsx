@@ -1,6 +1,6 @@
 "use client";
 
-import { IconSearch, IconUserPlus } from "@tabler/icons-react";
+import { IconSearch, IconSparkles, IconUserPlus } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
@@ -16,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { PlanTypeEnum } from "@/constants";
 import { UserMatchingItemType } from "@/models";
 import Image from "next/image";
 
@@ -41,6 +42,11 @@ export function UserCard({ user, onViewProfile, onAddFriend }: UserCardProps) {
       .toUpperCase()
       .slice(0, 2);
   }, [user.name]);
+
+  // Check if user has Plus plan
+  const isPlusUser =
+    user.planType === PlanTypeEnum.PLUS ||
+    user.planType === PlanTypeEnum.PREMIUM;
 
   // Validate avatar URL
   const isValidAvatarUrl = (url: string | null) => {
@@ -75,7 +81,15 @@ export function UserCard({ user, onViewProfile, onAddFriend }: UserCardProps) {
 
           {/* User Info */}
           <div className="flex-1 space-y-1">
-            <CardTitle className="text-xl">{user.name}</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-xl">{user.name}</CardTitle>
+              {isPlusUser && (
+                <div className="flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 px-2 py-0.5">
+                  <IconSparkles className="h-3 w-3 text-white" />
+                  <span className="text-xs font-bold text-white">PLUS</span>
+                </div>
+              )}
+            </div>
             <CardDescription className="flex flex-wrap items-center gap-2">
               {user.gender && (
                 <Badge variant="outline" className="text-xs">
@@ -165,10 +179,10 @@ export function UserCard({ user, onViewProfile, onAddFriend }: UserCardProps) {
                 <Badge
                   key={interest.id}
                   variant="outline"
-                  className="text-xs gap-1"
+                  className="gap-1 text-xs"
                 >
                   {interest.iconUrl && (
-                    <div className="relative h-3 w-3 shrink-0 rounded-sm overflow-hidden">
+                    <div className="relative h-3 w-3 shrink-0 overflow-hidden rounded-sm">
                       <Image
                         src={interest.iconUrl}
                         alt={interest.name}

@@ -22,7 +22,7 @@
       "experiencePoints": "Experience Points",
       "level": "Level",
       "gifts": "Gifts from Community",
-      "achievements": "Achievements & Badges"
+      "badges": "Achievements & Badges"
     },
     "info": {
       "name": "Name",
@@ -56,6 +56,9 @@
       "noLanguages": "No languages added",
       "noInterests": "No interests added",
       "noGifts": "No gifts received yet"
+    },
+    "badges": {
+      "noBadges": "No badges earned yet"
     },
     "achievements": {
       "unlocked": "Unlocked",

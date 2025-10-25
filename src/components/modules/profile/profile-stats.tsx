@@ -5,12 +5,14 @@ import {
   IconChartBar,
   IconClock,
   IconFlame,
+  IconSparkles,
   IconStar,
   IconTrendingUp,
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PlanTypeEnum } from "@/constants";
 
 type StatItem = {
   label: string;
@@ -26,6 +28,7 @@ type ProfileStatsProps = {
   totalHours: number;
   streakDays: number;
   eventsHosted: number;
+  planType?: string;
 };
 
 export function ProfileStats({
@@ -35,9 +38,13 @@ export function ProfileStats({
   totalHours,
   streakDays,
   eventsHosted,
+  planType,
 }: ProfileStatsProps) {
   const t = useTranslations("profile");
   const tStats = useTranslations("profile");
+
+  const isPlusUser =
+    planType === PlanTypeEnum.PLUS || planType === PlanTypeEnum.PREMIUM;
 
   const stats: StatItem[] = [
     {
@@ -75,7 +82,15 @@ export function ProfileStats({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{tStats("stats.title")}</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg">{tStats("stats.title")}</CardTitle>
+          {isPlusUser && (
+            <div className="flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 px-3 py-1">
+              <IconSparkles className="h-4 w-4 text-white" />
+              <span className="text-sm font-bold text-white">PLUS</span>
+            </div>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
