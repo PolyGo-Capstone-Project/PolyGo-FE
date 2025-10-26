@@ -6,4 +6,5 @@ export * from "./interest.model";
 export * from "./language.model";
 export * from "./media.model";
 export * from "./subscription.model";
+export * from "./transaction.model";
 export * from "./user.model";
