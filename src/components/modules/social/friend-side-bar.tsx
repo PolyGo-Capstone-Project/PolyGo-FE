@@ -22,7 +22,7 @@ export default function FriendSidebar({
     <div className="hidden lg:flex flex-col h-full gap-6 overflow-hidden">
       {/* Suggested Friends */}
       <Card className="flex-shrink-0">
-        <CardHeader className="pb-4 border-b sticky top-0 bg-background z-10">
+        <CardHeader className="border-b sticky top-0 bg-background z-10">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
             <UserPlus className="h-4 w-4" />
             {t("rightSidebar.suggestions.title", {
@@ -30,7 +30,7 @@ export default function FriendSidebar({
             })}
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-4 space-y-2">
+        <CardContent className="space-y-2">
           {suggestedFriends.map((friend) => (
             <div
               key={friend.initials}
@@ -66,7 +66,7 @@ export default function FriendSidebar({
           </CardTitle>
         </CardHeader>
         <CardContent
-          className={`pt-4 space-y-3 flex-1 ${onlineScrollNeeded ? "overflow-y-auto" : "overflow-visible"}`}
+          className={`space-y-3 flex-1 ${onlineScrollNeeded ? "overflow-y-auto" : "overflow-visible"}`}
         >
           {onlineFriends.map((friend, idx) => (
             <div

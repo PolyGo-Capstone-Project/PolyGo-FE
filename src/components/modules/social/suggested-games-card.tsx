@@ -23,7 +23,7 @@ export default function SuggestedGamesCard({ t, games }: Props) {
           </CardTitle>
         </CardHeader>
         <CardContent
-          className={`pt-4 space-y-2 ${scrollNeeded ? "overflow-y-auto" : "overflow-visible"}`}
+          className={`space-y-2 ${scrollNeeded ? "overflow-y-auto" : "overflow-visible"}`}
           style={scrollNeeded ? { maxHeight: "calc(100% - 64px)" } : {}}
         >
           {games.map((game) => (

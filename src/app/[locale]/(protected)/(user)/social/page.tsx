@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
+import { LoadingSpinner } from "@/components";
 import CreatePostCard from "@/components/modules/social/create-post-card";
 import FriendSidebar from "@/components/modules/social/friend-side-bar";
 import PostCard from "@/components/modules/social/post-card";
@@ -315,23 +316,13 @@ export default function SocialPage() {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center text-muted-foreground">
-        Loading posts...
+        <LoadingSpinner />
       </div>
     );
   }
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      {/* Sticky header */}
-      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/70 border-b">
-        <div className="max-w-8xl mx-auto px-4 py-4">
-          <h1 className="text-2xl md:text-3xl font-bold">{t("title")}</h1>
-          <p className="mt-1 text-sm md:text-base text-muted-foreground">
-            {t("subtitle")}
-          </p>
-        </div>
-      </div>
-
       {/* 3 columns */}
       <div className="flex-1 max-w-8xl mx-auto w-full px-4 py-4 overflow-hidden">
         <div className="grid h-full grid-cols-1 lg:grid-cols-[1fr_4fr_1fr] xl:grid-cols-[1fr_2.5fr_1fr] gap-6 min-h-0">
