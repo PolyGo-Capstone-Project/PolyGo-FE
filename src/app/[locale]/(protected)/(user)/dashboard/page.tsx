@@ -9,7 +9,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTranslations } from "next-intl";
+import { useAuthMe, useGetUsersMatching } from "@/hooks";
+import { UserMatchingItemType } from "@/models";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useMemo } from "react";
 
 const isValidAvatarUrl = (url: any) => !!url; // Thay bằng logic kiểm tra URL thực tế
 const getInitials = (name: any) =>
@@ -19,10 +23,6 @@ const getInitials = (name: any) =>
     .join("")
     .toUpperCase()
     .substring(0, 2);
-
-import { useAuthMe, useGetUsersMatching } from "@/hooks";
-import { UserMatchingItemType } from "@/models";
-import { useMemo } from "react";
 
 /* ========================================================================================= */
 /* ===================================== MOCK DATA CÒN LẠI ================================= */
@@ -134,6 +134,12 @@ const useSuggestedPartners = () => {
 /* ========================================================================================= */
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
+  const locale = useLocale();
+  const router = useRouter();
+
+  const goToProfile = (userId: string) => {
+    router.push(`/${locale}/matching/${userId}`);
+  };
 
   // Sử dụng hook useAuthMe để lấy dữ liệu người dùng
   const { data: authData, isLoading: isLoadingAuth } = useAuthMe();
@@ -261,6 +267,7 @@ export default function DashboardPage() {
                     variant="ghost"
                     size="sm"
                     className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 text-xs font-semibold"
+                    onClick={() => router.push(`/${locale}/matching`)}
                   >
                     {t("seeAll", { defaultValue: "Xem tất cả" })} →
                   </Button>
@@ -332,12 +339,14 @@ export default function DashboardPage() {
                               variant="outline"
                               size="sm"
                               className="flex-1 text-xs h-8 border-slate-200 hover:bg-slate-50 bg-transparent"
+                              onClick={() => goToProfile(p.id)}
                             >
                               {t("profile", { defaultValue: "Profile" })}
                             </Button>
                             <Button
                               size="sm"
                               className="flex-1 text-xs h-8 bg-indigo-600 hover:bg-indigo-700"
+                              onClick={() => router.push(`/${locale}/chat`)}
                             >
                               {t("chat", { defaultValue: "Chat" })}
                             </Button>
@@ -371,6 +380,7 @@ export default function DashboardPage() {
                     variant="ghost"
                     size="sm"
                     className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 text-xs font-semibold"
+                    onClick={() => router.push(`/${locale}/event`)}
                   >
                     {t("upcomingEvents.viewDashboard", {
                       defaultValue: "View All",
