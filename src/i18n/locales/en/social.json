@@ -1,0 +1,38 @@
+{
+  "social": {
+    "title": "PolyGo Community",
+    "subtitle": "Connect, share, and practice languages with people around the globe.",
+    "onlineTime": "hours ago",
+    "createPost": {
+      "placeholder": "Share something today...",
+      "photoButton": "Photo",
+      "emojiButton": "Emoji",
+      "postButton": "Post"
+    },
+    "post": {
+      "reactions": "likes",
+      "comment": "comment",
+      "comments": "comments",
+      "share": "Share",
+      "report": "Report",
+      "reply": "Reply",
+      "commentPlaceholder": "Write a comment...",
+      "justNow": "Just now"
+    },
+    "leftSidebar": {
+      "games": {
+        "title": "Practice Games",
+        "play": "Play"
+      }
+    },
+    "rightSidebar": {
+      "suggestions": {
+        "title": "Friend Suggestions",
+        "add": "Add"
+      },
+      "online": {
+        "title": "Friends Online"
+      }
+    }
+  }
+}
