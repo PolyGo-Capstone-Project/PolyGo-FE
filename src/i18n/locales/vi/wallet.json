@@ -6,7 +6,8 @@
       "show": "Hiện số dư",
       "hide": "Ẩn số dư",
       "totalEarned": "Tổng thu nhập",
-      "totalSpent": "Tổng chi tiêu"
+      "totalSpent": "Tổng chi tiêu",
+      "totalWithdrawn": "Tổng đã rút"
     },
     "quickActions": {
       "title": "Thao tác nhanh",
@@ -81,11 +82,11 @@
       "title": "Lịch sử giao dịch",
       "filter": {
         "all": "Tất cả giao dịch",
-        "earnings": "Thu nhập",
-        "spending": "Chi tiêu",
+        "deposits": "Nạp tiền",
+        "purchases": "Mua hàng",
         "withdrawals": "Rút tiền",
-        "subscriptions": "Gói cước",
-        "refunds": "Hoàn tiền"
+        "refunds": "Hoàn tiền",
+        "adjustments": "Điều chỉnh"
       },
       "export": {
         "button": "Xuất file",
@@ -100,16 +101,19 @@
         "status": "Trạng thái"
       },
       "type": {
-        "earning": "Thu nhập",
-        "spending": "Chi tiêu",
-        "withdrawal": "Rút tiền",
-        "subscription": "Gói cước",
-        "refund": "Hoàn tiền"
+        "Deposit": "Nạp tiền",
+        "Purchase": "Mua hàng",
+        "Refund": "Hoàn tiền",
+        "Withdraw": "Rút tiền",
+        "Gift": "Quà tặng",
+        "Adjustment": "Điều chỉnh",
+        "AutoRenew": "Tự động gia hạn"
       },
       "status": {
-        "completed": "Hoàn thành",
-        "pending": "Đang xử lý",
-        "failed": "Thất bại"
+        "Completed": "Hoàn thành",
+        "Pending": "Đang xử lý",
+        "Failed": "Thất bại",
+        "Cancelled": "Đã hủy"
       },
       "empty": "Không có giao dịch nào",
       "search": "Tìm kiếm giao dịch..."
