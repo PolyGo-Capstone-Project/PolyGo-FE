@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { Pagination } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,30 +31,37 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-export type TransactionType =
-  | "earning"
-  | "spending"
-  | "withdrawal"
-  | "subscription"
-  | "refund";
-
-export type TransactionStatus = "completed" | "pending" | "failed";
-
-export interface Transaction {
-  id: string;
-  date: string;
-  description: string;
-  type: TransactionType;
-  amount: number;
-  status: TransactionStatus;
-}
+import {
+  TransactionEnumType,
+  TransactionStatusType,
+} from "@/constants/transaction.constant";
+import { TransactionListItemType } from "@/models";
 
 interface TransactionHistoryProps {
-  transactions: Transaction[];
+  transactions: TransactionListItemType[];
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  pageSize: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  onPageChange: (page: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
+  isLoading?: boolean;
 }
 
-export function TransactionHistory({ transactions }: TransactionHistoryProps) {
+export function TransactionHistory({
+  transactions,
+  currentPage,
+  totalPages,
+  totalItems,
+  pageSize,
+  hasNextPage,
+  hasPreviousPage,
+  onPageChange,
+  onPageSizeChange,
+  isLoading = false,
+}: TransactionHistoryProps) {
   const t = useTranslations("wallet.transactions");
   const tToast = useTranslations("wallet.toast");
   const [filter, setFilter] = useState<string>("all");
@@ -79,20 +87,22 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
 
     // Filter by type
     if (filter !== "all") {
-      const typeMap: Record<string, TransactionType[]> = {
-        earnings: ["earning"],
-        spending: ["spending"],
-        withdrawals: ["withdrawal"],
-        subscriptions: ["subscription"],
-        refunds: ["refund"],
+      const typeMap: Record<string, TransactionEnumType[]> = {
+        deposits: ["Deposit"],
+        purchases: ["Purchase", "Gift", "AutoRenew"],
+        withdrawals: ["Withdraw"],
+        refunds: ["Refund"],
+        adjustments: ["Adjustment"],
       };
-      filtered = filtered.filter((t) => typeMap[filter]?.includes(t.type));
+      filtered = filtered.filter((t) =>
+        typeMap[filter]?.includes(t.transactionType)
+      );
     }
 
-    // Filter by search
+    // Filter by search - search in transaction type
     if (searchQuery) {
       filtered = filtered.filter((t) =>
-        t.description.toLowerCase().includes(searchQuery.toLowerCase())
+        t.transactionType.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -112,14 +122,14 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
     }
   };
 
-  const exportToCSV = (data: Transaction[]) => {
+  const exportToCSV = (data: TransactionListItemType[]) => {
     const headers = ["Date", "Description", "Type", "Amount", "Status"];
     const rows = data.map((t) => [
-      formatDate(t.date),
-      t.description,
-      t.type,
+      formatDate(t.createdAt),
+      t.transactionType,
+      t.transactionType,
       t.amount.toString(),
-      t.status,
+      t.transactionStatus,
     ]);
 
     const csv = [headers, ...rows].map((row) => row.join(",")).join("\n");
@@ -132,16 +142,14 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
     link.click();
   };
 
-  const exportToExcel = (data: Transaction[]) => {
-    // For simplicity, export as CSV with .xlsx extension
-    // In production, you'd use a library like xlsx
+  const exportToExcel = (data: TransactionListItemType[]) => {
     const headers = ["Date", "Description", "Type", "Amount", "Status"];
     const rows = data.map((t) => [
-      formatDate(t.date),
-      t.description,
-      t.type,
+      formatDate(t.createdAt),
+      t.transactionType,
+      t.transactionType,
       t.amount.toString(),
-      t.status,
+      t.transactionStatus,
     ]);
 
     const csv = [headers, ...rows].map((row) => row.join("\t")).join("\n");
@@ -154,24 +162,28 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
     link.click();
   };
 
-  const getStatusColor = (status: TransactionStatus) => {
+  const getStatusColor = (status: TransactionStatusType) => {
     const colors = {
-      completed:
+      Completed:
         "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
-      pending:
+      Pending:
         "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300",
-      failed: "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300",
+      Failed: "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300",
+      Cancelled:
+        "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300",
     };
     return colors[status];
   };
 
-  const getTypeColor = (type: TransactionType) => {
+  const getTypeColor = (type: TransactionEnumType) => {
     const colors = {
-      earning: "text-green-600",
-      spending: "text-red-600",
-      withdrawal: "text-orange-600",
-      subscription: "text-purple-600",
-      refund: "text-blue-600",
+      Deposit: "text-green-600",
+      Purchase: "text-red-600",
+      Withdraw: "text-orange-600",
+      Gift: "text-purple-600",
+      Refund: "text-blue-600",
+      Adjustment: "text-gray-600",
+      AutoRenew: "text-indigo-600",
     };
     return colors[type];
   };
@@ -188,15 +200,17 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t("filter.all")}</SelectItem>
-                <SelectItem value="earnings">{t("filter.earnings")}</SelectItem>
-                <SelectItem value="spending">{t("filter.spending")}</SelectItem>
+                <SelectItem value="deposits">{t("filter.deposits")}</SelectItem>
+                <SelectItem value="purchases">
+                  {t("filter.purchases")}
+                </SelectItem>
                 <SelectItem value="withdrawals">
                   {t("filter.withdrawals")}
                 </SelectItem>
-                <SelectItem value="subscriptions">
-                  {t("filter.subscriptions")}
-                </SelectItem>
                 <SelectItem value="refunds">{t("filter.refunds")}</SelectItem>
+                <SelectItem value="adjustments">
+                  {t("filter.adjustments")}
+                </SelectItem>
               </SelectContent>
             </Select>
 
@@ -236,100 +250,137 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
           />
         </div>
 
-        {/* Mobile Card View */}
-        <div className="space-y-3 md:hidden">
-          {filteredTransactions.length === 0 ? (
-            <div className="rounded-md border border-dashed py-8 text-center text-sm text-muted-foreground">
-              {t("empty")}
-            </div>
-          ) : (
-            filteredTransactions.map((transaction) => (
-              <div
-                key={transaction.id}
-                className="rounded-lg border bg-card p-3 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <div className="mb-2 flex items-start justify-between gap-2">
-                  <div className="flex-1 space-y-1">
-                    <p className="font-medium leading-tight">
-                      {transaction.description}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDate(transaction.date)}
-                    </p>
-                  </div>
-                  <Badge className={getStatusColor(transaction.status)}>
-                    {t(`status.${transaction.status}`)}
-                  </Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className={`text-xs ${getTypeColor(transaction.type)}`}>
-                    {t(`type.${transaction.type}`)}
-                  </span>
-                  <span
-                    className={`text-base font-semibold ${transaction.amount >= 0 ? "text-green-600" : "text-red-600"}`}
-                  >
-                    {formatCurrency(transaction.amount)}
-                  </span>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Desktop Table View */}
-        <div className="hidden overflow-x-auto rounded-md border md:block">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t("columns.date")}</TableHead>
-                <TableHead>{t("columns.description")}</TableHead>
-                <TableHead>{t("columns.type")}</TableHead>
-                <TableHead className="text-right">
-                  {t("columns.amount")}
-                </TableHead>
-                <TableHead>{t("columns.status")}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+        {isLoading ? (
+          <div className="flex h-[200px] items-center justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          </div>
+        ) : (
+          <>
+            {/* Mobile Card View */}
+            <div className="space-y-3 md:hidden">
               {filteredTransactions.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    className="text-center text-muted-foreground"
-                  >
-                    {t("empty")}
-                  </TableCell>
-                </TableRow>
+                <div className="rounded-md border border-dashed py-8 text-center text-sm text-muted-foreground">
+                  {t("empty")}
+                </div>
               ) : (
                 filteredTransactions.map((transaction) => (
-                  <TableRow key={transaction.id}>
-                    <TableCell className="whitespace-nowrap">
-                      {formatDate(transaction.date)}
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {transaction.description}
-                    </TableCell>
-                    <TableCell>
-                      <span className={getTypeColor(transaction.type)}>
-                        {t(`type.${transaction.type}`)}
-                      </span>
-                    </TableCell>
-                    <TableCell
-                      className={`text-right font-semibold ${transaction.amount >= 0 ? "text-green-600" : "text-red-600"}`}
-                    >
-                      {formatCurrency(transaction.amount)}
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(transaction.status)}>
-                        {t(`status.${transaction.status}`)}
+                  <div
+                    key={transaction.id}
+                    className="rounded-lg border bg-card p-3 shadow-sm transition-shadow hover:shadow-md"
+                  >
+                    <div className="mb-2 flex items-start justify-between gap-2">
+                      <div className="flex-1 space-y-1">
+                        <p className="font-medium leading-tight">
+                          {t(`type.${transaction.transactionType}`)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {formatDate(transaction.createdAt)}
+                        </p>
+                      </div>
+                      <Badge
+                        className={getStatusColor(
+                          transaction.transactionStatus
+                        )}
+                      >
+                        {t(`status.${transaction.transactionStatus}`)}
                       </Badge>
-                    </TableCell>
-                  </TableRow>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span
+                        className={`text-xs ${getTypeColor(transaction.transactionType)}`}
+                      >
+                        {t(`type.${transaction.transactionType}`)}
+                      </span>
+                      <span
+                        className={`text-base font-semibold ${transaction.amount >= 0 ? "text-green-600" : "text-red-600"}`}
+                      >
+                        {formatCurrency(transaction.amount)}
+                      </span>
+                    </div>
+                  </div>
                 ))
               )}
-            </TableBody>
-          </Table>
-        </div>
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden overflow-x-auto rounded-md border md:block">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("columns.date")}</TableHead>
+                    <TableHead>{t("columns.description")}</TableHead>
+                    <TableHead>{t("columns.type")}</TableHead>
+                    <TableHead className="text-right">
+                      {t("columns.amount")}
+                    </TableHead>
+                    <TableHead>{t("columns.status")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredTransactions.length === 0 ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={5}
+                        className="text-center text-muted-foreground"
+                      >
+                        {t("empty")}
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredTransactions.map((transaction) => (
+                      <TableRow key={transaction.id}>
+                        <TableCell className="whitespace-nowrap">
+                          {formatDate(transaction.createdAt)}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {t(`type.${transaction.transactionType}`)}
+                        </TableCell>
+                        <TableCell>
+                          <span
+                            className={getTypeColor(
+                              transaction.transactionType
+                            )}
+                          >
+                            {t(`type.${transaction.transactionType}`)}
+                          </span>
+                        </TableCell>
+                        <TableCell
+                          className={`text-right font-semibold ${transaction.amount >= 0 ? "text-green-600" : "text-red-600"}`}
+                        >
+                          {formatCurrency(transaction.amount)}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            className={getStatusColor(
+                              transaction.transactionStatus
+                            )}
+                          >
+                            {t(`status.${transaction.transactionStatus}`)}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={pageSize}
+                hasNextPage={hasNextPage}
+                hasPreviousPage={hasPreviousPage}
+                onPageChange={onPageChange}
+                onPageSizeChange={onPageSizeChange}
+                showPageSizeSelector={true}
+              />
+            )}
+          </>
+        )}
       </CardContent>
     </Card>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, EyeOff, TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, Eye, EyeOff, Wallet } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -11,12 +11,14 @@ interface BalanceCardProps {
   balance: number;
   totalEarned?: number;
   totalSpent?: number;
+  totalWithdrawn?: number;
 }
 
 export function BalanceCard({
   balance,
   totalEarned = 0,
   totalSpent = 0,
+  totalWithdrawn = 0,
 }: BalanceCardProps) {
   const t = useTranslations("wallet.balance");
   const [showBalance, setShowBalance] = useState(true);
@@ -63,10 +65,10 @@ export function BalanceCard({
 
         <Separator />
 
-        <div className="grid grid-cols-2 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-3">
           <div className="space-y-1.5 md:space-y-2">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground md:gap-2 md:text-sm">
-              <TrendingUp className="h-3.5 w-3.5 text-green-500 md:h-4 md:w-4" />
+              <ArrowUpRight className="h-3.5 w-3.5 text-green-500 md:h-4 md:w-4" />
               <span className="line-clamp-1">{t("totalEarned")}</span>
             </div>
             <p className="text-base font-semibold text-green-600 md:text-xl">
@@ -76,11 +78,21 @@ export function BalanceCard({
 
           <div className="space-y-1.5 md:space-y-2">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground md:gap-2 md:text-sm">
-              <TrendingDown className="h-3.5 w-3.5 text-red-500 md:h-4 md:w-4" />
+              <ArrowDownLeft className="h-3.5 w-3.5 text-red-500 md:h-4 md:w-4" />
               <span className="line-clamp-1">{t("totalSpent")}</span>
             </div>
             <p className="text-base font-semibold text-red-600 md:text-xl">
               {showBalance ? formatCurrency(totalSpent) : "••••••••"}
+            </p>
+          </div>
+
+          <div className="col-span-2 space-y-1.5 md:space-y-2 lg:col-span-1">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground md:gap-2 md:text-sm">
+              <ArrowDownLeft className="h-3.5 w-3.5 text-orange-500 md:h-4 md:w-4" />
+              <span className="line-clamp-1">{t("totalWithdrawn")}</span>
+            </div>
+            <p className="text-base font-semibold text-orange-600 md:text-xl">
+              {showBalance ? formatCurrency(totalWithdrawn) : "••••••••"}
             </p>
           </div>
         </div>

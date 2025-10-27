@@ -1,0 +1,38 @@
+{
+  "social": {
+    "title": "Cộng đồng PolyGo",
+    "subtitle": "Kết nối, chia sẻ và thực hành ngôn ngữ cùng mọi người trên toàn cầu.",
+    "onlineTime": "giờ trước",
+    "createPost": {
+      "placeholder": "Chia sẻ điều gì đó hôm nay...",
+      "photoButton": "Ảnh",
+      "emojiButton": "Biểu tượng",
+      "postButton": "Đăng bài"
+    },
+    "post": {
+      "reactions": "lượt thích",
+      "comment": "bình luận",
+      "comments": "bình luận",
+      "share": "Chia sẻ",
+      "report": "Báo cáo",
+      "reply": "Trả lời",
+      "commentPlaceholder": "Viết bình luận...",
+      "justNow": "Vừa xong"
+    },
+    "leftSidebar": {
+      "games": {
+        "title": "Trò chơi rèn luyện",
+        "play": "Chơi"
+      }
+    },
+    "rightSidebar": {
+      "suggestions": {
+        "title": "Gợi ý kết bạn",
+        "add": "Thêm"
+      },
+      "online": {
+        "title": "Bạn bè đang Online"
+      }
+    }
+  }
+}

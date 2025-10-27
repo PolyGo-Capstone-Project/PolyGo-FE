@@ -6,4 +6,5 @@ export * from "./matching";
 export * from "./pricing";
 export * from "./profile";
 export * from "./setup-profile";
+export * from "./social";
 export * from "./wallet";

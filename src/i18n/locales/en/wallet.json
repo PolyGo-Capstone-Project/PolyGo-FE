@@ -6,7 +6,8 @@
       "show": "Show Balance",
       "hide": "Hide Balance",
       "totalEarned": "Total Earned",
-      "totalSpent": "Total Spent"
+      "totalSpent": "Total Spent",
+      "totalWithdrawn": "Total Withdrawn"
     },
     "quickActions": {
       "title": "Quick Actions",
@@ -81,11 +82,11 @@
       "title": "Transaction History",
       "filter": {
         "all": "All Transactions",
-        "earnings": "Earnings",
-        "spending": "Spending",
+        "deposits": "Deposits",
+        "purchases": "Purchases",
         "withdrawals": "Withdrawals",
-        "subscriptions": "Subscriptions",
-        "refunds": "Refunds"
+        "refunds": "Refunds",
+        "adjustments": "Adjustments"
       },
       "export": {
         "button": "Export",
@@ -100,16 +101,19 @@
         "status": "Status"
       },
       "type": {
-        "earning": "Earning",
-        "spending": "Spending",
-        "withdrawal": "Withdrawal",
-        "subscription": "Subscription",
-        "refund": "Refund"
+        "Deposit": "Deposit",
+        "Purchase": "Purchase",
+        "Refund": "Refund",
+        "Withdraw": "Withdrawal",
+        "Gift": "Gift",
+        "Adjustment": "Adjustment",
+        "AutoRenew": "Auto Renew"
       },
       "status": {
-        "completed": "Completed",
-        "pending": "Pending",
-        "failed": "Failed"
+        "Completed": "Completed",
+        "Pending": "Pending",
+        "Failed": "Failed",
+        "Cancelled": "Cancelled"
       },
       "empty": "No transactions found",
       "search": "Search transactions..."
