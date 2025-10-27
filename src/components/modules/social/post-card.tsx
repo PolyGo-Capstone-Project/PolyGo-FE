@@ -1,16 +1,28 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
+  Card,
+  CardContent,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+  Input,
+  Separator,
+} from "@/components";
+import {
+  IconDots,
+  IconFlag,
+  IconHeart,
+  IconMoodAngry,
+  IconMoodTongueWink2,
+  IconSend2,
+  IconShare3,
+} from "@tabler/icons-react";
 import Image from "next/image";
 
 type Author = { name: string; avatar: string; initials: string };
@@ -47,7 +59,8 @@ export default function PostCard({
 }: Props) {
   return (
     <Card>
-      <CardContent className="p-3 md:p-4">
+      <CardContent>
+        {/* Header */}
         <div className="mb-3 flex items-start justify-between">
           <div className="flex gap-3">
             <Avatar className="h-9 w-9">
@@ -63,10 +76,11 @@ export default function PostCard({
               </p>
             </div>
           </div>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
-                ⋯
+                <IconDots size={18} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -75,6 +89,7 @@ export default function PostCard({
           </DropdownMenu>
         </div>
 
+        {/* Content */}
         <p className="mb-3 text-sm md:text-base">{post.content}</p>
 
         {post.image && (
@@ -89,9 +104,15 @@ export default function PostCard({
           </div>
         )}
 
+        {/* Stats */}
         <div className="mb-2 flex items-center gap-4 text-xs text-muted-foreground">
           <span>
-            ❤️ {post.reactions.heart} {t("post.reactions")}
+            <IconHeart
+              size={14}
+              className="inline-block mr-1 text-red-500"
+              stroke={1.5}
+            />
+            {post.reactions.heart} {t("post.reactions")}
           </span>
           <span>
             {post.commentCount}{" "}
@@ -101,6 +122,7 @@ export default function PostCard({
 
         <Separator className="mb-3" />
 
+        {/* Action Buttons */}
         <div className="mb-4 flex justify-between flex-wrap">
           <div className="flex gap-2">
             <Button
@@ -108,33 +130,36 @@ export default function PostCard({
               size="sm"
               onClick={() => onReact(post.id, "heart")}
             >
-              ❤️
+              <IconHeart size={18} className="text-red-500" />
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => onReact(post.id, "laugh")}
             >
-              😂
+              <IconMoodTongueWink2 size={18} className="text-yellow-500" />
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => onReact(post.id, "angry")}
             >
-              😡
+              <IconMoodAngry size={18} className="text-orange-500" />
             </Button>
           </div>
           <div className="flex gap-2">
             <Button variant="ghost" size="sm">
-              ↗️ {t("post.share")}
+              <IconShare3 size={18} className="mr-1" />
+              {t("post.share")}
             </Button>
             <Button variant="ghost" size="sm">
-              🚩 {t("post.report")}
+              <IconFlag size={18} className="mr-1" />
+              {t("post.report")}
             </Button>
           </div>
         </div>
 
+        {/* Comments */}
         {post.comments.length > 0 && (
           <div className="mb-4 space-y-3">
             {post.comments.map((c) => (
@@ -160,6 +185,7 @@ export default function PostCard({
           </div>
         )}
 
+        {/* Comment Input */}
         <div className="flex gap-2">
           <Avatar className="h-7 w-7">
             <AvatarImage src={currentUserAuthor.avatar} />
@@ -182,7 +208,7 @@ export default function PostCard({
               onClick={() => onCommentSubmit(post.id)}
               disabled={!commentValue?.trim()}
             >
-              ➤
+              <IconSend2 size={18} />
             </Button>
           </div>
         </div>
