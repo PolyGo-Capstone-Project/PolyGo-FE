@@ -333,7 +333,7 @@ export function CreateEventForm() {
               control={form.control}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue
                       placeholder={t("fields.language.placeholder")}
                     />
@@ -507,36 +507,40 @@ export function CreateEventForm() {
             )}
           </div>
 
-          {/* Capacity */}
-          <div className="space-y-2">
-            <Label htmlFor="capacity">{t("fields.capacity.label")}</Label>
-            <Input
-              id="capacity"
-              type="number"
-              placeholder={t("fields.capacity.placeholder")}
-              {...form.register("capacity", { valueAsNumber: true })}
-            />
-            {form.formState.errors.capacity && (
-              <p className="text-sm text-destructive">
-                {form.formState.errors.capacity.message}
-              </p>
-            )}
-          </div>
+          <div className="flex w-full gap-4">
+            {/* Capacity */}
+            <div className="space-y-2 w-full">
+              <Label htmlFor="capacity">{t("fields.capacity.label")}</Label>
+              <Input
+                id="capacity"
+                type="number"
+                min={1}
+                placeholder={t("fields.capacity.placeholder")}
+                {...form.register("capacity", { valueAsNumber: true })}
+              />
+              {form.formState.errors.capacity && (
+                <p className="text-sm text-destructive">
+                  {form.formState.errors.capacity.message}
+                </p>
+              )}
+            </div>
 
-          {/* Fee */}
-          <div className="space-y-2">
-            <Label htmlFor="fee">{t("fields.fee.label")}</Label>
-            <Input
-              id="fee"
-              type="number"
-              placeholder={t("fields.fee.placeholder")}
-              {...form.register("fee", { valueAsNumber: true })}
-            />
-            {form.formState.errors.fee && (
-              <p className="text-sm text-destructive">
-                {form.formState.errors.fee.message}
-              </p>
-            )}
+            {/* Fee */}
+            <div className="space-y-2 w-full">
+              <Label htmlFor="fee">{t("fields.fee.label")}</Label>
+              <Input
+                id="fee"
+                type="number"
+                min={0}
+                placeholder={t("fields.fee.placeholder")}
+                {...form.register("fee", { valueAsNumber: true })}
+              />
+              {form.formState.errors.fee && (
+                <p className="text-sm text-destructive">
+                  {form.formState.errors.fee.message}
+                </p>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>

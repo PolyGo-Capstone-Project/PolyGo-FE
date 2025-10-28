@@ -119,7 +119,10 @@
     "gifts": "Gifts Management",
     "interests": "Interests Management",
     "badges": "Badges Management",
-    "subscriptions": "Subscriptions Management"
+    "subscriptions": "Subscriptions Management",
+    "events": "Events Management",
+    "games": "Games Management",
+    "reports": "Reports Management"
   },
   "pagination": {
     "showing": "Showing",

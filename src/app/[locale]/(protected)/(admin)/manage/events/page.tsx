@@ -1,19 +1,11 @@
+import ManageEvents from "@/components/modules/admin/events/manage-events";
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components";
-
 export const metadata: Metadata = {
-  title: "Events - PolyGo",
-  description: "Event features and interactions",
+  title: "Manage Events - PolyGo",
+  description: "Manage events on the PolyGo platform",
 };
 
 export default function ManageEventsPage() {
-  return (
-    <>
-      <ComingSoon
-        title="Event Features"
-        description="We're building amazing event features. Check back soon!"
-      />
-    </>
-  );
+  return <ManageEvents />;
 }

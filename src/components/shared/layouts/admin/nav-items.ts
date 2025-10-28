@@ -1,6 +1,9 @@
 import {
   IconAward,
+  IconCalendarEvent,
   IconCreditCard,
+  IconDeviceNintendo,
+  IconFlag2Off,
   IconGift,
   IconHelpCircle,
   IconLanguage,
@@ -83,7 +86,23 @@ const buildNavItems = (locale: string, t: TranslateFn): NavConfig => {
         icon: IconCreditCard,
       },
     ],
-    navManagement: [],
+    navManagement: [
+      {
+        title: t("events"),
+        url: `/${locale}/manage/events`,
+        icon: IconCalendarEvent,
+      },
+      {
+        title: t("games"),
+        url: `/${locale}/manage/games`,
+        icon: IconDeviceNintendo,
+      },
+      {
+        title: t("reports"),
+        url: `/${locale}/manage/reports`,
+        icon: IconFlag2Off,
+      },
+    ],
     navSecondary: baseNavSecondary,
   };
 };

@@ -119,7 +119,10 @@
     "gifts": "Quản lý quà tặng",
     "interests": "Quản lý sở thích",
     "badges": "Quản lý huy hiệu",
-    "subscriptions": "Quản lý đăng ký"
+    "subscriptions": "Quản lý đăng ký",
+    "events": "Quản lý sự kiện",
+    "games": "Quản lý trò chơi",
+    "reports": "Quản lý báo cáo"
   },
   "pagination": {
     "showing": "Hiển thị",
