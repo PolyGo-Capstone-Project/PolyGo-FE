@@ -14,7 +14,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
-const UPCOMING_PAGE_SIZE = 12;
+const UPCOMING_PAGE_SIZE = 6;
 const RECOMMENDED_PAGE_SIZE = 4;
 
 type TimeFilterType = "today" | "thisWeek" | "thisMonth";
@@ -247,15 +247,6 @@ export default function EventListPage() {
         <div className="flex-1 min-w-0">
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
             {t("upcomingEvents")}
-            {loadedEvents.length > 0 && (
-              <span className="text-sm text-muted-foreground font-normal">
-                ({loadedEvents.length}
-                {upcomingData?.payload?.data?.totalItems
-                  ? ` / ${upcomingData.payload.data.totalItems}`
-                  : ""}
-                )
-              </span>
-            )}
           </h2>
 
           {/* Loading State - First Load */}

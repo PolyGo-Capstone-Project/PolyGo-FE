@@ -5,7 +5,7 @@ import { IconCheck, IconLoader2, IconUpload, IconX } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 
 import {
@@ -27,9 +27,10 @@ import {
   Separator,
   Textarea,
 } from "@/components/ui";
+import { DateTimePicker } from "@/components/ui/date-time";
 import { EventStatus, PlanTypeEnum } from "@/constants";
 import {
-  useAuthStore,
+  useAuthMe,
   useCreateEventMutation,
   useInterestsQuery,
   useLanguagesQuery,
@@ -40,8 +41,8 @@ import { CreateEventBodySchema, CreateEventBodyType } from "@/models";
 
 export function CreateEventForm() {
   const t = useTranslations("event.create");
-  const tError = useTranslations("Error");
   const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
   const locale = useLocale();
   const router = useRouter();
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
@@ -60,13 +61,23 @@ export function CreateEventForm() {
   const uploadMediaMutation = useUploadMediaMutation();
   const createEventMutation = useCreateEventMutation();
 
-  // Get user ID from auth store
-  const user = useAuthStore((state) => state.role);
+  const { data: authData, isLoading: isLoadingAuth } = useAuthMe();
+  const userId = authData?.payload.data.id;
 
   const errorMessages = useTranslations("event.create.errors");
 
+  const resolver = useMemo(
+    () =>
+      zodResolver(CreateEventBodySchema, {
+        error: (issue) => ({
+          message: translateEventError(issue, errorMessages),
+        }),
+      }),
+    [errorMessages]
+  );
+
   const form = useForm<CreateEventBodyType>({
-    resolver: zodResolver(CreateEventBodySchema) as any,
+    resolver: resolver as any,
     defaultValues: {
       title: "",
       description: "",
@@ -91,63 +102,21 @@ export function CreateEventForm() {
 
   // Use useWatch instead of form.watch to avoid re-render loops
   const isPublic = useWatch({ control: form.control, name: "isPublic" });
-  const startAt = useWatch({ control: form.control, name: "startAt" });
-
-  // Helper function to convert datetime-local to ISO 8601
-  const convertToISO = (dateTimeLocal: string): string => {
-    if (!dateTimeLocal) return "";
-    // datetime-local format: "YYYY-MM-DDTHH:mm"
-    // Add seconds and convert to ISO 8601 with timezone
-    const dateWithSeconds = dateTimeLocal + ":00";
-    const date = new Date(dateWithSeconds);
-
-    // Check if date is valid
-    if (isNaN(date.getTime())) {
-      return "";
-    }
-
-    return date.toISOString();
-  };
-
-  // Helper function to convert ISO 8601 to datetime-local
-  const convertFromISO = (isoString: string): string => {
-    if (!isoString) return "";
-    const date = new Date(isoString);
-
-    // Check if date is valid
-    if (isNaN(date.getTime())) {
-      return "";
-    }
-
-    // Format: YYYY-MM-DDTHH:mm
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
 
   // Auto-fill endAt (+2h) and registerDeadline (-12h) when startAt changes
-  const handleStartAtChange = (value: string) => {
-    if (value) {
-      const startDate = new Date(value + ":00");
+  const handleStartAtChange = (date: Date | undefined) => {
+    if (!date) return;
 
-      // Check if date is valid
-      if (isNaN(startDate.getTime())) {
-        return;
-      }
+    // Convert to ISO string and set startAt
+    form.setValue("startAt", date.toISOString());
 
-      // Set endAt = startAt + 2 hours
-      const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
-      const endDateLocal = convertFromISO(endDate.toISOString());
-      form.setValue("endAt", endDateLocal);
+    // Set endAt = startAt + 2 hours
+    const endDate = new Date(date.getTime() + 2 * 60 * 60 * 1000);
+    form.setValue("endAt", endDate.toISOString());
 
-      // Set registerDeadline = startAt - 12 hours
-      const deadlineDate = new Date(startDate.getTime() - 12 * 60 * 60 * 1000);
-      const deadlineDateLocal = convertFromISO(deadlineDate.toISOString());
-      form.setValue("registerDeadline", deadlineDateLocal);
-    }
+    // Set registerDeadline = startAt - 12 hours
+    const deadlineDate = new Date(date.getTime() - 12 * 60 * 60 * 1000);
+    form.setValue("registerDeadline", deadlineDate.toISOString());
   };
 
   const handleBannerUpload = async (
@@ -178,39 +147,36 @@ export function CreateEventForm() {
   };
 
   const onSubmit = async (data: CreateEventBodyType) => {
-    if (createEventMutation.isPending) return;
+    if (createEventMutation.isPending) {
+      return;
+    }
 
-    // Convert datetime-local format to ISO 8601
-    const startAtISO = convertToISO(data.startAt);
-    const endAtISO = data.endAt ? convertToISO(data.endAt) : null;
-    const registerDeadlineISO = convertToISO(data.registerDeadline);
+    if (!userId) {
+      alert("Please login again to create event");
+      return;
+    }
 
-    // Validate converted dates
-    if (!startAtISO) {
+    // Validate dates (they should already be ISO strings from DateTimePicker)
+    if (!data.startAt) {
       form.setError("startAt", {
         type: "manual",
-        message: errorMessages("startAt.invalid"),
+        message: errorMessages("startAt.required"),
       });
       return;
     }
 
-    if (!registerDeadlineISO) {
+    if (!data.registerDeadline) {
       form.setError("registerDeadline", {
         type: "manual",
-        message: errorMessages("registerDeadline.invalid"),
+        message: errorMessages("registerDeadline.required"),
       });
       return;
     }
 
     const submitData = {
       ...data,
-      startAt: startAtISO,
-      endAt: endAtISO,
-      registerDeadline: registerDeadlineISO,
-      hostId: "user-id-placeholder", // TODO: Get actual user ID from auth store
+      hostId: userId,
     };
-
-    console.log("Submit data:", submitData); // Debug log
 
     try {
       const result = await createEventMutation.mutateAsync(submitData);
@@ -225,8 +191,12 @@ export function CreateEventForm() {
     }
   };
 
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    form.handleSubmit(onSubmit)(e);
+  };
+
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleFormSubmit} className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>{t("basicInfo")}</CardTitle>
@@ -425,14 +395,17 @@ export function CreateEventForm() {
               name="startAt"
               control={form.control}
               render={({ field }) => (
-                <Input
-                  id="startAt"
-                  type="datetime-local"
+                <DateTimePicker
                   value={field.value}
-                  onChange={(e) => {
-                    field.onChange(e.target.value);
-                    handleStartAtChange(e.target.value);
+                  onChange={(date) => {
+                    if (date) {
+                      field.onChange(date.toISOString());
+                      handleStartAtChange(date);
+                    } else {
+                      field.onChange("");
+                    }
                   }}
+                  placeholder={t("fields.startDate.placeholder")}
                 />
               )}
             />
@@ -450,11 +423,12 @@ export function CreateEventForm() {
               name="endAt"
               control={form.control}
               render={({ field }) => (
-                <Input
-                  id="endAt"
-                  type="datetime-local"
-                  value={field.value || ""}
-                  onChange={(e) => field.onChange(e.target.value || null)}
+                <DateTimePicker
+                  value={field.value || undefined}
+                  onChange={(date) => {
+                    field.onChange(date ? date.toISOString() : null);
+                  }}
+                  placeholder={t("fields.endDate.placeholder")}
                 />
               )}
             />
@@ -492,11 +466,12 @@ export function CreateEventForm() {
               name="registerDeadline"
               control={form.control}
               render={({ field }) => (
-                <Input
-                  id="registerDeadline"
-                  type="datetime-local"
+                <DateTimePicker
                   value={field.value}
-                  onChange={field.onChange}
+                  onChange={(date) => {
+                    field.onChange(date ? date.toISOString() : "");
+                  }}
+                  placeholder={t("fields.registerDeadline.placeholder")}
                 />
               )}
             />
