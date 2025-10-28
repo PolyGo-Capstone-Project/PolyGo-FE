@@ -1,0 +1,228 @@
+{
+  "event": {
+    "title": "Events",
+    "upcomingEvents": "Upcoming Events",
+    "recommendedEvents": "Recommended For You",
+    "createEvent": "Create Event",
+    "search": "Search events...",
+    "searchUpcoming": "Search upcoming events...",
+    "searching": "Searching",
+    "noResults": "No events found",
+    "noRecommended": "No recommendations available",
+    "loading": "Loading events...",
+    "loadMore": "Load More",
+    "allLoaded": "All events loaded",
+    "loadError": "Failed to load events. Please try again.",
+    "recommendedError": "Failed to load recommendations",
+    "retry": "Retry",
+    "discoverAndJoin": "Discover and join amazing events",
+    "viewDetails": "View Details",
+    "register": "Register",
+    "registered": "Registered",
+    "participants": "Participants",
+    "capacity": "Full",
+    "spotsLeft": "spots left",
+    "almostFull": "Almost full",
+    "hostedBy": "Hosted by",
+    "date": "Date",
+    "duration": "Duration",
+    "language": "Language",
+    "free": "Free",
+    "paid": "Paid",
+    "filters": {
+      "title": "Filters",
+      "language": "Language",
+      "category": "Category",
+      "price": "Price",
+      "time": "Time",
+      "allTimes": "All times",
+      "today": "Today",
+      "thisWeek": "This week",
+      "thisMonth": "This month",
+      "allLanguages": "All Languages",
+      "allCategories": "All Categories",
+      "allPrices": "All Prices",
+      "freeOnly": "Free",
+      "paidOnly": "Paid",
+      "clearFilters": "Clear Filters",
+      "apply": "Apply Filters"
+    },
+    "create": {
+      "title": "Create New Event",
+      "description": "Create an event and invite people to join",
+      "basicInfo": "Basic Information",
+      "details": "Event Details",
+      "settings": "Settings",
+      "submit": "Create Event",
+      "submitting": "Creating...",
+      "success": "Event created successfully!",
+      "fields": {
+        "title": {
+          "label": "Event Title",
+          "placeholder": "Enter event title"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "Describe your event..."
+        },
+        "banner": {
+          "label": "Event Banner",
+          "upload": "Upload Banner",
+          "uploading": "Uploading...",
+          "changeImage": "Change Image"
+        },
+        "language": {
+          "label": "Language",
+          "placeholder": "Select language"
+        },
+        "categories": {
+          "label": "Categories",
+          "placeholder": "Select categories"
+        },
+        "startDate": {
+          "label": "Start Date & Time",
+          "placeholder": "Select date and time"
+        },
+        "endDate": {
+          "label": "End Date & Time (Optional)",
+          "placeholder": "Select date and time"
+        },
+        "duration": {
+          "label": "Expected Duration (minutes)",
+          "placeholder": "60"
+        },
+        "registerDeadline": {
+          "label": "Registration Deadline",
+          "placeholder": "Select deadline"
+        },
+        "capacity": {
+          "label": "Capacity",
+          "placeholder": "Maximum participants"
+        },
+        "fee": {
+          "label": "Fee",
+          "placeholder": "0"
+        },
+        "isPublic": {
+          "label": "Public Event",
+          "description": "Anyone can see and join this event"
+        },
+        "isPrivate": {
+          "label": "Private Event",
+          "description": "Requires password to join"
+        },
+        "password": {
+          "label": "Event Password",
+          "placeholder": "Enter password (min 6 characters)"
+        },
+        "allowLateRegister": {
+          "label": "Allow Late Registration",
+          "description": "Allow registration after deadline"
+        },
+        "requiredPlanType": {
+          "label": "Required Plan",
+          "description": "Minimum subscription plan required to join",
+          "free": "Free",
+          "plus": "Plus",
+          "premium": "Premium"
+        }
+      },
+      "errors": {
+        "default": "Please check this field.",
+        "title": {
+          "required": "Event title is required.",
+          "max": "Title must be at most 500 characters."
+        },
+        "description": {
+          "required": "Description is required.",
+          "max": "Description must be at most 2000 characters."
+        },
+        "bannerUrl": {
+          "required": "Event banner is required."
+        },
+        "languageId": {
+          "required": "Language is required."
+        },
+        "interestIds": {
+          "required": "At least one category is required.",
+          "min": "At least one category is required."
+        },
+        "startAt": {
+          "required": "Start date is required.",
+          "invalid": "Invalid date format."
+        },
+        "endAt": {
+          "invalid": "End date must be after start date."
+        },
+        "registerDeadline": {
+          "required": "Registration deadline is required.",
+          "invalid": "Deadline must be before start date."
+        },
+        "capacity": {
+          "required": "Capacity is required.",
+          "min": "Capacity must be at least 1."
+        },
+        "fee": {
+          "required": "Fee is required.",
+          "min": "Fee cannot be negative."
+        },
+        "expectedDurationInMinutes": {
+          "required": "Duration is required.",
+          "min": "Duration must be at least 1 minute."
+        },
+        "password": {
+          "required": "Password is required for private events.",
+          "min": "Password must be at least 6 characters.",
+          "max": "Password must be at most 100 characters."
+        }
+      }
+    },
+    "detail": {
+      "title": "Event Details",
+      "back": "Back to Events",
+      "register": "Register for Event",
+      "registered": "Already Registered",
+      "registering": "Registering...",
+      "success": "Registered successfully!",
+      "aboutEvent": "About This Event",
+      "host": "Host",
+      "eventDetails": "Event Details",
+      "language": "Language",
+      "categories": "Categories",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "duration": "Duration",
+      "minutes": "minutes",
+      "registerBy": "Register By",
+      "capacity": "Capacity",
+      "available": "Available",
+      "fee": "Fee",
+      "planRequired": "Plan Required",
+      "lateRegistrationAllowed": "Late registration allowed",
+      "confirmRegistration": "Confirm Registration",
+      "eventFee": "Event Fee",
+      "currentBalance": "Current Balance",
+      "afterRegistration": "After Registration",
+      "confirmRegistrationMessage": "Are you sure you want to register for this event?",
+      "cancel": "Cancel",
+      "confirmAndPay": "Confirm & Pay",
+      "password": {
+        "label": "Event Password",
+        "placeholder": "Enter event password",
+        "required": "Password required for this private event"
+      },
+      "errors": {
+        "loadFailed": "Failed to load event details",
+        "registerFailed": "Failed to register for event"
+      }
+    },
+
+    "Success": {
+      "title": "Success"
+    },
+    "Error": {
+      "title": "Error",
+      "unknown": "An unknown error occurred"
+    }
+  }
+}
