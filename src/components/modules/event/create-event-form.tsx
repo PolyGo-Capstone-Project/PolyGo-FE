@@ -1,12 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconLoader2, IconUpload, IconX } from "@tabler/icons-react";
+import { IconCheck, IconLoader2, IconUpload, IconX } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 
 import {
   Button,
@@ -66,7 +66,6 @@ export function CreateEventForm() {
   const errorMessages = useTranslations("event.create.errors");
 
   const form = useForm<CreateEventBodyType>({
-    // zodResolver typing can be strict across versions; cast to any to satisfy RHF generic here
     resolver: zodResolver(CreateEventBodySchema) as any,
     defaultValues: {
       title: "",
@@ -90,8 +89,66 @@ export function CreateEventForm() {
     },
   });
 
-  const isPublic = form.watch("isPublic");
-  const selectedInterests = form.watch("interestIds");
+  // Use useWatch instead of form.watch to avoid re-render loops
+  const isPublic = useWatch({ control: form.control, name: "isPublic" });
+  const startAt = useWatch({ control: form.control, name: "startAt" });
+
+  // Helper function to convert datetime-local to ISO 8601
+  const convertToISO = (dateTimeLocal: string): string => {
+    if (!dateTimeLocal) return "";
+    // datetime-local format: "YYYY-MM-DDTHH:mm"
+    // Add seconds and convert to ISO 8601 with timezone
+    const dateWithSeconds = dateTimeLocal + ":00";
+    const date = new Date(dateWithSeconds);
+
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return "";
+    }
+
+    return date.toISOString();
+  };
+
+  // Helper function to convert ISO 8601 to datetime-local
+  const convertFromISO = (isoString: string): string => {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return "";
+    }
+
+    // Format: YYYY-MM-DDTHH:mm
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  // Auto-fill endAt (+2h) and registerDeadline (-12h) when startAt changes
+  const handleStartAtChange = (value: string) => {
+    if (value) {
+      const startDate = new Date(value + ":00");
+
+      // Check if date is valid
+      if (isNaN(startDate.getTime())) {
+        return;
+      }
+
+      // Set endAt = startAt + 2 hours
+      const endDate = new Date(startDate.getTime() + 2 * 60 * 60 * 1000);
+      const endDateLocal = convertFromISO(endDate.toISOString());
+      form.setValue("endAt", endDateLocal);
+
+      // Set registerDeadline = startAt - 12 hours
+      const deadlineDate = new Date(startDate.getTime() - 12 * 60 * 60 * 1000);
+      const deadlineDateLocal = convertFromISO(deadlineDate.toISOString());
+      form.setValue("registerDeadline", deadlineDateLocal);
+    }
+  };
 
   const handleBannerUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -123,12 +180,40 @@ export function CreateEventForm() {
   const onSubmit = async (data: CreateEventBodyType) => {
     if (createEventMutation.isPending) return;
 
-    // TODO: Get actual user ID from auth store
-    // For now using placeholder
-    data.hostId = "user-id-placeholder";
+    // Convert datetime-local format to ISO 8601
+    const startAtISO = convertToISO(data.startAt);
+    const endAtISO = data.endAt ? convertToISO(data.endAt) : null;
+    const registerDeadlineISO = convertToISO(data.registerDeadline);
+
+    // Validate converted dates
+    if (!startAtISO) {
+      form.setError("startAt", {
+        type: "manual",
+        message: errorMessages("startAt.invalid"),
+      });
+      return;
+    }
+
+    if (!registerDeadlineISO) {
+      form.setError("registerDeadline", {
+        type: "manual",
+        message: errorMessages("registerDeadline.invalid"),
+      });
+      return;
+    }
+
+    const submitData = {
+      ...data,
+      startAt: startAtISO,
+      endAt: endAtISO,
+      registerDeadline: registerDeadlineISO,
+      hostId: "user-id-placeholder", // TODO: Get actual user ID from auth store
+    };
+
+    console.log("Submit data:", submitData); // Debug log
 
     try {
-      const result = await createEventMutation.mutateAsync(data);
+      const result = await createEventMutation.mutateAsync(submitData);
       showSuccessToast(t("success"), tSuccess);
       router.push(`/${locale}/event`);
     } catch (error: any) {
@@ -137,18 +222,6 @@ export function CreateEventForm() {
         setError: form.setError,
         tError,
       });
-    }
-  };
-
-  const toggleInterest = (interestId: string) => {
-    const current = selectedInterests || [];
-    if (current.includes(interestId)) {
-      form.setValue(
-        "interestIds",
-        current.filter((id) => id !== interestId)
-      );
-    } else {
-      form.setValue("interestIds", [...current, interestId]);
     }
   };
 
@@ -255,21 +328,26 @@ export function CreateEventForm() {
           {/* Language */}
           <div className="space-y-2">
             <Label>{t("fields.language.label")}</Label>
-            <Select
-              value={form.watch("languageId")}
-              onValueChange={(value) => form.setValue("languageId", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder={t("fields.language.placeholder")} />
-              </SelectTrigger>
-              <SelectContent>
-                {languages.map((lang) => (
-                  <SelectItem key={lang.id} value={lang.id}>
-                    {lang.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Controller
+              name="languageId"
+              control={form.control}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={t("fields.language.placeholder")}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {languages.map((lang) => (
+                      <SelectItem key={lang.id} value={lang.id}>
+                        {lang.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {form.formState.errors.languageId && (
               <p className="text-sm text-destructive">
                 {form.formState.errors.languageId.message}
@@ -280,27 +358,52 @@ export function CreateEventForm() {
           {/* Categories */}
           <div className="space-y-2">
             <Label>{t("fields.categories.label")}</Label>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {interests.map((interest) => (
-                <div
-                  key={interest.id}
-                  className={`flex items-center space-x-2 p-3 border rounded-lg cursor-pointer transition-colors ${
-                    selectedInterests?.includes(interest.id)
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:border-primary/50"
-                  }`}
-                  onClick={() => toggleInterest(interest.id)}
-                >
-                  <Checkbox
-                    checked={selectedInterests?.includes(interest.id)}
-                    onCheckedChange={() => toggleInterest(interest.id)}
-                  />
-                  <Label className="cursor-pointer flex-1">
-                    {interest.name}
-                  </Label>
+            <Controller
+              name="interestIds"
+              control={form.control}
+              render={({ field }) => (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {interests.map((interest) => {
+                    const isSelected = field.value?.includes(interest.id);
+                    const handleToggle = () => {
+                      const current = field.value || [];
+                      if (isSelected) {
+                        field.onChange(
+                          current.filter((id) => id !== interest.id)
+                        );
+                      } else {
+                        field.onChange([...current, interest.id]);
+                      }
+                    };
+
+                    return (
+                      <div
+                        key={interest.id}
+                        className={`flex items-center space-x-2 p-3 border rounded-lg cursor-pointer transition-colors ${
+                          isSelected
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-primary/50"
+                        }`}
+                        onClick={handleToggle}
+                      >
+                        <div
+                          className={`size-4 shrink-0 rounded-[4px] border transition-colors flex items-center justify-center ${
+                            isSelected
+                              ? "bg-primary border-primary text-primary-foreground"
+                              : "border-input"
+                          }`}
+                        >
+                          {isSelected && <IconCheck className="size-3.5" />}
+                        </div>
+                        <Label className="cursor-pointer flex-1">
+                          {interest.name}
+                        </Label>
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
+              )}
+            />
             {form.formState.errors.interestIds && (
               <p className="text-sm text-destructive">
                 {form.formState.errors.interestIds.message}
@@ -318,10 +421,20 @@ export function CreateEventForm() {
           {/* Start Date */}
           <div className="space-y-2">
             <Label htmlFor="startAt">{t("fields.startDate.label")}</Label>
-            <Input
-              id="startAt"
-              type="datetime-local"
-              {...form.register("startAt")}
+            <Controller
+              name="startAt"
+              control={form.control}
+              render={({ field }) => (
+                <Input
+                  id="startAt"
+                  type="datetime-local"
+                  value={field.value}
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                    handleStartAtChange(e.target.value);
+                  }}
+                />
+              )}
             />
             {form.formState.errors.startAt && (
               <p className="text-sm text-destructive">
@@ -333,10 +446,17 @@ export function CreateEventForm() {
           {/* End Date (Optional) */}
           <div className="space-y-2">
             <Label htmlFor="endAt">{t("fields.endDate.label")}</Label>
-            <Input
-              id="endAt"
-              type="datetime-local"
-              {...form.register("endAt")}
+            <Controller
+              name="endAt"
+              control={form.control}
+              render={({ field }) => (
+                <Input
+                  id="endAt"
+                  type="datetime-local"
+                  value={field.value || ""}
+                  onChange={(e) => field.onChange(e.target.value || null)}
+                />
+              )}
             />
             {form.formState.errors.endAt && (
               <p className="text-sm text-destructive">
@@ -368,10 +488,17 @@ export function CreateEventForm() {
             <Label htmlFor="registerDeadline">
               {t("fields.registerDeadline.label")}
             </Label>
-            <Input
-              id="registerDeadline"
-              type="datetime-local"
-              {...form.register("registerDeadline")}
+            <Controller
+              name="registerDeadline"
+              control={form.control}
+              render={({ field }) => (
+                <Input
+                  id="registerDeadline"
+                  type="datetime-local"
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              )}
             />
             {form.formState.errors.registerDeadline && (
               <p className="text-sm text-destructive">
@@ -422,35 +549,39 @@ export function CreateEventForm() {
           {/* Public/Private */}
           <div className="space-y-3">
             <Label>Event Privacy</Label>
-            <RadioGroup
-              value={isPublic ? "public" : "private"}
-              onValueChange={(value) =>
-                form.setValue("isPublic", value === "public")
-              }
-            >
-              <div className="flex items-center space-x-2 p-3 border rounded-lg">
-                <RadioGroupItem value="public" id="public" />
-                <div className="flex-1">
-                  <Label htmlFor="public" className="cursor-pointer">
-                    {t("fields.isPublic.label")}
-                  </Label>
-                  <p className="text-sm text-muted-foreground">
-                    {t("fields.isPublic.description")}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-2 p-3 border rounded-lg">
-                <RadioGroupItem value="private" id="private" />
-                <div className="flex-1">
-                  <Label htmlFor="private" className="cursor-pointer">
-                    {t("fields.isPrivate.label")}
-                  </Label>
-                  <p className="text-sm text-muted-foreground">
-                    {t("fields.isPrivate.description")}
-                  </p>
-                </div>
-              </div>
-            </RadioGroup>
+            <Controller
+              name="isPublic"
+              control={form.control}
+              render={({ field }) => (
+                <RadioGroup
+                  value={field.value ? "public" : "private"}
+                  onValueChange={(value) => field.onChange(value === "public")}
+                >
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                    <RadioGroupItem value="public" id="public" />
+                    <div className="flex-1">
+                      <Label htmlFor="public" className="cursor-pointer">
+                        {t("fields.isPublic.label")}
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        {t("fields.isPublic.description")}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                    <RadioGroupItem value="private" id="private" />
+                    <div className="flex-1">
+                      <Label htmlFor="private" className="cursor-pointer">
+                        {t("fields.isPrivate.label")}
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        {t("fields.isPrivate.description")}
+                      </p>
+                    </div>
+                  </div>
+                </RadioGroup>
+              )}
+            />
           </div>
 
           {/* Password (only for private events) */}
@@ -475,12 +606,16 @@ export function CreateEventForm() {
 
           {/* Allow Late Registration */}
           <div className="flex items-start space-x-2">
-            <Checkbox
-              id="allowLateRegister"
-              checked={form.watch("allowLateRegister")}
-              onCheckedChange={(checked) =>
-                form.setValue("allowLateRegister", checked as boolean)
-              }
+            <Controller
+              name="allowLateRegister"
+              control={form.control}
+              render={({ field }) => (
+                <Checkbox
+                  id="allowLateRegister"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              )}
             />
             <div className="flex-1">
               <Label htmlFor="allowLateRegister" className="cursor-pointer">
@@ -502,37 +637,44 @@ export function CreateEventForm() {
                 {t("fields.requiredPlanType.description")}
               </p>
             </div>
-            <RadioGroup
-              value={form.watch("requiredPlanType")}
-              onValueChange={(value) =>
-                form.setValue(
-                  "requiredPlanType",
-                  value as (typeof PlanTypeEnum)[keyof typeof PlanTypeEnum]
-                )
-              }
-            >
-              <div className="flex items-center space-x-2 p-3 border rounded-lg">
-                <RadioGroupItem value={PlanTypeEnum.FREE} id="plan-free" />
-                <Label htmlFor="plan-free" className="cursor-pointer flex-1">
-                  {t("fields.requiredPlanType.free")}
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2 p-3 border rounded-lg">
-                <RadioGroupItem value={PlanTypeEnum.PLUS} id="plan-plus" />
-                <Label htmlFor="plan-plus" className="cursor-pointer flex-1">
-                  {t("fields.requiredPlanType.plus")}
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2 p-3 border rounded-lg">
-                <RadioGroupItem
-                  value={PlanTypeEnum.PREMIUM}
-                  id="plan-premium"
-                />
-                <Label htmlFor="plan-premium" className="cursor-pointer flex-1">
-                  {t("fields.requiredPlanType.premium")}
-                </Label>
-              </div>
-            </RadioGroup>
+            <Controller
+              name="requiredPlanType"
+              control={form.control}
+              render={({ field }) => (
+                <RadioGroup value={field.value} onValueChange={field.onChange}>
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                    <RadioGroupItem value={PlanTypeEnum.FREE} id="plan-free" />
+                    <Label
+                      htmlFor="plan-free"
+                      className="cursor-pointer flex-1"
+                    >
+                      {t("fields.requiredPlanType.free")}
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                    <RadioGroupItem value={PlanTypeEnum.PLUS} id="plan-plus" />
+                    <Label
+                      htmlFor="plan-plus"
+                      className="cursor-pointer flex-1"
+                    >
+                      {t("fields.requiredPlanType.plus")}
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                    <RadioGroupItem
+                      value={PlanTypeEnum.PREMIUM}
+                      id="plan-premium"
+                    />
+                    <Label
+                      htmlFor="plan-premium"
+                      className="cursor-pointer flex-1"
+                    >
+                      {t("fields.requiredPlanType.premium")}
+                    </Label>
+                  </div>
+                </RadioGroup>
+              )}
+            />
           </div>
         </CardContent>
       </Card>
@@ -592,7 +734,10 @@ const translateEventError = (
   }
 
   if (issue.code === "too_small") {
-    if (detail.minimum) {
+    if (detail.type === "array" && detail.minimum) {
+      return t(`${field}.min`, { length: detail.minimum });
+    }
+    if (detail.minimum && detail.minimum > 1) {
       return t(`${field}.min`, { length: detail.minimum });
     }
     return t(`${field}.required`);
@@ -603,12 +748,26 @@ const translateEventError = (
   }
 
   if (issue.code === "invalid_string") {
+    // Handle datetime validation
+    if (detail.validation === "datetime") {
+      return t(`${field}.invalid`);
+    }
+    return t(`${field}.invalid`);
+  }
+
+  if (issue.code === "invalid_date") {
     return t(`${field}.invalid`);
   }
 
   // Field-specific handling
-  if (field === "password" && !issue.code) {
-    return t(`${field}.required`);
+  if (field === "password") {
+    if (issue.code === "custom") {
+      return t("password.required");
+    }
+  }
+
+  if (field === "interestIds" && issue.code === "too_small") {
+    return t("interestIds.required");
   }
 
   return t("default");
