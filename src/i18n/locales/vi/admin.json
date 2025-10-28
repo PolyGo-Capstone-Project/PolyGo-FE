@@ -664,6 +664,74 @@
         "days": "ngày",
         "close": "Đóng"
       }
+    },
+    "events": {
+      "title": "Quản lý sự kiện",
+      "description": "Quản lý các sự kiện trên nền tảng PolyGo.",
+      "upcomingTab": "Sự kiện sắp tới",
+      "participatedTab": "Sự kiện đã tham gia",
+      "error": "Không thể tải danh sách sự kiện.",
+      "errorTitle": "Đã xảy ra lỗi",
+      "retry": "Thử lại",
+      "emptyTitle": "Chưa có sự kiện nào",
+      "emptyDescription": "Sự kiện sẽ xuất hiện ở đây khi có sẵn.",
+      "tableTitle": "Danh mục sự kiện",
+      "tableDescription": "Xem và quản lý sự kiện.",
+      "refresh": "Làm mới",
+      "deleting": "Đang xoá...",
+      "columns": {
+        "no": "STT",
+        "title": "Tiêu đề",
+        "host": "Người tổ chức",
+        "language": "Ngôn ngữ",
+        "status": "Trạng thái",
+        "startAt": "Thời gian bắt đầu",
+        "capacity": "Sức chứa",
+        "participants": "Người tham gia",
+        "fee": "Phí",
+        "actions": "Thao tác"
+      },
+      "status": {
+        "Pending": "Chờ duyệt",
+        "Approved": "Đã duyệt",
+        "Rejected": "Từ chối",
+        "Live": "Đang diễn ra",
+        "Cancelled": "Đã hủy",
+        "Completed": "Hoàn thành"
+      },
+      "filters": {
+        "title": "Bộ lọc",
+        "search": "Tìm kiếm theo tiêu đề...",
+        "language": "Ngôn ngữ",
+        "fee": "Phí",
+        "time": "Thời gian",
+        "allLanguages": "Tất cả ngôn ngữ",
+        "allFees": "Tất cả phí",
+        "free": "Miễn phí",
+        "paid": "Có phí",
+        "clearFilters": "Xóa bộ lọc",
+        "apply": "Áp dụng"
+      },
+      "pagination": {
+        "summary": "Hiển thị {start}-{end} trong tổng số {total} sự kiện",
+        "empty": "Không có sự kiện để hiển thị",
+        "previous": "Trước",
+        "page": "Trang {page} / {total}",
+        "next": "Sau"
+      },
+      "updateStatus": {
+        "title": "Cập nhật trạng thái sự kiện",
+        "description": "Thay đổi trạng thái của sự kiện này.",
+        "statusLabel": "Trạng thái mới",
+        "statusPlaceholder": "Chọn trạng thái",
+        "noteLabel": "Ghi chú quản trị (Tùy chọn)",
+        "notePlaceholder": "Thêm ghi chú về thay đổi trạng thái...",
+        "cancel": "Hủy",
+        "submit": "Cập nhật trạng thái",
+        "submitting": "Đang cập nhật...",
+        "success": "Cập nhật trạng thái sự kiện thành công!",
+        "error": "Không thể cập nhật trạng thái sự kiện"
+      }
     }
   }
 }

@@ -167,6 +167,33 @@ export const formatCurrency = (
   return new Intl.NumberFormat(localeCode).format(amount) + " VND";
 };
 
+/**
+ * Format date time with locale support
+ * @param dateString - ISO date string
+ * @param locale - Locale string (default: 'vi')
+ * @returns Formatted date time string
+ */
+export const formatDateTime = (
+  dateString: string,
+  locale: string = "vi"
+): string => {
+  const localeMap: Record<string, string> = {
+    vi: "vi-VN",
+    en: "en-US",
+  };
+
+  const localeCode = localeMap[locale] || "vi-VN";
+  const date = new Date(dateString);
+
+  return new Intl.DateTimeFormat(localeCode, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+};
+
 export {
   createMessageHandler,
   getAuthMessage,

@@ -565,6 +565,74 @@
         "days": "days",
         "close": "Close"
       }
+    },
+    "events": {
+      "title": "Events Management",
+      "description": "Manage events on the PolyGo platform.",
+      "upcomingTab": "Upcoming Events",
+      "participatedTab": "Participated Events",
+      "error": "Unable to load events.",
+      "errorTitle": "Something went wrong",
+      "retry": "Try again",
+      "emptyTitle": "No events yet",
+      "emptyDescription": "Events will appear here when available.",
+      "tableTitle": "Events catalogue",
+      "tableDescription": "Review and manage events.",
+      "refresh": "Refresh",
+      "deleting": "Deleting...",
+      "columns": {
+        "no": "No.",
+        "title": "Title",
+        "host": "Host",
+        "language": "Language",
+        "status": "Status",
+        "startAt": "Start Time",
+        "capacity": "Capacity",
+        "participants": "Participants",
+        "fee": "Fee",
+        "actions": "Actions"
+      },
+      "status": {
+        "Pending": "Pending",
+        "Approved": "Approved",
+        "Rejected": "Rejected",
+        "Live": "Live",
+        "Cancelled": "Cancelled",
+        "Completed": "Completed"
+      },
+      "filters": {
+        "title": "Filters",
+        "search": "Search by title...",
+        "language": "Language",
+        "fee": "Fee",
+        "time": "Time",
+        "allLanguages": "All Languages",
+        "allFees": "All Fees",
+        "free": "Free",
+        "paid": "Paid",
+        "clearFilters": "Clear Filters",
+        "apply": "Apply Filters"
+      },
+      "pagination": {
+        "summary": "Showing {start}-{end} of {total} events",
+        "empty": "No events to display",
+        "previous": "Previous",
+        "page": "Page {page} of {total}",
+        "next": "Next"
+      },
+      "updateStatus": {
+        "title": "Update Event Status",
+        "description": "Change the status of this event.",
+        "statusLabel": "New Status",
+        "statusPlaceholder": "Select status",
+        "noteLabel": "Admin Note (Optional)",
+        "notePlaceholder": "Add a note about this status change...",
+        "cancel": "Cancel",
+        "submit": "Update Status",
+        "submitting": "Updating...",
+        "success": "Event status updated successfully!",
+        "error": "Failed to update event status"
+      }
     }
   }
 }
