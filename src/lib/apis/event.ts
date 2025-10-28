@@ -26,29 +26,31 @@ const eventApiRequest = {
   getRecommendedEvents: createGetAll<
     RecommendedEventResType,
     GetEventsQueryType
-  >(prefix),
+  >(`${prefix}/matching`),
   //List event sắp diễn ra - all user
   getUpcomingEvents: createGetAll<UpcomingEventResType, SearchEventsQueryType>(
-    prefix
+    `${prefix}/upcoming`
   ),
   //List event trong quá khứ - admin
-  getPastEvents: createGetAll<PastEventResType, SearchEventsQueryType>(prefix),
+  getPastEvents: createGetAll<PastEventResType, SearchEventsQueryType>(
+    `${prefix}/past`
+  ),
   //List event đã tham gia - user
   getParticipatedEvents: createGetAll<
     ParticipatedEventResType,
     SearchEventsQueryType
-  >(prefix),
+  >(`${prefix}/joined`),
   //List event đã tạo - host
   getHostedEvents: createGetAll<HostedEventResType, SearchEventsQueryType>(
-    prefix
+    `${prefix}/hosted`
   ),
   //Get event by ID
   getEventById: createGetOne<GetEventByIdResType, GetEventByIdQueryType>(
-    prefix
+    `${prefix}`
   ),
   //Get event detail for host and admin
   getDetailEvent: createGetOne<GetEventDetailResType, GetEventByIdQueryType>(
-    prefix
+    `${prefix}/detail`
   ),
   //Create event - host
   createEvent: (body: CreateEventBodyType) =>
@@ -63,8 +65,8 @@ const eventApiRequest = {
   updateEvent: (id: string, body: UpdateEventBodyType) =>
     http.put<MessageResType>(`${prefix}/${id}`, body),
   //Update status - admin apporve/cancel
-  updateEventStatus: (id: string, body: UpdateEventStatusBodyType) =>
-    http.put<MessageResType>(`${prefix}/${id}/status`, body),
+  updateEventStatus: (body: UpdateEventStatusBodyType) =>
+    http.put<MessageResType>(`${prefix}/admin/status`, body),
 };
 
 export default eventApiRequest;

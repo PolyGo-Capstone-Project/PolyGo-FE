@@ -11,7 +11,12 @@ import {
   UpdateEventBodyType,
   UpdateEventStatusBodyType,
 } from "@/models";
-import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 type GetRecommendedEventsResponse = Awaited<
   ReturnType<typeof eventApiRequest.getRecommendedEvents>
@@ -148,10 +153,23 @@ export const useCreateEventMutation = (options?: {
   onSuccess?: (data: CreateEventResponse) => void;
   onError?: (error: unknown) => void;
 }) => {
+  const queryClient = useQueryClient();
+  const defaultOnSuccess = () => {
+    // Invalidate common event lists so UI refreshes after create
+    queryClient.invalidateQueries({ queryKey: ["events", "recommended"] });
+    queryClient.invalidateQueries({ queryKey: ["events", "upcoming"] });
+    queryClient.invalidateQueries({ queryKey: ["events", "hosted"] });
+    queryClient.invalidateQueries({ queryKey: ["events", "participated"] });
+    queryClient.invalidateQueries({ queryKey: ["events", "past"] });
+  };
+
   return useMutation({
     mutationFn: (body: CreateEventBodyType) =>
       eventApiRequest.createEvent(body),
-    onSuccess: options?.onSuccess,
+    onSuccess: (data, variables, context) => {
+      defaultOnSuccess();
+      options?.onSuccess?.(data);
+    },
     onError: options?.onError,
   });
 };
@@ -160,10 +178,21 @@ export const useCancelEventMutation = (options?: {
   onSuccess?: (data: CancelEventResponse) => void;
   onError?: (error: unknown) => void;
 }) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: CancelEventBodyType) =>
       eventApiRequest.cancelEvent(body),
-    onSuccess: options?.onSuccess,
+    onSuccess: (data, variables: CancelEventBodyType, context) => {
+      // refresh lists
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+      // try to invalidate specific event caches if id available in body
+      const id = (variables as any)?.id || (variables as any)?.eventId;
+      if (id) {
+        queryClient.invalidateQueries({ queryKey: ["events", "one", id] });
+        queryClient.invalidateQueries({ queryKey: ["events", "detail", id] });
+      }
+      options?.onSuccess?.(data);
+    },
     onError: options?.onError,
   });
 };
@@ -172,10 +201,22 @@ export const useRegisterEventMutation = (options?: {
   onSuccess?: (data: RegisterEventResponse) => void;
   onError?: (error: unknown) => void;
 }) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: RegisterEventBodyType) =>
       eventApiRequest.registerEvent(body),
-    onSuccess: options?.onSuccess,
+    onSuccess: (data, variables: RegisterEventBodyType, context) => {
+      // user registration affects participated lists and possibly event detail
+      queryClient.invalidateQueries({ queryKey: ["events", "participated"] });
+      queryClient.invalidateQueries({ queryKey: ["events", "one"] });
+      // try to invalidate specific event if eventId exists in body
+      const id = (variables as any)?.eventId || (variables as any)?.id;
+      if (id) {
+        queryClient.invalidateQueries({ queryKey: ["events", "one", id] });
+        queryClient.invalidateQueries({ queryKey: ["events", "detail", id] });
+      }
+      options?.onSuccess?.(data);
+    },
     onError: options?.onError,
   });
 };
@@ -184,10 +225,21 @@ export const useUpdateEventMutation = (options?: {
   onSuccess?: (data: UpdateEventResponse) => void;
   onError?: (error: unknown) => void;
 }) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, body }: { id: string; body: UpdateEventBodyType }) =>
       eventApiRequest.updateEvent(id, body),
-    onSuccess: options?.onSuccess,
+    onSuccess: (data, variables, context) => {
+      // refresh lists and the specific event cache
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+      queryClient.invalidateQueries({
+        queryKey: ["events", "one", variables.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["events", "detail", variables.id],
+      });
+      options?.onSuccess?.(data);
+    },
     onError: options?.onError,
   });
 };
@@ -196,15 +248,20 @@ export const useUpdateEventStatusMutation = (options?: {
   onSuccess?: (data: UpdateEventStatusResponse) => void;
   onError?: (error: unknown) => void;
 }) => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      id,
-      body,
-    }: {
-      id: string;
-      body: UpdateEventStatusBodyType;
-    }) => eventApiRequest.updateEventStatus(id, body),
-    onSuccess: options?.onSuccess,
+    mutationFn: ({ body }: { body: UpdateEventStatusBodyType }) =>
+      eventApiRequest.updateEventStatus(body),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+      queryClient.invalidateQueries({
+        queryKey: ["events", "one"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["events", "detail"],
+      });
+      options?.onSuccess?.(data);
+    },
     onError: options?.onError,
   });
 };

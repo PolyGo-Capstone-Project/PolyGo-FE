@@ -1,6 +1,5 @@
+import EventListPage from "@/app/[locale]/(protected)/(user)/event/event-page-content";
 import type { Metadata } from "next";
-
-import { ComingSoon } from "@/components";
 
 export const metadata: Metadata = {
   title: "Event - PolyGo",
@@ -10,10 +9,7 @@ export const metadata: Metadata = {
 export default function EventPage() {
   return (
     <>
-      <ComingSoon
-        title="Event Features"
-        description="We're building amazing event features. Check back soon!"
-      />
+      <EventListPage />
     </>
   );
 }
