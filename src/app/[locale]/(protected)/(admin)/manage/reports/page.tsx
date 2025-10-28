@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { ComingSoon } from "@/components";
 
 export const metadata: Metadata = {
-  title: "Manage Games - PolyGo",
-  description: "Manage games on the PolyGo platform",
+  title: "Manage Reports - PolyGo",
+  description: "Manage reports on the PolyGo platform",
 };
 
 export default function Page() {

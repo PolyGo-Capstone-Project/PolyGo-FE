@@ -632,6 +632,25 @@
         "submitting": "Updating...",
         "success": "Event status updated successfully!",
         "error": "Failed to update event status"
+      },
+      "detail": {
+        "title": "Event Details",
+        "description": "View complete information about this event",
+        "viewDetails": "View Details",
+        "loadError": "Failed to load event details",
+        "host": "Host",
+        "language": "Language",
+        "startTime": "Start Time",
+        "duration": "Duration",
+        "minutes": "minutes",
+        "capacity": "Capacity",
+        "fee": "Fee",
+        "free": "Free",
+        "categories": "Categories",
+        "participants": "Participants",
+        "registeredAt": "Registered",
+        "roleHost": "Host",
+        "roleAttendee": "Attendee"
       }
     }
   }

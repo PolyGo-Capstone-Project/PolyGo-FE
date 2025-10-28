@@ -9,6 +9,7 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 
+import { EventDetailDialog } from "@/components/modules/admin/events/event-detail-dialog";
 import { UpdateStatusDialog } from "@/components/modules/admin/events/update-status-dialog";
 import { Pagination } from "@/components/shared";
 import {
@@ -367,11 +368,9 @@ export default function ManageEvents() {
                       <TableHead className="min-w-[100px]">
                         {t("columns.fee")}
                       </TableHead>
-                      {activeTab === "upcoming" && (
-                        <TableHead className="text-right min-w-[80px]">
-                          {t("columns.actions")}
-                        </TableHead>
-                      )}
+                      <TableHead className="text-right min-w-[120px]">
+                        {t("columns.actions")}
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -401,11 +400,14 @@ export default function ManageEvents() {
                             ? t("filters.free")
                             : formatCurrency(event.fee)}
                         </TableCell>
-                        {activeTab === "upcoming" && (
-                          <TableCell className="text-right">
-                            <UpdateStatusDialog eventId={event.id} />
-                          </TableCell>
-                        )}
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <EventDetailDialog eventId={event.id} />
+                            {activeTab === "upcoming" && (
+                              <UpdateStatusDialog eventId={event.id} />
+                            )}
+                          </div>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

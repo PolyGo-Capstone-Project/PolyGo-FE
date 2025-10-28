@@ -50,7 +50,7 @@ const eventApiRequest = {
   ),
   //Get event detail for host and admin
   getDetailEvent: createGetOne<GetEventDetailResType, GetEventByIdQueryType>(
-    `${prefix}/detail`
+    `${prefix}/details`
   ),
   //Create event - host
   createEvent: (body: CreateEventBodyType) =>

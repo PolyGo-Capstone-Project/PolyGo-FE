@@ -731,6 +731,25 @@
         "submitting": "Đang cập nhật...",
         "success": "Cập nhật trạng thái sự kiện thành công!",
         "error": "Không thể cập nhật trạng thái sự kiện"
+      },
+      "detail": {
+        "title": "Chi tiết sự kiện",
+        "description": "Xem thông tin đầy đủ về sự kiện này",
+        "viewDetails": "Xem chi tiết",
+        "loadError": "Không thể tải thông tin chi tiết sự kiện",
+        "host": "Người tổ chức",
+        "language": "Ngôn ngữ",
+        "startTime": "Thời gian bắt đầu",
+        "duration": "Thời lượng",
+        "minutes": "phút",
+        "capacity": "Sức chứa",
+        "fee": "Phí tham gia",
+        "free": "Miễn phí",
+        "categories": "Danh mục",
+        "participants": "Người tham gia",
+        "registeredAt": "Đã đăng ký",
+        "roleHost": "Người tổ chức",
+        "roleAttendee": "Người tham gia"
       }
     }
   }
