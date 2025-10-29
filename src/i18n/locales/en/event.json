@@ -132,10 +132,12 @@
         "default": "Please check this field.",
         "title": {
           "required": "Event title is required.",
+          "min": "Title must be at least 3 characters.",
           "max": "Title must be at most 500 characters."
         },
         "description": {
           "required": "Description is required.",
+          "min": "Description must be at least 10 characters.",
           "max": "Description must be at most 2000 characters."
         },
         "bannerUrl": {

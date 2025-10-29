@@ -110,7 +110,7 @@ export const GetEventByIdQuerySchema = LangQuerySchema;
 
 export const SearchEventsQuerySchema = GetEventsQuerySchema.extend({
   name: z.string().min(1).max(100).optional(),
-  fee: z.enum(["Free", "Paid"]).optional(),
+  isFree: z.boolean().optional(),
   time: z.iso.datetime().optional(),
   languageIds: z.union([z.string(), z.array(z.string())]).optional(),
   interestIds: z.union([z.string(), z.array(z.string())]).optional(),
@@ -181,11 +181,8 @@ export const GetEventDetailResSchema = z.object({
 
 //Create event - host
 export const CreateEventBodySchema = EventSchema.pick({
-  title: true,
-  description: true,
   bannerUrl: true,
   notesUrl: true,
-  languageId: true,
   status: true,
   isPublic: true,
   allowLateRegister: true,
@@ -195,6 +192,9 @@ export const CreateEventBodySchema = EventSchema.pick({
   expectedDurationInMinutes: true,
 })
   .extend({
+    title: z.string().min(3).max(500),
+    description: z.string().min(10).max(2000),
+    languageId: z.string().min(1),
     startAt: z.string().datetime(),
     endAt: z.string().datetime().nullable(),
     registerDeadline: z.string().datetime(),

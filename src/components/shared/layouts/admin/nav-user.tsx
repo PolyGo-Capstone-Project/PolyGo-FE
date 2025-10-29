@@ -40,11 +40,11 @@ export function NavUser({ user }: { user: GetUserProfileResType }) {
   };
 
   const handleSettings = () => {
-    router.push(`/${locale}/manage/setting`);
+    router.push(`/${locale}/manage/settings`);
   };
 
   const handleAccount = () => {
-    router.push(`/${locale}/manage/setting`);
+    router.push(`/${locale}/manage/settings`);
   };
 
   return (
