@@ -36,6 +36,7 @@ type EventCardProps = {
     numberOfParticipants: number;
     fee: number;
     planType: PlanTypeEnumType;
+    isParticipant?: boolean;
     host: {
       id: string;
       name: string;
@@ -103,6 +104,11 @@ export function EventCard({ event }: EventCardProps) {
 
         {/* Badges Overlay */}
         <div className="absolute top-3 right-3 flex flex-col gap-2">
+          {event.isParticipant && (
+            <Badge className="bg-primary/90 hover:bg-primary text-white border-0 shadow-lg backdrop-blur-sm">
+              {t("alreadyRegistered")}
+            </Badge>
+          )}
           {event.fee === 0 ? (
             <Badge className="bg-green-500/90 hover:bg-green-500 text-white border-0 shadow-lg backdrop-blur-sm">
               {t("free")}

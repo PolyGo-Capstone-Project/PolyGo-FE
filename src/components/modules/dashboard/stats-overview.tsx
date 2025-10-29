@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { useTranslations } from "next-intl";
 
 export function StatsOverviewCard({
@@ -23,13 +24,13 @@ export function StatsOverviewCard({
   t: ReturnType<typeof useTranslations>;
 }) {
   return (
-    <Card className="border-0 shadow-sm">
-      <CardHeader className="pb-4 border-b">
-        <CardTitle className="text-lg font-bold text-slate-900">
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold">
           {t("stats.title", { defaultValue: "Thống kê của bạn" })}
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-6 space-y-4">
+      <CardContent className="space-y-4">
         <RowStat
           label={t("stats.xp", { defaultValue: "XP" })}
           value={xpPoints}
@@ -46,18 +47,19 @@ export function StatsOverviewCard({
           label={t("stats.rating", { defaultValue: "Đánh giá" })}
           value={rating}
         />
-        <div className="pt-4 border-t">
-          <p className="text-xs font-semibold text-slate-700 mb-2">
-            {t("stats.levelProgress", { defaultValue: "Level Progress" })}
-          </p>
-          <div className="w-full bg-slate-200 rounded-full h-2.5">
-            <div
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 h-2.5 rounded-full transition-all"
-              style={{ width: `${progressPct}%` }}
-            />
+
+        <div className="pt-4 border-t space-y-2">
+          <div className="flex items-center justify-between text-sm">
+            <span className="font-medium">
+              {t("stats.levelProgress", { defaultValue: "Level Progress" })}
+            </span>
+            <span className="text-muted-foreground">
+              {Math.round(progressPct)}%
+            </span>
           </div>
-          <p className="text-xs text-slate-500 mt-2">
-            {currentXP}/{totalXP} XP
+          <Progress value={progressPct} className="h-2" />
+          <p className="text-xs text-muted-foreground text-center">
+            {currentXP.toLocaleString()} / {totalXP.toLocaleString()} XP
           </p>
         </div>
       </CardContent>
@@ -68,8 +70,8 @@ export function StatsOverviewCard({
 function RowStat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="flex items-center justify-between text-sm">
-      <span className="text-slate-600 font-medium">{label}</span>
-      <span className="font-bold text-slate-900">{value}</span>
+      <span className="text-muted-foreground">{label}</span>
+      <span className="font-semibold">{value}</span>
     </div>
   );
 }

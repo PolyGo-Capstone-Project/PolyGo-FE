@@ -19,6 +19,7 @@
     "viewDetails": "View Details",
     "register": "Register",
     "registered": "Registered",
+    "alreadyRegistered": "Already Registered",
     "participants": "Participants",
     "capacity": "Full",
     "spotsLeft": "spots left",
@@ -215,6 +216,8 @@
       "confirmRegistrationMessage": "Are you sure you want to register for this event?",
       "cancel": "Cancel",
       "confirmAndPay": "Confirm & Pay",
+      "processing": "Processing...",
+      "eventFull": "Event Full",
       "password": {
         "label": "Event Password",
         "placeholder": "Enter event password",
@@ -223,6 +226,17 @@
       "errors": {
         "loadFailed": "Failed to load event details",
         "registerFailed": "Failed to register for event"
+      },
+      "registrationSuccess": {
+        "title": "Registration Successful!",
+        "message": "You have successfully registered for this event.",
+        "messageWithTitle": "You have successfully registered for \"{title}\".",
+        "nextSteps": "What's next?",
+        "checkEmail": "Check your email for event confirmation",
+        "viewMyEvents": "View your registered events in My Events",
+        "prepareForEvent": "Prepare for the event and mark your calendar",
+        "close": "Close",
+        "viewMyEventsButton": "View My Events"
       }
     },
     "myEvent": {
@@ -251,7 +265,9 @@
           "cancelling": "Cancelling...",
           "success": "Event cancelled successfully",
           "error": "Failed to cancel event"
-        }
+        },
+        "participants": "Participants",
+        "close": "Close"
       },
       "joined": {
         "title": "Events I Joined",

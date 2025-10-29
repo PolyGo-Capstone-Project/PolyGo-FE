@@ -1,7 +1,7 @@
 export * from "./admin";
 export * from "./auth";
 export * from "./dashboard";
-export * from "./event";
+export * as event from "./event";
 export * from "./gifts";
 export * from "./loading";
 export * from "./matching";

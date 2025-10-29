@@ -1,12 +1,11 @@
 "use client";
 
+import { Button, Input } from "@/components";
 import {
-  Button,
   EventCard,
   EventCardCompact,
   EventFilters,
-  Input,
-} from "@/components";
+} from "@/components/modules/event";
 import { useGetRecommendedEvents, useGetUpcomingEvents } from "@/hooks";
 import type { SearchEventsQueryType } from "@/models";
 import { IconPlus, IconSearch, IconSparkles } from "@tabler/icons-react";

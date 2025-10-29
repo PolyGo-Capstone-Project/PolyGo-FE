@@ -1,8 +1,7 @@
 "use client";
 
+import { EditEventForm } from "@/components/modules/event";
 import { useTranslations } from "next-intl";
-
-import { EditEventForm } from "@/components";
 
 type EditEventPageContentProps = {
   eventId: string;
