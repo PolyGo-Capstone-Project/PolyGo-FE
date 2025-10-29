@@ -93,7 +93,7 @@ export function EventDetailDialog({ eventId }: EventDetailDialogProps) {
                     src={event.bannerUrl}
                     alt={event.title}
                     className="h-full w-full object-cover"
-                    layout="fill"
+                    fill
                   />
                 </div>
               )}
@@ -230,12 +230,12 @@ export function EventDetailDialog({ eventId }: EventDetailDialogProps) {
                           className="flex items-center justify-between rounded-lg border p-3"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="size-8 overflow-hidden rounded-full bg-muted">
+                            <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-muted shadow-sm border-2">
                               {participant.avatarUrl ? (
                                 <Image
                                   src={participant.avatarUrl}
                                   alt={participant.name}
-                                  className="h-full w-full object-cover"
+                                  className="object-cover"
                                   layout="fill"
                                 />
                               ) : (

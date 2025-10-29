@@ -137,7 +137,6 @@ export default function ManageAccounts() {
         id,
       });
     } catch (error) {
-      console.error("API Error:", error);
       handleErrorApi({ error, tError });
     }
   };

@@ -191,12 +191,12 @@ export const CreateEventBodySchema = EventSchema.pick({
   capacity: true,
   fee: true,
   hostId: true,
-  startAt: true,
-  endAt: true,
-  registerDeadline: true,
   expectedDurationInMinutes: true,
 })
   .extend({
+    startAt: z.string().datetime(),
+    endAt: z.string().datetime().nullable(),
+    registerDeadline: z.string().datetime(),
     password: z.string().min(6).max(100).optional().nullable(),
     interestIds: z.array(z.string()).min(1),
     requiredPlanType: z.enum(PlanTypeEnum).default("Free"),
