@@ -1,25 +1,25 @@
 "use client";
 
-import { LoadingSpinner } from "@/components";
-import { useAuthMe, useGetUsersMatching } from "@/hooks";
-import { UserMatchingItemType } from "@/models";
-import { useTranslations } from "next-intl";
-import { useMemo } from "react";
-
 import {
-  QuickActionItemType,
+  LoadingSpinner,
   QuickActionsGrid,
-} from "@/components/modules/dashboard/quick-action-grid";
-import {
-  RecentChatItemType,
   RecentChats,
-} from "@/components/modules/dashboard/recent-chat";
-import { StatsOverviewCard } from "@/components/modules/dashboard/stats-overview";
-import { SuggestedPartnersGrid } from "@/components/modules/dashboard/suggested-partner-grid";
-import { UpcomingEventsList } from "@/components/modules/dashboard/upcoming-events-list";
-import { UpgradePlusCard } from "@/components/modules/dashboard/upgrade-plus-card";
-import { WelcomeBanner } from "@/components/modules/dashboard/welcome-banner";
-
+  StatsOverviewCard,
+  SuggestedPartnersGrid,
+  UpcomingEventsList,
+  UpgradePlusCard,
+  WelcomeBanner,
+} from "@/components";
+import { QuickActionItemType } from "@/components/modules/dashboard/quick-action-grid";
+import { RecentChatItemType } from "@/components/modules/dashboard/recent-chat";
+import {
+  useAuthMe,
+  useCurrentSubscriptionQuery,
+  useGetUpcomingEvents,
+  useGetUsersMatching,
+} from "@/hooks";
+import { UserMatchingItemType } from "@/models";
+import { format } from "date-fns";
 import {
   CreditCard,
   Gamepad2,
@@ -28,6 +28,8 @@ import {
   Star,
   Ticket,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useMemo } from "react";
 
 /* ======================================================= */
 /* ================= MOCK DATA + UTILITIES ================ */
@@ -74,33 +76,6 @@ const mockQuickActions: QuickActionItemType[] = [
     icon: <Gamepad2 className="w-6 h-6 text-white" />,
     title: "games",
     color: "bg-red-500",
-  },
-];
-
-const mockUpcomingEvents = [
-  {
-    id: 1,
-    title: "American Museum Tour - Learn Language via Culture",
-    description: "Learn culture while learning English with native speakers.",
-    date: "28/09/2025",
-    time: "14:00",
-    isPlus: true,
-  },
-  {
-    id: 2,
-    title: "Vietnamese Cooking Class - Pho & Spring Rolls",
-    description: "Practice Vietnamese while cooking classic dishes.",
-    date: "02/10/2025",
-    time: "18:00",
-    isPlus: true,
-  },
-  {
-    id: 3,
-    title: "Vietnamese Business Language Workshop",
-    description: "Professional communication and business etiquette.",
-    date: "10/10/2025",
-    time: "19:00",
-    isPlus: false,
   },
 ];
 
@@ -168,6 +143,39 @@ export default function DashboardContent({ locale }: ContentProps) {
   const { suggestedPartners, isLoading: isLoadingPartners } =
     useSuggestedPartners();
 
+  // Check subscription plan
+  const { data: subscriptionData } = useCurrentSubscriptionQuery({
+    params: { lang: locale },
+  });
+
+  // Get upcoming events from API
+  const { data: upcomingEventsData, isLoading: isLoadingEvents } =
+    useGetUpcomingEvents(
+      {
+        pageNumber: 1,
+        pageSize: 3,
+        lang: locale,
+      },
+      { enabled: true }
+    );
+
+  const upcomingEvents = useMemo(() => {
+    if (!upcomingEventsData?.payload.data?.items) return [];
+
+    return upcomingEventsData.payload.data.items.map((event) => ({
+      id: event.id,
+      title: event.title,
+      description: event.description,
+      date: event.startAt ? format(new Date(event.startAt), "dd/MM/yyyy") : "",
+      time: event.startAt ? format(new Date(event.startAt), "HH:mm") : "",
+      isPaid: !Boolean(event.fee === 0) || false,
+    }));
+  }, [upcomingEventsData]);
+
+  // Check if user is on Free plan
+  const currentPlan = subscriptionData?.payload.data?.planName || "Free";
+  const isFreePlan = currentPlan.toLowerCase() === "free";
+
   if (isLoadingAuth || isLoadingPartners) {
     return (
       <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
@@ -193,8 +201,13 @@ export default function DashboardContent({ locale }: ContentProps) {
   const levelProgress = MOCK_LEVEL_PROGRESS;
   const progressPct = (levelProgress.current / levelProgress.total) * 100;
 
+  // Filter quick actions if not Free plan
+  const quickActions = isFreePlan
+    ? mockQuickActions
+    : mockQuickActions.filter((action) => action.title !== "upgradePlus");
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
       <div className="mx-auto w-full max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* =============== LEFT COLUMN (span 2) =============== */}
@@ -207,11 +220,7 @@ export default function DashboardContent({ locale }: ContentProps) {
               totalHours={totalHours}
             />
 
-            <QuickActionsGrid
-              t={t}
-              actions={mockQuickActions}
-              locale={locale}
-            />
+            <QuickActionsGrid t={t} actions={quickActions} locale={locale} />
 
             <SuggestedPartnersGrid
               t={t}
@@ -228,7 +237,8 @@ export default function DashboardContent({ locale }: ContentProps) {
             />
 
             <UpcomingEventsList
-              events={mockUpcomingEvents}
+              events={upcomingEvents}
+              isLoading={isLoadingEvents}
               t={t}
               locale={locale}
             />
@@ -253,8 +263,8 @@ export default function DashboardContent({ locale }: ContentProps) {
               getInitials={getInitials} // Hàm lấy chữ viết tắt
             />
 
-            {/* Upgrade Plus Card */}
-            <UpgradePlusCard t={t} />
+            {/* Upgrade Plus Card - Only show for Free plan */}
+            {isFreePlan && <UpgradePlusCard t={t} locale={locale} />}
           </div>
         </div>
       </div>

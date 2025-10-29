@@ -1,6 +1,5 @@
+import { CreateEventForm } from "@/components/modules/event";
 import { useTranslations } from "next-intl";
-
-import { CreateEventForm } from "@/components";
 
 export default function CreateEventPage() {
   const t = useTranslations("event.create");

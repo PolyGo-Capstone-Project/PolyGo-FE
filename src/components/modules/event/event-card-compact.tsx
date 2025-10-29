@@ -21,6 +21,7 @@ type EventCardCompactProps = {
     numberOfParticipants: number;
     fee: number;
     planType: PlanTypeEnumType;
+    isParticipant?: boolean;
     host: {
       id: string;
       name: string;
@@ -65,8 +66,13 @@ export function EventCardCompact({ event }: EventCardCompactProps) {
                 <IconCalendar className="h-8 w-8 text-muted-foreground/30" />
               </div>
             )}
-            {/* Price Badge */}
-            <div className="absolute top-1.5 right-1.5">
+            {/* Badges */}
+            <div className="absolute top-1.5 right-1.5 flex flex-col gap-1 items-end">
+              {event.isParticipant && (
+                <Badge className="bg-primary/90 text-white text-[10px] px-1.5 py-0 h-5 border-0 shadow-md">
+                  {t("alreadyRegistered")}
+                </Badge>
+              )}
               {event.fee === 0 ? (
                 <Badge className="bg-green-500/90 text-white text-[10px] px-1.5 py-0 h-5 border-0 shadow-md">
                   {t("free")}

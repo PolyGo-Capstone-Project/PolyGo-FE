@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { CreatedEventCard } from "@/components/modules/event/my-event/created-event-card";
+import { EventDetailDialog } from "@/components/modules/event/my-event/event-detail-dialog";
 import { Pagination } from "@/components/shared";
 import {
   Button,
@@ -35,6 +36,8 @@ export function EventsCreatedTab() {
 
   const [upcomingPage, setUpcomingPage] = useState(1);
   const [pastPage, setPastPage] = useState(1);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+  const [showDetailDialog, setShowDetailDialog] = useState(false);
 
   // Fetch upcoming events (Pending, Approved)
   const {
@@ -108,7 +111,8 @@ export function EventsCreatedTab() {
   };
 
   const handleViewDetail = (eventId: string) => {
-    router.push(`/${locale}/event/${eventId}`);
+    setSelectedEventId(eventId);
+    setShowDetailDialog(true);
   };
 
   const handleCreateEvent = () => {
@@ -119,110 +123,119 @@ export function EventsCreatedTab() {
   const pastMeta = pastData?.payload?.data;
 
   return (
-    <div className="space-y-8">
-      {/* Upcoming Events Section */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold">{t("upcoming")}</h2>
-        </div>
-
-        {upcomingLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-[400px]" />
-            ))}
+    <>
+      <div className="space-y-8">
+        {/* Upcoming Events Section */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-semibold">{t("upcoming")}</h2>
           </div>
-        ) : upcomingEvents.length > 0 ? (
-          <>
+
+          {upcomingLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {upcomingEvents.map((event) => (
-                <CreatedEventCard
-                  key={event.id}
-                  event={event}
-                  onEdit={handleEdit}
-                  onCancel={handleCancel}
-                  onViewDetail={handleViewDetail}
-                  isCancelling={cancelEventMutation.isPending}
-                />
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-[450px]" />
               ))}
             </div>
-            {upcomingMeta && upcomingMeta.totalPages > 1 && (
-              <div className="mt-6">
-                <Pagination
-                  currentPage={upcomingMeta.currentPage}
-                  totalPages={upcomingMeta.totalPages}
-                  totalItems={upcomingMeta.totalItems}
-                  pageSize={upcomingMeta.pageSize}
-                  hasNextPage={upcomingMeta.hasNextPage}
-                  hasPreviousPage={upcomingMeta.hasPreviousPage}
-                  onPageChange={setUpcomingPage}
-                />
+          ) : upcomingEvents.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {upcomingEvents.map((event) => (
+                  <CreatedEventCard
+                    key={event.id}
+                    event={event}
+                    onEdit={handleEdit}
+                    onCancel={handleCancel}
+                    onViewDetail={handleViewDetail}
+                    isCancelling={cancelEventMutation.isPending}
+                  />
+                ))}
               </div>
-            )}
-          </>
-        ) : (
-          <Empty>
-            <EmptyHeader>
-              <EmptyTitle>{t("noUpcoming")}</EmptyTitle>
-              <EmptyDescription>{t("createFirst")}</EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-              <Button onClick={handleCreateEvent}>
-                <IconPlus className="size-4 mr-2" />
-                {t("createFirst")}
-              </Button>
-            </EmptyContent>
-          </Empty>
-        )}
-      </div>
-
-      <Separator />
-
-      {/* Past Events Section */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold">{t("past")}</h2>
+              {upcomingMeta && upcomingMeta.totalPages > 1 && (
+                <div className="mt-6">
+                  <Pagination
+                    currentPage={upcomingMeta.currentPage}
+                    totalPages={upcomingMeta.totalPages}
+                    totalItems={upcomingMeta.totalItems}
+                    pageSize={upcomingMeta.pageSize}
+                    hasNextPage={upcomingMeta.hasNextPage}
+                    hasPreviousPage={upcomingMeta.hasPreviousPage}
+                    onPageChange={setUpcomingPage}
+                  />
+                </div>
+              )}
+            </>
+          ) : (
+            <Empty>
+              <EmptyHeader>
+                <EmptyTitle>{t("noUpcoming")}</EmptyTitle>
+                <EmptyDescription>{t("createFirst")}</EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <Button onClick={handleCreateEvent}>
+                  <IconPlus className="size-4 mr-2" />
+                  {t("createFirst")}
+                </Button>
+              </EmptyContent>
+            </Empty>
+          )}
         </div>
 
-        {pastLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <Skeleton key={i} className="h-[400px]" />
-            ))}
+        <Separator />
+
+        {/* Past Events Section */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-semibold">{t("past")}</h2>
           </div>
-        ) : pastEvents.length > 0 ? (
-          <>
+
+          {pastLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {pastEvents.map((event) => (
-                <CreatedEventCard
-                  key={event.id}
-                  event={event}
-                  onViewDetail={handleViewDetail}
-                />
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-[450px]" />
               ))}
             </div>
-            {pastMeta && pastMeta.totalPages > 1 && (
-              <div className="mt-6">
-                <Pagination
-                  currentPage={pastMeta.currentPage}
-                  totalPages={pastMeta.totalPages}
-                  totalItems={pastMeta.totalItems}
-                  pageSize={pastMeta.pageSize}
-                  hasNextPage={pastMeta.hasNextPage}
-                  hasPreviousPage={pastMeta.hasPreviousPage}
-                  onPageChange={setPastPage}
-                />
+          ) : pastEvents.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {pastEvents.map((event) => (
+                  <CreatedEventCard
+                    key={event.id}
+                    event={event}
+                    onViewDetail={handleViewDetail}
+                  />
+                ))}
               </div>
-            )}
-          </>
-        ) : (
-          <Empty>
-            <EmptyHeader>
-              <EmptyTitle>{t("noPast")}</EmptyTitle>
-            </EmptyHeader>
-          </Empty>
-        )}
+              {pastMeta && pastMeta.totalPages > 1 && (
+                <div className="mt-6">
+                  <Pagination
+                    currentPage={pastMeta.currentPage}
+                    totalPages={pastMeta.totalPages}
+                    totalItems={pastMeta.totalItems}
+                    pageSize={pastMeta.pageSize}
+                    hasNextPage={pastMeta.hasNextPage}
+                    hasPreviousPage={pastMeta.hasPreviousPage}
+                    onPageChange={setPastPage}
+                  />
+                </div>
+              )}
+            </>
+          ) : (
+            <Empty>
+              <EmptyHeader>
+                <EmptyTitle>{t("noPast")}</EmptyTitle>
+              </EmptyHeader>
+            </Empty>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* Event Detail Dialog */}
+      <EventDetailDialog
+        eventId={selectedEventId}
+        open={showDetailDialog}
+        onOpenChange={setShowDetailDialog}
+      />
+    </>
   );
 }

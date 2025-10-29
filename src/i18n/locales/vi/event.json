@@ -19,6 +19,7 @@
     "viewDetails": "Xem chi tiết",
     "register": "Đăng ký",
     "registered": "Đã đăng ký",
+    "alreadyRegistered": "Đã đăng ký",
     "participants": "Người tham gia",
     "capacity": "Đã đầy",
     "spotsLeft": "chỗ còn lại",
@@ -216,6 +217,28 @@
       "errors": {
         "loadFailed": "Không thể tải thông tin sự kiện",
         "registerFailed": "Đăng ký thất bại"
+      },
+      "confirmRegistration": "Xác nhận đăng ký",
+      "eventFee": "Phí sự kiện",
+      "currentBalance": "Số dư hiện tại",
+      "afterRegistration": "Sau khi đăng ký",
+      "confirmRegistrationMessage": "Bạn có chắc chắn muốn đăng ký sự kiện này?",
+      "cancel": "Hủy",
+      "confirmAndPay": "Xác nhận & Thanh toán",
+      "processing": "Đang xử lý...",
+      "eventFull": "Sự kiện đã đầy",
+      "insufficientFunds": "Số dư không đủ",
+      "yourBalance": "Số dư của bạn",
+      "registrationSuccess": {
+        "title": "Đăng ký thành công!",
+        "message": "Bạn đã đăng ký sự kiện thành công.",
+        "messageWithTitle": "Bạn đã đăng ký thành công cho \"{title}\".",
+        "nextSteps": "Các bước tiếp theo?",
+        "checkEmail": "Kiểm tra email để xác nhận sự kiện",
+        "viewMyEvents": "Xem các sự kiện đã đăng ký trong Sự kiện của tôi",
+        "prepareForEvent": "Chuẩn bị cho sự kiện và đánh dấu lịch",
+        "close": "Đóng",
+        "viewMyEventsButton": "Xem sự kiện của tôi"
       }
     },
     "myEvent": {
@@ -244,7 +267,9 @@
           "cancelling": "Đang hủy...",
           "success": "Hủy sự kiện thành công",
           "error": "Không thể hủy sự kiện"
-        }
+        },
+        "participants": "Người tham gia",
+        "close": "Đóng"
       },
       "joined": {
         "title": "Sự kiện đã tham gia",
