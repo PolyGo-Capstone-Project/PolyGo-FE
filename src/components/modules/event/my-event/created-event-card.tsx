@@ -5,6 +5,7 @@ import {
   IconClock,
   IconEdit,
   IconEye,
+  IconMapPin,
   IconUsers,
   IconX,
 } from "@tabler/icons-react";
@@ -45,6 +46,9 @@ type CreatedEventCardProps = {
     language: {
       name: string;
     };
+    categories: Array<{
+      name: string;
+    }>;
   };
   onEdit?: (eventId: string) => void;
   onCancel?: (eventId: string, reason: string) => void;
@@ -60,6 +64,7 @@ export function CreatedEventCard({
   isCancelling = false,
 }: CreatedEventCardProps) {
   const t = useTranslations("event.myEvent.created");
+  const tCommon = useTranslations("event");
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
 
@@ -96,86 +101,164 @@ export function CreatedEventCard({
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
+  const isValidBannerUrl = (url: string | null) => {
+    if (!url) return false;
+    return url.startsWith("http://") || url.startsWith("https://");
+  };
+
+  const hasBanner = isValidBannerUrl(event.bannerUrl);
+  const spotsLeft = event.capacity - event.numberOfParticipants;
+  const isAlmostFull = spotsLeft > 0 && spotsLeft <= 5;
+
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-        <div className="relative h-48 w-full">
-          <Image
-            src={event.bannerUrl}
-            alt={event.title}
-            fill
-            className="object-cover"
-          />
-          <div className="absolute top-2 right-2">
+      <Card className="group overflow-hidden hover:shadow-xl transition-all duration-300 border-muted/40 flex flex-col h-full">
+        {/* Banner Section */}
+        <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-background">
+          {hasBanner ? (
+            <Image
+              src={event.bannerUrl}
+              alt={event.title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <IconCalendar className="h-12 w-12 text-muted-foreground/30" />
+            </div>
+          )}
+
+          {/* Badges Overlay */}
+          <div className="absolute top-3 right-3 flex flex-col gap-2">
             {getStatusBadge(event.status)}
+            {event.fee === 0 ? (
+              <Badge className="bg-green-500/90 text-white border-0 shadow-lg">
+                {tCommon("free")}
+              </Badge>
+            ) : (
+              <Badge className="bg-blue-500/90 text-white border-0 shadow-lg">
+                {formatCurrency(event.fee)}
+              </Badge>
+            )}
+            {isAlmostFull && (
+              <Badge className="bg-orange-500/90 text-white border-0 shadow-lg">
+                {spotsLeft} {tCommon("spotsLeft")}
+              </Badge>
+            )}
           </div>
         </div>
-        <CardContent className="p-4 space-y-4">
-          <div>
-            <h3 className="font-semibold text-lg line-clamp-2 mb-2">
+
+        <CardContent className="p-5 space-y-4 flex-1 flex flex-col">
+          {/* Title & Description */}
+          <div className="space-y-2 flex-1">
+            <h3 className="font-bold text-lg line-clamp-2 group-hover:text-primary transition-colors min-h-[3.5rem]">
               {event.title}
             </h3>
-            <p className="text-sm text-muted-foreground line-clamp-2">
+            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
               {event.description}
             </p>
           </div>
 
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <IconCalendar className="size-4" />
-              <span>{format(new Date(event.startAt), "PPP")}</span>
+          {/* Event Details Grid */}
+          <div className="grid grid-cols-2 gap-3 py-2 border-y border-muted/30">
+            <div className="flex items-start gap-2">
+              <IconCalendar className="h-4 w-4 flex-shrink-0 text-primary mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-muted-foreground">
+                  {tCommon("date")}
+                </p>
+                <p className="text-sm font-medium truncate">
+                  {format(new Date(event.startAt), "MMM dd, yyyy")}
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <IconClock className="size-4" />
-              <span>{event.expectedDurationInMinutes} minutes</span>
+
+            <div className="flex items-start gap-2">
+              <IconClock className="h-4 w-4 flex-shrink-0 text-primary mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-muted-foreground">
+                  {tCommon("duration")}
+                </p>
+                <p className="text-sm font-medium">
+                  {event.expectedDurationInMinutes} {tCommon("detail.minutes")}
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <IconUsers className="size-4" />
-              <span>
-                {event.numberOfParticipants}/{event.capacity} participants
-              </span>
+
+            <div className="flex items-start gap-2">
+              <IconUsers className="h-4 w-4 flex-shrink-0 text-primary mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-muted-foreground">
+                  {tCommon("participants")}
+                </p>
+                <p className="text-sm font-medium">
+                  {event.numberOfParticipants}/{event.capacity}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <IconMapPin className="h-4 w-4 flex-shrink-0 text-primary mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-muted-foreground">
+                  {tCommon("language")}
+                </p>
+                <p className="text-sm font-medium truncate">
+                  {event.language.name}
+                </p>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-2 border-t">
-            <div className="flex items-center gap-2">
-              <Badge variant="outline">{event.language.name}</Badge>
-              <Badge variant="secondary">
-                {event.fee === 0 ? "Free" : formatCurrency(event.fee)}
+          {/* Categories */}
+          <div className="flex flex-wrap gap-1.5">
+            {event.categories.slice(0, 2).map((category, index) => (
+              <Badge
+                key={index}
+                variant="outline"
+                className="text-xs font-normal"
+              >
+                {category.name}
               </Badge>
-            </div>
+            ))}
+            {event.categories.length > 2 && (
+              <Badge variant="outline" className="text-xs font-normal">
+                +{event.categories.length - 2}
+              </Badge>
+            )}
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-2 mt-auto">
             <Button
               variant="outline"
               size="sm"
-              className="flex-1"
+              className="flex-1 min-w-[100px]"
               onClick={() => onViewDetail?.(event.id)}
             >
-              <IconEye className="size-4 mr-1" />
+              <IconEye className="h-4 w-4 mr-1" />
               {t("viewDetail")}
             </Button>
-            {canEdit && (
+            {canEdit && onEdit && (
               <Button
                 variant="default"
                 size="sm"
-                className="flex-1"
-                onClick={() => onEdit?.(event.id)}
+                className="flex-1 min-w-[100px]"
+                onClick={() => onEdit(event.id)}
               >
-                <IconEdit className="size-4 mr-1" />
+                <IconEdit className="h-4 w-4 mr-1" />
                 {t("edit")}
               </Button>
             )}
-            {canCancel && (
+            {canCancel && onCancel && (
               <Button
                 variant="destructive"
                 size="sm"
-                className="flex-1"
+                className="flex-1 min-w-[100px]"
                 onClick={() => setShowCancelDialog(true)}
                 disabled={isCancelling}
               >
-                <IconX className="size-4 mr-1" />
+                <IconX className="h-4 w-4 mr-1" />
                 {t("cancel")}
               </Button>
             )}
@@ -183,6 +266,7 @@ export function CreatedEventCard({
         </CardContent>
       </Card>
 
+      {/* Cancel Dialog */}
       <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
         <DialogContent>
           <DialogHeader>
@@ -200,6 +284,7 @@ export function CreatedEventCard({
                 value={cancelReason}
                 onChange={(e) => setCancelReason(e.target.value)}
                 rows={4}
+                className="resize-none"
               />
             </div>
           </div>

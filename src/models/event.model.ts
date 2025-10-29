@@ -96,6 +96,7 @@ const EventListItemSchema = EventSchema.pick({
   isPublic: true,
   planType: true,
 }).extend({
+  isParticipant: z.boolean().default(false),
   numberOfParticipants: z.number().min(0).default(0),
   host: hostInfoSchema,
   language: TargetLanguageSchema,
