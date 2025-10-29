@@ -76,7 +76,7 @@ export default function EventListPage() {
     debouncedSearch,
     filters.languageIds,
     filters.interestIds,
-    filters.fee,
+    filters.isFree,
     filters.time,
   ]);
 
@@ -91,7 +91,7 @@ export default function EventListPage() {
       name: debouncedSearch || undefined,
       languageIds: filters.languageIds,
       interestIds: filters.interestIds,
-      fee: filters.fee,
+      isFree: filters.isFree,
       time: timeDate ? timeDate.toISOString() : undefined,
     };
   }, [
@@ -100,7 +100,7 @@ export default function EventListPage() {
     debouncedSearch,
     filters.languageIds,
     filters.interestIds,
-    filters.fee,
+    filters.isFree,
     filters.time,
   ]);
 
@@ -221,7 +221,7 @@ export default function EventListPage() {
               : filters.interestIds
                 ? [filters.interestIds]
                 : undefined,
-            fee: filters.fee,
+            isFree: filters.isFree,
             time: filters.time,
           }}
           onFilterChange={(newFilters) =>

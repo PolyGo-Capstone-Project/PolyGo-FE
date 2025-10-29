@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Button, Input, Label, Separator } from "@/components/ui";
+import { Button, Checkbox, Input, Label, Separator } from "@/components/ui";
 import { Role } from "@/constants";
 import { useAuthStore, useLoginMutation, useSearchParamsLoader } from "@/hooks";
 import { decodeToken, handleErrorApi, showSuccessToast } from "@/lib/utils";
@@ -148,10 +148,9 @@ export default function LoginForm() {
       {/* Forgot Password Link */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <input
+          <Checkbox
             id="remember"
-            type="checkbox"
-            className="size-4 rounded border-gray-300 text-primary focus:ring-primary"
+            className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
           />
           <Label htmlFor="remember" className="text-sm text-muted-foreground">
             {t("rememberMe")}

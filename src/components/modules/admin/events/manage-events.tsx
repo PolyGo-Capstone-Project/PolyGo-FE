@@ -1,18 +1,6 @@
 "use client";
 
 import {
-  IconFilter,
-  IconRefresh,
-  IconSearch,
-  IconX,
-} from "@tabler/icons-react";
-import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
-
-import { EventDetailDialog } from "@/components/modules/admin/events/event-detail-dialog";
-import { UpdateStatusDialog } from "@/components/modules/admin/events/update-status-dialog";
-import { Pagination } from "@/components/shared";
-import {
   Badge,
   Button,
   Card,
@@ -20,6 +8,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  DateTimePicker,
   Input,
   Label,
   Select,
@@ -41,16 +30,28 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui";
+} from "@/components";
+import { EventDetailDialog } from "@/components/modules/admin/events/event-detail-dialog";
+import { UpdateStatusDialog } from "@/components/modules/admin/events/update-status-dialog";
+import { Pagination } from "@/components/shared";
 import { EventStatus } from "@/constants";
 import {
-  useGetParticipatedEvents,
+  useGetPastEvents,
   useGetUpcomingEvents,
 } from "@/hooks/query/use-event";
+import { useLanguagesQuery } from "@/hooks/query/use-language";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { SearchEventsQueryType } from "@/models";
+import {
+  IconFilter,
+  IconRefresh,
+  IconSearch,
+  IconX,
+} from "@tabler/icons-react";
+import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useMemo, useState } from "react";
 
-type TabType = "upcoming" | "participated";
+type TabType = "upcoming" | "past";
 
 export default function ManageEvents() {
   const t = useTranslations("admin.events");
@@ -63,8 +64,14 @@ export default function ManageEvents() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [selectedFee, setSelectedFee] = useState<"Free" | "Paid" | "">("");
-  const [selectedTime, setSelectedTime] = useState("");
+  const [selectedTime, setSelectedTime] = useState<Date | undefined>(undefined);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Fetch languages
+  const { data: languagesData } = useLanguagesQuery({
+    params: { lang: locale },
+  });
+  const languages = languagesData?.payload?.data?.items ?? [];
 
   // Build query
   const query: SearchEventsQueryType = useMemo(() => {
@@ -81,10 +88,10 @@ export default function ManageEvents() {
       baseQuery.languageIds = selectedLanguage;
     }
     if (selectedFee) {
-      baseQuery.fee = selectedFee;
+      baseQuery.isFree = selectedFee === "Free" ? true : false;
     }
     if (selectedTime) {
-      baseQuery.time = selectedTime;
+      baseQuery.time = selectedTime.toISOString();
     }
 
     return baseQuery;
@@ -103,12 +110,11 @@ export default function ManageEvents() {
     enabled: activeTab === "upcoming",
   });
 
-  const participatedQuery = useGetParticipatedEvents(query, {
-    enabled: activeTab === "participated",
+  const pastQuery = useGetPastEvents(query, {
+    enabled: activeTab === "past",
   });
 
-  const activeQuery =
-    activeTab === "upcoming" ? upcomingQuery : participatedQuery;
+  const activeQuery = activeTab === "upcoming" ? upcomingQuery : pastQuery;
 
   const events = activeQuery.data?.payload?.data?.items ?? [];
   const totalPages = activeQuery.data?.payload?.data?.totalPages ?? 1;
@@ -123,7 +129,7 @@ export default function ManageEvents() {
     setSearchTerm("");
     setSelectedLanguage("");
     setSelectedFee("");
-    setSelectedTime("");
+    setSelectedTime(undefined);
     setPage(1);
   };
 
@@ -167,11 +173,11 @@ export default function ManageEvents() {
           {t("upcomingTab")}
         </Button>
         <Button
-          variant={activeTab === "participated" ? "default" : "ghost"}
-          onClick={() => setActiveTab("participated")}
+          variant={activeTab === "past" ? "default" : "ghost"}
+          onClick={() => setActiveTab("past")}
           className="rounded-b-none whitespace-nowrap"
         >
-          {t("participatedTab")}
+          {t("pastTab")}
         </Button>
       </div>
 
@@ -226,66 +232,76 @@ export default function ManageEvents() {
                   )}
                 </Button>
               </SheetTrigger>
-              <SheetContent>
+              <SheetContent className="p-4">
                 <SheetHeader>
                   <SheetTitle>{t("filters.title")}</SheetTitle>
                   <SheetDescription>
-                    Filter events by language, fee, and time.
+                    {t("filters.description")}
                   </SheetDescription>
                 </SheetHeader>
                 <div className="mt-6 space-y-4">
-                  {/* Language Filter */}
-                  <div className="space-y-2">
-                    <Label>{t("filters.language")}</Label>
-                    <Select
-                      value={selectedLanguage}
-                      onValueChange={setSelectedLanguage}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={t("filters.allLanguages")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value=" ">
-                          {t("filters.allLanguages")}
-                        </SelectItem>
-                        {/* Add language options here */}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Language Filter */}
+                    <div className="space-y-2">
+                      <Label>{t("filters.language")}</Label>
+                      <Select
+                        value={selectedLanguage}
+                        onValueChange={setSelectedLanguage}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            placeholder={t("filters.allLanguages")}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">
+                            {t("filters.allLanguages")}
+                          </SelectItem>
+                          {languages.map((language) => (
+                            <SelectItem key={language.id} value={language.id}>
+                              {language.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                  {/* Fee Filter */}
-                  <div className="space-y-2">
-                    <Label>{t("filters.fee")}</Label>
-                    <Select
-                      value={selectedFee}
-                      onValueChange={(value) =>
-                        setSelectedFee(value as "Free" | "Paid" | "")
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={t("filters.allFees")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value=" ">
-                          {t("filters.allFees")}
-                        </SelectItem>
-                        <SelectItem value="Free">
-                          {t("filters.free")}
-                        </SelectItem>
-                        <SelectItem value="Paid">
-                          {t("filters.paid")}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
+                    {/* Fee Filter */}
+                    <div className="space-y-2">
+                      <Label>{t("filters.fee")}</Label>
+                      <Select
+                        value={selectedFee || "all"}
+                        onValueChange={(value) =>
+                          setSelectedFee(
+                            value === "all" ? "" : (value as "Free" | "Paid")
+                          )
+                        }
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder={t("filters.allFees")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">
+                            {t("filters.allFees")}
+                          </SelectItem>
+                          <SelectItem value="Free">
+                            {t("filters.free")}
+                          </SelectItem>
+                          <SelectItem value="Paid">
+                            {t("filters.paid")}
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
 
                   {/* Time Filter */}
                   <div className="space-y-2">
                     <Label>{t("filters.time")}</Label>
-                    <Input
-                      type="datetime-local"
+                    <DateTimePicker
                       value={selectedTime}
-                      onChange={(e) => setSelectedTime(e.target.value)}
+                      onChange={setSelectedTime}
+                      placeholder={t("filters.selectDateTime")}
                     />
                   </div>
 

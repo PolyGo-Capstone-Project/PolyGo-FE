@@ -110,7 +110,7 @@ export const GetEventByIdQuerySchema = LangQuerySchema;
 
 export const SearchEventsQuerySchema = GetEventsQuerySchema.extend({
   name: z.string().min(1).max(100).optional(),
-  fee: z.enum(["Free", "Paid"]).optional(),
+  isFree: z.boolean().optional(),
   time: z.iso.datetime().optional(),
   languageIds: z.union([z.string(), z.array(z.string())]).optional(),
   interestIds: z.union([z.string(), z.array(z.string())]).optional(),

@@ -115,11 +115,11 @@ export default function RegisterForm() {
 
     try {
       const response = await registerMutation.mutateAsync(data);
+      setIsNewUser(true);
       await loginMutation.mutateAsync({
         mail: data.mail,
         password: data.password,
       });
-      setIsNewUser(true);
       showSuccessToast(response.payload.message, tSuccess);
       router.push(`/${locale}/setup-profile`);
     } catch (error) {

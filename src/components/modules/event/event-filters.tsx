@@ -26,13 +26,13 @@ type EventFiltersProps = {
   onFilterChange: (filters: {
     languageIds?: string[];
     interestIds?: string[];
-    fee?: "Free" | "Paid";
+    isFree?: boolean;
     time?: TimeFilterType;
   }) => void;
   currentFilters: {
     languageIds?: string[];
     interestIds?: string[];
-    fee?: "Free" | "Paid";
+    isFree?: boolean;
     time?: TimeFilterType;
   };
 };
@@ -57,20 +57,20 @@ export function EventFilters({
   const hasActiveFilters =
     currentFilters.languageIds?.length ||
     currentFilters.interestIds?.length ||
-    currentFilters.fee ||
+    currentFilters.isFree !== undefined ||
     currentFilters.time;
 
   const activeFilterCount =
     (currentFilters.languageIds?.length || 0) +
     (currentFilters.interestIds?.length || 0) +
-    (currentFilters.fee ? 1 : 0) +
+    (currentFilters.isFree !== undefined ? 1 : 0) +
     (currentFilters.time ? 1 : 0);
 
   const handleClear = () => {
     onFilterChange({
       languageIds: undefined,
       interestIds: undefined,
-      fee: undefined,
+      isFree: undefined,
       time: undefined,
     });
   };
@@ -134,11 +134,18 @@ export function EventFilters({
         <div className="flex items-center gap-2 w-full">
           <IconCoin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           <Select
-            value={currentFilters.fee || "all"}
+            value={
+              currentFilters.isFree === undefined
+                ? "all"
+                : currentFilters.isFree
+                  ? "free"
+                  : "paid"
+            }
             onValueChange={(value) =>
               onFilterChange({
                 ...currentFilters,
-                fee: value === "all" ? undefined : (value as "Free" | "Paid"),
+                isFree:
+                  value === "all" ? undefined : value === "free" ? true : false,
               })
             }
           >
@@ -147,8 +154,8 @@ export function EventFilters({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("allPrices")}</SelectItem>
-              <SelectItem value="Free">{t("freeOnly")}</SelectItem>
-              <SelectItem value="Paid">{t("paidOnly")}</SelectItem>
+              <SelectItem value="free">{t("freeOnly")}</SelectItem>
+              <SelectItem value="paid">{t("paidOnly")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -245,15 +252,15 @@ export function EventFilters({
             );
           })}
 
-          {currentFilters.fee && (
+          {currentFilters.isFree !== undefined && (
             <Badge
               variant="secondary"
               className="gap-1 pr-1 cursor-pointer hover:bg-secondary/80 transition"
               onClick={() =>
-                onFilterChange({ ...currentFilters, fee: undefined })
+                onFilterChange({ ...currentFilters, isFree: undefined })
               }
             >
-              {currentFilters.fee === "Free" ? t("freeOnly") : t("paidOnly")}
+              {currentFilters.isFree ? t("freeOnly") : t("paidOnly")}
               <IconX className="h-3 w-3" />
             </Badge>
           )}
