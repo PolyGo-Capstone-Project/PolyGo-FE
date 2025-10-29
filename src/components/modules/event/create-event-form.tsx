@@ -716,6 +716,9 @@ const translateEventError = (
     if (detail.type === "array" && detail.minimum) {
       return t(`${field}.min`, { length: detail.minimum });
     }
+    if (detail.type === "string" && detail.minimum) {
+      return t(`${field}.min`, { length: detail.minimum });
+    }
     if (detail.minimum && detail.minimum > 1) {
       return t(`${field}.min`, { length: detail.minimum });
     }
@@ -747,6 +750,11 @@ const translateEventError = (
 
   if (field === "interestIds" && issue.code === "too_small") {
     return t("interestIds.required");
+  }
+
+  // Return custom message from schema if available
+  if (issue.message && !issue.message.startsWith("Expected")) {
+    return issue.message;
   }
 
   return t("default");

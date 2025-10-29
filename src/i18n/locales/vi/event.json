@@ -132,10 +132,12 @@
         "default": "Vui lòng kiểm tra trường này.",
         "title": {
           "required": "Tiêu đề sự kiện là bắt buộc.",
+          "min": "Tiêu đề phải có ít nhất 3 ký tự.",
           "max": "Tiêu đề không được quá 500 ký tự."
         },
         "description": {
           "required": "Mô tả là bắt buộc.",
+          "min": "Mô tả phải có ít nhất 10 ký tự.",
           "max": "Mô tả không được quá 2000 ký tự."
         },
         "bannerUrl": {
