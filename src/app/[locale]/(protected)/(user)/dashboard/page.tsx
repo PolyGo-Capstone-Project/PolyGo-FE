@@ -1,19 +1,14 @@
+import DashboardContent from "@/app/[locale]/(protected)/(user)/dashboard/dashboard-content";
 import type { Metadata } from "next";
-
-import { ComingSoon } from "@/components";
+import { getLocale } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Dashboard - PolyGo",
-  description: "User dashboard with account information and settings",
+  description: "Dashboard features and interactions",
 };
 
-export default function DashboardPage() {
-  return (
-    <>
-      <ComingSoon
-        title="Dashboard Features"
-        description="We're building amazing dashboard features. Check back soon!"
-      />
-    </>
-  );
+export default async function Page() {
+  const locale = await getLocale();
+
+  return <DashboardContent locale={locale} />;
 }

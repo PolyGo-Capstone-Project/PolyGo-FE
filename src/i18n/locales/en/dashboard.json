@@ -1,0 +1,56 @@
+{
+  "dashboard": {
+    "welcome": "Welcome back, {name}!",
+    "dailyGoal": "What language will you conquer today?",
+    "xpPoints": "XP",
+    "streak": "{count} day streak",
+    "seeAll": "See All",
+    "profile": "Profile",
+    "chat": "Chat",
+
+    "stats": {
+      "title": "Your Statistics",
+      "xp": "Total XP",
+      "hours": "Total Study Hours",
+      "streak": "Current Streak",
+      "rating": "Community Rating",
+      "levelProgress": "Level Progress"
+    },
+
+    "quickActions": {
+      "title": "Quick Actions",
+      "findPartner": "Find a Practice Partner",
+      "findPartnerDesc": "Match with other learners instantly.",
+      "startChat": "Start a Chat",
+      "startChatDesc": "Message your friends and partners.",
+      "joinEvent": "Join an Event",
+      "joinEventDesc": "Discover meetups and workshops.",
+      "upgradePlus": "Upgrade Plus",
+      "upgradePlusDesc": "Unlock premium features.",
+      "myWallet": "My Wallet",
+      "myWalletDesc": "Manage your balance and transactions.",
+      "games": "Games",
+      "gamesDesc": "Play and learn languages through games."
+    },
+
+    "suggestedPartners": {
+      "title": "Suggested Partners"
+    },
+
+    "upcomingEvents": {
+      "title": "Upcoming Events",
+      "viewDashboard": "View All",
+      "join": "Join Now"
+    },
+
+    "recentChats": {
+      "title": "Recent Chats"
+    },
+
+    "upgradePlus": {
+      "badge": "Upgrade to Plus",
+      "title": "Unlock unlimited calls and translation",
+      "button": "Upgrade Now"
+    }
+  }
+}

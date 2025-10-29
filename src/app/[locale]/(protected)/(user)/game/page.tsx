@@ -1,19 +1,14 @@
+import GameContent from "@/app/[locale]/(protected)/(user)/game/game-content";
 import type { Metadata } from "next";
-
-import { ComingSoon } from "@/components";
+import { getLocale } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "Game - PolyGo",
   description: "Game features and interactions",
 };
 
-export default function GamePage() {
-  return (
-    <>
-      <ComingSoon
-        title="Game Features"
-        description="We're building amazing game features. Check back soon!"
-      />
-    </>
-  );
+export default async function Page() {
+  const locale = await getLocale();
+
+  return <GameContent locale={locale} />;
 }

@@ -177,6 +177,15 @@
         }
       }
     },
+    "edit": {
+      "title": "Chỉnh sửa sự kiện",
+      "description": "Cập nhật thông tin sự kiện của bạn",
+      "submit": "Cập nhật sự kiện",
+      "submitting": "Đang cập nhật...",
+      "success": "Cập nhật sự kiện thành công!",
+      "loadingEvent": "Đang tải sự kiện...",
+      "loadError": "Không thể tải sự kiện"
+    },
     "detail": {
       "title": "Chi tiết sự kiện",
       "back": "Quay lại danh sách",
@@ -207,6 +216,44 @@
       "errors": {
         "loadFailed": "Không thể tải thông tin sự kiện",
         "registerFailed": "Đăng ký thất bại"
+      }
+    },
+    "myEvent": {
+      "title": "Sự kiện của tôi",
+      "tabs": {
+        "created": "Sự kiện đã tạo",
+        "joined": "Sự kiện đã tham gia"
+      },
+      "created": {
+        "title": "Sự kiện đã tạo",
+        "upcoming": "Sắp diễn ra",
+        "past": "Đã qua",
+        "noUpcoming": "Bạn chưa tạo sự kiện sắp diễn ra nào",
+        "noPast": "Bạn không có sự kiện nào đã qua",
+        "createFirst": "Tạo sự kiện đầu tiên",
+        "edit": "Chỉnh sửa",
+        "cancel": "Hủy sự kiện",
+        "viewDetail": "Xem chi tiết",
+        "cancelDialog": {
+          "title": "Hủy sự kiện",
+          "description": "Bạn có chắc chắn muốn hủy sự kiện này? Hành động này không thể hoàn tác.",
+          "reason": "Lý do hủy",
+          "reasonPlaceholder": "Vui lòng cung cấp lý do hủy sự kiện...",
+          "confirmButton": "Hủy sự kiện",
+          "cancelButton": "Giữ sự kiện",
+          "cancelling": "Đang hủy...",
+          "success": "Hủy sự kiện thành công",
+          "error": "Không thể hủy sự kiện"
+        }
+      },
+      "joined": {
+        "title": "Sự kiện đã tham gia",
+        "upcoming": "Sắp diễn ra",
+        "history": "Lịch sử",
+        "noUpcoming": "Bạn chưa tham gia sự kiện sắp diễn ra nào",
+        "noHistory": "Bạn không có lịch sử sự kiện",
+        "exploreEvents": "Khám phá sự kiện",
+        "viewDetail": "Xem chi tiết"
       }
     },
     "Success": {

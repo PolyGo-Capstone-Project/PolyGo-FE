@@ -23,6 +23,7 @@ const messageNamespaces = [
   "chat",
   "pricing",
   "social",
+  "dashboard",
   "event",
 ];
 

@@ -177,6 +177,15 @@
         }
       }
     },
+    "edit": {
+      "title": "Edit Event",
+      "description": "Update your event information",
+      "submit": "Update Event",
+      "submitting": "Updating...",
+      "success": "Event updated successfully!",
+      "loadingEvent": "Loading event...",
+      "loadError": "Failed to load event"
+    },
     "detail": {
       "title": "Event Details",
       "back": "Back to Events",
@@ -216,7 +225,44 @@
         "registerFailed": "Failed to register for event"
       }
     },
-
+    "myEvent": {
+      "title": "My Events",
+      "tabs": {
+        "created": "Events I Created",
+        "joined": "Events I Joined"
+      },
+      "created": {
+        "title": "Events I Created",
+        "upcoming": "Upcoming Events",
+        "past": "Past Events",
+        "noUpcoming": "You haven't created any upcoming events yet",
+        "noPast": "You don't have any past events",
+        "createFirst": "Create your first event",
+        "edit": "Edit",
+        "cancel": "Cancel Event",
+        "viewDetail": "View Details",
+        "cancelDialog": {
+          "title": "Cancel Event",
+          "description": "Are you sure you want to cancel this event? This action cannot be undone.",
+          "reason": "Reason for cancellation",
+          "reasonPlaceholder": "Please provide a reason for cancelling this event...",
+          "confirmButton": "Cancel Event",
+          "cancelButton": "Keep Event",
+          "cancelling": "Cancelling...",
+          "success": "Event cancelled successfully",
+          "error": "Failed to cancel event"
+        }
+      },
+      "joined": {
+        "title": "Events I Joined",
+        "upcoming": "Upcoming Events",
+        "history": "History",
+        "noUpcoming": "You haven't joined any upcoming events yet",
+        "noHistory": "You don't have any event history",
+        "exploreEvents": "Explore Events",
+        "viewDetail": "View Details"
+      }
+    },
     "Success": {
       "title": "Success"
     },
