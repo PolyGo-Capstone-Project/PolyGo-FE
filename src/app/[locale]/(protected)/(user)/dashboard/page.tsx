@@ -6,13 +6,29 @@ import { UserMatchingItemType } from "@/models";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
 
-import { QuickActionsGrid } from "@/components/modules/dashboard/quick-action-grid";
-import { RecentChats } from "@/components/modules/dashboard/recent-chat";
+import {
+  QuickActionItemType,
+  QuickActionsGrid,
+} from "@/components/modules/dashboard/quick-action-grid";
+import {
+  RecentChatItemType,
+  RecentChats,
+} from "@/components/modules/dashboard/recent-chat";
 import { StatsOverviewCard } from "@/components/modules/dashboard/stats-overview";
 import { SuggestedPartnersGrid } from "@/components/modules/dashboard/suggested-partner-grid";
 import { UpcomingEventsList } from "@/components/modules/dashboard/upcoming-events-list";
 import { UpgradePlusCard } from "@/components/modules/dashboard/upgrade-plus-card";
 import { WelcomeBanner } from "@/components/modules/dashboard/welcome-banner";
+
+/* ✅ Thêm icon từ shadcn/ui (lucide-react) */
+import {
+  CreditCard,
+  Gamepad2,
+  MessageSquare,
+  Search,
+  Star,
+  Ticket,
+} from "lucide-react";
 
 /* ======================================================= */
 /* ================= MOCK DATA + UTILITIES ================ */
@@ -22,13 +38,44 @@ const MOCK_TOTAL_HOURS = 15;
 const MOCK_RATING = 4.8;
 const MOCK_LEVEL_PROGRESS = { current: 1250, total: 2000, level: 5 };
 
-const mockQuickActions = [
-  { id: 1, icon: "🔎", title: "findPartner", color: "bg-blue-500" },
-  { id: 2, icon: "💬", title: "startChat", color: "bg-emerald-500" },
-  { id: 3, icon: "🎟️", title: "joinEvent", color: "bg-violet-500" },
-  { id: 4, icon: "⭐", title: "upgradePlus", color: "bg-amber-500" },
-  { id: 5, icon: "💳", title: "myWallet", color: "bg-pink-500" },
-  { id: 6, icon: "🎮", title: "games", color: "bg-red-500" },
+/* ✅ Dùng icon lucide thay cho emoji, giữ nguyên color/title/id */
+const mockQuickActions: QuickActionItemType[] = [
+  {
+    id: 1,
+    icon: <Search className="w-6 h-6 text-white" />,
+    title: "findPartner",
+    color: "bg-blue-500",
+  },
+  {
+    id: 2,
+    icon: <MessageSquare className="w-6 h-6 text-white" />,
+    title: "startChat",
+    color: "bg-emerald-500",
+  },
+  {
+    id: 3,
+    icon: <Ticket className="w-6 h-6 text-white" />,
+    title: "joinEvent",
+    color: "bg-violet-500",
+  },
+  {
+    id: 4,
+    icon: <Star className="w-6 h-6 text-white" />,
+    title: "upgradePlus",
+    color: "bg-amber-500",
+  },
+  {
+    id: 5,
+    icon: <CreditCard className="w-6 h-6 text-white" />,
+    title: "myWallet",
+    color: "bg-pink-500",
+  },
+  {
+    id: 6,
+    icon: <Gamepad2 className="w-6 h-6 text-white" />,
+    title: "games",
+    color: "bg-red-500",
+  },
 ];
 
 const mockUpcomingEvents = [
@@ -58,9 +105,29 @@ const mockUpcomingEvents = [
   },
 ];
 
-const mockRecentChats = [
-  { id: 1, name: "An craft", last: "Ready for our practice?", ago: "3m" },
-  { id: 2, name: "Davis", last: "Study plan for Spanish practice…", ago: "5m" },
+const mockRecentChats: RecentChatItemType[] = [
+  {
+    id: 1,
+    name: "An craft",
+    last: "Ready for our practice?",
+    ago: "3m",
+    avatarUrl:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc9APxkj0xClmrU3PpMZglHQkx446nQPG6lA&s", // Ví dụ có avatar
+  },
+  {
+    id: 2,
+    name: "Davis",
+    last: "Study plan for Spanish practice…",
+    ago: "5m",
+    avatarUrl: null, // Ví dụ không có avatar
+  },
+  {
+    id: 3,
+    name: "Tâm",
+    last: "Bài học ngữ pháp tiếng Việt mới",
+    ago: "1h",
+    avatarUrl: "https://i.pravatar.cc/150?img=53",
+  },
 ];
 
 const isValidAvatarUrl = (url?: string | null) => !!url;
@@ -179,7 +246,11 @@ export default function DashboardPage() {
               t={t}
             />
 
-            <RecentChats chats={mockRecentChats} />
+            <RecentChats
+              chats={mockRecentChats}
+              isValidAvatarUrl={isValidAvatarUrl} // Hàm kiểm tra URL
+              getInitials={getInitials} // Hàm lấy chữ viết tắt
+            />
 
             {/* Upgrade Plus Card */}
             <UpgradePlusCard t={t} />

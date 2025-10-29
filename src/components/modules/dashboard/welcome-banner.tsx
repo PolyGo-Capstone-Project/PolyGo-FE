@@ -1,6 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+// ✨ FIX: Import các icon Lucide mới
+import { BookOpen, Flame, Star } from "lucide-react";
 
 export function WelcomeBanner({
   userName,
@@ -22,13 +24,14 @@ export function WelcomeBanner({
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold">
-              {t("welcome", { name: userName })} 👋
+              {t("welcome", { name: userName })}{" "}
+              {/* <Star className="inline w-6 h-6 ml-1 align-sub" />  */}
             </h1>
             <p className="text-purple-100 text-sm mt-1">{t("dailyGoal")}</p>
           </div>
           <div className="text-right">
             <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-semibold">
-              <span className="text-lg">⭐</span>
+              <Star className="w-5 h-5 text-yellow-300" />
               <span>{xpPoints}</span>
               <span className="text-purple-100">{t("xpPoints")}</span>
             </div>
@@ -37,12 +40,12 @@ export function WelcomeBanner({
 
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-2">
-            <span className="text-xl">🔥</span>
+            <Flame className="w-5 h-5 text-red-400" />
             <span>{t("streak", { count: streakDays })}</span>
           </div>
           <div className="w-px h-5 bg-white/30" />
           <div className="flex items-center gap-2">
-            <span className="text-xl">📚</span>
+            <BookOpen className="w-5 h-5 text-sky-300" />
             <span>{totalHours}h learning</span>
           </div>
         </div>

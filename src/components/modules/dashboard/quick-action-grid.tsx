@@ -4,12 +4,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
+// Định nghĩa Interface cho Action Item (để dùng lại nếu cần)
+export interface QuickActionItemType {
+  id: number;
+  // ✨ FIX: Thay đổi kiểu của 'icon' từ 'string' sang 'React.ReactNode'
+  icon: React.ReactNode;
+  title: string;
+  color: string;
+}
+
 export function QuickActionsGrid({
   actions,
   t,
   locale,
 }: {
-  actions: { id: number; icon: string; title: string; color: string }[];
+  actions: QuickActionItemType[];
   t: ReturnType<typeof useTranslations>;
   locale: string;
 }) {

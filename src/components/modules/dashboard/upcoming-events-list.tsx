@@ -3,6 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
@@ -48,7 +49,9 @@ export function UpcomingEventsList({
             key={ev.id}
             className="flex gap-4 p-4 rounded-lg border border-slate-200 hover:border-purple-200 hover:bg-purple-50/30 transition-all"
           >
-            <div className="text-3xl flex-shrink-0">📅</div>
+            <div className="w-12 h-12 rounded-xl shadow-lg flex items-center justify-center p-2 bg-gradient-to-br from-purple-400 to-pink-500">
+              <Calendar className="w-8 h-8 text-white" />
+            </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <div className="font-semibold text-sm text-slate-900 truncate">
@@ -64,8 +67,19 @@ export function UpcomingEventsList({
                 {ev.description}
               </div>
               <div className="flex flex-wrap gap-3 text-xs text-slate-500 mb-3">
-                <span>📅 {ev.date}</span>
-                <span>🕒 {ev.time}</span>
+                {/* Icon Lịch */}
+                <span className="flex items-center gap-1">
+                  {/* Sử dụng Calendar icon */}
+                  <Calendar className="w-3 h-3 text-slate-400" />
+                  <span>{ev.date}</span>
+                </span>
+
+                {/* Icon Đồng hồ */}
+                <span className="flex items-center gap-1">
+                  {/* Sử dụng Clock icon */}
+                  <Clock className="w-3 h-3 text-slate-400" />
+                  <span>{ev.time}</span>
+                </span>
               </div>
               <Button
                 size="sm"
