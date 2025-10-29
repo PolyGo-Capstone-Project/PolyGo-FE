@@ -24,6 +24,7 @@ const messageNamespaces = [
   "pricing",
   "social",
   "dashboard",
+  "event",
 ];
 
 async function loadMessages(locale: string): Promise<AbstractIntlMessages> {

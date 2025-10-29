@@ -43,7 +43,6 @@ export default function AppProvider({
           setRole(decodeToken(sessionToken).Role);
           // setSocket(generateSocketInstance(accessToken));
         } else {
-          console.warn("Token expired, clearing auth state");
           removeTokensFromLocalStorage();
           reset();
         }

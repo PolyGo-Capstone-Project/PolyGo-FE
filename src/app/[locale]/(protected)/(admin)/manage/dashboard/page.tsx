@@ -1,14 +1,11 @@
-"use client";
+import DashboardPage from "@/app/[locale]/(protected)/(admin)/manage/dashboard/dashboard-content";
+import type { Metadata } from "next";
 
-import { useAuthStore } from "@/hooks";
+export const metadata: Metadata = {
+  title: "Manage Dashboard - PolyGo",
+  description: "Manage dashboard on the PolyGo platform",
+};
 
 export default function Page() {
-  const role = useAuthStore((state) => state.role);
-  return (
-    <div>
-      <h1>Protected Manage Page</h1>
-      <h1>Admin Page</h1>
-      <p>Your role: {role}</p>
-    </div>
-  );
+  return <DashboardPage />;
 }

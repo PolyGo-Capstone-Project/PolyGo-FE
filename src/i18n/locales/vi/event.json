@@ -1,0 +1,267 @@
+{
+  "event": {
+    "title": "Sự kiện",
+    "upcomingEvents": "Sự kiện sắp diễn ra",
+    "recommendedEvents": "Đề xuất cho bạn",
+    "createEvent": "Tạo sự kiện",
+    "search": "Tìm kiếm sự kiện...",
+    "searchUpcoming": "Tìm kiếm sự kiện sắp diễn ra...",
+    "searching": "Đang tìm kiếm",
+    "noResults": "Không tìm thấy sự kiện",
+    "noRecommended": "Không có đề xuất nào",
+    "loading": "Đang tải sự kiện...",
+    "loadMore": "Tải thêm",
+    "allLoaded": "Đã tải tất cả sự kiện",
+    "loadError": "Không thể tải sự kiện. Vui lòng thử lại.",
+    "recommendedError": "Không thể tải đề xuất",
+    "retry": "Thử lại",
+    "discoverAndJoin": "Khám phá và tham gia các sự kiện tuyệt vời",
+    "viewDetails": "Xem chi tiết",
+    "register": "Đăng ký",
+    "registered": "Đã đăng ký",
+    "participants": "Người tham gia",
+    "capacity": "Đã đầy",
+    "spotsLeft": "chỗ còn lại",
+    "almostFull": "Sắp đầy",
+    "hostedBy": "Tổ chức bởi",
+    "date": "Ngày",
+    "duration": "Thời lượng",
+    "language": "Ngôn ngữ",
+    "free": "Miễn phí",
+    "paid": "Có phí",
+    "filters": {
+      "title": "Bộ lọc",
+      "language": "Ngôn ngữ",
+      "category": "Danh mục",
+      "price": "Giá",
+      "time": "Thời gian",
+      "allTimes": "Tất cả thời gian",
+      "today": "Hôm nay",
+      "thisWeek": "Tuần này",
+      "thisMonth": "Tháng này",
+      "allLanguages": "Tất cả ngôn ngữ",
+      "allCategories": "Tất cả danh mục",
+      "allPrices": "Tất cả giá",
+      "freeOnly": "Miễn phí",
+      "paidOnly": "Có phí",
+      "clearFilters": "Xóa bộ lọc",
+      "apply": "Áp dụng"
+    },
+    "create": {
+      "title": "Tạo sự kiện mới",
+      "description": "Tạo sự kiện và mời mọi người tham gia",
+      "basicInfo": "Thông tin cơ bản",
+      "details": "Chi tiết sự kiện",
+      "settings": "Cài đặt",
+      "submit": "Tạo sự kiện",
+      "submitting": "Đang tạo...",
+      "success": "Tạo sự kiện thành công!",
+      "fields": {
+        "title": {
+          "label": "Tiêu đề sự kiện",
+          "placeholder": "Nhập tiêu đề sự kiện"
+        },
+        "description": {
+          "label": "Mô tả",
+          "placeholder": "Mô tả sự kiện của bạn..."
+        },
+        "banner": {
+          "label": "Ảnh bìa",
+          "upload": "Tải ảnh lên",
+          "uploading": "Đang tải...",
+          "changeImage": "Thay đổi ảnh"
+        },
+        "language": {
+          "label": "Ngôn ngữ",
+          "placeholder": "Chọn ngôn ngữ"
+        },
+        "categories": {
+          "label": "Danh mục",
+          "placeholder": "Chọn danh mục"
+        },
+        "startDate": {
+          "label": "Ngày & giờ bắt đầu",
+          "placeholder": "Chọn ngày và giờ"
+        },
+        "endDate": {
+          "label": "Ngày & giờ kết thúc (Tùy chọn)",
+          "placeholder": "Chọn ngày và giờ"
+        },
+        "duration": {
+          "label": "Thời lượng dự kiến (phút)",
+          "placeholder": "60"
+        },
+        "registerDeadline": {
+          "label": "Hạn đăng ký",
+          "placeholder": "Chọn hạn đăng ký"
+        },
+        "capacity": {
+          "label": "Sức chứa",
+          "placeholder": "Số người tối đa"
+        },
+        "fee": {
+          "label": "Phí tham gia",
+          "placeholder": "0"
+        },
+        "isPublic": {
+          "label": "Sự kiện công khai",
+          "description": "Mọi người có thể xem và tham gia"
+        },
+        "isPrivate": {
+          "label": "Sự kiện riêng tư",
+          "description": "Cần mật khẩu để tham gia"
+        },
+        "password": {
+          "label": "Mật khẩu sự kiện",
+          "placeholder": "Nhập mật khẩu (tối thiểu 6 ký tự)"
+        },
+        "allowLateRegister": {
+          "label": "Cho phép đăng ký muộn",
+          "description": "Cho phép đăng ký sau hạn chót"
+        },
+        "requiredPlanType": {
+          "label": "Gói yêu cầu",
+          "description": "Gói đăng ký tối thiểu để tham gia",
+          "free": "Miễn phí",
+          "plus": "Plus",
+          "premium": "Premium"
+        }
+      },
+      "errors": {
+        "default": "Vui lòng kiểm tra trường này.",
+        "title": {
+          "required": "Tiêu đề sự kiện là bắt buộc.",
+          "max": "Tiêu đề không được quá 500 ký tự."
+        },
+        "description": {
+          "required": "Mô tả là bắt buộc.",
+          "max": "Mô tả không được quá 2000 ký tự."
+        },
+        "bannerUrl": {
+          "required": "Ảnh bìa là bắt buộc."
+        },
+        "languageId": {
+          "required": "Ngôn ngữ là bắt buộc."
+        },
+        "interestIds": {
+          "required": "Cần chọn ít nhất một danh mục.",
+          "min": "Cần chọn ít nhất một danh mục."
+        },
+        "startAt": {
+          "required": "Ngày bắt đầu là bắt buộc.",
+          "invalid": "Định dạng ngày không hợp lệ."
+        },
+        "endAt": {
+          "invalid": "Ngày kết thúc phải sau ngày bắt đầu."
+        },
+        "registerDeadline": {
+          "required": "Hạn đăng ký là bắt buộc.",
+          "invalid": "Hạn đăng ký phải trước ngày bắt đầu."
+        },
+        "capacity": {
+          "required": "Sức chứa là bắt buộc.",
+          "min": "Sức chứa phải ít nhất là 1."
+        },
+        "fee": {
+          "required": "Phí tham gia là bắt buộc.",
+          "min": "Phí không thể là số âm."
+        },
+        "expectedDurationInMinutes": {
+          "required": "Thời lượng là bắt buộc.",
+          "min": "Thời lượng phải ít nhất 1 phút."
+        },
+        "password": {
+          "required": "Mật khẩu là bắt buộc cho sự kiện riêng tư.",
+          "min": "Mật khẩu phải có ít nhất 6 ký tự.",
+          "max": "Mật khẩu không được quá 100 ký tự."
+        }
+      }
+    },
+    "edit": {
+      "title": "Chỉnh sửa sự kiện",
+      "description": "Cập nhật thông tin sự kiện của bạn",
+      "submit": "Cập nhật sự kiện",
+      "submitting": "Đang cập nhật...",
+      "success": "Cập nhật sự kiện thành công!",
+      "loadingEvent": "Đang tải sự kiện...",
+      "loadError": "Không thể tải sự kiện"
+    },
+    "detail": {
+      "title": "Chi tiết sự kiện",
+      "back": "Quay lại danh sách",
+      "register": "Đăng ký tham gia",
+      "registered": "Đã đăng ký",
+      "registering": "Đang đăng ký...",
+      "success": "Đăng ký thành công!",
+      "aboutEvent": "Về sự kiện này",
+      "host": "Người tổ chức",
+      "eventDetails": "Thông tin chi tiết",
+      "language": "Ngôn ngữ",
+      "categories": "Danh mục",
+      "startTime": "Thời gian bắt đầu",
+      "endTime": "Thời gian kết thúc",
+      "duration": "Thời lượng",
+      "minutes": "phút",
+      "registerBy": "Đăng ký trước",
+      "capacity": "Sức chứa",
+      "available": "Còn trống",
+      "fee": "Phí tham gia",
+      "planRequired": "Gói yêu cầu",
+      "lateRegistrationAllowed": "Cho phép đăng ký muộn",
+      "password": {
+        "label": "Mật khẩu sự kiện",
+        "placeholder": "Nhập mật khẩu sự kiện",
+        "required": "Cần mật khẩu cho sự kiện riêng tư này"
+      },
+      "errors": {
+        "loadFailed": "Không thể tải thông tin sự kiện",
+        "registerFailed": "Đăng ký thất bại"
+      }
+    },
+    "myEvent": {
+      "title": "Sự kiện của tôi",
+      "tabs": {
+        "created": "Sự kiện đã tạo",
+        "joined": "Sự kiện đã tham gia"
+      },
+      "created": {
+        "title": "Sự kiện đã tạo",
+        "upcoming": "Sắp diễn ra",
+        "past": "Đã qua",
+        "noUpcoming": "Bạn chưa tạo sự kiện sắp diễn ra nào",
+        "noPast": "Bạn không có sự kiện nào đã qua",
+        "createFirst": "Tạo sự kiện đầu tiên",
+        "edit": "Chỉnh sửa",
+        "cancel": "Hủy sự kiện",
+        "viewDetail": "Xem chi tiết",
+        "cancelDialog": {
+          "title": "Hủy sự kiện",
+          "description": "Bạn có chắc chắn muốn hủy sự kiện này? Hành động này không thể hoàn tác.",
+          "reason": "Lý do hủy",
+          "reasonPlaceholder": "Vui lòng cung cấp lý do hủy sự kiện...",
+          "confirmButton": "Hủy sự kiện",
+          "cancelButton": "Giữ sự kiện",
+          "cancelling": "Đang hủy...",
+          "success": "Hủy sự kiện thành công",
+          "error": "Không thể hủy sự kiện"
+        }
+      },
+      "joined": {
+        "title": "Sự kiện đã tham gia",
+        "upcoming": "Sắp diễn ra",
+        "history": "Lịch sử",
+        "noUpcoming": "Bạn chưa tham gia sự kiện sắp diễn ra nào",
+        "noHistory": "Bạn không có lịch sử sự kiện",
+        "exploreEvents": "Khám phá sự kiện",
+        "viewDetail": "Xem chi tiết"
+      }
+    },
+    "Success": {
+      "title": "Thành công"
+    },
+    "Error": {
+      "title": "Lỗi",
+      "unknown": "Đã xảy ra lỗi không xác định"
+    }
+  }
+}
