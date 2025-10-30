@@ -25,3 +25,30 @@ export const UserEventStatus = {
 
 export type UserEventStatusType =
   (typeof UserEventStatus)[keyof typeof UserEventStatus];
+
+export interface Participant {
+  id: string;
+  name: string;
+  role: "Host" | "Participant";
+  stream?: MediaStream;
+  isMuted?: boolean;
+  isCameraOff?: boolean;
+  isHandRaised?: boolean;
+  raisedHandAt?: Date;
+}
+
+export interface ChatMessage {
+  id: string;
+  userId: string;
+  userName: string;
+  message: string;
+  sentAt: Date;
+}
+
+export interface EventRoomConfig {
+  eventId: string;
+  roomId: string;
+  hubUrl: string;
+}
+
+export type ViewMode = "grid" | "speaker";

@@ -1,0 +1,105 @@
+{
+  "event-room": {
+    "waitingRoom": {
+      "title": "Tham Gia Phòng Sự Kiện",
+      "setupDevice": "Thiết Lập Thiết Bị",
+      "cameraLabel": "Camera",
+      "microphoneLabel": "Microphone",
+      "cameraOn": "Bật Camera",
+      "cameraOff": "Tắt Camera",
+      "micOn": "Bật Micro",
+      "micOff": "Tắt Micro",
+      "joinButton": "Tham Gia",
+      "joining": "Đang tham gia...",
+      "deviceError": "Không thể truy cập camera hoặc microphone. Vui lòng kiểm tra quyền truy cập.",
+      "eventInfo": "Thông Tin Sự Kiện",
+      "startTime": "Thời Gian Bắt Đầu",
+      "host": "Người Tổ Chức",
+      "participants": "Người Tham Gia"
+    },
+    "room": {
+      "title": "Phòng Sự Kiện",
+      "you": "Bạn",
+      "connecting": "Đang kết nối...",
+      "connected": "Đã kết nối",
+      "disconnected": "Mất kết nối",
+      "startingCall": "Đang bắt đầu cuộc gọi...",
+      "controls": {
+        "camera": "Camera",
+        "microphone": "Micro",
+        "raiseHand": "Giơ Tay",
+        "chat": "Trò Chuyện",
+        "shareScreen": "Chia Sẻ Màn Hình",
+        "settings": "Cài Đặt",
+        "leave": "Rời Khỏi",
+        "participants": "Người Tham Gia",
+        "more": "Thêm",
+        "viewMode": "Chế Độ Xem",
+        "gridView": "Xem Lưới",
+        "speakerView": "Xem Người Nói"
+      },
+      "host": {
+        "startEvent": "Bắt Đầu Sự Kiện",
+        "endEvent": "Kết Thúc Sự Kiện",
+        "muteAll": "Tắt Tiếng Tất Cả",
+        "cameraAll": "Tắt Camera Tất Cả",
+        "recording": "Đang Ghi Hình"
+      },
+      "chat": {
+        "title": "Trò Chuyện",
+        "placeholder": "Nhập tin nhắn...",
+        "send": "Gửi",
+        "noMessages": "Chưa có tin nhắn",
+        "youLeft": "Bạn đã rời khỏi cuộc trò chuyện"
+      },
+      "participants": {
+        "title": "Người Tham Gia",
+        "count": "{{count}} người tham gia",
+        "you": "(Bạn)",
+        "host": "(Chủ Trì)",
+        "muted": "Đã Tắt Tiếng",
+        "cameraOff": "Đã Tắt Camera",
+        "handRaised": "Đang Giơ Tay",
+        "actions": {
+          "mute": "Tắt Tiếng",
+          "unmute": "Bật Tiếng",
+          "turnOffCamera": "Tắt Camera",
+          "kick": "Xóa Khỏi Cuộc Gọi"
+        }
+      },
+      "raiseHand": {
+        "title": "Giơ Tay",
+        "queue": "Danh Sách Giơ Tay",
+        "approve": "Chấp Nhận",
+        "dismiss": "Từ Chối",
+        "noHands": "Chưa có ai giơ tay"
+      },
+      "notifications": {
+        "userJoined": "{{name}} đã tham gia cuộc gọi",
+        "userLeft": "{{name}} đã rời khỏi cuộc gọi",
+        "handRaised": "{{name}} đã giơ tay",
+        "youWereKicked": "Bạn đã bị xóa khỏi cuộc gọi bởi chủ trì",
+        "eventEnded": "Sự kiện đã kết thúc",
+        "screenShareStarted": "{{name}} đã bắt đầu chia sẻ màn hình",
+        "screenShareStopped": "{{name}} đã dừng chia sẻ màn hình",
+        "recordingStarted": "Đã bắt đầu ghi hình",
+        "recordingStopped": "Đã dừng ghi hình",
+        "connectionError": "Lỗi kết nối. Đang thử kết nối lại...",
+        "reconnected": "Đã kết nối lại thành công",
+        "participantMuted": "{{name}} đã bị tắt tiếng bởi chủ trì",
+        "youWereMuted": "Bạn đã bị tắt tiếng bởi chủ trì"
+      },
+      "errors": {
+        "connectionFailed": "Không thể kết nối đến phòng sự kiện",
+        "mediaAccessDenied": "Quyền truy cập camera hoặc microphone bị từ chối",
+        "unknownError": "Đã xảy ra lỗi. Vui lòng thử lại."
+      },
+      "leave": {
+        "confirmTitle": "Rời Khỏi Sự Kiện?",
+        "confirmMessage": "Bạn có chắc chắn muốn rời khỏi sự kiện này?",
+        "cancel": "Hủy",
+        "confirm": "Rời Khỏi"
+      }
+    }
+  }
+}

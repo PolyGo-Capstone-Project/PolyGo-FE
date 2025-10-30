@@ -1,0 +1,105 @@
+{
+  "event-room": {
+    "waitingRoom": {
+      "title": "Join Event Room",
+      "setupDevice": "Setup Your Devices",
+      "cameraLabel": "Camera",
+      "microphoneLabel": "Microphone",
+      "cameraOn": "Camera On",
+      "cameraOff": "Camera Off",
+      "micOn": "Microphone On",
+      "micOff": "Microphone Off",
+      "joinButton": "Join Event",
+      "joining": "Joining...",
+      "deviceError": "Failed to access camera or microphone. Please check your permissions.",
+      "eventInfo": "Event Information",
+      "startTime": "Start Time",
+      "host": "Host",
+      "participants": "Participants"
+    },
+    "room": {
+      "title": "Event Room",
+      "you": "You",
+      "connecting": "Connecting...",
+      "connected": "Connected",
+      "disconnected": "Disconnected",
+      "startingCall": "Starting call...",
+      "controls": {
+        "camera": "Camera",
+        "microphone": "Microphone",
+        "raiseHand": "Raise Hand",
+        "chat": "Chat",
+        "shareScreen": "Share Screen",
+        "settings": "Settings",
+        "leave": "Leave",
+        "participants": "Participants",
+        "more": "More",
+        "viewMode": "View Mode",
+        "gridView": "Grid View",
+        "speakerView": "Speaker View"
+      },
+      "host": {
+        "startEvent": "Start Event",
+        "endEvent": "End Event",
+        "muteAll": "Mute All",
+        "cameraAll": "Turn Off All Cameras",
+        "recording": "Recording"
+      },
+      "chat": {
+        "title": "Chat",
+        "placeholder": "Type a message...",
+        "send": "Send",
+        "noMessages": "No messages yet",
+        "youLeft": "You left the chat"
+      },
+      "participants": {
+        "title": "Participants",
+        "count": "{{count}} participants",
+        "you": "(You)",
+        "host": "(Host)",
+        "muted": "Muted",
+        "cameraOff": "Camera Off",
+        "handRaised": "Hand Raised",
+        "actions": {
+          "mute": "Mute",
+          "unmute": "Unmute",
+          "turnOffCamera": "Turn Off Camera",
+          "kick": "Remove from call"
+        }
+      },
+      "raiseHand": {
+        "title": "Raised Hands",
+        "queue": "Hand Raise Queue",
+        "approve": "Approve",
+        "dismiss": "Dismiss",
+        "noHands": "No hands raised"
+      },
+      "notifications": {
+        "userJoined": "{{name}} joined the call",
+        "userLeft": "{{name}} left the call",
+        "handRaised": "{{name}} raised their hand",
+        "youWereKicked": "You were removed from the call by the host",
+        "eventEnded": "The event has ended",
+        "screenShareStarted": "{{name}} started sharing their screen",
+        "screenShareStopped": "{{name}} stopped sharing their screen",
+        "recordingStarted": "Recording started",
+        "recordingStopped": "Recording stopped",
+        "connectionError": "Connection error. Trying to reconnect...",
+        "reconnected": "Reconnected successfully",
+        "participantMuted": "{{name}} was muted by the host",
+        "youWereMuted": "You were muted by the host"
+      },
+      "errors": {
+        "connectionFailed": "Failed to connect to the event room",
+        "mediaAccessDenied": "Camera or microphone access was denied",
+        "unknownError": "An error occurred. Please try again."
+      },
+      "leave": {
+        "confirmTitle": "Leave Event?",
+        "confirmMessage": "Are you sure you want to leave this event?",
+        "cancel": "Cancel",
+        "confirm": "Leave"
+      }
+    }
+  }
+}
