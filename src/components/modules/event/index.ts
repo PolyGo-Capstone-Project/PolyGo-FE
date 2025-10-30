@@ -5,3 +5,5 @@ export * from "./event-card-compact";
 export * from "./event-filters";
 export * from "./my-event";
 export * from "./registration-success-dialog";
+export * from "./room";
+export * from "./waiting-room";

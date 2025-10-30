@@ -211,3 +211,90 @@ export {
   showSuccessToast,
   showWarningToast,
 } from "./toast-helper";
+
+export interface MediaDeviceInfo {
+  deviceId: string;
+  label: string;
+  kind: MediaDeviceKind;
+}
+
+export async function getMediaDevices(): Promise<{
+  cameras: MediaDeviceInfo[];
+  microphones: MediaDeviceInfo[];
+}> {
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+
+    const cameras = devices
+      .filter((device) => device.kind === "videoinput")
+      .map((device) => ({
+        deviceId: device.deviceId,
+        label: device.label || `Camera ${device.deviceId.slice(0, 5)}`,
+        kind: device.kind,
+      }));
+
+    const microphones = devices
+      .filter((device) => device.kind === "audioinput")
+      .map((device) => ({
+        deviceId: device.deviceId,
+        label: device.label || `Microphone ${device.deviceId.slice(0, 5)}`,
+        kind: device.kind,
+      }));
+
+    return { cameras, microphones };
+  } catch (error) {
+    console.error("Error enumerating devices:", error);
+    return { cameras: [], microphones: [] };
+  }
+}
+
+export async function getUserMediaStream(
+  videoDeviceId?: string,
+  audioDeviceId?: string
+): Promise<MediaStream> {
+  try {
+    const constraints: MediaStreamConstraints = {
+      video: videoDeviceId
+        ? { deviceId: { exact: videoDeviceId } }
+        : {
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            facingMode: "user",
+          },
+      audio: audioDeviceId
+        ? { deviceId: { exact: audioDeviceId } }
+        : {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          },
+    };
+
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    return stream;
+  } catch (error) {
+    console.error("Error getting user media:", error);
+    throw new Error("Failed to access camera or microphone");
+  }
+}
+
+export function stopMediaStream(stream: MediaStream | null) {
+  if (stream) {
+    stream.getTracks().forEach((track) => {
+      track.stop();
+    });
+  }
+}
+
+export async function getScreenShareStream(): Promise<MediaStream> {
+  try {
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      video: { cursor: "always" } as any,
+      audio: false,
+    });
+    return stream;
+  } catch (error) {
+    console.error("Error getting screen share:", error);
+    throw new Error("Failed to share screen");
+  }
+}
