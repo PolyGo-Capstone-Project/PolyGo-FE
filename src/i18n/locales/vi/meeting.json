@@ -1,0 +1,84 @@
+{
+  "meeting": {
+    "waiting": {
+      "title": "Sẵn sàng tham gia?",
+      "subtitle": "Kiểm tra âm thanh và video trước khi tham gia cuộc họp",
+      "cameraPreview": "Xem trước Camera",
+      "audioSettings": "Cài đặt Âm thanh & Video",
+      "joinButton": "Tham gia Cuộc họp",
+      "setupDevices": "Thiết lập thiết bị",
+      "testMic": "Kiểm tra Microphone",
+      "testCamera": "Kiểm tra Camera",
+      "micEnabled": "Microphone đang bật",
+      "micDisabled": "Microphone đang tắt",
+      "cameraEnabled": "Camera đang bật",
+      "cameraDisabled": "Camera đang tắt"
+    },
+    "meeting": {
+      "title": "Phòng Họp",
+      "waitingForHost": "Đang chờ người tổ chức bắt đầu sự kiện...",
+      "eventNotStarted": "Sự kiện chưa bắt đầu"
+    },
+    "controls": {
+      "muteMic": "Tắt microphone",
+      "unmuteMic": "Bật microphone",
+      "turnCameraOff": "Tắt camera",
+      "turnCameraOn": "Bật camera",
+      "raiseHand": "Giơ tay",
+      "lowerHand": "Hạ tay",
+      "chat": "Trò chuyện",
+      "participants": "Người tham gia",
+      "settings": "Cài đặt",
+      "leave": "Rời phòng",
+      "startEvent": "Bắt đầu Sự kiện",
+      "endEvent": "Kết thúc Sự kiện"
+    },
+    "participants": {
+      "title": "Người tham gia",
+      "description": "Danh sách người tham gia cuộc họp với trạng thái và điều khiển",
+      "you": "Bạn",
+      "host": "Người tổ chức",
+      "noParticipants": "Chưa có người tham gia",
+      "lowerAllHands": "Hạ Tất cả Tay",
+      "muteParticipant": "Tắt tiếng người tham gia",
+      "disableVideo": "Tắt video",
+      "kickParticipant": "Đuổi người tham gia"
+    },
+    "settings": {
+      "title": "Cài đặt",
+      "description": "Cấu hình thiết bị âm thanh và video cho cuộc họp",
+      "videoPreview": "Xem trước Video",
+      "camera": "Camera",
+      "microphone": "Microphone",
+      "speaker": "Loa",
+      "selectCamera": "Chọn camera",
+      "selectMicrophone": "Chọn microphone",
+      "selectSpeaker": "Chọn loa"
+    },
+    "chat": {
+      "title": "Trò chuyện",
+      "description": "Gửi và nhận tin nhắn với những người tham gia khác",
+      "noMessages": "Chưa có tin nhắn",
+      "placeholder": "Nhập tin nhắn...",
+      "send": "Gửi"
+    },
+    "errors": {
+      "permissionDenied": "Quyền truy cập Camera/Microphone bị từ chối",
+      "connectionFailed": "Không thể kết nối đến cuộc họp",
+      "joinFailed": "Không thể tham gia cuộc họp",
+      "notAuthorized": "Bạn không có quyền tham gia cuộc họp này",
+      "eventNotFound": "Không tìm thấy sự kiện",
+      "eventEnded": "Sự kiện này đã kết thúc"
+    },
+    "dialogs": {
+      "leaveTitle": "Rời khỏi cuộc họp?",
+      "leaveMessage": "Bạn có chắc chắn muốn rời khỏi cuộc họp này?",
+      "leaveConfirm": "Rời đi",
+      "leaveCancel": "Ở lại",
+      "endEventTitle": "Kết thúc sự kiện?",
+      "endEventMessage": "Điều này sẽ kết thúc sự kiện cho tất cả người tham gia. Bạn có chắc chắn?",
+      "endEventConfirm": "Kết thúc Sự kiện",
+      "endEventCancel": "Hủy"
+    }
+  }
+}

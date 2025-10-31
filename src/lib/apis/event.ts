@@ -67,6 +67,9 @@ const eventApiRequest = {
   //Update status - admin apporve/cancel
   updateEventStatus: (body: UpdateEventStatusBodyType) =>
     http.put<MessageResType>(`${prefix}/admin/status`, body),
+  //Update status for host - start/end event
+  updateEventStatusByHost: (body: UpdateEventStatusBodyType) =>
+    http.put<MessageResType>(`${prefix}/admin/status`, body),
 };
 
 export default eventApiRequest;
