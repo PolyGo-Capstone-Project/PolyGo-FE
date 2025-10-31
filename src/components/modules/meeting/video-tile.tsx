@@ -33,10 +33,58 @@ export function VideoTile({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream;
+    const videoElement = videoRef.current;
+
+    if (videoElement && stream) {
+      console.log(
+        `[VideoTile] Setting stream for ${name}, tracks:`,
+        stream.getTracks().map((t) => t.kind)
+      );
+
+      // Set srcObject
+      videoElement.srcObject = stream;
+
+      // Force play to handle autoplay restrictions
+      const playPromise = videoElement.play();
+
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            console.log(`[VideoTile] ✓ Video playing for ${name}`);
+          })
+          .catch((error) => {
+            console.warn(
+              `[VideoTile] ⚠️ Autoplay prevented for ${name}:`,
+              error
+            );
+            // User interaction might be needed to play
+            // For local video, we mute it so autoplay works
+            if (isLocal) {
+              videoElement.muted = true;
+              videoElement
+                .play()
+                .catch((e) =>
+                  console.error(
+                    `[VideoTile] ✗ Failed to play muted local video:`,
+                    e
+                  )
+                );
+            }
+          });
+      }
+    } else if (videoElement && !stream) {
+      console.log(`[VideoTile] Clearing stream for ${name}`);
+      videoElement.srcObject = null;
     }
-  }, [stream]);
+
+    // Cleanup
+    return () => {
+      if (videoElement && videoElement.srcObject) {
+        console.log(`[VideoTile] Cleaning up stream for ${name}`);
+        videoElement.srcObject = null;
+      }
+    };
+  }, [stream, name, isLocal]);
 
   const initials = name
     .split(" ")

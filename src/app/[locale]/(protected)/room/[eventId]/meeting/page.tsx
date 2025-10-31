@@ -30,7 +30,7 @@ import { MeetingChatMessage, Participant } from "@/types";
 import { IconLoader2 } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 export default function MeetingRoomPage() {
@@ -48,6 +48,9 @@ export default function MeetingRoomPage() {
   const [hasStartedEvent, setHasStartedEvent] = useState(false);
   const [chatMessages, setChatMessages] = useState<MeetingChatMessage[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
+
+  // NEW: Track if call has been initiated to prevent infinite loop
+  const callInitiatedRef = useRef(false);
 
   const { event, currentUser, isHost, canJoin, isLoading } =
     useEventMeeting(eventId);
@@ -111,16 +114,26 @@ export default function MeetingRoomPage() {
     }
   }, [isLoading, event, currentUser, canJoin, isInitialized, joinRoom, tError]);
 
-  // Auto start call when participants join (after initialization)
+  // FIXED: Auto start call when participants join - with duplicate prevention
   useEffect(() => {
-    if (!isInitialized || !hasStartedEvent) return;
+    // Early returns
+    if (!isInitialized || !hasStartedEvent || callInitiatedRef.current) {
+      return;
+    }
 
     const participantCount = participantsList.length;
+
+    // Only start if we have participants and are connected
     if (participantCount > 0 && isConnected) {
       console.log(
-        "[Meeting] Participants detected, starting call...",
-        participantCount
+        "[Meeting] Initiating call with",
+        participantCount,
+        "participants"
       );
+
+      // Set flag to prevent re-entry
+      callInitiatedRef.current = true;
+
       // Delay to ensure all participants are ready
       const timer = setTimeout(() => {
         startCall();
@@ -154,8 +167,9 @@ export default function MeetingRoomPage() {
     toggleVideo();
   };
 
-  // Handle leave
+  // FIXED: Handle leave - reset call initiated flag
   const handleLeave = async () => {
+    callInitiatedRef.current = false; // Reset flag
     await leaveRoom();
     router.push(`/${locale}/dashboard`);
   };
@@ -179,7 +193,7 @@ export default function MeetingRoomPage() {
     }
   };
 
-  // Handle end event (host only)
+  // FIXED: Handle end event - reset call initiated flag
   const handleEndEvent = async () => {
     if (!isHost || !event) return;
 
@@ -189,6 +203,7 @@ export default function MeetingRoomPage() {
         status: EventStatus.Completed,
       });
       toast.success(tControls("endEvent"));
+      callInitiatedRef.current = false; // Reset flag
       await leaveRoom();
       router.push(`/${locale}/dashboard`);
     } catch (error) {

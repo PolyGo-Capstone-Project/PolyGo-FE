@@ -39,9 +39,6 @@ export function useWebRTC({
   isHost,
   onRoomEnded,
 }: UseWebRTCProps) {
-  const [connection, setConnection] = useState<signalR.HubConnection | null>(
-    null
-  );
   const [isConnected, setIsConnected] = useState(false);
   const [myConnectionId, setMyConnectionId] = useState<string>("");
   const [participants, setParticipants] = useState<Map<string, Participant>>(
@@ -58,6 +55,7 @@ export function useWebRTC({
     Array<{ remoteId: string; candidateJson: string }>
   >([]);
   const myConnectionIdRef = useRef<string>("");
+  const callStartedRef = useRef<boolean>(false);
 
   // Get local media stream
   const getLocalStream = useCallback(async () => {
@@ -72,9 +70,13 @@ export function useWebRTC({
       });
       localStreamRef.current = stream;
       setLocalStream(stream);
+      console.log(
+        "[Media] ✓ Got local stream with tracks:",
+        stream.getTracks().map((t) => t.kind)
+      );
       return stream;
     } catch (error) {
-      console.error("[Media] getUserMedia error:", error);
+      console.error("[Media] ✗ getUserMedia error:", error);
       throw error;
     }
   }, []);
@@ -83,13 +85,16 @@ export function useWebRTC({
   const createPeerConnection = useCallback(
     async (remoteId: string): Promise<ExtendedRTCPeerConnection> => {
       const existing = peerConnectionsRef.current.get(remoteId);
-      if (existing) return existing;
+      if (existing) {
+        console.log("[PC] Reusing existing peer connection for", remoteId);
+        return existing;
+      }
 
+      console.log("[PC] Creating new peer connection for", remoteId);
       const pc = new RTCPeerConnection({
         iceServers: DEFAULT_ICE_SERVERS,
       }) as ExtendedRTCPeerConnection;
 
-      // Initialize pending candidates queue
       pc._pendingRemoteCandidates = [];
       pc._applyPendingCandidates = async () => {
         while (
@@ -100,16 +105,22 @@ export function useWebRTC({
           if (candidate) {
             try {
               await pc.addIceCandidate(candidate);
+              console.log("[PC] ✓ Applied queued ICE candidate for", remoteId);
             } catch (error) {
-              console.warn("addIceCandidate from queue failed", error);
+              console.warn(
+                "[PC] ✗ Failed to apply queued ICE candidate",
+                error
+              );
             }
           }
         }
       };
 
-      // ICE candidate event
       pc.onicecandidate = (event) => {
-        if (!event.candidate) return;
+        if (!event.candidate) {
+          console.log("[PC] ICE gathering complete for", remoteId);
+          return;
+        }
 
         const candidateJson = JSON.stringify(event.candidate);
         const trySend = async () => {
@@ -121,20 +132,24 @@ export function useWebRTC({
                 remoteId,
                 candidateJson
               );
-              console.log("[SignalR] Sent ICE candidate to", remoteId);
+              console.log("[SignalR] ✓ Sent ICE candidate to", remoteId);
               return;
             }
           } catch (error) {
-            console.warn("SendIceCandidate failed, queuing", error);
+            console.warn("[SignalR] ✗ SendIceCandidate failed, queuing", error);
           }
           outgoingCandidatesRef.current.push({ remoteId, candidateJson });
         };
         trySend();
       };
 
-      // Track event - receive remote stream
       pc.ontrack = (event) => {
-        console.log("[PC] ontrack for", remoteId);
+        console.log(
+          "[PC] ✓ ontrack for",
+          remoteId,
+          "tracks:",
+          event.streams[0].getTracks().map((t) => t.kind)
+        );
         setParticipants((prev) => {
           const newMap = new Map(prev);
           const participant = newMap.get(remoteId);
@@ -149,32 +164,52 @@ export function useWebRTC({
         });
       };
 
-      // Connection state changes
       pc.oniceconnectionstatechange = () => {
-        console.log(
-          "[PC] iceConnectionState:",
-          pc.iceConnectionState,
-          "for",
-          remoteId
-        );
-        if (pc.iceConnectionState === "failed") {
-          console.log("[!] ICE failed, restarting...");
+        console.log("[PC] ICE state:", pc.iceConnectionState, "for", remoteId);
+
+        if (
+          pc.iceConnectionState === "connected" ||
+          pc.iceConnectionState === "completed"
+        ) {
+          setParticipants((prev) => {
+            const newMap = new Map(prev);
+            const participant = newMap.get(remoteId);
+            if (participant) {
+              newMap.set(remoteId, {
+                ...participant,
+                status: "connected" as ParticipantStatus,
+              });
+            }
+            return newMap;
+          });
+        } else if (pc.iceConnectionState === "failed") {
+          console.log(
+            "[PC] ⚠️ ICE failed for",
+            remoteId,
+            "- attempting restart"
+          );
           pc.restartIce?.();
         }
       };
 
       pc.onconnectionstatechange = () => {
         console.log(
-          "[PC] connectionState change for",
-          remoteId,
-          pc.connectionState
+          "[PC] Connection state:",
+          pc.connectionState,
+          "for",
+          remoteId
         );
       };
 
-      // Add local stream tracks
       const stream = await getLocalStream();
       stream.getTracks().forEach((track) => {
         pc.addTrack(track, stream);
+        console.log(
+          "[PC] ✓ Added",
+          track.kind,
+          "track to peer connection for",
+          remoteId
+        );
       });
 
       peerConnectionsRef.current.set(remoteId, pc);
@@ -183,8 +218,10 @@ export function useWebRTC({
     [eventId, getLocalStream]
   );
 
-  // Initialize SignalR connection
+  // Initialize SignalR connection - CRITICAL: Minimal dependencies!
   useEffect(() => {
+    console.log("[SignalR] Setting up connection for eventId:", eventId);
+
     const hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(HUB_URL)
       .withAutomaticReconnect()
@@ -196,7 +233,14 @@ export function useWebRTC({
     hubConnection.on(
       "SetRole",
       (role: string, connId: string, hostId: string) => {
-        console.log("[SignalR] SetRole:", role, connId, hostId);
+        console.log(
+          "[SignalR] SetRole:",
+          role,
+          "connId:",
+          connId,
+          "hostId:",
+          hostId
+        );
         setMyConnectionId(connId);
         myConnectionIdRef.current = connId;
       }
@@ -206,7 +250,15 @@ export function useWebRTC({
     hubConnection.on(
       "UserJoined",
       (participantName: string, role: string, connId: string) => {
-        console.log("[SignalR] UserJoined:", participantName, connId);
+        console.log(
+          "[SignalR] ✓ UserJoined:",
+          participantName,
+          "connId:",
+          connId,
+          "role:",
+          role
+        );
+
         setParticipants((prev) => {
           const newMap = new Map(prev);
           newMap.set(connId, {
@@ -221,35 +273,153 @@ export function useWebRTC({
           return newMap;
         });
 
-        // Don't send offer to yourself
         if (connId === myConnectionIdRef.current) {
-          console.log("[WebRTC] Skipping offer to self");
+          console.log("[WebRTC] Skipping auto-offer to self");
           return;
         }
 
-        // Automatically initiate call with new participant after short delay
+        // Auto-offer logic uses refs, safe in event handler
         setTimeout(async () => {
           try {
+            console.log("[WebRTC] Auto-initiating offer to new user:", connId);
+
             if (!localStreamRef.current) {
+              console.log("[WebRTC] Getting local stream before auto-offer");
               try {
-                await getLocalStream();
+                const stream = await navigator.mediaDevices.getUserMedia({
+                  audio: true,
+                  video: true,
+                });
+                localStreamRef.current = stream;
+                setLocalStream(stream);
               } catch (error) {
                 console.error(
-                  "[WebRTC] Failed to get local stream for auto-offer:",
+                  "[WebRTC] ✗ Failed to get local stream for auto-offer:",
                   error
                 );
                 return;
               }
             }
 
-            const pc = await createPeerConnection(connId);
+            // Create PC inline to avoid dependency issues
+            let pc = peerConnectionsRef.current.get(connId);
+            if (!pc) {
+              pc = new RTCPeerConnection({
+                iceServers: DEFAULT_ICE_SERVERS,
+              }) as ExtendedRTCPeerConnection;
 
-            // Check if already negotiating
+              pc._pendingRemoteCandidates = [];
+              pc._applyPendingCandidates = async () => {
+                while (
+                  pc!._pendingRemoteCandidates &&
+                  pc!._pendingRemoteCandidates.length > 0
+                ) {
+                  const candidate = pc!._pendingRemoteCandidates.shift();
+                  if (candidate) {
+                    try {
+                      await pc!.addIceCandidate(candidate);
+                    } catch (error) {
+                      console.warn(
+                        "[PC] ✗ Failed to apply queued ICE candidate",
+                        error
+                      );
+                    }
+                  }
+                }
+              };
+
+              pc.onicecandidate = (event) => {
+                if (!event.candidate) return;
+                const candidateJson = JSON.stringify(event.candidate);
+                const trySend = async () => {
+                  try {
+                    if (connectionRef.current?.invoke) {
+                      await connectionRef.current.invoke(
+                        "SendIceCandidate",
+                        eventId,
+                        connId,
+                        candidateJson
+                      );
+                      return;
+                    }
+                  } catch (error) {
+                    console.warn(
+                      "[SignalR] ✗ SendIceCandidate failed, queuing",
+                      error
+                    );
+                  }
+                  outgoingCandidatesRef.current.push({
+                    remoteId: connId,
+                    candidateJson,
+                  });
+                };
+                trySend();
+              };
+
+              pc.ontrack = (event) => {
+                console.log("[PC] ✓ ontrack for", connId);
+                setParticipants((prev) => {
+                  const newMap = new Map(prev);
+                  const participant = newMap.get(connId);
+                  if (participant) {
+                    newMap.set(connId, {
+                      ...participant,
+                      stream: event.streams[0],
+                      status: "connected" as ParticipantStatus,
+                    });
+                  }
+                  return newMap;
+                });
+              };
+
+              pc.oniceconnectionstatechange = () => {
+                console.log(
+                  "[PC] ICE state:",
+                  pc!.iceConnectionState,
+                  "for",
+                  connId
+                );
+                if (
+                  pc!.iceConnectionState === "connected" ||
+                  pc!.iceConnectionState === "completed"
+                ) {
+                  setParticipants((prev) => {
+                    const newMap = new Map(prev);
+                    const participant = newMap.get(connId);
+                    if (participant) {
+                      newMap.set(connId, {
+                        ...participant,
+                        status: "connected" as ParticipantStatus,
+                      });
+                    }
+                    return newMap;
+                  });
+                } else if (pc!.iceConnectionState === "failed") {
+                  pc!.restartIce?.();
+                }
+              };
+
+              if (localStreamRef.current) {
+                localStreamRef.current.getTracks().forEach((track) => {
+                  pc!.addTrack(track, localStreamRef.current!);
+                });
+              }
+
+              peerConnectionsRef.current.set(connId, pc);
+            }
+
             if (pc.remoteDescription) {
               console.log(
-                "[WebRTC] Skipping auto-offer to",
-                connId,
-                "(already negotiating)"
+                "[WebRTC] ⚠️ Skipping auto-offer (already has remote description)"
+              );
+              return;
+            }
+
+            if (pc.signalingState !== "stable") {
+              console.log(
+                "[WebRTC] ⚠️ Skipping auto-offer (signaling state:",
+                pc.signalingState,
+                ")"
               );
               return;
             }
@@ -268,15 +438,12 @@ export function useWebRTC({
                     connId,
                     offer.sdp
                   );
-                  console.log("[✓] Auto-offer sent to new user", connId);
+                  console.log("[WebRTC] ✓ Auto-offer sent to new user", connId);
                   break;
                 }
               } catch (error) {
                 retries--;
                 if (retries > 0) {
-                  console.warn(
-                    `[WebRTC] Auto-offer retry ${3 - retries}/3 for ${connId}`
-                  );
                   await new Promise((resolve) => setTimeout(resolve, delay));
                   delay *= 2;
                 } else {
@@ -285,7 +452,11 @@ export function useWebRTC({
               }
             }
           } catch (error) {
-            console.error("[✗] Auto-offer failed for new user", connId, error);
+            console.error(
+              "[WebRTC] ✗ Auto-offer failed for new user",
+              connId,
+              error
+            );
           }
         }, 1000);
       }
@@ -293,18 +464,18 @@ export function useWebRTC({
 
     // User left event
     hubConnection.on("UserLeft", (connId: string) => {
-      console.log("[SignalR] UserLeft:", connId);
+      console.log("[SignalR] ✗ UserLeft:", connId);
       setParticipants((prev) => {
         const newMap = new Map(prev);
         newMap.delete(connId);
         return newMap;
       });
 
-      // Clean up peer connection
       const pc = peerConnectionsRef.current.get(connId);
       if (pc) {
         pc.close();
         peerConnectionsRef.current.delete(connId);
+        console.log("[PC] Cleaned up peer connection for", connId);
       }
     });
 
@@ -313,9 +484,119 @@ export function useWebRTC({
       "ReceiveOffer",
       async (fromConnId: string, sdp: string) => {
         try {
-          console.log("[SignalR] ReceiveOffer from", fromConnId);
-          const pc = await createPeerConnection(fromConnId);
+          console.log(
+            "[SignalR] ReceiveOffer from",
+            fromConnId,
+            "sdp length:",
+            sdp?.length
+          );
+
+          let pc = peerConnectionsRef.current.get(fromConnId);
+          if (!pc) {
+            // Create PC inline
+            pc = new RTCPeerConnection({
+              iceServers: DEFAULT_ICE_SERVERS,
+            }) as ExtendedRTCPeerConnection;
+
+            pc._pendingRemoteCandidates = [];
+            pc._applyPendingCandidates = async () => {
+              while (
+                pc!._pendingRemoteCandidates &&
+                pc!._pendingRemoteCandidates.length > 0
+              ) {
+                const candidate = pc!._pendingRemoteCandidates.shift();
+                if (candidate) {
+                  try {
+                    await pc!.addIceCandidate(candidate);
+                  } catch (error) {
+                    console.warn(
+                      "[PC] ✗ Failed to apply queued ICE candidate",
+                      error
+                    );
+                  }
+                }
+              }
+            };
+
+            pc.onicecandidate = (event) => {
+              if (!event.candidate) return;
+              const candidateJson = JSON.stringify(event.candidate);
+              const trySend = async () => {
+                try {
+                  if (connectionRef.current?.invoke) {
+                    await connectionRef.current.invoke(
+                      "SendIceCandidate",
+                      eventId,
+                      fromConnId,
+                      candidateJson
+                    );
+                    return;
+                  }
+                } catch (error) {
+                  console.warn("[SignalR] ✗ SendIceCandidate failed", error);
+                }
+                outgoingCandidatesRef.current.push({
+                  remoteId: fromConnId,
+                  candidateJson,
+                });
+              };
+              trySend();
+            };
+
+            pc.ontrack = (event) => {
+              console.log("[PC] ✓ ontrack for", fromConnId);
+              setParticipants((prev) => {
+                const newMap = new Map(prev);
+                const participant = newMap.get(fromConnId);
+                if (participant) {
+                  newMap.set(fromConnId, {
+                    ...participant,
+                    stream: event.streams[0],
+                    status: "connected" as ParticipantStatus,
+                  });
+                }
+                return newMap;
+              });
+            };
+
+            pc.oniceconnectionstatechange = () => {
+              console.log(
+                "[PC] ICE state:",
+                pc!.iceConnectionState,
+                "for",
+                fromConnId
+              );
+              if (
+                pc!.iceConnectionState === "connected" ||
+                pc!.iceConnectionState === "completed"
+              ) {
+                setParticipants((prev) => {
+                  const newMap = new Map(prev);
+                  const participant = newMap.get(fromConnId);
+                  if (participant) {
+                    newMap.set(fromConnId, {
+                      ...participant,
+                      status: "connected" as ParticipantStatus,
+                    });
+                  }
+                  return newMap;
+                });
+              } else if (pc!.iceConnectionState === "failed") {
+                pc!.restartIce?.();
+              }
+            };
+
+            if (localStreamRef.current) {
+              localStreamRef.current.getTracks().forEach((track) => {
+                pc!.addTrack(track, localStreamRef.current!);
+              });
+            }
+
+            peerConnectionsRef.current.set(fromConnId, pc);
+          }
+
           await pc.setRemoteDescription({ type: "offer", sdp });
+          console.log("[PC] ✓ Set remote description (offer) for", fromConnId);
 
           if (pc._applyPendingCandidates) {
             await pc._applyPendingCandidates();
@@ -329,9 +610,9 @@ export function useWebRTC({
             fromConnId,
             answer.sdp
           );
-          console.log("[SignalR] Sent Answer to", fromConnId);
+          console.log("[SignalR] ✓ Sent Answer to", fromConnId);
         } catch (error) {
-          console.error("[SignalR] ReceiveOffer error:", error);
+          console.error("[SignalR] ✗ ReceiveOffer error:", error);
         }
       }
     );
@@ -340,13 +621,35 @@ export function useWebRTC({
     hubConnection.on(
       "ReceiveAnswer",
       async (fromConnId: string, sdp: string) => {
-        console.log("[SignalR] ReceiveAnswer from", fromConnId);
+        console.log(
+          "[SignalR] ReceiveAnswer from",
+          fromConnId,
+          "sdp length:",
+          sdp?.length
+        );
         const pc = peerConnectionsRef.current.get(fromConnId);
         if (pc) {
-          await pc.setRemoteDescription({ type: "answer", sdp });
-          if (pc._applyPendingCandidates) {
-            await pc._applyPendingCandidates();
+          try {
+            await pc.setRemoteDescription({ type: "answer", sdp });
+            console.log(
+              "[PC] ✓ Set remote description (answer) for",
+              fromConnId
+            );
+            if (pc._applyPendingCandidates) {
+              await pc._applyPendingCandidates();
+            }
+          } catch (error) {
+            console.error(
+              "[PC] ✗ Failed to set remote description (answer)",
+              error
+            );
           }
+        } else {
+          console.warn(
+            "[PC] ⚠️ No peer connection found for",
+            fromConnId,
+            "when receiving answer"
+          );
         }
       }
     );
@@ -358,18 +661,30 @@ export function useWebRTC({
         console.log("[SignalR] ReceiveIceCandidate from", fromConnId);
         try {
           const candidate = JSON.parse(candidateJson);
-          const pc = await createPeerConnection(fromConnId);
+          let pc = peerConnectionsRef.current.get(fromConnId);
+
+          if (!pc) {
+            console.log(
+              "[PC] Creating new PC for ICE candidate from",
+              fromConnId
+            );
+            pc = new RTCPeerConnection({
+              iceServers: DEFAULT_ICE_SERVERS,
+            }) as ExtendedRTCPeerConnection;
+            pc._pendingRemoteCandidates = [];
+            peerConnectionsRef.current.set(fromConnId, pc);
+          }
 
           if (pc.remoteDescription && pc.remoteDescription.type) {
             await pc.addIceCandidate(candidate);
-            console.log("[PC] Added remote ICE candidate for", fromConnId);
+            console.log("[PC] ✓ Added remote ICE candidate for", fromConnId);
           } else {
             pc._pendingRemoteCandidates = pc._pendingRemoteCandidates || [];
             pc._pendingRemoteCandidates.push(candidate);
             console.log("[PC] Queued remote ICE candidate for", fromConnId);
           }
         } catch (error) {
-          console.error("[SignalR] ReceiveIceCandidate error:", error);
+          console.error("[SignalR] ✗ ReceiveIceCandidate error:", error);
         }
       }
     );
@@ -377,56 +692,87 @@ export function useWebRTC({
     // Room ended
     hubConnection.on("RoomEnded", () => {
       console.log("[SignalR] RoomEnded");
-      onRoomEnded?.();
+      if (onRoomEnded) onRoomEnded();
     });
 
-    setConnection(hubConnection);
+    console.log("[SignalR] ✓ Connection setup complete (not started yet)");
 
     return () => {
-      if (hubConnection) {
+      console.log("[SignalR] Cleanup: stopping connection if started");
+      if (hubConnection.state !== signalR.HubConnectionState.Disconnected) {
         hubConnection.stop();
       }
       connectionRef.current = null;
     };
-  }, [eventId, onRoomEnded, createPeerConnection, getLocalStream]);
+  }, [eventId]); // ONLY eventId! No function dependencies!
 
   // Join room
   const joinRoom = useCallback(async () => {
-    if (!connection) return;
+    const conn = connectionRef.current;
+
+    if (!conn) {
+      console.error("[SignalR] ✗ Cannot join room: no connection");
+      throw new Error("No connection available");
+    }
 
     try {
-      await connection.start();
-      setIsConnected(true);
-      console.log("[SignalR] Connected");
+      console.log("[SignalR] Current connection state:", conn.state);
 
-      // Join room
-      await connection.invoke("JoinRoom", eventId, userName);
-      console.log("[SignalR] Joined room:", eventId);
-
-      // Get participants
-      const participantList = await connection.invoke<Record<string, string>>(
-        "GetParticipants",
-        eventId
-      );
-
-      if (participantList) {
-        const newParticipants = new Map<string, Participant>();
-        Object.entries(participantList).forEach(([connId, name]) => {
-          newParticipants.set(connId, {
-            id: connId,
-            name,
-            role: "attendee",
-            status: "connecting" as ParticipantStatus,
-            audioEnabled: true,
-            videoEnabled: true,
-            isHandRaised: false,
-          });
-        });
-        setParticipants(newParticipants);
+      if (conn.state === signalR.HubConnectionState.Disconnected) {
+        console.log("[SignalR] Starting connection...");
+        await conn.start();
+        setIsConnected(true);
+        console.log("[SignalR] ✓ Connected to hub");
+      } else if (conn.state === signalR.HubConnectionState.Connected) {
+        console.log("[SignalR] Already connected");
+        setIsConnected(true);
+      } else {
+        console.warn(
+          "[SignalR] ⚠️ Connection in unexpected state:",
+          conn.state
+        );
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        return joinRoom();
       }
 
-      // Drain queued ICE candidates
+      await conn.invoke("JoinRoom", eventId, userName);
+      console.log("[SignalR] ✓ Joined room:", eventId, "as", userName);
+
+      try {
+        const participantList = await conn.invoke<Record<string, string>>(
+          "GetParticipants",
+          eventId
+        );
+        if (participantList) {
+          const newParticipants = new Map<string, Participant>();
+          Object.entries(participantList).forEach(([connId, name]) => {
+            newParticipants.set(connId, {
+              id: connId,
+              name,
+              role: "attendee",
+              status: "connecting" as ParticipantStatus,
+              audioEnabled: true,
+              videoEnabled: true,
+              isHandRaised: false,
+            });
+          });
+          setParticipants(newParticipants);
+          console.log("[SignalR] ✓ Got", newParticipants.size, "participants");
+        }
+      } catch (getParticipantsError) {
+        console.warn(
+          "[SignalR] ⚠️ GetParticipants failed:",
+          getParticipantsError
+        );
+        console.warn("[SignalR] Continuing without initial participant list");
+      }
+
       if (outgoingCandidatesRef.current.length > 0) {
+        console.log(
+          "[SignalR] Draining",
+          outgoingCandidatesRef.current.length,
+          "queued ICE candidates"
+        );
         const queue = [...outgoingCandidatesRef.current];
         outgoingCandidatesRef.current = [];
 
@@ -439,21 +785,31 @@ export function useWebRTC({
                 item.remoteId,
                 item.candidateJson
               );
+              console.log(
+                "[SignalR] ✓ Sent queued ICE candidate to",
+                item.remoteId
+              );
             }
           } catch (error) {
-            console.warn("drain candidate failed", error);
+            console.warn("[SignalR] ✗ Failed to send queued candidate", error);
           }
         }
       }
     } catch (error) {
-      console.error("[SignalR] Join room error:", error);
+      console.error("[SignalR] ✗ Join room error:", error);
       throw error;
     }
-  }, [connection, eventId, userName]);
+  }, [eventId, userName]);
 
-  // Start call with all participants
+  // Start call
   const startCall = useCallback(async () => {
+    if (callStartedRef.current) {
+      console.log("[WebRTC] ⚠️ Call already started, skipping");
+      return;
+    }
+
     try {
+      console.log("[WebRTC] Starting call...");
       await getLocalStream();
 
       const remoteParticipants = Array.from(participants.keys()).filter(
@@ -461,25 +817,38 @@ export function useWebRTC({
       );
 
       if (remoteParticipants.length === 0) {
-        console.log("[WebRTC] No remote participants to call");
+        console.log("[WebRTC] ⚠️ No remote participants to call");
         return;
       }
 
       console.log(
-        "[WebRTC] Starting call with participants:",
+        "[WebRTC] Starting call with",
+        remoteParticipants.length,
+        "participants:",
         remoteParticipants
       );
+      callStartedRef.current = true;
 
       for (const remoteId of remoteParticipants) {
         try {
           const pc = await createPeerConnection(remoteId);
 
-          // Check if already have remote description (means we received offer first)
           if (pc.remoteDescription) {
             console.log(
-              "[WebRTC] Skipping offer to",
+              "[WebRTC] ⚠️ Skipping offer to",
               remoteId,
-              "(already negotiating)"
+              "(already has remote description)"
+            );
+            continue;
+          }
+
+          if (pc.signalingState !== "stable") {
+            console.log(
+              "[WebRTC] ⚠️ Skipping offer to",
+              remoteId,
+              "(signaling state:",
+              pc.signalingState,
+              ")"
             );
             continue;
           }
@@ -487,7 +856,6 @@ export function useWebRTC({
           const offer = await pc.createOffer();
           await pc.setLocalDescription(offer);
 
-          // Retry logic with exponential backoff
           let retries = 3;
           let delay = 300;
           while (retries > 0) {
@@ -499,7 +867,7 @@ export function useWebRTC({
                   remoteId,
                   offer.sdp
                 );
-                console.log("[✓] Offer sent to", remoteId);
+                console.log("[WebRTC] ✓ Offer sent to", remoteId);
                 break;
               }
             } catch (error) {
@@ -509,18 +877,19 @@ export function useWebRTC({
                   `[WebRTC] SendOffer retry ${3 - retries}/3 for ${remoteId}`
                 );
                 await new Promise((resolve) => setTimeout(resolve, delay));
-                delay *= 2; // Exponential backoff
+                delay *= 2;
               } else {
                 throw error;
               }
             }
           }
         } catch (error) {
-          console.error("[✗] Failed offer for", remoteId, error);
+          console.error("[WebRTC] ✗ Failed offer for", remoteId, error);
         }
       }
     } catch (error) {
-      console.error("[WebRTC] startCall error:", error);
+      console.error("[WebRTC] ✗ startCall error:", error);
+      callStartedRef.current = false;
     }
   }, [
     participants,
@@ -532,22 +901,23 @@ export function useWebRTC({
 
   // Leave room
   const leaveRoom = useCallback(async () => {
-    if (!connection) return;
+    const conn = connectionRef.current;
+    if (!conn) return;
 
     try {
-      await connection.invoke("LeaveRoom", eventId);
-      await connection.stop();
+      if (conn.state === signalR.HubConnectionState.Connected) {
+        await conn.invoke("LeaveRoom", eventId);
+        await conn.stop();
+        console.log("[SignalR] ✓ Left room and stopped connection");
+      }
     } catch (error) {
-      console.warn("[SignalR] Leave room error:", error);
+      console.warn("[SignalR] ⚠️ Leave room error:", error);
     }
 
     setIsConnected(false);
-
-    // Cleanup peer connections
     peerConnectionsRef.current.forEach((pc) => pc.close());
     peerConnectionsRef.current.clear();
 
-    // Stop local stream
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach((track) => track.stop());
       localStreamRef.current = null;
@@ -556,15 +926,20 @@ export function useWebRTC({
 
     setParticipants(new Map());
     setMyConnectionId("");
-  }, [connection, eventId]);
+    callStartedRef.current = false;
+  }, [eventId]);
 
   // Toggle audio
   const toggleAudio = useCallback(() => {
-    if (!localStreamRef.current) return;
-
+    if (!localStreamRef.current) return false;
     const audioTrack = localStreamRef.current.getAudioTracks()[0];
     if (audioTrack) {
       audioTrack.enabled = !audioTrack.enabled;
+      console.log(
+        "[Media]",
+        audioTrack.enabled ? "✓ Unmuted" : "✗ Muted",
+        "audio"
+      );
       return audioTrack.enabled;
     }
     return false;
@@ -572,11 +947,15 @@ export function useWebRTC({
 
   // Toggle video
   const toggleVideo = useCallback(() => {
-    if (!localStreamRef.current) return;
-
+    if (!localStreamRef.current) return false;
     const videoTrack = localStreamRef.current.getVideoTracks()[0];
     if (videoTrack) {
       videoTrack.enabled = !videoTrack.enabled;
+      console.log(
+        "[Media]",
+        videoTrack.enabled ? "✓ Enabled" : "✗ Disabled",
+        "video"
+      );
       return videoTrack.enabled;
     }
     return false;
