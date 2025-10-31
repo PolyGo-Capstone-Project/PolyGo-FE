@@ -63,6 +63,11 @@ export function useWebRTC({
   const isJoiningRef = useRef<boolean>(false);
   const hasJoinedRef = useRef<boolean>(false);
 
+  // Store createPeerConnection function reference for use in SignalR event handlers
+  const createPeerConnectionRef = useRef<
+    ((remoteId: string) => Promise<ExtendedRTCPeerConnection>) | null
+  >(null);
+
   // Get local media stream
   const getLocalStream = useCallback(async () => {
     if (localStreamRef.current) {
@@ -236,6 +241,11 @@ export function useWebRTC({
     [eventId, getLocalStream, setupPeerConnectionHandlers]
   );
 
+  // Store the function reference for use in SignalR handlers
+  useEffect(() => {
+    createPeerConnectionRef.current = createPeerConnection;
+  }, [createPeerConnection]);
+
   // Broadcast media state change
   const broadcastMediaState = useCallback(
     async (type: "audio" | "video", enabled: boolean) => {
@@ -296,7 +306,7 @@ export function useWebRTC({
 
     hubConnection.on(
       "UserJoined",
-      (participantName: string, role: string, connId: string) => {
+      async (participantName: string, role: string, connId: string) => {
         console.log(
           "[SignalR] ✓ UserJoined:",
           participantName,
@@ -319,6 +329,54 @@ export function useWebRTC({
           });
           return newMap;
         });
+
+        // ✅ FIX: Auto create peer connection and send offer when new user joins
+        // This ensures existing users can establish connection with the new joiner
+        if (
+          connId !== myConnectionIdRef.current &&
+          callStartedRef.current &&
+          createPeerConnectionRef.current
+        ) {
+          console.log(
+            "[WebRTC] Auto-creating peer connection for new user:",
+            connId
+          );
+
+          // Use setTimeout to avoid blocking the event handler
+          setTimeout(async () => {
+            try {
+              // Wait a bit for the new user to be ready
+              await new Promise((resolve) => setTimeout(resolve, 500));
+
+              const pc = await createPeerConnectionRef.current!(connId);
+
+              if (pc.signalingState === "stable" && !pc.remoteDescription) {
+                const offer = await pc.createOffer();
+                await pc.setLocalDescription(offer);
+
+                if (
+                  hubConnection.state === signalR.HubConnectionState.Connected
+                ) {
+                  await hubConnection.invoke(
+                    "SendOffer",
+                    eventId,
+                    connId,
+                    offer.sdp
+                  );
+                  console.log(
+                    "[WebRTC] ✓ Auto-sent offer to new user:",
+                    connId
+                  );
+                }
+              }
+            } catch (error) {
+              console.error(
+                "[WebRTC] ✗ Failed to auto-connect to new user:",
+                error
+              );
+            }
+          }, 0);
+        }
       }
     );
 

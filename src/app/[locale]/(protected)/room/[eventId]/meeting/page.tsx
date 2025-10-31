@@ -296,8 +296,8 @@ export default function MeetingRoomPage() {
           localStream={localStream}
           localName={currentUser.name}
           localAvatarUrl={currentUser.avatarUrl || undefined}
-          localAudioEnabled={controls.audioEnabled}
-          localVideoEnabled={controls.videoEnabled}
+          localAudioEnabled={localAudioEnabled}
+          localVideoEnabled={localVideoEnabled}
           myConnectionId={myConnectionId}
         />
       </div>
