@@ -72,7 +72,7 @@ export function EventDetailDialog({
       .join("")
       .toUpperCase()
       .slice(0, 2);
-  }, [event?.host.name]);
+  }, [event]);
 
   const hasBanner = event ? isValidBannerUrl(event.bannerUrl) : false;
 

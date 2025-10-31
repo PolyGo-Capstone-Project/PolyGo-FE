@@ -10,6 +10,7 @@ import {
   IconLoader2,
   IconMapPin,
   IconUsers,
+  IconVideo,
 } from "@tabler/icons-react";
 import { format } from "date-fns";
 import { useLocale, useTranslations } from "next-intl";
@@ -40,11 +41,13 @@ import {
   Label,
   Separator,
 } from "@/components/ui";
+import { EventStatus } from "@/constants";
 import {
   useGetEventById,
   useRegisterEventMutation,
   useTransactionBalanceQuery,
 } from "@/hooks";
+import { useAuthMe } from "@/hooks/query/use-auth";
 import { formatCurrency, handleErrorApi } from "@/lib/utils";
 
 export default function EventDetailPage() {
@@ -63,10 +66,12 @@ export default function EventDetailPage() {
 
   const { data, isLoading, error } = useGetEventById(eventId, { lang: locale });
   const { data: balanceData } = useTransactionBalanceQuery();
+  const { data: userData } = useAuthMe();
   const registerMutation = useRegisterEventMutation();
 
   const event = data?.payload?.data;
   const balance = balanceData?.payload?.data?.balance ?? 0;
+  const currentUser = userData?.payload?.data;
 
   const isValidBannerUrl = (url: string | null) => {
     if (!url) return false;
@@ -87,6 +92,28 @@ export default function EventDetailPage() {
       .toUpperCase()
       .slice(0, 2);
   }, [event]);
+
+  // Meeting room logic - must be before early returns
+  const isHost = currentUser?.id === event?.host.id;
+  const isRegistered = event?.isParticipant || false;
+  const canJoin = isRegistered || isHost;
+
+  // Host can join 1 hour before startAt
+  const canHostJoin = useMemo(() => {
+    if (!isHost || !event) return false;
+    const now = new Date();
+    const startAt = new Date(event.startAt);
+    const oneHourBefore = new Date(startAt.getTime() - 60 * 60 * 1000);
+    return now >= oneHourBefore;
+  }, [isHost, event]);
+
+  // Attendee can join when event is Live
+  const canAttendeeJoin = event
+    ? isRegistered && event.status === EventStatus.Live
+    : false;
+
+  // Show join button
+  const showJoinButton = (isHost && canHostJoin) || canAttendeeJoin;
 
   const hasBanner = event ? isValidBannerUrl(event.bannerUrl) : false;
 
@@ -154,8 +181,12 @@ export default function EventDetailPage() {
 
   const spotsLeft = event.capacity - event.numberOfParticipants;
   const isFull = spotsLeft <= 0;
-  const isRegistered = event.isParticipant || false;
   const hasInsufficientFunds = event.fee > 0 && balance < event.fee;
+
+  // Handle join meeting
+  const handleJoinMeeting = () => {
+    router.push(`/${locale}/room/${eventId}/waiting`);
+  };
 
   return (
     <>
@@ -394,6 +425,38 @@ export default function EventDetailPage() {
                   <div className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-primary/10 text-primary rounded-lg border border-primary/20">
                     <IconCheck className="h-5 w-5" />
                     <span className="font-semibold">{t("registered")}</span>
+                  </div>
+                )}
+
+                {/* Join Meeting Button */}
+                {canJoin && showJoinButton && (
+                  <Button
+                    className="w-full gap-2"
+                    size="lg"
+                    variant="default"
+                    onClick={handleJoinMeeting}
+                  >
+                    <IconVideo className="h-5 w-5" />
+                    {isHost ? "Join Meeting Room" : "Join Meeting"}
+                  </Button>
+                )}
+
+                {/* Waiting message for attendees */}
+                {canJoin && !showJoinButton && !isHost && (
+                  <div className="w-full py-3 px-4 bg-muted rounded-lg border text-center">
+                    <p className="text-sm text-muted-foreground">
+                      Waiting for host to start the event...
+                    </p>
+                  </div>
+                )}
+
+                {/* Time until host can join */}
+                {isHost && !canHostJoin && (
+                  <div className="w-full py-3 px-4 bg-muted rounded-lg border text-center">
+                    <p className="text-sm text-muted-foreground">
+                      You can join the meeting room 1 hour before the event
+                      starts
+                    </p>
                   </div>
                 )}
               </CardContent>

@@ -1,0 +1,84 @@
+{
+  "meeting": {
+    "waiting": {
+      "title": "Ready to join?",
+      "subtitle": "Check your audio and video before joining the meeting",
+      "cameraPreview": "Camera Preview",
+      "audioSettings": "Audio & Video Settings",
+      "joinButton": "Join Meeting",
+      "setupDevices": "Setup your devices",
+      "testMic": "Test Microphone",
+      "testCamera": "Test Camera",
+      "micEnabled": "Microphone is on",
+      "micDisabled": "Microphone is off",
+      "cameraEnabled": "Camera is on",
+      "cameraDisabled": "Camera is off"
+    },
+    "meeting": {
+      "title": "Meeting Room",
+      "waitingForHost": "Waiting for host to start the event...",
+      "eventNotStarted": "Event hasn't started yet"
+    },
+    "controls": {
+      "muteMic": "Mute microphone",
+      "unmuteMic": "Unmute microphone",
+      "turnCameraOff": "Turn camera off",
+      "turnCameraOn": "Turn camera on",
+      "raiseHand": "Raise hand",
+      "lowerHand": "Lower hand",
+      "chat": "Chat",
+      "participants": "Participants",
+      "settings": "Settings",
+      "leave": "Leave meeting",
+      "startEvent": "Start Event",
+      "endEvent": "End Event"
+    },
+    "participants": {
+      "title": "Participants",
+      "description": "List of meeting participants with their status and controls",
+      "you": "You",
+      "host": "Host",
+      "noParticipants": "No participants yet",
+      "lowerAllHands": "Lower All Hands",
+      "muteParticipant": "Mute participant",
+      "disableVideo": "Disable video",
+      "kickParticipant": "Kick participant"
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Configure your audio and video devices for the meeting",
+      "videoPreview": "Video Preview",
+      "camera": "Camera",
+      "microphone": "Microphone",
+      "speaker": "Speaker",
+      "selectCamera": "Select camera",
+      "selectMicrophone": "Select microphone",
+      "selectSpeaker": "Select speaker"
+    },
+    "chat": {
+      "title": "Chat",
+      "description": "Send and receive messages with other participants",
+      "noMessages": "No messages yet",
+      "placeholder": "Type a message...",
+      "send": "Send"
+    },
+    "errors": {
+      "permissionDenied": "Camera/Microphone permission denied",
+      "connectionFailed": "Failed to connect to meeting",
+      "joinFailed": "Failed to join meeting",
+      "notAuthorized": "You are not authorized to join this meeting",
+      "eventNotFound": "Event not found",
+      "eventEnded": "This event has ended"
+    },
+    "dialogs": {
+      "leaveTitle": "Leave meeting?",
+      "leaveMessage": "Are you sure you want to leave this meeting?",
+      "leaveConfirm": "Leave",
+      "leaveCancel": "Stay",
+      "endEventTitle": "End event?",
+      "endEventMessage": "This will end the event for all participants. Are you sure?",
+      "endEventConfirm": "End Event",
+      "endEventCancel": "Cancel"
+    }
+  }
+}

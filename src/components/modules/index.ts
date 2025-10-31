@@ -5,6 +5,7 @@ export * as event from "./event";
 export * from "./gifts";
 export * from "./loading";
 export * from "./matching";
+export * as meeting from "./meeting";
 export * from "./pricing";
 export * from "./profile";
 export * from "./setup-profile";

@@ -191,6 +191,7 @@
     },
     "detail": {
       "title": "Chi tiết sự kiện",
+      "free": "Miễn phí",
       "back": "Quay lại danh sách",
       "register": "Đăng ký tham gia",
       "registered": "Đã đăng ký",

@@ -191,6 +191,7 @@
     },
     "detail": {
       "title": "Event Details",
+      "free": "Free",
       "back": "Back to Events",
       "register": "Register for Event",
       "registered": "Already Registered",
