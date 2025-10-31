@@ -57,7 +57,6 @@ export function VideoTile({
               `[VideoTile] ⚠️ Autoplay prevented for ${name}:`,
               error
             );
-            // User interaction might be needed to play
             // For local video, we mute it so autoplay works
             if (isLocal) {
               videoElement.muted = true;
@@ -96,19 +95,24 @@ export function VideoTile({
   return (
     <div
       className={cn(
-        "relative aspect-video rounded-lg overflow-hidden bg-secondary/30 border-2 border-transparent",
+        "relative w-full h-full rounded-lg overflow-hidden",
+        "bg-secondary/30 border-2 border-transparent",
+        "min-h-[120px]", // ✅ Minimum height to prevent collapse
         isHandRaised && "border-yellow-500",
         className
       )}
     >
-      {/* Video element */}
+      {/* Video element or Avatar */}
       {videoEnabled && stream ? (
         <video
           ref={videoRef}
           autoPlay
           playsInline
           muted={isLocal}
-          className="w-full h-full object-cover"
+          className={cn(
+            "w-full h-full object-cover", // ✅ object-cover maintains aspect ratio
+            "bg-black" // ✅ Black background for letterboxing
+          )}
           aria-label={`Video stream for ${name}`}
         >
           <track kind="captions" />
@@ -116,9 +120,21 @@ export function VideoTile({
       ) : (
         /* Avatar fallback */
         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
-          <Avatar className="h-20 w-20 border-2 border-border">
+          <Avatar
+            className={cn(
+              "border-2 border-border",
+              // ✅ Responsive avatar sizing
+              "h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32"
+            )}
+          >
             <AvatarImage src={avatarUrl} alt={name} />
-            <AvatarFallback className="text-2xl font-semibold">
+            <AvatarFallback
+              className={cn(
+                "font-semibold",
+                // ✅ Responsive text sizing
+                "text-lg sm:text-xl md:text-2xl lg:text-3xl"
+              )}
+            >
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -128,27 +144,29 @@ export function VideoTile({
       {/* Overlay info */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Name badge */}
-        <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded flex items-center gap-2">
-          <span className="text-white text-sm font-medium">
+        <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded flex items-center gap-2 max-w-[calc(100%-1rem)]">
+          <span className="text-white text-xs sm:text-sm font-medium truncate">
             {isLocal ? `${name} (You)` : name}
           </span>
           {!audioEnabled && (
-            <IconMicrophoneOff className="h-4 w-4 text-red-400" />
+            <IconMicrophoneOff className="h-3 w-3 sm:h-4 sm:w-4 text-red-400 flex-shrink-0" />
           )}
         </div>
 
         {/* Hand raised indicator */}
         {isHandRaised && (
           <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded flex items-center gap-1">
-            <IconHandStop className="h-4 w-4" />
-            <span className="text-xs font-medium">Hand Raised</span>
+            <IconHandStop className="h-3 w-3 sm:h-4 sm:w-4" />
+            <span className="text-xs font-medium hidden sm:inline">
+              Hand Raised
+            </span>
           </div>
         )}
 
         {/* Video off indicator */}
         {!videoEnabled && (
-          <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-sm p-2 rounded">
-            <IconVideoOff className="h-4 w-4 text-white" />
+          <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-sm p-1.5 sm:p-2 rounded">
+            <IconVideoOff className="h-3 w-3 sm:h-4 sm:w-4 text-white" />
           </div>
         )}
       </div>

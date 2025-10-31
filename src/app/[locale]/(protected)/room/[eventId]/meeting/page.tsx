@@ -49,7 +49,6 @@ export default function MeetingRoomPage() {
   const [chatMessages, setChatMessages] = useState<MeetingChatMessage[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // NEW: Track if call has been initiated to prevent infinite loop
   const callInitiatedRef = useRef(false);
 
   const { event, currentUser, isHost, canJoin, isLoading } =
@@ -60,9 +59,12 @@ export default function MeetingRoomPage() {
     myConnectionId,
     participants: webrtcParticipants,
     localStream,
+    localAudioEnabled,
+    localVideoEnabled,
     joinRoom,
     startCall,
     leaveRoom,
+    endRoom,
     toggleAudio: webrtcToggleAudio,
     toggleVideo: webrtcToggleVideo,
   } = useWebRTC({
@@ -77,8 +79,6 @@ export default function MeetingRoomPage() {
 
   const {
     controls,
-    toggleAudio,
-    toggleVideo,
     toggleHandRaise,
     toggleChat,
     toggleParticipants,
@@ -86,6 +86,15 @@ export default function MeetingRoomPage() {
     setAudioEnabled,
     setVideoEnabled,
   } = useMeetingControls();
+
+  // ✅ Sync WebRTC state to UI controls
+  useEffect(() => {
+    setAudioEnabled(localAudioEnabled);
+  }, [localAudioEnabled, setAudioEnabled]);
+
+  useEffect(() => {
+    setVideoEnabled(localVideoEnabled);
+  }, [localVideoEnabled, setVideoEnabled]);
 
   // Convert WebRTC participants map to array
   const participantsList: Participant[] = Array.from(
@@ -114,16 +123,14 @@ export default function MeetingRoomPage() {
     }
   }, [isLoading, event, currentUser, canJoin, isInitialized, joinRoom, tError]);
 
-  // FIXED: Auto start call when participants join - with duplicate prevention
+  // Auto start call when participants join
   useEffect(() => {
-    // Early returns
     if (!isInitialized || !hasStartedEvent || callInitiatedRef.current) {
       return;
     }
 
     const participantCount = participantsList.length;
 
-    // Only start if we have participants and are connected
     if (participantCount > 0 && isConnected) {
       console.log(
         "[Meeting] Initiating call with",
@@ -131,10 +138,8 @@ export default function MeetingRoomPage() {
         "participants"
       );
 
-      // Set flag to prevent re-entry
       callInitiatedRef.current = true;
 
-      // Delay to ensure all participants are ready
       const timer = setTimeout(() => {
         startCall();
       }, 1500);
@@ -149,27 +154,21 @@ export default function MeetingRoomPage() {
     startCall,
   ]);
 
-  // Handle audio toggle
+  // ✅ FIX: Handle audio toggle - KHÔNG double toggle
   const handleToggleAudio = () => {
-    const newState = webrtcToggleAudio();
-    if (newState !== undefined) {
-      setAudioEnabled(newState);
-    }
-    toggleAudio();
+    webrtcToggleAudio();
+    // State sẽ được sync qua useEffect above
   };
 
-  // Handle video toggle
+  // ✅ FIX: Handle video toggle - KHÔNG double toggle
   const handleToggleVideo = () => {
-    const newState = webrtcToggleVideo();
-    if (newState !== undefined) {
-      setVideoEnabled(newState);
-    }
-    toggleVideo();
+    webrtcToggleVideo();
+    // State sẽ được sync qua useEffect above
   };
 
-  // FIXED: Handle leave - reset call initiated flag
+  // Handle leave
   const handleLeave = async () => {
-    callInitiatedRef.current = false; // Reset flag
+    callInitiatedRef.current = false;
     await leaveRoom();
     router.push(`/${locale}/dashboard`);
   };
@@ -185,25 +184,30 @@ export default function MeetingRoomPage() {
       });
       setHasStartedEvent(true);
       toast.success(tControls("startEvent"));
-
-      // WebRTC call will start automatically via useEffect when hasStartedEvent changes
     } catch (error) {
       console.error("[Meeting] Start event error:", error);
       toast.error("Failed to start event");
     }
   };
 
-  // FIXED: Handle end event - reset call initiated flag
+  // Handle end event
   const handleEndEvent = async () => {
     if (!isHost || !event) return;
 
     try {
+      // 1. End room via SignalR - this will broadcast to all participants
+      await endRoom();
+
+      // 2. Update event status in database
       await eventApiRequest.updateEventStatusByHost({
         eventId,
         status: EventStatus.Completed,
       });
+
       toast.success(tControls("endEvent"));
-      callInitiatedRef.current = false; // Reset flag
+
+      // 3. Local cleanup and redirect
+      callInitiatedRef.current = false;
       await leaveRoom();
       router.push(`/${locale}/dashboard`);
     } catch (error) {
@@ -212,7 +216,7 @@ export default function MeetingRoomPage() {
     }
   };
 
-  // Handle send chat message (UI only - no backend)
+  // Handle send chat message
   const handleSendMessage = (message: string) => {
     const newMessage: MeetingChatMessage = {
       id: Date.now().toString(),
@@ -224,7 +228,7 @@ export default function MeetingRoomPage() {
     setChatMessages((prev) => [...prev, newMessage]);
   };
 
-  // Handle participant actions (UI only - no backend)
+  // Handle participant actions
   const handleMuteParticipant = (participantId: string) => {
     toast.info("Mute participant feature (UI only)");
   };

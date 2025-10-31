@@ -9,8 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
   Separator,
-  SheetDescription,
-  SheetTitle,
 } from "@/components/ui";
 import { useDeviceSettings } from "@/hooks/reusable/use-device-settings";
 import { cn } from "@/lib/utils";
@@ -70,10 +68,12 @@ export function DeviceSettings({ onClose, className }: DeviceSettingsProps) {
 
   return (
     <div className={cn("flex flex-col h-full bg-background", className)}>
-      <SheetTitle className="sr-only">{t("title")}</SheetTitle>
-      <SheetDescription className="sr-only">
+      {/* Accessible title/description (avoid Sheet/Dialog-specific components so
+              this component can be used inside a Card or inside a Sheet/Dialog) */}
+      <h2 className="sr-only">{t("title")}</h2>
+      <p className="sr-only">
         {t("description") || "Configure your audio and video devices"}
-      </SheetDescription>
+      </p>
 
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
@@ -84,7 +84,7 @@ export function DeviceSettings({ onClose, className }: DeviceSettingsProps) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-auto p-4 space-y-6">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-6">
         {/* Video preview */}
         <div>
           <Label className="flex items-center gap-2 mb-2">
@@ -115,10 +115,10 @@ export function DeviceSettings({ onClose, className }: DeviceSettingsProps) {
             onValueChange={selectVideoInput}
             disabled={isLoading || videoInputs.length === 0}
           >
-            <SelectTrigger>
+            <SelectTrigger className="w-full">
               <SelectValue placeholder={t("selectCamera")} />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="w-full">
               {videoInputs.map((device) => (
                 <SelectItem key={device.deviceId} value={device.deviceId}>
                   {device.label}
@@ -139,10 +139,10 @@ export function DeviceSettings({ onClose, className }: DeviceSettingsProps) {
             onValueChange={selectAudioInput}
             disabled={isLoading || audioInputs.length === 0}
           >
-            <SelectTrigger>
+            <SelectTrigger className="w-full">
               <SelectValue placeholder={t("selectMicrophone")} />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="w-full">
               {audioInputs.map((device) => (
                 <SelectItem key={device.deviceId} value={device.deviceId}>
                   {device.label}
@@ -163,10 +163,10 @@ export function DeviceSettings({ onClose, className }: DeviceSettingsProps) {
             onValueChange={selectAudioOutput}
             disabled={isLoading || audioOutputs.length === 0}
           >
-            <SelectTrigger>
+            <SelectTrigger className="w-full">
               <SelectValue placeholder={t("selectSpeaker")} />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="w-full">
               {audioOutputs.map((device) => (
                 <SelectItem key={device.deviceId} value={device.deviceId}>
                   {device.label}
