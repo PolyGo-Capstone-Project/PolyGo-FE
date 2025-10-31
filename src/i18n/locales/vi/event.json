@@ -230,6 +230,11 @@
       "confirmAndPay": "Xác nhận & Thanh toán",
       "processing": "Đang xử lý...",
       "eventFull": "Sự kiện đã đầy",
+      "joinHost": "Vào phòng họp",
+      "join": "Tham gia cuộc họp",
+      "waitingForHost": "Đang chờ người chủ trì bắt đầu sự kiện...",
+      "hostCanJoinMessage": "Bạn có thể vào phòng họp trước 1 giờ khi sự kiện bắt đầu",
+      "eventEnded": "Sự kiện đã kết thúc",
       "insufficientFunds": "Số dư không đủ",
       "yourBalance": "Số dư của bạn",
       "registrationSuccess": {

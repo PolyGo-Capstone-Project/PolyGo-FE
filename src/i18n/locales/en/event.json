@@ -221,6 +221,11 @@
       "confirmAndPay": "Confirm & Pay",
       "processing": "Processing...",
       "eventFull": "Event Full",
+      "joinHost": "Join Meeting Room",
+      "join": "Join Meeting",
+      "waitingForHost": "Waiting for host to start the event...",
+      "hostCanJoinMessage": "You can join the meeting room 1 hour before the event starts",
+      "eventEnded": "This event has ended",
       "password": {
         "label": "Event Password",
         "placeholder": "Enter event password",

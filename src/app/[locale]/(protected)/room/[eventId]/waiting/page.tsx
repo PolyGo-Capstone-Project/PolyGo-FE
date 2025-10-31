@@ -1,6 +1,5 @@
 "use client";
 
-import { DeviceSettings } from "@/components/modules/meeting";
 import {
   Button,
   Card,
@@ -8,8 +7,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui";
-import { useDeviceSettings } from "@/hooks/reusable/use-device-settings";
+} from "@/components";
+import { DeviceSettings } from "@/components/modules/meeting";
 import { useEventMeeting } from "@/hooks/reusable/use-event-meeting";
 import { cn } from "@/lib/utils";
 import {
@@ -31,61 +30,129 @@ export default function WaitingRoomPage() {
   const tError = useTranslations("meeting.errors");
   const locale = useLocale();
   const eventId = params.eventId as string;
+
   const [audioEnabled, setAudioEnabled] = useState(true);
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [permissionError, setPermissionError] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { getStreamWithSettings } = useDeviceSettings();
   const { event, currentUser, canJoin, isLoading } = useEventMeeting(eventId);
 
-  // Get media stream
   useEffect(() => {
-    let stream: MediaStream | null = null;
+    if (isInitialized) return;
 
-    const getMedia = async () => {
+    let mounted = true;
+
+    const initStream = async () => {
       try {
-        stream = await getStreamWithSettings();
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: true,
+        });
+
+        if (!mounted) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+
         setLocalStream(stream);
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
+        setIsInitialized(true);
+        console.log("[Waiting] ✓ Stream initialized");
       } catch (error) {
         console.error("[Waiting] Media error:", error);
         setPermissionError(tError("permissionDenied"));
       }
     };
 
-    getMedia();
+    initStream();
 
     return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
+      mounted = false;
+    };
+  }, [isInitialized, tError]);
+
+  // ✅ FIX: Cleanup stream on unmount
+  useEffect(() => {
+    return () => {
+      if (localStream) {
+        console.log("[Waiting] Cleaning up stream");
+        localStream.getTracks().forEach((track) => track.stop());
       }
     };
-  }, [getStreamWithSettings, tError]);
+  }, [localStream]);
 
-  // Toggle audio
+  useEffect(() => {
+    if (videoRef.current && localStream) {
+      videoRef.current.srcObject = localStream;
+      videoRef.current
+        .play()
+        .then(() => console.log("[Waiting] Video playing"))
+        .catch((err) => console.error("[Waiting] Play error:", err));
+    }
+  }, [localStream]);
+
+  // ✅ FIX: Toggle audio - CHỈ toggle enabled, KHÔNG stop track
   const toggleAudio = () => {
     if (localStream) {
       const audioTrack = localStream.getAudioTracks()[0];
       if (audioTrack) {
         audioTrack.enabled = !audioTrack.enabled;
         setAudioEnabled(audioTrack.enabled);
+        console.log(
+          "[Waiting]",
+          audioTrack.enabled ? "✓ Audio enabled" : "✗ Audio disabled"
+        );
       }
     }
   };
 
-  // Toggle video
-  const toggleVideo = () => {
-    if (localStream) {
-      const videoTrack = localStream.getVideoTracks()[0];
-      if (videoTrack) {
-        videoTrack.enabled = !videoTrack.enabled;
-        setVideoEnabled(videoTrack.enabled);
+  // ✅ FIX: Toggle video - CHỈ toggle enabled, KHÔNG stop track
+  const toggleVideo = async () => {
+    if (!localStream) return;
+
+    try {
+      const videoTracks = localStream.getVideoTracks();
+
+      // 🔴 Nếu video đang bật → stop track cũ
+      if (videoTracks.length > 0 && videoTracks[0].readyState === "live") {
+        videoTracks.forEach((track) => track.stop());
+        setVideoEnabled(false);
+        console.log("[Waiting] ✗ Video disabled");
+        return;
       }
+
+      // 🟢 Nếu video đang tắt → xin lại stream mới
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+
+      // Dừng track audio cũ (tránh trùng) và copy audio cũ nếu muốn
+      const oldAudioTracks = localStream.getAudioTracks();
+      const newVideoTrack = newStream.getVideoTracks()[0];
+
+      // Tạo stream mới kết hợp audio cũ + video mới
+      const combinedStream = new MediaStream();
+      oldAudioTracks.forEach((t) => combinedStream.addTrack(t));
+      combinedStream.addTrack(newVideoTrack);
+
+      // Cập nhật cả state và videoRef
+      setLocalStream(combinedStream);
+      if (videoRef.current) {
+        videoRef.current.srcObject = combinedStream;
+        await videoRef.current.play().catch(console.error);
+      }
+
+      setVideoEnabled(true);
+      console.log("[Waiting] ✓ Video re-enabled");
+    } catch (err) {
+      console.error("[Waiting] toggleVideo error:", err);
     }
   };
 
@@ -151,6 +218,7 @@ export default function WaitingRoomPage() {
                       size="icon"
                       onClick={toggleAudio}
                       className="h-12 w-12 rounded-full"
+                      disabled={!localStream}
                     >
                       {audioEnabled ? (
                         <IconMicrophone className="h-5 w-5" />
@@ -164,6 +232,7 @@ export default function WaitingRoomPage() {
                       size="icon"
                       onClick={toggleVideo}
                       className="h-12 w-12 rounded-full"
+                      disabled={!localStream}
                     >
                       {videoEnabled ? (
                         <IconVideo className="h-5 w-5" />

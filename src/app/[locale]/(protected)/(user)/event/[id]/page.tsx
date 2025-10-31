@@ -96,6 +96,7 @@ export default function EventDetailPage() {
   // Meeting room logic - must be before early returns
   const isHost = currentUser?.id === event?.host.id;
   const isRegistered = event?.isParticipant || false;
+  const eventEnd = event?.status === EventStatus.Completed ? true : false;
   const canJoin = isRegistered || isHost;
 
   // Host can join 1 hour before startAt
@@ -112,8 +113,9 @@ export default function EventDetailPage() {
     ? isRegistered && event.status === EventStatus.Live
     : false;
 
-  // Show join button
-  const showJoinButton = (isHost && canHostJoin) || canAttendeeJoin;
+  // Show join button (don't show if event has ended)
+  const showJoinButton =
+    ((isHost && canHostJoin) || canAttendeeJoin) && !eventEnd;
 
   const hasBanner = event ? isValidBannerUrl(event.bannerUrl) : false;
 
@@ -420,11 +422,18 @@ export default function EventDetailPage() {
                   </Button>
                 )}
 
-                {/* Already Registered Badge */}
-                {isRegistered && (
+                {/* Already Registered Badge. If event has ended, show event ended message instead */}
+                {isRegistered && !eventEnd && (
                   <div className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-primary/10 text-primary rounded-lg border border-primary/20">
                     <IconCheck className="h-5 w-5" />
                     <span className="font-semibold">{t("registered")}</span>
+                  </div>
+                )}
+
+                {isRegistered && eventEnd && (
+                  <div className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-muted rounded-lg border text-muted-foreground">
+                    <IconCheck className="h-5 w-5" />
+                    <span className="font-semibold">{t("eventEnded")}</span>
                   </div>
                 )}
 
@@ -437,7 +446,7 @@ export default function EventDetailPage() {
                     onClick={handleJoinMeeting}
                   >
                     <IconVideo className="h-5 w-5" />
-                    {isHost ? "Join Meeting Room" : "Join Meeting"}
+                    {isHost ? t("joinHost") : t("join")}
                   </Button>
                 )}
 
@@ -445,7 +454,7 @@ export default function EventDetailPage() {
                 {canJoin && !showJoinButton && !isHost && (
                   <div className="w-full py-3 px-4 bg-muted rounded-lg border text-center">
                     <p className="text-sm text-muted-foreground">
-                      Waiting for host to start the event...
+                      {t("waitingForHost")}
                     </p>
                   </div>
                 )}
@@ -454,8 +463,7 @@ export default function EventDetailPage() {
                 {isHost && !canHostJoin && (
                   <div className="w-full py-3 px-4 bg-muted rounded-lg border text-center">
                     <p className="text-sm text-muted-foreground">
-                      You can join the meeting room 1 hour before the event
-                      starts
+                      {t("hostCanJoinMessage")}
                     </p>
                   </div>
                 )}

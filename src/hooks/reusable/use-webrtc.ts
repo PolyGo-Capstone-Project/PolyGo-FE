@@ -45,6 +45,8 @@ export function useWebRTC({
     new Map()
   );
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [localAudioEnabled, setLocalAudioEnabled] = useState(true);
+  const [localVideoEnabled, setLocalVideoEnabled] = useState(true);
 
   const peerConnectionsRef = useRef<Map<string, ExtendedRTCPeerConnection>>(
     new Map()
@@ -56,6 +58,10 @@ export function useWebRTC({
   >([]);
   const myConnectionIdRef = useRef<string>("");
   const callStartedRef = useRef<boolean>(false);
+
+  // ✅ FIX: Track if we're in the middle of joining to prevent double join
+  const isJoiningRef = useRef<boolean>(false);
+  const hasJoinedRef = useRef<boolean>(false);
 
   // Get local media stream
   const getLocalStream = useCallback(async () => {
@@ -218,9 +224,36 @@ export function useWebRTC({
     [eventId, getLocalStream]
   );
 
-  // Initialize SignalR connection - CRITICAL: Minimal dependencies!
+  // Broadcast media state change
+  const broadcastMediaState = useCallback(
+    async (type: "audio" | "video", enabled: boolean) => {
+      try {
+        if (connectionRef.current?.invoke) {
+          await connectionRef.current.invoke(
+            "BroadcastMediaState",
+            eventId,
+            myConnectionIdRef.current,
+            type,
+            enabled
+          );
+          console.log(`[WebRTC] ✓ Broadcast ${type} state: ${enabled}`);
+        }
+      } catch (error) {
+        console.warn(`[WebRTC] ✗ Failed to broadcast ${type} state:`, error);
+      }
+    },
+    [eventId]
+  );
+
+  // ✅ FIX: Initialize SignalR connection ONCE, OUTSIDE of useEffect cleanup cycle
   useEffect(() => {
-    console.log("[SignalR] Setting up connection for eventId:", eventId);
+    // Skip if connection already exists
+    if (connectionRef.current) {
+      console.log("[SignalR] Connection already exists, skipping init");
+      return;
+    }
+
+    console.log("[SignalR] Initializing connection for eventId:", eventId);
 
     const hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(HUB_URL)
@@ -278,7 +311,7 @@ export function useWebRTC({
           return;
         }
 
-        // Auto-offer logic uses refs, safe in event handler
+        // Auto-offer logic with proper PC creation
         setTimeout(async () => {
           try {
             console.log("[WebRTC] Auto-initiating offer to new user:", connId);
@@ -301,7 +334,7 @@ export function useWebRTC({
               }
             }
 
-            // Create PC inline to avoid dependency issues
+            // Use the createPeerConnection utility (will be created inline)
             let pc = peerConnectionsRef.current.get(connId);
             if (!pc) {
               pc = new RTCPeerConnection({
@@ -479,6 +512,31 @@ export function useWebRTC({
       }
     });
 
+    // Listen for media state changes
+    hubConnection.on(
+      "ReceiveMediaState",
+      (fromConnId: string, type: "audio" | "video", enabled: boolean) => {
+        console.log(
+          `[SignalR] ReceiveMediaState from ${fromConnId}: ${type} = ${enabled}`
+        );
+
+        setParticipants((prev) => {
+          const newMap = new Map(prev);
+          const participant = newMap.get(fromConnId);
+          if (participant) {
+            newMap.set(fromConnId, {
+              ...participant,
+              audioEnabled:
+                type === "audio" ? enabled : participant.audioEnabled,
+              videoEnabled:
+                type === "video" ? enabled : participant.videoEnabled,
+            });
+          }
+          return newMap;
+        });
+      }
+    );
+
     // Receive offer
     hubConnection.on(
       "ReceiveOffer",
@@ -493,7 +551,6 @@ export function useWebRTC({
 
           let pc = peerConnectionsRef.current.get(fromConnId);
           if (!pc) {
-            // Create PC inline
             pc = new RTCPeerConnection({
               iceServers: DEFAULT_ICE_SERVERS,
             }) as ExtendedRTCPeerConnection;
@@ -695,19 +752,24 @@ export function useWebRTC({
       if (onRoomEnded) onRoomEnded();
     });
 
-    console.log("[SignalR] ✓ Connection setup complete (not started yet)");
+    console.log("[SignalR] ✓ Connection handlers setup complete");
 
+    // ✅ FIX: KHÔNG cleanup connection trong useEffect return
+    // Connection sẽ được cleanup trong leaveRoom() thay vì ở đây
     return () => {
-      console.log("[SignalR] Cleanup: stopping connection if started");
-      if (hubConnection.state !== signalR.HubConnectionState.Disconnected) {
-        hubConnection.stop();
-      }
-      connectionRef.current = null;
+      console.log("[SignalR] useEffect cleanup - NOT stopping connection");
+      // Do NOT stop connection here - it causes the negotiation error
     };
-  }, [eventId]); // ONLY eventId! No function dependencies!
+  }, [eventId, onRoomEnded]);
 
-  // Join room
+  // ✅ FIX: Join room with proper state management
   const joinRoom = useCallback(async () => {
+    // Prevent double joining
+    if (isJoiningRef.current || hasJoinedRef.current) {
+      console.log("[SignalR] ⚠️ Already joining or joined, skipping");
+      return;
+    }
+
     const conn = connectionRef.current;
 
     if (!conn) {
@@ -716,6 +778,7 @@ export function useWebRTC({
     }
 
     try {
+      isJoiningRef.current = true;
       console.log("[SignalR] Current connection state:", conn.state);
 
       if (conn.state === signalR.HubConnectionState.Disconnected) {
@@ -731,12 +794,15 @@ export function useWebRTC({
           "[SignalR] ⚠️ Connection in unexpected state:",
           conn.state
         );
+        // Wait and retry
         await new Promise((resolve) => setTimeout(resolve, 1000));
+        isJoiningRef.current = false;
         return joinRoom();
       }
 
       await conn.invoke("JoinRoom", eventId, userName);
       console.log("[SignalR] ✓ Joined room:", eventId, "as", userName);
+      hasJoinedRef.current = true;
 
       try {
         const participantList = await conn.invoke<Record<string, string>>(
@@ -797,7 +863,10 @@ export function useWebRTC({
       }
     } catch (error) {
       console.error("[SignalR] ✗ Join room error:", error);
+      hasJoinedRef.current = false;
       throw error;
+    } finally {
+      isJoiningRef.current = false;
     }
   }, [eventId, userName]);
 
@@ -899,7 +968,7 @@ export function useWebRTC({
     createPeerConnection,
   ]);
 
-  // Leave room
+  // ✅ FIX: Leave room with proper cleanup
   const leaveRoom = useCallback(async () => {
     const conn = connectionRef.current;
     if (!conn) return;
@@ -914,6 +983,7 @@ export function useWebRTC({
       console.warn("[SignalR] ⚠️ Leave room error:", error);
     }
 
+    // Reset all refs and state
     setIsConnected(false);
     peerConnectionsRef.current.forEach((pc) => pc.close());
     peerConnectionsRef.current.clear();
@@ -927,14 +997,21 @@ export function useWebRTC({
     setParticipants(new Map());
     setMyConnectionId("");
     callStartedRef.current = false;
+    isJoiningRef.current = false;
+    hasJoinedRef.current = false;
+
+    // Clear connection ref so it can be recreated
+    connectionRef.current = null;
   }, [eventId]);
 
-  // Toggle audio
+  // Toggle audio with state management and broadcast
   const toggleAudio = useCallback(() => {
-    if (!localStreamRef.current) return false;
+    if (!localStreamRef.current) return undefined;
     const audioTrack = localStreamRef.current.getAudioTracks()[0];
     if (audioTrack) {
       audioTrack.enabled = !audioTrack.enabled;
+      setLocalAudioEnabled(audioTrack.enabled);
+      broadcastMediaState("audio", audioTrack.enabled);
       console.log(
         "[Media]",
         audioTrack.enabled ? "✓ Unmuted" : "✗ Muted",
@@ -942,15 +1019,17 @@ export function useWebRTC({
       );
       return audioTrack.enabled;
     }
-    return false;
-  }, []);
+    return undefined;
+  }, [broadcastMediaState]);
 
-  // Toggle video
+  // Toggle video with state management and broadcast
   const toggleVideo = useCallback(() => {
-    if (!localStreamRef.current) return false;
+    if (!localStreamRef.current) return undefined;
     const videoTrack = localStreamRef.current.getVideoTracks()[0];
     if (videoTrack) {
       videoTrack.enabled = !videoTrack.enabled;
+      setLocalVideoEnabled(videoTrack.enabled);
+      broadcastMediaState("video", videoTrack.enabled);
       console.log(
         "[Media]",
         videoTrack.enabled ? "✓ Enabled" : "✗ Disabled",
@@ -958,14 +1037,16 @@ export function useWebRTC({
       );
       return videoTrack.enabled;
     }
-    return false;
-  }, []);
+    return undefined;
+  }, [broadcastMediaState]);
 
   return {
     isConnected,
     myConnectionId,
     participants,
     localStream,
+    localAudioEnabled,
+    localVideoEnabled,
     joinRoom,
     startCall,
     leaveRoom,

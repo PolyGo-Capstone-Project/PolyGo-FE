@@ -53,37 +53,106 @@ export function VideoGrid({
     localVideoEnabled,
   ]);
 
-  // Calculate grid layout
-  const gridCols = useMemo(() => {
+  // ✅ IMPROVED: Calculate grid layout with better responsive design
+  const gridLayout = useMemo(() => {
     const count = allParticipants.length;
-    if (count === 1) return "grid-cols-1";
-    if (count === 2) return "grid-cols-2";
-    if (count <= 4) return "grid-cols-2";
-    if (count <= 6) return "grid-cols-3";
-    return "grid-cols-3 xl:grid-cols-4";
+
+    // Single participant - full screen
+    if (count === 1) {
+      return {
+        containerClass: "flex items-center justify-center p-4",
+        gridClass: "",
+        itemClass: "w-full max-w-4xl aspect-video",
+      };
+    }
+
+    // Two participants - side by side or stacked
+    if (count === 2) {
+      return {
+        containerClass:
+          "grid grid-cols-1 md:grid-cols-2 gap-4 p-4 auto-rows-fr",
+        gridClass: "",
+        itemClass: "w-full h-full min-h-[300px]",
+      };
+    }
+
+    // 3-4 participants - 2x2 grid
+    if (count <= 4) {
+      return {
+        containerClass:
+          "grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 auto-rows-fr",
+        gridClass: "",
+        itemClass: "w-full h-full min-h-[250px]",
+      };
+    }
+
+    // 5-6 participants - 2x3 or 3x2 grid
+    if (count <= 6) {
+      return {
+        containerClass:
+          "grid grid-cols-2 lg:grid-cols-3 gap-4 p-4 auto-rows-fr",
+        gridClass: "",
+        itemClass: "w-full h-full min-h-[200px] max-h-[calc(50vh-2rem)]",
+      };
+    }
+
+    // 7-9 participants - 3x3 grid
+    if (count <= 9) {
+      return {
+        containerClass:
+          "grid grid-cols-2 md:grid-cols-3 gap-3 p-4 auto-rows-fr",
+        gridClass: "",
+        itemClass: "w-full h-full min-h-[180px] max-h-[calc(33.33vh-2rem)]",
+      };
+    }
+
+    // 10-12 participants - 3x4 grid
+    if (count <= 12) {
+      return {
+        containerClass:
+          "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-4 auto-rows-fr",
+        gridClass: "",
+        itemClass: "w-full h-full min-h-[150px] max-h-[calc(25vh-2rem)]",
+      };
+    }
+
+    // 13+ participants - 4x4 grid with scroll
+    return {
+      containerClass:
+        "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 p-4",
+      gridClass: "",
+      itemClass: "w-full aspect-video min-h-[120px]",
+    };
   }, [allParticipants.length]);
+
+  // ✅ For large groups, enable scrolling
+  const needsScroll = allParticipants.length > 12;
 
   return (
     <div
       className={cn(
-        "grid gap-4 w-full h-full p-4",
-        gridCols,
-        "auto-rows-fr",
+        "w-full h-full",
+        needsScroll
+          ? "overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent"
+          : "overflow-hidden",
         className
       )}
     >
-      {allParticipants.map((participant, index) => (
-        <VideoTile
-          key={participant.id}
-          name={participant.name}
-          avatarUrl={participant.avatarUrl}
-          stream={participant.stream}
-          audioEnabled={participant.audioEnabled}
-          videoEnabled={participant.videoEnabled}
-          isHandRaised={participant.isHandRaised}
-          isLocal={index === 0} // First one is local
-        />
-      ))}
+      <div className={cn(gridLayout.containerClass)}>
+        {allParticipants.map((participant, index) => (
+          <div key={participant.id} className={cn(gridLayout.itemClass)}>
+            <VideoTile
+              name={participant.name}
+              avatarUrl={participant.avatarUrl}
+              stream={participant.stream}
+              audioEnabled={participant.audioEnabled}
+              videoEnabled={participant.videoEnabled}
+              isHandRaised={participant.isHandRaised}
+              isLocal={index === 0}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
