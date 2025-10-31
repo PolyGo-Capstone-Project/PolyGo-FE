@@ -64,6 +64,7 @@ export default function MeetingRoomPage() {
     joinRoom,
     startCall,
     leaveRoom,
+    endRoom,
     toggleAudio: webrtcToggleAudio,
     toggleVideo: webrtcToggleVideo,
   } = useWebRTC({
@@ -194,11 +195,18 @@ export default function MeetingRoomPage() {
     if (!isHost || !event) return;
 
     try {
+      // 1. End room via SignalR - this will broadcast to all participants
+      await endRoom();
+
+      // 2. Update event status in database
       await eventApiRequest.updateEventStatusByHost({
         eventId,
         status: EventStatus.Completed,
       });
+
       toast.success(tControls("endEvent"));
+
+      // 3. Local cleanup and redirect
       callInitiatedRef.current = false;
       await leaveRoom();
       router.push(`/${locale}/dashboard`);

@@ -59,7 +59,7 @@ export function useWebRTC({
   const myConnectionIdRef = useRef<string>("");
   const callStartedRef = useRef<boolean>(false);
 
-  // ✅ FIX: Track if we're in the middle of joining to prevent double join
+  const connectionInitializedRef = useRef<boolean>(false);
   const isJoiningRef = useRef<boolean>(false);
   const hasJoinedRef = useRef<boolean>(false);
 
@@ -87,21 +87,11 @@ export function useWebRTC({
     }
   }, []);
 
-  // Create peer connection
-  const createPeerConnection = useCallback(
-    async (remoteId: string): Promise<ExtendedRTCPeerConnection> => {
-      const existing = peerConnectionsRef.current.get(remoteId);
-      if (existing) {
-        console.log("[PC] Reusing existing peer connection for", remoteId);
-        return existing;
-      }
-
-      console.log("[PC] Creating new peer connection for", remoteId);
-      const pc = new RTCPeerConnection({
-        iceServers: DEFAULT_ICE_SERVERS,
-      }) as ExtendedRTCPeerConnection;
-
+  // Create peer connection helper
+  const setupPeerConnectionHandlers = useCallback(
+    (pc: ExtendedRTCPeerConnection, remoteId: string) => {
       pc._pendingRemoteCandidates = [];
+
       pc._applyPendingCandidates = async () => {
         while (
           pc._pendingRemoteCandidates &&
@@ -131,7 +121,10 @@ export function useWebRTC({
         const candidateJson = JSON.stringify(event.candidate);
         const trySend = async () => {
           try {
-            if (connectionRef.current?.invoke) {
+            if (
+              connectionRef.current?.state ===
+              signalR.HubConnectionState.Connected
+            ) {
               await connectionRef.current.invoke(
                 "SendIceCandidate",
                 eventId,
@@ -206,6 +199,25 @@ export function useWebRTC({
           remoteId
         );
       };
+    },
+    [eventId]
+  );
+
+  // Create peer connection
+  const createPeerConnection = useCallback(
+    async (remoteId: string): Promise<ExtendedRTCPeerConnection> => {
+      const existing = peerConnectionsRef.current.get(remoteId);
+      if (existing) {
+        console.log("[PC] Reusing existing peer connection for", remoteId);
+        return existing;
+      }
+
+      console.log("[PC] Creating new peer connection for", remoteId);
+      const pc = new RTCPeerConnection({
+        iceServers: DEFAULT_ICE_SERVERS,
+      }) as ExtendedRTCPeerConnection;
+
+      setupPeerConnectionHandlers(pc, remoteId);
 
       const stream = await getLocalStream();
       stream.getTracks().forEach((track) => {
@@ -221,14 +233,16 @@ export function useWebRTC({
       peerConnectionsRef.current.set(remoteId, pc);
       return pc;
     },
-    [eventId, getLocalStream]
+    [eventId, getLocalStream, setupPeerConnectionHandlers]
   );
 
   // Broadcast media state change
   const broadcastMediaState = useCallback(
     async (type: "audio" | "video", enabled: boolean) => {
       try {
-        if (connectionRef.current?.invoke) {
+        if (
+          connectionRef.current?.state === signalR.HubConnectionState.Connected
+        ) {
           await connectionRef.current.invoke(
             "BroadcastMediaState",
             eventId,
@@ -245,14 +259,15 @@ export function useWebRTC({
     [eventId]
   );
 
-  // ✅ FIX: Initialize SignalR connection ONCE, OUTSIDE of useEffect cleanup cycle
+  // ✅ FIX 2: Initialize SignalR connection ONCE and ONLY ONCE
   useEffect(() => {
-    // Skip if connection already exists
-    if (connectionRef.current) {
-      console.log("[SignalR] Connection already exists, skipping init");
+    // Prevent multiple initializations
+    if (connectionInitializedRef.current || connectionRef.current) {
+      console.log("[SignalR] Connection already initialized, skipping");
       return;
     }
 
+    connectionInitializedRef.current = true;
     console.log("[SignalR] Initializing connection for eventId:", eventId);
 
     const hubConnection = new signalR.HubConnectionBuilder()
@@ -262,7 +277,7 @@ export function useWebRTC({
 
     connectionRef.current = hubConnection;
 
-    // Set role event
+    // Setup all event handlers
     hubConnection.on(
       "SetRole",
       (role: string, connId: string, hostId: string) => {
@@ -279,7 +294,6 @@ export function useWebRTC({
       }
     );
 
-    // User joined event
     hubConnection.on(
       "UserJoined",
       (participantName: string, role: string, connId: string) => {
@@ -305,197 +319,9 @@ export function useWebRTC({
           });
           return newMap;
         });
-
-        if (connId === myConnectionIdRef.current) {
-          console.log("[WebRTC] Skipping auto-offer to self");
-          return;
-        }
-
-        // Auto-offer logic with proper PC creation
-        setTimeout(async () => {
-          try {
-            console.log("[WebRTC] Auto-initiating offer to new user:", connId);
-
-            if (!localStreamRef.current) {
-              console.log("[WebRTC] Getting local stream before auto-offer");
-              try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                  audio: true,
-                  video: true,
-                });
-                localStreamRef.current = stream;
-                setLocalStream(stream);
-              } catch (error) {
-                console.error(
-                  "[WebRTC] ✗ Failed to get local stream for auto-offer:",
-                  error
-                );
-                return;
-              }
-            }
-
-            // Use the createPeerConnection utility (will be created inline)
-            let pc = peerConnectionsRef.current.get(connId);
-            if (!pc) {
-              pc = new RTCPeerConnection({
-                iceServers: DEFAULT_ICE_SERVERS,
-              }) as ExtendedRTCPeerConnection;
-
-              pc._pendingRemoteCandidates = [];
-              pc._applyPendingCandidates = async () => {
-                while (
-                  pc!._pendingRemoteCandidates &&
-                  pc!._pendingRemoteCandidates.length > 0
-                ) {
-                  const candidate = pc!._pendingRemoteCandidates.shift();
-                  if (candidate) {
-                    try {
-                      await pc!.addIceCandidate(candidate);
-                    } catch (error) {
-                      console.warn(
-                        "[PC] ✗ Failed to apply queued ICE candidate",
-                        error
-                      );
-                    }
-                  }
-                }
-              };
-
-              pc.onicecandidate = (event) => {
-                if (!event.candidate) return;
-                const candidateJson = JSON.stringify(event.candidate);
-                const trySend = async () => {
-                  try {
-                    if (connectionRef.current?.invoke) {
-                      await connectionRef.current.invoke(
-                        "SendIceCandidate",
-                        eventId,
-                        connId,
-                        candidateJson
-                      );
-                      return;
-                    }
-                  } catch (error) {
-                    console.warn(
-                      "[SignalR] ✗ SendIceCandidate failed, queuing",
-                      error
-                    );
-                  }
-                  outgoingCandidatesRef.current.push({
-                    remoteId: connId,
-                    candidateJson,
-                  });
-                };
-                trySend();
-              };
-
-              pc.ontrack = (event) => {
-                console.log("[PC] ✓ ontrack for", connId);
-                setParticipants((prev) => {
-                  const newMap = new Map(prev);
-                  const participant = newMap.get(connId);
-                  if (participant) {
-                    newMap.set(connId, {
-                      ...participant,
-                      stream: event.streams[0],
-                      status: "connected" as ParticipantStatus,
-                    });
-                  }
-                  return newMap;
-                });
-              };
-
-              pc.oniceconnectionstatechange = () => {
-                console.log(
-                  "[PC] ICE state:",
-                  pc!.iceConnectionState,
-                  "for",
-                  connId
-                );
-                if (
-                  pc!.iceConnectionState === "connected" ||
-                  pc!.iceConnectionState === "completed"
-                ) {
-                  setParticipants((prev) => {
-                    const newMap = new Map(prev);
-                    const participant = newMap.get(connId);
-                    if (participant) {
-                      newMap.set(connId, {
-                        ...participant,
-                        status: "connected" as ParticipantStatus,
-                      });
-                    }
-                    return newMap;
-                  });
-                } else if (pc!.iceConnectionState === "failed") {
-                  pc!.restartIce?.();
-                }
-              };
-
-              if (localStreamRef.current) {
-                localStreamRef.current.getTracks().forEach((track) => {
-                  pc!.addTrack(track, localStreamRef.current!);
-                });
-              }
-
-              peerConnectionsRef.current.set(connId, pc);
-            }
-
-            if (pc.remoteDescription) {
-              console.log(
-                "[WebRTC] ⚠️ Skipping auto-offer (already has remote description)"
-              );
-              return;
-            }
-
-            if (pc.signalingState !== "stable") {
-              console.log(
-                "[WebRTC] ⚠️ Skipping auto-offer (signaling state:",
-                pc.signalingState,
-                ")"
-              );
-              return;
-            }
-
-            const offer = await pc.createOffer();
-            await pc.setLocalDescription(offer);
-
-            let retries = 3;
-            let delay = 500;
-            while (retries > 0) {
-              try {
-                if (connectionRef.current?.invoke) {
-                  await connectionRef.current.invoke(
-                    "SendOffer",
-                    eventId,
-                    connId,
-                    offer.sdp
-                  );
-                  console.log("[WebRTC] ✓ Auto-offer sent to new user", connId);
-                  break;
-                }
-              } catch (error) {
-                retries--;
-                if (retries > 0) {
-                  await new Promise((resolve) => setTimeout(resolve, delay));
-                  delay *= 2;
-                } else {
-                  throw error;
-                }
-              }
-            }
-          } catch (error) {
-            console.error(
-              "[WebRTC] ✗ Auto-offer failed for new user",
-              connId,
-              error
-            );
-          }
-        }, 1000);
       }
     );
 
-    // User left event
     hubConnection.on("UserLeft", (connId: string) => {
       console.log("[SignalR] ✗ UserLeft:", connId);
       setParticipants((prev) => {
@@ -512,7 +338,6 @@ export function useWebRTC({
       }
     });
 
-    // Listen for media state changes
     hubConnection.on(
       "ReceiveMediaState",
       (fromConnId: string, type: "audio" | "video", enabled: boolean) => {
@@ -537,7 +362,6 @@ export function useWebRTC({
       }
     );
 
-    // Receive offer
     hubConnection.on(
       "ReceiveOffer",
       async (fromConnId: string, sdp: string) => {
@@ -555,93 +379,7 @@ export function useWebRTC({
               iceServers: DEFAULT_ICE_SERVERS,
             }) as ExtendedRTCPeerConnection;
 
-            pc._pendingRemoteCandidates = [];
-            pc._applyPendingCandidates = async () => {
-              while (
-                pc!._pendingRemoteCandidates &&
-                pc!._pendingRemoteCandidates.length > 0
-              ) {
-                const candidate = pc!._pendingRemoteCandidates.shift();
-                if (candidate) {
-                  try {
-                    await pc!.addIceCandidate(candidate);
-                  } catch (error) {
-                    console.warn(
-                      "[PC] ✗ Failed to apply queued ICE candidate",
-                      error
-                    );
-                  }
-                }
-              }
-            };
-
-            pc.onicecandidate = (event) => {
-              if (!event.candidate) return;
-              const candidateJson = JSON.stringify(event.candidate);
-              const trySend = async () => {
-                try {
-                  if (connectionRef.current?.invoke) {
-                    await connectionRef.current.invoke(
-                      "SendIceCandidate",
-                      eventId,
-                      fromConnId,
-                      candidateJson
-                    );
-                    return;
-                  }
-                } catch (error) {
-                  console.warn("[SignalR] ✗ SendIceCandidate failed", error);
-                }
-                outgoingCandidatesRef.current.push({
-                  remoteId: fromConnId,
-                  candidateJson,
-                });
-              };
-              trySend();
-            };
-
-            pc.ontrack = (event) => {
-              console.log("[PC] ✓ ontrack for", fromConnId);
-              setParticipants((prev) => {
-                const newMap = new Map(prev);
-                const participant = newMap.get(fromConnId);
-                if (participant) {
-                  newMap.set(fromConnId, {
-                    ...participant,
-                    stream: event.streams[0],
-                    status: "connected" as ParticipantStatus,
-                  });
-                }
-                return newMap;
-              });
-            };
-
-            pc.oniceconnectionstatechange = () => {
-              console.log(
-                "[PC] ICE state:",
-                pc!.iceConnectionState,
-                "for",
-                fromConnId
-              );
-              if (
-                pc!.iceConnectionState === "connected" ||
-                pc!.iceConnectionState === "completed"
-              ) {
-                setParticipants((prev) => {
-                  const newMap = new Map(prev);
-                  const participant = newMap.get(fromConnId);
-                  if (participant) {
-                    newMap.set(fromConnId, {
-                      ...participant,
-                      status: "connected" as ParticipantStatus,
-                    });
-                  }
-                  return newMap;
-                });
-              } else if (pc!.iceConnectionState === "failed") {
-                pc!.restartIce?.();
-              }
-            };
+            setupPeerConnectionHandlers(pc, fromConnId);
 
             if (localStreamRef.current) {
               localStreamRef.current.getTracks().forEach((track) => {
@@ -674,7 +412,6 @@ export function useWebRTC({
       }
     );
 
-    // Receive answer
     hubConnection.on(
       "ReceiveAnswer",
       async (fromConnId: string, sdp: string) => {
@@ -711,7 +448,6 @@ export function useWebRTC({
       }
     );
 
-    // Receive ICE candidate
     hubConnection.on(
       "ReceiveIceCandidate",
       async (fromConnId: string, candidateJson: string) => {
@@ -746,23 +482,67 @@ export function useWebRTC({
       }
     );
 
-    // Room ended
+    // ✅ FIX 3: Handle RoomEnded properly
     hubConnection.on("RoomEnded", () => {
-      console.log("[SignalR] RoomEnded");
+      console.log("[SignalR] 🔴 RoomEnded - cleaning up");
+
+      // Cleanup all connections
+      peerConnectionsRef.current.forEach((pc) => pc.close());
+      peerConnectionsRef.current.clear();
+
+      // Stop local stream
+      if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach((track) => track.stop());
+        localStreamRef.current = null;
+        setLocalStream(null);
+      }
+
+      // Reset state
+      setParticipants(new Map());
+      setIsConnected(false);
+      callStartedRef.current = false;
+      isJoiningRef.current = false;
+      hasJoinedRef.current = false;
+
+      // Call callback
       if (onRoomEnded) onRoomEnded();
     });
 
     console.log("[SignalR] ✓ Connection handlers setup complete");
 
-    // ✅ FIX: KHÔNG cleanup connection trong useEffect return
-    // Connection sẽ được cleanup trong leaveRoom() thay vì ở đây
+    // ✅ FIX 4: Cleanup function - ONLY when component unmounts for real
     return () => {
-      console.log("[SignalR] useEffect cleanup - NOT stopping connection");
-      // Do NOT stop connection here - it causes the negotiation error
-    };
-  }, [eventId, onRoomEnded]);
+      console.log("[SignalR] Component unmounting - cleaning up connection");
 
-  // ✅ FIX: Join room with proper state management
+      const cleanup = async () => {
+        try {
+          if (hubConnection.state === signalR.HubConnectionState.Connected) {
+            await hubConnection.stop();
+            console.log("[SignalR] ✓ Connection stopped");
+          }
+        } catch (error) {
+          console.warn("[SignalR] ⚠️ Error stopping connection:", error);
+        }
+
+        // Close all peer connections
+        peerConnectionsRef.current.forEach((pc) => pc.close());
+        peerConnectionsRef.current.clear();
+
+        // Stop local stream
+        if (localStreamRef.current) {
+          localStreamRef.current.getTracks().forEach((track) => track.stop());
+          localStreamRef.current = null;
+        }
+
+        connectionRef.current = null;
+        connectionInitializedRef.current = false;
+      };
+
+      cleanup();
+    };
+  }, []); // ✅ Empty deps = run once on mount only
+
+  // ✅ FIX 5: Join room with proper state management
   const joinRoom = useCallback(async () => {
     // Prevent double joining
     if (isJoiningRef.current || hasJoinedRef.current) {
@@ -781,6 +561,7 @@ export function useWebRTC({
       isJoiningRef.current = true;
       console.log("[SignalR] Current connection state:", conn.state);
 
+      // Start connection if not already connected
       if (conn.state === signalR.HubConnectionState.Disconnected) {
         console.log("[SignalR] Starting connection...");
         await conn.start();
@@ -790,20 +571,22 @@ export function useWebRTC({
         console.log("[SignalR] Already connected");
         setIsConnected(true);
       } else {
+        // Wait for connection to be ready
         console.warn(
           "[SignalR] ⚠️ Connection in unexpected state:",
           conn.state
         );
-        // Wait and retry
         await new Promise((resolve) => setTimeout(resolve, 1000));
         isJoiningRef.current = false;
         return joinRoom();
       }
 
+      // Join the room
       await conn.invoke("JoinRoom", eventId, userName);
       console.log("[SignalR] ✓ Joined room:", eventId, "as", userName);
       hasJoinedRef.current = true;
 
+      // Get existing participants
       try {
         const participantList = await conn.invoke<Record<string, string>>(
           "GetParticipants",
@@ -812,15 +595,17 @@ export function useWebRTC({
         if (participantList) {
           const newParticipants = new Map<string, Participant>();
           Object.entries(participantList).forEach(([connId, name]) => {
-            newParticipants.set(connId, {
-              id: connId,
-              name,
-              role: "attendee",
-              status: "connecting" as ParticipantStatus,
-              audioEnabled: true,
-              videoEnabled: true,
-              isHandRaised: false,
-            });
+            if (connId !== myConnectionIdRef.current) {
+              newParticipants.set(connId, {
+                id: connId,
+                name,
+                role: "attendee",
+                status: "connecting" as ParticipantStatus,
+                audioEnabled: true,
+                videoEnabled: true,
+                isHandRaised: false,
+              });
+            }
           });
           setParticipants(newParticipants);
           console.log("[SignalR] ✓ Got", newParticipants.size, "participants");
@@ -830,9 +615,9 @@ export function useWebRTC({
           "[SignalR] ⚠️ GetParticipants failed:",
           getParticipantsError
         );
-        console.warn("[SignalR] Continuing without initial participant list");
       }
 
+      // Send queued ICE candidates
       if (outgoingCandidatesRef.current.length > 0) {
         console.log(
           "[SignalR] Draining",
@@ -844,18 +629,16 @@ export function useWebRTC({
 
         for (const item of queue) {
           try {
-            if (connectionRef.current?.invoke) {
-              await connectionRef.current.invoke(
-                "SendIceCandidate",
-                eventId,
-                item.remoteId,
-                item.candidateJson
-              );
-              console.log(
-                "[SignalR] ✓ Sent queued ICE candidate to",
-                item.remoteId
-              );
-            }
+            await conn.invoke(
+              "SendIceCandidate",
+              eventId,
+              item.remoteId,
+              item.candidateJson
+            );
+            console.log(
+              "[SignalR] ✓ Sent queued ICE candidate to",
+              item.remoteId
+            );
           } catch (error) {
             console.warn("[SignalR] ✗ Failed to send queued candidate", error);
           }
@@ -925,32 +708,17 @@ export function useWebRTC({
           const offer = await pc.createOffer();
           await pc.setLocalDescription(offer);
 
-          let retries = 3;
-          let delay = 300;
-          while (retries > 0) {
-            try {
-              if (connectionRef.current?.invoke) {
-                await connectionRef.current.invoke(
-                  "SendOffer",
-                  eventId,
-                  remoteId,
-                  offer.sdp
-                );
-                console.log("[WebRTC] ✓ Offer sent to", remoteId);
-                break;
-              }
-            } catch (error) {
-              retries--;
-              if (retries > 0) {
-                console.warn(
-                  `[WebRTC] SendOffer retry ${3 - retries}/3 for ${remoteId}`
-                );
-                await new Promise((resolve) => setTimeout(resolve, delay));
-                delay *= 2;
-              } else {
-                throw error;
-              }
-            }
+          if (
+            connectionRef.current?.state ===
+            signalR.HubConnectionState.Connected
+          ) {
+            await connectionRef.current.invoke(
+              "SendOffer",
+              eventId,
+              remoteId,
+              offer.sdp
+            );
+            console.log("[WebRTC] ✓ Offer sent to", remoteId);
           }
         } catch (error) {
           console.error("[WebRTC] ✗ Failed offer for", remoteId, error);
@@ -968,7 +736,7 @@ export function useWebRTC({
     createPeerConnection,
   ]);
 
-  // ✅ FIX: Leave room with proper cleanup
+  // ✅ FIX 6: Leave room with proper cleanup
   const leaveRoom = useCallback(async () => {
     const conn = connectionRef.current;
     if (!conn) return;
@@ -976,35 +744,50 @@ export function useWebRTC({
     try {
       if (conn.state === signalR.HubConnectionState.Connected) {
         await conn.invoke("LeaveRoom", eventId);
-        await conn.stop();
-        console.log("[SignalR] ✓ Left room and stopped connection");
+        console.log("[SignalR] ✓ Left room");
       }
     } catch (error) {
       console.warn("[SignalR] ⚠️ Leave room error:", error);
     }
 
-    // Reset all refs and state
-    setIsConnected(false);
+    // Clean up peer connections
     peerConnectionsRef.current.forEach((pc) => pc.close());
     peerConnectionsRef.current.clear();
 
+    // Stop local stream
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach((track) => track.stop());
       localStreamRef.current = null;
       setLocalStream(null);
     }
 
+    // Reset state
     setParticipants(new Map());
-    setMyConnectionId("");
+    setIsConnected(false);
     callStartedRef.current = false;
     isJoiningRef.current = false;
     hasJoinedRef.current = false;
 
-    // Clear connection ref so it can be recreated
-    connectionRef.current = null;
+    console.log("[WebRTC] ✓ Cleanup complete");
   }, [eventId]);
 
-  // Toggle audio with state management and broadcast
+  // End room (host only) - broadcasts to all participants
+  const endRoom = useCallback(async () => {
+    const conn = connectionRef.current;
+    if (!conn) return;
+
+    try {
+      if (conn.state === signalR.HubConnectionState.Connected) {
+        await conn.invoke("EndRoom", eventId);
+        console.log("[SignalR] ✓ Ended room - broadcast sent");
+      }
+    } catch (error) {
+      console.error("[SignalR] ✗ End room error:", error);
+      throw error;
+    }
+  }, [eventId]);
+
+  // Toggle audio
   const toggleAudio = useCallback(() => {
     if (!localStreamRef.current) return undefined;
     const audioTrack = localStreamRef.current.getAudioTracks()[0];
@@ -1022,7 +805,7 @@ export function useWebRTC({
     return undefined;
   }, [broadcastMediaState]);
 
-  // Toggle video with state management and broadcast
+  // Toggle video
   const toggleVideo = useCallback(() => {
     if (!localStreamRef.current) return undefined;
     const videoTrack = localStreamRef.current.getVideoTracks()[0];
@@ -1050,6 +833,7 @@ export function useWebRTC({
     joinRoom,
     startCall,
     leaveRoom,
+    endRoom,
     toggleAudio,
     toggleVideo,
     getLocalStream,
