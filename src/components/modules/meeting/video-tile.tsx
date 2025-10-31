@@ -85,6 +85,22 @@ export function VideoTile({
     };
   }, [stream, name, isLocal]);
 
+  // ✅ FIX: Force video element to refresh when videoEnabled changes
+  // This ensures the video element properly reflects track.enabled state
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (videoElement && videoElement.srcObject) {
+      // Trigger a refresh by reassigning srcObject
+      const currentStream = videoElement.srcObject;
+      videoElement.srcObject = null;
+
+      // Use requestAnimationFrame to ensure the DOM has updated
+      requestAnimationFrame(() => {
+        videoElement.srcObject = currentStream;
+      });
+    }
+  }, [videoEnabled]);
+
   const initials = name
     .split(" ")
     .map((n) => n[0])
