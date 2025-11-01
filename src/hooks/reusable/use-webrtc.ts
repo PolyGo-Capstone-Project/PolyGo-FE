@@ -184,11 +184,27 @@ export function useWebRTC({
             }
             return newMap;
           });
+        } else if (pc.iceConnectionState === "disconnected") {
+          console.log(
+            "[PC] ⚠️ ICE disconnected for",
+            remoteId,
+            "- waiting for reconnection..."
+          );
+          // Don't immediately restart, wait a bit
+          setTimeout(() => {
+            if (pc.iceConnectionState === "disconnected") {
+              console.log(
+                "[PC] 🔄 Still disconnected, attempting ICE restart for",
+                remoteId
+              );
+              pc.restartIce?.();
+            }
+          }, 3000);
         } else if (pc.iceConnectionState === "failed") {
           console.log(
             "[PC] ⚠️ ICE failed for",
             remoteId,
-            "- attempting restart"
+            "- attempting immediate restart"
           );
           pc.restartIce?.();
         }
@@ -265,6 +281,32 @@ export function useWebRTC({
               );
             }
           }
+
+          // ✅ After replacing tracks, may need to renegotiate if signaling state allows
+          if (
+            pc.signalingState === "stable" &&
+            connectionRef.current?.state ===
+              signalR.HubConnectionState.Connected
+          ) {
+            try {
+              const offer = await pc.createOffer();
+              await pc.setLocalDescription(offer);
+              await connectionRef.current.invoke(
+                "SendOffer",
+                eventId,
+                remoteId,
+                offer.sdp
+              );
+              console.log(
+                `[PC] ✓ Renegotiated after track update for ${remoteId}`
+              );
+            } catch (renegError) {
+              console.warn(
+                `[PC] ⚠️ Renegotiation failed for ${remoteId}:`,
+                renegError
+              );
+            }
+          }
         } catch (error) {
           console.error(
             `[PC] ✗ Failed to update tracks for ${remoteId}:`,
@@ -273,7 +315,7 @@ export function useWebRTC({
         }
       }
     },
-    []
+    [eventId]
   );
 
   // Broadcast media state change
@@ -366,9 +408,17 @@ export function useWebRTC({
             connId
           );
 
-          // Small delay to ensure participant is ready
+          // Longer delay to ensure both sides are ready
           setTimeout(async () => {
             try {
+              // Verify local stream is available
+              if (!localStreamRef.current) {
+                console.log(
+                  "[WebRTC] ⚠️ No local stream for late joiner, skipping"
+                );
+                return;
+              }
+
               const pc = await createPeerConnection(connId);
 
               if (pc.signalingState === "stable" && !pc.remoteDescription) {
@@ -388,6 +438,13 @@ export function useWebRTC({
                   initiatedPeersRef.current.add(connId);
                   console.log("[WebRTC] ✓ Offer sent to late joiner:", connId);
                 }
+              } else {
+                console.log(
+                  "[WebRTC] ⚠️ Skipping late joiner offer - state:",
+                  pc.signalingState,
+                  "hasRemote:",
+                  !!pc.remoteDescription
+                );
               }
             } catch (error) {
               console.error(
@@ -396,7 +453,7 @@ export function useWebRTC({
                 error
               );
             }
-          }, 500);
+          }, 1000); // Increased from 500ms to 1000ms
         }
       }
     );
@@ -461,9 +518,21 @@ export function useWebRTC({
 
             setupPeerConnectionHandlers(pc, fromConnId);
 
+            // ✅ FIX: Ensure we have local stream before adding tracks
+            if (!localStreamRef.current) {
+              console.log("[PC] ⚠️ No local stream yet, waiting...");
+              await getLocalStream();
+            }
+
             if (localStreamRef.current) {
               localStreamRef.current.getTracks().forEach((track) => {
                 pc!.addTrack(track, localStreamRef.current!);
+                console.log(
+                  "[PC] ✓ Added",
+                  track.kind,
+                  "track when receiving offer from",
+                  fromConnId
+                );
               });
             }
 
@@ -886,41 +955,43 @@ export function useWebRTC({
     try {
       const videoTracks = localStreamRef.current.getVideoTracks();
 
-      // 🔴 If video is ON → turn it OFF by stopping track
-      if (videoTracks.length > 0 && videoTracks[0].readyState === "live") {
-        videoTracks.forEach((track) => track.stop());
-
-        // Remove video track from stream but keep audio
-        const audioTracks = localStreamRef.current.getAudioTracks();
-        const streamWithoutVideo = new MediaStream();
-        audioTracks.forEach((t) => streamWithoutVideo.addTrack(t));
-
-        localStreamRef.current = streamWithoutVideo;
-        setLocalStream(streamWithoutVideo);
+      // 🔴 If video is ON → turn it OFF by disabling track (NOT stopping)
+      if (videoTracks.length > 0 && videoTracks[0].enabled) {
+        videoTracks[0].enabled = false;
         setLocalVideoEnabled(false);
         await broadcastMediaState("video", false);
-        console.log("[Media] ✗ Video disabled (track stopped)");
+        console.log("[Media] ✗ Video disabled (track.enabled = false)");
         return false;
       }
 
-      // 🟢 If video is OFF → turn it ON by requesting new stream
+      // 🟢 If video is OFF → turn it back ON
+      if (videoTracks.length > 0 && !videoTracks[0].enabled) {
+        // Check if track is still live
+        if (videoTracks[0].readyState === "live") {
+          videoTracks[0].enabled = true;
+          setLocalVideoEnabled(true);
+          await broadcastMediaState("video", true);
+          console.log("[Media] ✓ Video enabled (track.enabled = true)");
+          return true;
+        }
+      }
+
+      // If track is stopped or doesn't exist, request new stream
       console.log("[Media] 🔄 Requesting new video stream...");
-      const newStream = await navigator.mediaDevices.getUserMedia({
+      const newVideoStream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: false, // Don't request audio, we already have it
+        audio: false,
       });
 
-      // Keep old audio track, add new video track
-      const oldAudioTracks = localStreamRef.current.getAudioTracks();
-      const newVideoTrack = newStream.getVideoTracks()[0];
-
+      const newVideoTrack = newVideoStream.getVideoTracks()[0];
       if (!newVideoTrack) {
         throw new Error("Failed to get video track from new stream");
       }
 
-      // Create combined stream with both audio and new video
+      // Keep existing audio tracks, add new video track
+      const audioTracks = localStreamRef.current.getAudioTracks();
       const combinedStream = new MediaStream();
-      oldAudioTracks.forEach((t) => combinedStream.addTrack(t));
+      audioTracks.forEach((t) => combinedStream.addTrack(t));
       combinedStream.addTrack(newVideoTrack);
 
       console.log(
@@ -931,15 +1002,17 @@ export function useWebRTC({
           .join(", ")
       );
 
-      // ✅ CRITICAL: Update local stream FIRST before peer connections
+      // Stop old video tracks
+      videoTracks.forEach((track) => track.stop());
+
+      // Update local stream reference
       localStreamRef.current = combinedStream;
       setLocalStream(combinedStream);
 
-      // ✅ Force React to re-render by creating new stream reference
-      // This ensures VideoTile component gets the new stream
+      // Small delay for React state update
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // ✅ Update all peer connections with new video track
+      // Update all peer connections with new video track
       await updatePeerConnectionTracks(combinedStream);
 
       setLocalVideoEnabled(true);
