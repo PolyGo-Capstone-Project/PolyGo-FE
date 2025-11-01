@@ -36,13 +36,39 @@ export function VideoTile({
     const videoElement = videoRef.current;
 
     if (videoElement && stream) {
+      // ✅ Check if stream is actually different before updating
+      const currentStream = videoElement.srcObject as MediaStream | null;
+      const streamId = stream.id;
+      const currentStreamId = currentStream?.id;
+
+      if (currentStreamId === streamId) {
+        // Same stream, check if tracks changed
+        const currentTracks = currentStream?.getTracks().map((t) => t.id) || [];
+        const newTracks = stream.getTracks().map((t) => t.id);
+
+        if (JSON.stringify(currentTracks) === JSON.stringify(newTracks)) {
+          console.log(`[VideoTile] ⏭️ Skipping - same stream for ${name}`);
+          return;
+        }
+      }
+
       console.log(
         `[VideoTile] Setting stream for ${name}, tracks:`,
         stream.getTracks().map((t) => t.kind)
       );
 
-      // Set srcObject
+      // Clear previous stream first
+      if (currentStream && currentStreamId !== streamId) {
+        videoElement.srcObject = null;
+      }
+
+      // Set new srcObject
       videoElement.srcObject = stream;
+
+      // Always mute local video to prevent echo
+      if (isLocal) {
+        videoElement.muted = true;
+      }
 
       // Force play to handle autoplay restrictions
       const playPromise = videoElement.play();
@@ -57,16 +83,13 @@ export function VideoTile({
               `[VideoTile] ⚠️ Autoplay prevented for ${name}:`,
               error
             );
-            // For local video, we mute it so autoplay works
-            if (isLocal) {
+            // Retry with muted if needed
+            if (!isLocal) {
               videoElement.muted = true;
               videoElement
                 .play()
                 .catch((e) =>
-                  console.error(
-                    `[VideoTile] ✗ Failed to play muted local video:`,
-                    e
-                  )
+                  console.error(`[VideoTile] ✗ Failed to play muted video:`, e)
                 );
             }
           });
