@@ -63,10 +63,8 @@ export function useWebRTC({
   const isJoiningRef = useRef<boolean>(false);
   const hasJoinedRef = useRef<boolean>(false);
 
-  // Store createPeerConnection function reference for use in SignalR event handlers
-  const createPeerConnectionRef = useRef<
-    ((remoteId: string) => Promise<ExtendedRTCPeerConnection>) | null
-  >(null);
+  // ✅ FIX 1: Track which peers we've already initiated calls with
+  const initiatedPeersRef = useRef<Set<string>>(new Set());
 
   // Get local media stream
   const getLocalStream = useCallback(async () => {
@@ -238,13 +236,45 @@ export function useWebRTC({
       peerConnectionsRef.current.set(remoteId, pc);
       return pc;
     },
-    [eventId, getLocalStream, setupPeerConnectionHandlers]
+    [getLocalStream, setupPeerConnectionHandlers]
   );
 
-  // Store the function reference for use in SignalR handlers
-  useEffect(() => {
-    createPeerConnectionRef.current = createPeerConnection;
-  }, [createPeerConnection]);
+  // ✅ FIX 2: Helper function to update peer connection tracks
+  const updatePeerConnectionTracks = useCallback(
+    async (newStream: MediaStream) => {
+      console.log("[WebRTC] Updating tracks for all peer connections");
+
+      for (const [remoteId, pc] of peerConnectionsRef.current.entries()) {
+        try {
+          // Get all senders
+          const senders = pc.getSenders();
+
+          // Replace tracks
+          for (const sender of senders) {
+            const track = sender.track;
+            if (!track) continue;
+
+            const newTrack = newStream
+              .getTracks()
+              .find((t) => t.kind === track.kind);
+
+            if (newTrack) {
+              await sender.replaceTrack(newTrack);
+              console.log(
+                `[PC] ✓ Replaced ${track.kind} track for ${remoteId}`
+              );
+            }
+          }
+        } catch (error) {
+          console.error(
+            `[PC] ✗ Failed to update tracks for ${remoteId}:`,
+            error
+          );
+        }
+      }
+    },
+    []
+  );
 
   // Broadcast media state change
   const broadcastMediaState = useCallback(
@@ -269,9 +299,8 @@ export function useWebRTC({
     [eventId]
   );
 
-  // ✅ FIX 2: Initialize SignalR connection ONCE and ONLY ONCE
+  // ✅ FIX 3: Initialize SignalR connection ONCE
   useEffect(() => {
-    // Prevent multiple initializations
     if (connectionInitializedRef.current || connectionRef.current) {
       console.log("[SignalR] Connection already initialized, skipping");
       return;
@@ -306,7 +335,7 @@ export function useWebRTC({
 
     hubConnection.on(
       "UserJoined",
-      async (participantName: string, role: string, connId: string) => {
+      (participantName: string, role: string, connId: string) => {
         console.log(
           "[SignalR] ✓ UserJoined:",
           participantName,
@@ -330,52 +359,44 @@ export function useWebRTC({
           return newMap;
         });
 
-        // ✅ FIX: Auto create peer connection and send offer when new user joins
-        // This ensures existing users can establish connection with the new joiner
-        if (
-          connId !== myConnectionIdRef.current &&
-          callStartedRef.current &&
-          createPeerConnectionRef.current
-        ) {
+        // ✅ FIX 4: Auto-establish connection with late joiners
+        if (callStartedRef.current && !initiatedPeersRef.current.has(connId)) {
           console.log(
-            "[WebRTC] Auto-creating peer connection for new user:",
+            "[WebRTC] 🔔 Late joiner detected, initiating call to:",
             connId
           );
 
-          // Use setTimeout to avoid blocking the event handler
+          // Small delay to ensure participant is ready
           setTimeout(async () => {
             try {
-              // Wait a bit for the new user to be ready
-              await new Promise((resolve) => setTimeout(resolve, 500));
-
-              const pc = await createPeerConnectionRef.current!(connId);
+              const pc = await createPeerConnection(connId);
 
               if (pc.signalingState === "stable" && !pc.remoteDescription) {
                 const offer = await pc.createOffer();
                 await pc.setLocalDescription(offer);
 
                 if (
-                  hubConnection.state === signalR.HubConnectionState.Connected
+                  connectionRef.current?.state ===
+                  signalR.HubConnectionState.Connected
                 ) {
-                  await hubConnection.invoke(
+                  await connectionRef.current.invoke(
                     "SendOffer",
                     eventId,
                     connId,
                     offer.sdp
                   );
-                  console.log(
-                    "[WebRTC] ✓ Auto-sent offer to new user:",
-                    connId
-                  );
+                  initiatedPeersRef.current.add(connId);
+                  console.log("[WebRTC] ✓ Offer sent to late joiner:", connId);
                 }
               }
             } catch (error) {
               console.error(
-                "[WebRTC] ✗ Failed to auto-connect to new user:",
+                "[WebRTC] ✗ Failed to call late joiner:",
+                connId,
                 error
               );
             }
-          }, 0);
+          }, 500);
         }
       }
     );
@@ -392,6 +413,7 @@ export function useWebRTC({
       if (pc) {
         pc.close();
         peerConnectionsRef.current.delete(connId);
+        initiatedPeersRef.current.delete(connId);
         console.log("[PC] Cleaned up peer connection for", connId);
       }
     });
@@ -540,35 +562,30 @@ export function useWebRTC({
       }
     );
 
-    // ✅ FIX 3: Handle RoomEnded properly
     hubConnection.on("RoomEnded", () => {
       console.log("[SignalR] 🔴 RoomEnded - cleaning up");
 
-      // Cleanup all connections
       peerConnectionsRef.current.forEach((pc) => pc.close());
       peerConnectionsRef.current.clear();
+      initiatedPeersRef.current.clear();
 
-      // Stop local stream
       if (localStreamRef.current) {
         localStreamRef.current.getTracks().forEach((track) => track.stop());
         localStreamRef.current = null;
         setLocalStream(null);
       }
 
-      // Reset state
       setParticipants(new Map());
       setIsConnected(false);
       callStartedRef.current = false;
       isJoiningRef.current = false;
       hasJoinedRef.current = false;
 
-      // Call callback
       if (onRoomEnded) onRoomEnded();
     });
 
     console.log("[SignalR] ✓ Connection handlers setup complete");
 
-    // ✅ FIX 4: Cleanup function - ONLY when component unmounts for real
     return () => {
       console.log("[SignalR] Component unmounting - cleaning up connection");
 
@@ -582,11 +599,10 @@ export function useWebRTC({
           console.warn("[SignalR] ⚠️ Error stopping connection:", error);
         }
 
-        // Close all peer connections
         peerConnectionsRef.current.forEach((pc) => pc.close());
         peerConnectionsRef.current.clear();
+        initiatedPeersRef.current.clear();
 
-        // Stop local stream
         if (localStreamRef.current) {
           localStreamRef.current.getTracks().forEach((track) => track.stop());
           localStreamRef.current = null;
@@ -598,11 +614,10 @@ export function useWebRTC({
 
       cleanup();
     };
-  }, []); // ✅ Empty deps = run once on mount only
+  }, []);
 
-  // ✅ FIX 5: Join room with proper state management
+  // Join room
   const joinRoom = useCallback(async () => {
-    // Prevent double joining
     if (isJoiningRef.current || hasJoinedRef.current) {
       console.log("[SignalR] ⚠️ Already joining or joined, skipping");
       return;
@@ -619,7 +634,6 @@ export function useWebRTC({
       isJoiningRef.current = true;
       console.log("[SignalR] Current connection state:", conn.state);
 
-      // Start connection if not already connected
       if (conn.state === signalR.HubConnectionState.Disconnected) {
         console.log("[SignalR] Starting connection...");
         await conn.start();
@@ -629,7 +643,6 @@ export function useWebRTC({
         console.log("[SignalR] Already connected");
         setIsConnected(true);
       } else {
-        // Wait for connection to be ready
         console.warn(
           "[SignalR] ⚠️ Connection in unexpected state:",
           conn.state
@@ -639,12 +652,10 @@ export function useWebRTC({
         return joinRoom();
       }
 
-      // Join the room
       await conn.invoke("JoinRoom", eventId, userName);
       console.log("[SignalR] ✓ Joined room:", eventId, "as", userName);
       hasJoinedRef.current = true;
 
-      // Get existing participants
       try {
         const participantList = await conn.invoke<Record<string, string>>(
           "GetParticipants",
@@ -675,7 +686,6 @@ export function useWebRTC({
         );
       }
 
-      // Send queued ICE candidates
       if (outgoingCandidatesRef.current.length > 0) {
         console.log(
           "[SignalR] Draining",
@@ -728,6 +738,7 @@ export function useWebRTC({
 
       if (remoteParticipants.length === 0) {
         console.log("[WebRTC] ⚠️ No remote participants to call");
+        callStartedRef.current = true; // ✅ Still mark as started for late joiners
         return;
       }
 
@@ -740,6 +751,12 @@ export function useWebRTC({
       callStartedRef.current = true;
 
       for (const remoteId of remoteParticipants) {
+        // Skip if already initiated
+        if (initiatedPeersRef.current.has(remoteId)) {
+          console.log("[WebRTC] ⚠️ Already initiated call to", remoteId);
+          continue;
+        }
+
         try {
           const pc = await createPeerConnection(remoteId);
 
@@ -776,6 +793,7 @@ export function useWebRTC({
               remoteId,
               offer.sdp
             );
+            initiatedPeersRef.current.add(remoteId);
             console.log("[WebRTC] ✓ Offer sent to", remoteId);
           }
         } catch (error) {
@@ -794,7 +812,7 @@ export function useWebRTC({
     createPeerConnection,
   ]);
 
-  // ✅ FIX 6: Leave room with proper cleanup
+  // Leave room
   const leaveRoom = useCallback(async () => {
     const conn = connectionRef.current;
     if (!conn) return;
@@ -808,18 +826,16 @@ export function useWebRTC({
       console.warn("[SignalR] ⚠️ Leave room error:", error);
     }
 
-    // Clean up peer connections
     peerConnectionsRef.current.forEach((pc) => pc.close());
     peerConnectionsRef.current.clear();
+    initiatedPeersRef.current.clear();
 
-    // Stop local stream
     if (localStreamRef.current) {
       localStreamRef.current.getTracks().forEach((track) => track.stop());
       localStreamRef.current = null;
       setLocalStream(null);
     }
 
-    // Reset state
     setParticipants(new Map());
     setIsConnected(false);
     callStartedRef.current = false;
@@ -829,7 +845,7 @@ export function useWebRTC({
     console.log("[WebRTC] ✓ Cleanup complete");
   }, [eventId]);
 
-  // End room (host only) - broadcasts to all participants
+  // End room (host only)
   const endRoom = useCallback(async () => {
     const conn = connectionRef.current;
     if (!conn) return;
@@ -863,23 +879,81 @@ export function useWebRTC({
     return undefined;
   }, [broadcastMediaState]);
 
-  // Toggle video
-  const toggleVideo = useCallback(() => {
+  // ✅ FIX 5: Toggle video with proper track replacement
+  const toggleVideo = useCallback(async () => {
     if (!localStreamRef.current) return undefined;
-    const videoTrack = localStreamRef.current.getVideoTracks()[0];
-    if (videoTrack) {
-      videoTrack.enabled = !videoTrack.enabled;
-      setLocalVideoEnabled(videoTrack.enabled);
-      broadcastMediaState("video", videoTrack.enabled);
+
+    try {
+      const videoTracks = localStreamRef.current.getVideoTracks();
+
+      // 🔴 If video is ON → turn it OFF by stopping track
+      if (videoTracks.length > 0 && videoTracks[0].readyState === "live") {
+        videoTracks.forEach((track) => track.stop());
+
+        // Remove video track from stream but keep audio
+        const audioTracks = localStreamRef.current.getAudioTracks();
+        const streamWithoutVideo = new MediaStream();
+        audioTracks.forEach((t) => streamWithoutVideo.addTrack(t));
+
+        localStreamRef.current = streamWithoutVideo;
+        setLocalStream(streamWithoutVideo);
+        setLocalVideoEnabled(false);
+        await broadcastMediaState("video", false);
+        console.log("[Media] ✗ Video disabled (track stopped)");
+        return false;
+      }
+
+      // 🟢 If video is OFF → turn it ON by requesting new stream
+      console.log("[Media] 🔄 Requesting new video stream...");
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false, // Don't request audio, we already have it
+      });
+
+      // Keep old audio track, add new video track
+      const oldAudioTracks = localStreamRef.current.getAudioTracks();
+      const newVideoTrack = newStream.getVideoTracks()[0];
+
+      if (!newVideoTrack) {
+        throw new Error("Failed to get video track from new stream");
+      }
+
+      // Create combined stream with both audio and new video
+      const combinedStream = new MediaStream();
+      oldAudioTracks.forEach((t) => combinedStream.addTrack(t));
+      combinedStream.addTrack(newVideoTrack);
+
       console.log(
-        "[Media]",
-        videoTrack.enabled ? "✓ Enabled" : "✗ Disabled",
-        "video"
+        "[Media] 📹 New combined stream tracks:",
+        combinedStream
+          .getTracks()
+          .map((t) => `${t.kind}: ${t.id}`)
+          .join(", ")
       );
-      return videoTrack.enabled;
+
+      // ✅ CRITICAL: Update local stream FIRST before peer connections
+      localStreamRef.current = combinedStream;
+      setLocalStream(combinedStream);
+
+      // ✅ Force React to re-render by creating new stream reference
+      // This ensures VideoTile component gets the new stream
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // ✅ Update all peer connections with new video track
+      await updatePeerConnectionTracks(combinedStream);
+
+      setLocalVideoEnabled(true);
+      await broadcastMediaState("video", true);
+      console.log(
+        "[Media] ✓ Video re-enabled with new track ID:",
+        newVideoTrack.id
+      );
+      return true;
+    } catch (error) {
+      console.error("[Media] ✗ toggleVideo error:", error);
+      return undefined;
     }
-    return undefined;
-  }, [broadcastMediaState]);
+  }, [broadcastMediaState, updatePeerConnectionTracks]);
 
   return {
     isConnected,
