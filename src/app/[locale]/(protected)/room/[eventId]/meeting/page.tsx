@@ -67,6 +67,7 @@ export default function MeetingRoomPage() {
     endRoom,
     toggleAudio: webrtcToggleAudio,
     toggleVideo: webrtcToggleVideo,
+    getLocalStream,
   } = useWebRTC({
     eventId,
     userName: currentUser?.name || "Guest",
@@ -101,11 +102,17 @@ export default function MeetingRoomPage() {
     webrtcParticipants.values()
   );
 
-  // Initialize meeting - join room only
+  // ✅ FIX: Initialize meeting - get local stream FIRST, then join room
   useEffect(() => {
     if (!isLoading && event && currentUser && canJoin && !isInitialized) {
       const init = async () => {
         try {
+          // ✅ CRITICAL: Get local stream BEFORE joining room
+          // This ensures we have media ready when receiving offers
+          console.log("[Meeting] Getting local stream before joining...");
+          await getLocalStream();
+          console.log("[Meeting] ✓ Local stream ready, joining room...");
+
           await joinRoom();
           setIsInitialized(true);
 
@@ -121,7 +128,16 @@ export default function MeetingRoomPage() {
 
       init();
     }
-  }, [isLoading, event, currentUser, canJoin, isInitialized, joinRoom, tError]);
+  }, [
+    isLoading,
+    event,
+    currentUser,
+    canJoin,
+    isInitialized,
+    getLocalStream,
+    joinRoom,
+    tError,
+  ]);
 
   // Auto start call when participants join
   useEffect(() => {
