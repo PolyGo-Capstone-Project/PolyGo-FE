@@ -24,8 +24,8 @@ interface ParticipantListProps {
   participants: Participant[];
   isHost: boolean;
   myConnectionId: string;
-  onMuteParticipant?: (participantId: string) => void;
-  onDisableVideoParticipant?: (participantId: string) => void;
+  onMuteParticipant?: (participantId: string, enabled: boolean) => void;
+  onDisableVideoParticipant?: (participantId: string, enabled: boolean) => void;
   onKickParticipant?: (participantId: string) => void;
   onLowerAllHands?: () => void;
   onClose: () => void;
@@ -146,8 +146,17 @@ export function ParticipantList({
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
-                      onClick={() => onMuteParticipant?.(participant.id)}
-                      title={t("muteParticipant")}
+                      onClick={() =>
+                        onMuteParticipant?.(
+                          participant.id,
+                          !participant.audioEnabled
+                        )
+                      }
+                      title={
+                        participant.audioEnabled
+                          ? t("muteParticipant")
+                          : "Unmute participant"
+                      }
                     >
                       <IconMicrophoneOff className="h-4 w-4" />
                     </Button>
@@ -156,9 +165,16 @@ export function ParticipantList({
                       size="icon"
                       className="h-8 w-8"
                       onClick={() =>
-                        onDisableVideoParticipant?.(participant.id)
+                        onDisableVideoParticipant?.(
+                          participant.id,
+                          !participant.videoEnabled
+                        )
                       }
-                      title={t("disableVideo")}
+                      title={
+                        participant.videoEnabled
+                          ? t("disableVideo")
+                          : "Enable video"
+                      }
                     >
                       <IconVideoOff className="h-4 w-4" />
                     </Button>

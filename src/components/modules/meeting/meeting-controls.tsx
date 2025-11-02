@@ -35,6 +35,8 @@ interface MeetingControlsProps {
   onLeave: () => void;
   onStartEvent?: () => void;
   onEndEvent?: () => void;
+  onMuteAll?: () => void;
+  onTurnOffAllCameras?: () => void;
   className?: string;
 }
 
@@ -56,6 +58,8 @@ export function MeetingControls({
   onLeave,
   onStartEvent,
   onEndEvent,
+  onMuteAll,
+  onTurnOffAllCameras,
   className,
 }: MeetingControlsProps) {
   const t = useTranslations("meeting.controls");
@@ -67,7 +71,7 @@ export function MeetingControls({
         className
       )}
     >
-      {/* Left side - Meeting info */}
+      {/* Left side - Meeting info & Host controls */}
       <div className="flex items-center gap-2">
         {isHost && !hasStartedEvent && (
           <Button
@@ -79,6 +83,32 @@ export function MeetingControls({
             <IconPlayerPlay className="h-4 w-4" />
             {t("startEvent")}
           </Button>
+        )}
+
+        {/* Host-only controls */}
+        {isHost && hasStartedEvent && (
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onMuteAll}
+              className="gap-2"
+              title="Mute all participants"
+            >
+              <IconMicrophoneOff className="h-4 w-4" />
+              Mute All
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onTurnOffAllCameras}
+              className="gap-2"
+              title="Turn off all cameras"
+            >
+              <IconVideoOff className="h-4 w-4" />
+              Turn Off All Cameras
+            </Button>
+          </>
         )}
       </div>
 
