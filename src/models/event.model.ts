@@ -33,7 +33,7 @@ export const EventSchema = z.object({
   allowLateRegister: z.boolean().default(false),
 
   // 💰 Quy mô & phí
-  capacity: z.number().min(0),
+  capacity: z.number().min(0).max(12),
   fee: z.number().min(0).default(0),
 
   // 👤 Người liên quan

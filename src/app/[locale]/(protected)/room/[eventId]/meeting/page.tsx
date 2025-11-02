@@ -25,6 +25,7 @@ import { EventStatus } from "@/constants";
 import { useEventMeeting } from "@/hooks/reusable/use-event-meeting";
 import { useMeetingControls } from "@/hooks/reusable/use-meeting-controls";
 import { useWebRTC } from "@/hooks/reusable/use-webrtc";
+import { removeSettingMediaFromLocalStorage } from "@/lib";
 import eventApiRequest from "@/lib/apis/event";
 import { MeetingChatMessage, Participant } from "@/types";
 import { IconLoader2 } from "@tabler/icons-react";
@@ -74,6 +75,7 @@ export default function MeetingRoomPage() {
     isHost: isHost || false,
     onRoomEnded: () => {
       toast.error(tError("eventEnded"));
+      removeSettingMediaFromLocalStorage();
       router.push(`/${locale}/dashboard`);
     },
   });
@@ -220,10 +222,12 @@ export default function MeetingRoomPage() {
       // 3. Cleanup local resources
       callInitiatedRef.current = false;
       await leaveRoom();
-      router.push(`/${locale}/dashboard`);
     } catch (error) {
       console.error("[Meeting] End event error:", error);
       toast.error("Failed to end event");
+    } finally {
+      removeSettingMediaFromLocalStorage();
+      router.push(`/${locale}/dashboard`);
     }
   };
 
