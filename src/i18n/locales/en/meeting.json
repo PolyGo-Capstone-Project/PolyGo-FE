@@ -70,6 +70,17 @@
       "eventNotFound": "Event not found",
       "eventEnded": "This event has ended"
     },
+    "mobile": {
+      "title": "Mobile Device Detected",
+      "subtitle": "Video meetings are not supported on mobile web browsers",
+      "appTitle": "Use PolyGo App",
+      "appDescription": "To join video meetings, please download and use the PolyGo app on your phone",
+      "downloadButton": "📱 Download PolyGo App",
+      "backButton": "Back to Dashboard",
+      "hint": "Or open this page on a computer to join via web browser",
+      "notSupportedTitle": "Mobile Not Supported",
+      "notSupportedMessage": "Please use the PolyGo app on your phone or access from a computer"
+    },
     "dialogs": {
       "leaveTitle": "Leave meeting?",
       "leaveMessage": "Are you sure you want to leave this meeting?",

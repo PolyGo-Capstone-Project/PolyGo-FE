@@ -16,6 +16,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  Button,
   Card,
   CardContent,
   Sheet,
@@ -25,10 +26,11 @@ import { EventStatus } from "@/constants";
 import { useEventMeeting } from "@/hooks/reusable/use-event-meeting";
 import { useMeetingControls } from "@/hooks/reusable/use-meeting-controls";
 import { useWebRTC } from "@/hooks/reusable/use-webrtc";
+import { useMobileDevice } from "@/hooks/use-mobile-device";
 import { removeSettingMediaFromLocalStorage } from "@/lib";
 import eventApiRequest from "@/lib/apis/event";
 import { MeetingChatMessage, Participant } from "@/types";
-import { IconLoader2 } from "@tabler/icons-react";
+import { IconDeviceMobile, IconLoader2 } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -42,6 +44,7 @@ export default function MeetingRoomPage() {
   const tControls = useTranslations("meeting.controls");
   const tDialogs = useTranslations("meeting.dialogs");
   const tError = useTranslations("meeting.errors");
+  const tMobile = useTranslations("meeting.mobile");
 
   const eventId = params.eventId as string;
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
@@ -51,6 +54,7 @@ export default function MeetingRoomPage() {
   const [isInitialized, setIsInitialized] = useState(false);
 
   const callInitiatedRef = useRef(false);
+  const isMobileDevice = useMobileDevice();
 
   const { event, currentUser, isHost, canJoin, isLoading } =
     useEventMeeting(eventId);
@@ -238,15 +242,17 @@ export default function MeetingRoomPage() {
       });
 
       toast.success(tControls("endEvent"));
-
-      // 3. Cleanup local resources
-      callInitiatedRef.current = false;
-      await leaveRoom();
     } catch (error) {
       console.error("[Meeting] End event error:", error);
       toast.error("Failed to end event");
     } finally {
+      // 3. Cleanup local resources (always run this)
+      callInitiatedRef.current = false;
       removeSettingMediaFromLocalStorage();
+
+      // Small delay to ensure cleanup completes
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
       router.push(`/${locale}/dashboard`);
     }
   };
@@ -321,6 +327,34 @@ export default function MeetingRoomPage() {
             <p className="text-destructive text-center">
               {tError("notAuthorized")}
             </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // ✅ NEW: Block mobile devices in meeting room
+  if (isMobileDevice) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="max-w-md w-full">
+          <CardContent className="pt-6 text-center space-y-4">
+            <IconDeviceMobile className="h-16 w-16 text-primary mx-auto" />
+            <div>
+              <h3 className="text-lg font-semibold mb-2">
+                {tMobile("notSupportedTitle")}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {tMobile("notSupportedMessage")}
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => router.push(`/${locale}/dashboard`)}
+            >
+              {tMobile("backButton")}
+            </Button>
           </CardContent>
         </Card>
       </div>

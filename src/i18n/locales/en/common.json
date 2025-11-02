@@ -30,7 +30,9 @@
     "SetUpProfile": "Profile setup successful!",
     "Subscription": "Subscription successful!",
     "Subscribe": "Subscription upgraded successfully!",
-    "Cancel": "Subscription cancelled successfully!"
+    "Cancel": "Subscription cancelled successfully!",
+    "Kick": "User kicked successfully!",
+    "Unregister": "Unregistered successfully!"
   },
   "Error": {
     "default": "An error occurred. Please try again.",

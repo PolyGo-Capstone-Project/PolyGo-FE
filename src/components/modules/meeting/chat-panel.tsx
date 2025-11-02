@@ -9,7 +9,7 @@ import {
 } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { MeetingChatMessage } from "@/types";
-import { IconSend, IconX } from "@tabler/icons-react";
+import { IconSend } from "@tabler/icons-react";
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
@@ -62,9 +62,6 @@ export function ChatPanel({
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
         <h3 className="text-lg font-semibold">{t("title")}</h3>
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          <IconX className="h-4 w-4" />
-        </Button>
       </div>
 
       {/* Messages */}
