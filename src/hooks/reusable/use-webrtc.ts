@@ -77,6 +77,31 @@ export function useWebRTC({
         audio: true,
         video: true,
       });
+
+      // ✅ FIX: Apply saved states from waiting room NGAY khi có stream
+      const savedAudioState = localStorage.getItem("meeting_audio_enabled");
+      const savedVideoState = localStorage.getItem("meeting_video_enabled");
+
+      if (savedAudioState !== null) {
+        const audioEnabled = savedAudioState === "true";
+        const audioTrack = stream.getAudioTracks()[0];
+        if (audioTrack) {
+          audioTrack.enabled = audioEnabled;
+          setLocalAudioEnabled(audioEnabled);
+          console.log("[Media] ✓ Applied saved audio state:", audioEnabled);
+        }
+      }
+
+      if (savedVideoState !== null) {
+        const videoEnabled = savedVideoState === "true";
+        const videoTrack = stream.getVideoTracks()[0];
+        if (videoTrack) {
+          videoTrack.enabled = videoEnabled;
+          setLocalVideoEnabled(videoEnabled);
+          console.log("[Media] ✓ Applied saved video state:", videoEnabled);
+        }
+      }
+
       localStreamRef.current = stream;
       setLocalStream(stream);
       console.log(
@@ -347,6 +372,10 @@ export function useWebRTC({
       console.log("[SignalR] Connection already initialized, skipping");
       return;
     }
+
+    // Copy ref values to variables for cleanup function
+    const peerConnections = peerConnectionsRef.current;
+    const initiatedPeers = initiatedPeersRef.current;
 
     connectionInitializedRef.current = true;
     console.log("[SignalR] Initializing connection for eventId:", eventId);
@@ -668,9 +697,9 @@ export function useWebRTC({
           console.warn("[SignalR] ⚠️ Error stopping connection:", error);
         }
 
-        peerConnectionsRef.current.forEach((pc) => pc.close());
-        peerConnectionsRef.current.clear();
-        initiatedPeersRef.current.clear();
+        peerConnections.forEach((pc) => pc.close());
+        peerConnections.clear();
+        initiatedPeers.clear();
 
         if (localStreamRef.current) {
           localStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -683,7 +712,13 @@ export function useWebRTC({
 
       cleanup();
     };
-  }, []);
+  }, [
+    eventId,
+    createPeerConnection,
+    setupPeerConnectionHandlers,
+    getLocalStream,
+    onRoomEnded,
+  ]);
 
   // Join room
   const joinRoom = useCallback(async () => {

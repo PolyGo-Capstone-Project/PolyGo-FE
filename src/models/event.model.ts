@@ -220,6 +220,23 @@ export const RegisterEventBodySchema = z
   })
   .strict();
 
+// unregister event - user
+export const UnregisterEventBodySchema = z
+  .object({
+    eventId: z.string(),
+    reason: z.string(),
+  })
+  .strict();
+
+// host kick participant before event
+export const KickParticipantBodySchema = z
+  .object({
+    eventId: z.string(),
+    userId: z.string(),
+    reason: z.string(),
+  })
+  .strict();
+
 // METHOD PUT ==================================================================
 
 // Update event - host
@@ -252,6 +269,8 @@ export type GetEventDetailResType = z.infer<typeof GetEventDetailResSchema>;
 export type CreateEventBodyType = z.infer<typeof CreateEventBodySchema>;
 export type CancelEventBodyType = z.infer<typeof CancelEventBodySchema>;
 export type RegisterEventBodyType = z.infer<typeof RegisterEventBodySchema>;
+export type UnregisterEventBodyType = z.infer<typeof UnregisterEventBodySchema>;
+export type KickParticipantBodyType = z.infer<typeof KickParticipantBodySchema>;
 export type UpdateEventBodyType = z.infer<typeof UpdateEventBodySchema>;
 export type UpdateEventStatusBodyType = z.infer<
   typeof UpdateEventStatusBodySchema

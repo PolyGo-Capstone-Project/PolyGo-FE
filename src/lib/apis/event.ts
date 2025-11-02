@@ -8,12 +8,14 @@ import {
   GetEventDetailResType,
   GetEventsQueryType,
   HostedEventResType,
+  KickParticipantBodyType,
   MessageResType,
   ParticipatedEventResType,
   PastEventResType,
   RecommendedEventResType,
   RegisterEventBodyType,
   SearchEventsQueryType,
+  UnregisterEventBodyType,
   UpcomingEventResType,
   UpdateEventBodyType,
   UpdateEventStatusBodyType,
@@ -61,6 +63,12 @@ const eventApiRequest = {
   //Register event - user
   registerEvent: (body: RegisterEventBodyType) =>
     http.post<MessageResType>(`${prefix}/register`, body),
+  //Unregister event - user
+  unregisterEvent: (body: UnregisterEventBodyType) =>
+    http.post<MessageResType>(`${prefix}/unregister`, body),
+  //Kick participant before live event - host
+  kickParticipant: (body: KickParticipantBodyType) =>
+    http.post<MessageResType>(`${prefix}/kick`, body),
   //Update event - host
   updateEvent: (id: string, body: UpdateEventBodyType) =>
     http.put<MessageResType>(`${prefix}/${id}`, body),

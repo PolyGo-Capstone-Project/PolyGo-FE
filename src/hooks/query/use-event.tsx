@@ -48,6 +48,12 @@ type CancelEventResponse = Awaited<
 type RegisterEventResponse = Awaited<
   ReturnType<typeof eventApiRequest.registerEvent>
 >;
+type UnRegisterEventResponse = Awaited<
+  ReturnType<typeof eventApiRequest.unregisterEvent>
+>;
+type KickParticipantResponse = Awaited<
+  ReturnType<typeof eventApiRequest.kickParticipant>
+>;
 type UpdateEventResponse = Awaited<
   ReturnType<typeof eventApiRequest.updateEvent>
 >;

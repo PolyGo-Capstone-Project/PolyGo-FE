@@ -77,12 +77,33 @@ export default function WaitingRoomPage() {
     };
   }, [isInitialized, tError]);
 
-  // ✅ FIX: Cleanup stream on unmount
+  // ✅ FIX: Cleanup stream on unmount BUT KHÔNG stop tracks (để giữ cho meeting)
   useEffect(() => {
     return () => {
+      // Lưu trạng thái audio/video trước khi unmount
       if (localStream) {
-        console.log("[Waiting] Cleaning up stream");
-        localStream.getTracks().forEach((track) => track.stop());
+        const audioTrack = localStream.getAudioTracks()[0];
+        const videoTrack = localStream.getVideoTracks()[0];
+
+        if (audioTrack) {
+          localStorage.setItem(
+            "meeting_audio_enabled",
+            String(audioTrack.enabled)
+          );
+        }
+        if (videoTrack) {
+          localStorage.setItem(
+            "meeting_video_enabled",
+            String(videoTrack.enabled)
+          );
+        }
+
+        console.log(
+          "[Waiting] Saved media states - audio:",
+          audioTrack?.enabled,
+          "video:",
+          videoTrack?.enabled
+        );
       }
     };
   }, [localStream]);
@@ -113,46 +134,17 @@ export default function WaitingRoomPage() {
   };
 
   // ✅ FIX: Toggle video - CHỈ toggle enabled, KHÔNG stop track
-  const toggleVideo = async () => {
-    if (!localStream) return;
-
-    try {
-      const videoTracks = localStream.getVideoTracks();
-
-      // 🔴 Nếu video đang bật → stop track cũ
-      if (videoTracks.length > 0 && videoTracks[0].readyState === "live") {
-        videoTracks.forEach((track) => track.stop());
-        setVideoEnabled(false);
-        console.log("[Waiting] ✗ Video disabled");
-        return;
+  const toggleVideo = () => {
+    if (localStream) {
+      const videoTrack = localStream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !videoTrack.enabled;
+        setVideoEnabled(videoTrack.enabled);
+        console.log(
+          "[Waiting]",
+          videoTrack.enabled ? "✓ Video enabled" : "✗ Video disabled"
+        );
       }
-
-      // 🟢 Nếu video đang tắt → xin lại stream mới
-      const newStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
-
-      // Dừng track audio cũ (tránh trùng) và copy audio cũ nếu muốn
-      const oldAudioTracks = localStream.getAudioTracks();
-      const newVideoTrack = newStream.getVideoTracks()[0];
-
-      // Tạo stream mới kết hợp audio cũ + video mới
-      const combinedStream = new MediaStream();
-      oldAudioTracks.forEach((t) => combinedStream.addTrack(t));
-      combinedStream.addTrack(newVideoTrack);
-
-      // Cập nhật cả state và videoRef
-      setLocalStream(combinedStream);
-      if (videoRef.current) {
-        videoRef.current.srcObject = combinedStream;
-        await videoRef.current.play().catch(console.error);
-      }
-
-      setVideoEnabled(true);
-      console.log("[Waiting] ✓ Video re-enabled");
-    } catch (err) {
-      console.error("[Waiting] toggleVideo error:", err);
     }
   };
 
