@@ -2,6 +2,7 @@ export * from "./admin";
 export * from "./auth";
 export * from "./dashboard";
 export * as event from "./event";
+export * from "./game";
 export * from "./gifts";
 export * from "./loading";
 export * from "./matching";

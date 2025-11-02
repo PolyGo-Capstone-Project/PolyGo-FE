@@ -1,0 +1,191 @@
+{
+  "wordPuzzle": {
+    "title": "Word Puzzle Games",
+    "subtitle": "Challenge yourself with vocabulary puzzles and compete with others",
+    "mySets": "My Puzzle Sets",
+    "createSet": "Create Puzzle Set",
+    "areYouNew": "Are you a new player?",
+    "howToPlay": "How to Play Word Puzzle",
+    "rules": "Rules:",
+    "rule": {
+      "chooseSet": "Choose a question set by your favorite topic",
+      "scramble": "Words will be scrambled randomly (e.g. \"apple\" → \"p/a/l/p/e\")",
+      "typeAndNext": "Type the correct word to move to the next one",
+      "finishAll": "Complete all words in the set to finish",
+      "timeRecorded": "Your completion time will be recorded"
+    },
+    "scoring": "Scoring:",
+    "score": {
+      "bestRank": "Shortest completion time = Highest rank",
+      "perSet": "Each set has its own leaderboard",
+      "replay": "You can replay to improve your time",
+      "getXP": "Earn XP when finishing a puzzle",
+      "unlockBadges": "Unlock badges when achieving milestones"
+    },
+    "searchPlaceholder": "Search puzzle sets..."
+  },
+  "filters": {
+    "language": "Language",
+    "allLanguages": "All Languages",
+    "difficulty": "Difficulty",
+    "allDifficulties": "All Difficulties",
+    "category": "Category",
+    "allCategories": "All Categories"
+  },
+  "mysets": {
+    "title": "My Puzzle Sets",
+    "subtitle": "Manage your created puzzle sets and view your game history",
+    "createNew": "Create New Puzzle Set",
+    "createdByMe": "Created by Me",
+    "playedByMe": "Played by Me",
+    "totalSets": "Total Sets",
+    "approved": "Approved",
+    "totalPlays": "Total Plays",
+    "avgRating": "Avg Rating",
+    "section": {
+      "mySets": "My Puzzle Sets"
+    },
+    "noCreatedSets": "You haven't created any puzzle sets yet.",
+    "noPlayedSets": "You haven't played any puzzle sets yet."
+  },
+  "played": {
+    "setsPlayed": "Sets Played",
+    "completions": "Completions",
+    "bestRank": "Best Rank",
+    "avgRank": "Avg Rank",
+    "section": {
+      "history": "Game History"
+    },
+    "createdBy": "Created by",
+    "lastPlayed": "Last played",
+    "rank": "Rank",
+    "best": "Best",
+    "completions2": "completions"
+  },
+  "meta": {
+    "words": "words",
+    "plays": "plays",
+    "bestTime": "Best time:"
+  },
+  "actions": {
+    "playNow": "Play Now",
+    "leaderboard": "Leaderboard",
+    "stats": "Stats",
+    "playAgain": "Play Again",
+    "quit": "Quit Game",
+    "continue": "Continue Playing",
+    "submit": "Submit Answer",
+    "reshuffle": "Reshuffle"
+  },
+  "create": {
+    "title": "Create Word Puzzle Set",
+    "subtitle": "Create a new vocabulary puzzle for the community",
+    "mySets": "My Sets",
+    "basicInfo": {
+      "title": "Basic Information",
+      "fields": {
+        "name": "Puzzle Set Title",
+        "desc": "Description"
+      },
+      "placeholders": {
+        "name": "e.g., \"Vietnamese Food Vocabulary\"",
+        "desc": "Describe what players will learn from this puzzle set..."
+      }
+    },
+    "language": {
+      "label": "Language"
+    },
+    "catDiff": {
+      "title": "Category & Difficulty",
+      "category": "Category",
+      "difficulty": "Difficulty Level",
+      "estimate": "Estimated Completion Time",
+      "autoEstimate": "Auto-estimated: ~{minutes} minutes",
+      "level": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard"
+      }
+    },
+    "words": {
+      "title": "Vocabulary Words",
+      "min": "minutes",
+      "empty": "No words yet. Click “Add Word” to start.",
+      "wordIndex": "Word #{index}",
+      "removeAria": "Remove word",
+      "word": "Word",
+      "wordPh": "e.g., apple",
+      "pron": "Pronunciation",
+      "def": "Definition",
+      "defPh": "A round fruit that grows on trees, typically red, green, or yellow",
+      "hint": "Hint",
+      "hintPh": "A fruit that keeps the doctor away",
+      "add": "Add Word"
+    },
+    "common": {
+      "optional": "optional"
+    },
+    "submit": {
+      "title": "Ready to Submit",
+      "reviewTitle": "Review Process",
+      "review1": "Your puzzle set will be reviewed within 24–48 hours",
+      "review2": "We check for appropriate content and word accuracy",
+      "review3": "You’ll be notified once approved",
+      "review4": "Approved sets will be available for all users to play",
+      "cancel": "Cancel",
+      "cta": "Submit for Review"
+    },
+    "success": {
+      "title": "Submitted Successfully",
+      "desc": "Your puzzle set has been created and is awaiting admin review.",
+      "status": "Status: Pending Review",
+      "eta": "Estimated publish: within 24–48 hours.",
+      "close": "Close",
+      "goto": "Go to My Sets"
+    }
+  },
+  "play": {
+    "time": "Time",
+    "progress": "Progress",
+    "mistakes": "Mistakes",
+    "hintsUsed": "Hints Used",
+    "progressBar": "Progress",
+    "unscramble": "Unscramble this word:",
+    "definition": "Definition:",
+    "hint": "Hint:",
+    "typeHere": "Type the word here...",
+    "submit": "Submit Answer",
+    "reshuffle": "Reshuffle",
+    "quit": "Quit Game",
+    "continue": "Continue Playing",
+    "currentProgress": "Current progress:",
+    "completed": "completed",
+    "quitTitle": "Quit Game?",
+    "quitDesc": "Are you sure you want to quit? Your progress will be lost."
+  },
+  "lb": {
+    "title": "Leaderboard",
+    "playNow": "Play Now",
+    "topPlayers": "Top Players",
+    "range": "Time Range",
+    "rangeAll": "All Time",
+    "rangeWeek": "This Week",
+    "rangeMonth": "This Month",
+    "you": "You",
+    "details": "Puzzle Details",
+    "words": "Words",
+    "difficulty": "Difficulty",
+    "estTime": "Estimated Time",
+    "min": "min",
+    "totalPlays": "Total Plays",
+    "avgTime": "Average Time",
+    "yourBest": "Your Best Score",
+    "rankOf": "Rank",
+    "score": "Score",
+    "mistakes": "Mistakes",
+    "hints": "Hints",
+    "creator": "Created By",
+    "rating": "rating",
+    "messageCreator": "Message Creator"
+  }
+}
