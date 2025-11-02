@@ -219,7 +219,7 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
         id: eventId,
         body: data,
       });
-      showSuccessToast(t("success"), tSuccess);
+      showSuccessToast(result.payload?.message || tSuccess("Update"), tSuccess);
       router.push(`/${locale}/my-event`);
     } catch (error: any) {
       handleErrorApi({

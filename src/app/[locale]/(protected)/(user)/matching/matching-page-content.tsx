@@ -370,7 +370,7 @@ export default function MatchingPageContent() {
           />
           {isSearching && (
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-              {t("loading")}...
+              {t("loading.default")}...
             </span>
           )}
         </div>

@@ -1,0 +1,191 @@
+{
+  "wordPuzzle": {
+    "title": "Trò chơi Ghép Chữ",
+    "subtitle": "Thử thách bản thân với các câu đố từ vựng và cạnh tranh với người khác",
+    "mySets": "Bộ Câu Đố Của Tôi",
+    "createSet": "Tạo Bộ Câu Đố",
+    "areYouNew": "Bạn là người chơi mới?",
+    "howToPlay": "Cách chơi Ghép Chữ",
+    "rules": "Luật chơi:",
+    "rule": {
+      "chooseSet": "Chọn một bộ câu hỏi theo chủ đề yêu thích của bạn",
+      "scramble": "Các chữ cái sẽ bị xáo trộn ngẫu nhiên (ví dụ: \"apple\" → \"p/a/l/p/e\")",
+      "typeAndNext": "Gõ đúng từ để chuyển sang từ tiếp theo",
+      "finishAll": "Hoàn thành tất cả các từ trong bộ để kết thúc",
+      "timeRecorded": "Thời gian hoàn thành của bạn sẽ được ghi lại"
+    },
+    "scoring": "Tính điểm:",
+    "score": {
+      "bestRank": "Thời gian hoàn thành ngắn nhất = Hạng cao nhất",
+      "perSet": "Mỗi bộ có bảng xếp hạng riêng",
+      "replay": "Bạn có thể chơi lại để cải thiện thời gian",
+      "getXP": "Kiếm XP khi hoàn thành một câu đố",
+      "unlockBadges": "Mở khóa huy hiệu khi đạt được các mốc quan trọng"
+    },
+    "searchPlaceholder": "Tìm kiếm bộ câu đố..."
+  },
+  "filters": {
+    "language": "Ngôn ngữ",
+    "allLanguages": "Tất cả Ngôn ngữ",
+    "difficulty": "Độ khó",
+    "allDifficulties": "Tất cả Độ khó",
+    "category": "Danh mục",
+    "allCategories": "Tất cả Danh mục"
+  },
+  "mysets": {
+    "title": "Bộ Câu Đố Của Tôi",
+    "subtitle": "Quản lý các bộ câu đố đã tạo và xem lịch sử trò chơi của bạn",
+    "createNew": "Tạo Bộ Câu Đố Mới",
+    "createdByMe": "Do tôi tạo",
+    "playedByMe": "Tôi đã chơi",
+    "totalSets": "Tổng số Bộ",
+    "approved": "Đã duyệt",
+    "totalPlays": "Tổng số lượt chơi",
+    "avgRating": "Đánh giá TB",
+    "section": {
+      "mySets": "Bộ Câu Đố Của Tôi"
+    },
+    "noCreatedSets": "Bạn chưa tạo bất kỳ bộ câu đố nào.",
+    "noPlayedSets": "Bạn chưa chơi bất kỳ bộ câu đố nào."
+  },
+  "played": {
+    "setsPlayed": "Bộ đã chơi",
+    "completions": "Số lần hoàn thành",
+    "bestRank": "Hạng tốt nhất",
+    "avgRank": "Hạng TB",
+    "section": {
+      "history": "Lịch sử Trò chơi"
+    },
+    "createdBy": "Được tạo bởi",
+    "lastPlayed": "Lần chơi cuối",
+    "rank": "Hạng",
+    "best": "Tốt nhất",
+    "completions2": "lần hoàn thành"
+  },
+  "meta": {
+    "words": "từ",
+    "plays": "lượt chơi",
+    "bestTime": "Thời gian tốt nhất:"
+  },
+  "actions": {
+    "playNow": "Chơi ngay",
+    "leaderboard": "Bảng xếp hạng",
+    "stats": "Thống kê",
+    "playAgain": "Chơi lại",
+    "quit": "Thoát trò chơi",
+    "continue": "Tiếp tục chơi",
+    "submit": "Gửi đáp án",
+    "reshuffle": "Xáo trộn lại"
+  },
+  "create": {
+    "title": "Tạo Bộ Ghép Chữ",
+    "subtitle": "Tạo một câu đố từ vựng mới cho cộng đồng",
+    "mySets": "Bộ Của Tôi",
+    "basicInfo": {
+      "title": "Thông tin cơ bản",
+      "fields": {
+        "name": "Tiêu đề Bộ câu đố",
+        "desc": "Mô tả"
+      },
+      "placeholders": {
+        "name": "ví dụ: \"Từ vựng Món ăn Việt Nam\"",
+        "desc": "Mô tả người chơi sẽ học được gì từ bộ câu đố này..."
+      }
+    },
+    "language": {
+      "label": "Ngôn ngữ"
+    },
+    "catDiff": {
+      "title": "Danh mục & Độ khó",
+      "category": "Danh mục",
+      "difficulty": "Mức độ khó",
+      "estimate": "Thời gian hoàn thành ước tính",
+      "autoEstimate": "Tự động ước tính: ~{minutes} phút",
+      "level": {
+        "easy": "Dễ",
+        "medium": "Trung bình",
+        "hard": "Khó"
+      }
+    },
+    "words": {
+      "title": "Từ vựng",
+      "min": "phút",
+      "empty": "Chưa có từ nào. Nhấn “Thêm từ” để bắt đầu.",
+      "wordIndex": "Từ #{index}",
+      "removeAria": "Xóa từ",
+      "word": "Từ",
+      "wordPh": "ví dụ: apple",
+      "pron": "Phiên âm",
+      "def": "Định nghĩa",
+      "defPh": "Một loại trái cây tròn mọc trên cây, thường có màu đỏ, xanh lá cây hoặc vàng",
+      "hint": "Gợi ý",
+      "hintPh": "Một loại trái cây giúp tránh xa bác sĩ",
+      "add": "Thêm từ"
+    },
+    "common": {
+      "optional": "tùy chọn"
+    },
+    "submit": {
+      "title": "Sẵn sàng gửi",
+      "reviewTitle": "Quá trình kiểm duyệt",
+      "review1": "Bộ câu đố của bạn sẽ được kiểm duyệt trong vòng 24–48 giờ",
+      "review2": "Chúng tôi kiểm tra nội dung phù hợp và độ chính xác của từ",
+      "review3": "Bạn sẽ được thông báo sau khi được duyệt",
+      "review4": "Các bộ được duyệt sẽ có sẵn cho tất cả người dùng chơi",
+      "cancel": "Hủy",
+      "cta": "Gửi đi kiểm duyệt"
+    },
+    "success": {
+      "title": "Gửi thành công",
+      "desc": "Bộ câu đố của bạn đã được tạo và đang chờ quản trị viên xem xét.",
+      "status": "Trạng thái: Đang chờ duyệt",
+      "eta": "Thời gian dự kiến xuất bản: trong vòng 24–48 giờ.",
+      "close": "Đóng",
+      "goto": "Đi đến Bộ Của Tôi"
+    }
+  },
+  "play": {
+    "time": "Thời gian",
+    "progress": "Tiến độ",
+    "mistakes": "Sai sót",
+    "hintsUsed": "Gợi ý đã dùng",
+    "progressBar": "Tiến độ",
+    "unscramble": "Giải mã từ này:",
+    "definition": "Định nghĩa:",
+    "hint": "Gợi ý:",
+    "typeHere": "Gõ từ vào đây...",
+    "submit": "Gửi Đáp án",
+    "reshuffle": "Xáo trộn lại",
+    "quit": "Thoát trò chơi",
+    "continue": "Tiếp tục chơi",
+    "currentProgress": "Tiến độ hiện tại:",
+    "completed": "đã hoàn thành",
+    "quitTitle": "Thoát trò chơi?",
+    "quitDesc": "Bạn có chắc muốn thoát không? Tiến độ hiện tại của bạn sẽ bị mất."
+  },
+  "lb": {
+    "title": "Bảng Xếp Hạng",
+    "playNow": "Chơi Ngay",
+    "topPlayers": "Người Chơi Hàng Đầu",
+    "range": "Phạm vi Thời gian",
+    "rangeAll": "Mọi Thời Đại",
+    "rangeWeek": "Tuần Này",
+    "rangeMonth": "Tháng Này",
+    "you": "Bạn",
+    "details": "Chi tiết Câu đố",
+    "words": "Số từ",
+    "difficulty": "Độ khó",
+    "estTime": "Thời gian ước tính",
+    "min": "phút",
+    "totalPlays": "Tổng lượt chơi",
+    "avgTime": "Thời gian TB",
+    "yourBest": "Điểm Tốt nhất của bạn",
+    "rankOf": "Hạng",
+    "score": "Điểm",
+    "mistakes": "Sai sót",
+    "hints": "Gợi ý",
+    "creator": "Được tạo bởi",
+    "rating": "đánh giá",
+    "messageCreator": "Nhắn tin cho Người tạo"
+  }
+}

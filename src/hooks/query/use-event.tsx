@@ -227,6 +227,62 @@ export const useRegisterEventMutation = (options?: {
   });
 };
 
+export const useUnregisterEventMutation = (options?: {
+  onSuccess?: (data: UnRegisterEventResponse) => void;
+  onError?: (error: unknown) => void;
+}) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { eventId: string; reason: string }) =>
+      eventApiRequest.unregisterEvent(body),
+    onSuccess: (data, variables, context) => {
+      // user unregistration affects participated lists and possibly event detail
+      queryClient.invalidateQueries({ queryKey: ["events", "participated"] });
+      queryClient.invalidateQueries({ queryKey: ["events", "one"] });
+      queryClient.invalidateQueries({ queryKey: ["events", "upcoming"] });
+      // invalidate specific event cache
+      if (variables.eventId) {
+        queryClient.invalidateQueries({
+          queryKey: ["events", "one", variables.eventId],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["events", "detail", variables.eventId],
+        });
+      }
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+};
+
+export const useKickParticipantMutation = (options?: {
+  onSuccess?: (data: KickParticipantResponse) => void;
+  onError?: (error: unknown) => void;
+}) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { eventId: string; userId: string; reason: string }) =>
+      eventApiRequest.kickParticipant(body),
+    onSuccess: (data, variables, context) => {
+      // kicking a participant affects event details and possibly participant lists
+      queryClient.invalidateQueries({ queryKey: ["events", "one"] });
+      queryClient.invalidateQueries({ queryKey: ["events", "detail"] });
+      queryClient.invalidateQueries({ queryKey: ["events", "hosted"] });
+      // invalidate specific event cache
+      if (variables.eventId) {
+        queryClient.invalidateQueries({
+          queryKey: ["events", "one", variables.eventId],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["events", "detail", variables.eventId],
+        });
+      }
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+};
+
 export const useUpdateEventMutation = (options?: {
   onSuccess?: (data: UpdateEventResponse) => void;
   onError?: (error: unknown) => void;
