@@ -70,6 +70,7 @@
       "noResults": "Không có kết quả phù hợp"
     },
     "loading": {
+      "default": "Đang tải",
       "users": "Đang tải người dùng...",
       "profile": "Đang tải hồ sơ...",
       "more": "Đang tải thêm người dùng..."

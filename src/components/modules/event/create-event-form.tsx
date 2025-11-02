@@ -180,7 +180,7 @@ export function CreateEventForm() {
 
     try {
       const result = await createEventMutation.mutateAsync(submitData);
-      showSuccessToast(t("success"), tSuccess);
+      showSuccessToast(result.payload?.message || tSuccess("Create"), tSuccess);
       router.push(`/${locale}/event`);
     } catch (error: any) {
       handleErrorApi({

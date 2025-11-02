@@ -51,7 +51,7 @@ export default async function LocaleLayout({
         >
           <AppProvider>
             {children}
-            <Toaster />
+            <Toaster position="top-right" />
           </AppProvider>
         </ThemeProvider>
       </NextIntlClientProvider>
