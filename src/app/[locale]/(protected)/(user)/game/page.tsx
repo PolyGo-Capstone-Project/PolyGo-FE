@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 export default async function Page() {
   const locale = await getLocale();
 
-  return <GameContent locale={locale} />;
+  return <GameContent />;
 }
