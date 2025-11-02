@@ -62,9 +62,19 @@ export function useWebRTC({
   const connectionInitializedRef = useRef<boolean>(false);
   const isJoiningRef = useRef<boolean>(false);
   const hasJoinedRef = useRef<boolean>(false);
-
-  // ✅ FIX 1: Track which peers we've already initiated calls with
   const initiatedPeersRef = useRef<Set<string>>(new Set());
+
+  // Refs cho callbacks to avoid closures
+  const eventIdRef = useRef(eventId);
+  const onRoomEndedRef = useRef(onRoomEnded);
+
+  useEffect(() => {
+    eventIdRef.current = eventId;
+  }, [eventId]);
+
+  useEffect(() => {
+    onRoomEndedRef.current = onRoomEnded;
+  }, [onRoomEnded]);
 
   // Get local media stream
   const getLocalStream = useCallback(async () => {
@@ -155,7 +165,7 @@ export function useWebRTC({
             ) {
               await connectionRef.current.invoke(
                 "SendIceCandidate",
-                eventId,
+                eventIdRef.current,
                 remoteId,
                 candidateJson
               );
@@ -215,7 +225,6 @@ export function useWebRTC({
             remoteId,
             "- waiting for reconnection..."
           );
-          // Don't immediately restart, wait a bit
           setTimeout(() => {
             if (pc.iceConnectionState === "disconnected") {
               console.log(
@@ -244,7 +253,7 @@ export function useWebRTC({
         );
       };
     },
-    [eventId]
+    []
   );
 
   // Create peer connection
@@ -280,17 +289,15 @@ export function useWebRTC({
     [getLocalStream, setupPeerConnectionHandlers]
   );
 
-  // ✅ FIX 2: Helper function to update peer connection tracks
+  // Helper function to update peer connection tracks
   const updatePeerConnectionTracks = useCallback(
     async (newStream: MediaStream) => {
       console.log("[WebRTC] Updating tracks for all peer connections");
 
       for (const [remoteId, pc] of peerConnectionsRef.current.entries()) {
         try {
-          // Get all senders
           const senders = pc.getSenders();
 
-          // Replace tracks
           for (const sender of senders) {
             const track = sender.track;
             if (!track) continue;
@@ -307,7 +314,6 @@ export function useWebRTC({
             }
           }
 
-          // ✅ After replacing tracks, may need to renegotiate if signaling state allows
           if (
             pc.signalingState === "stable" &&
             connectionRef.current?.state ===
@@ -318,7 +324,7 @@ export function useWebRTC({
               await pc.setLocalDescription(offer);
               await connectionRef.current.invoke(
                 "SendOffer",
-                eventId,
+                eventIdRef.current,
                 remoteId,
                 offer.sdp
               );
@@ -340,7 +346,7 @@ export function useWebRTC({
         }
       }
     },
-    [eventId]
+    []
   );
 
   // Broadcast media state change
@@ -352,7 +358,7 @@ export function useWebRTC({
         ) {
           await connectionRef.current.invoke(
             "BroadcastMediaState",
-            eventId,
+            eventIdRef.current,
             myConnectionIdRef.current,
             type,
             enabled
@@ -363,22 +369,21 @@ export function useWebRTC({
         console.warn(`[WebRTC] ✗ Failed to broadcast ${type} state:`, error);
       }
     },
-    [eventId]
+    []
   );
 
-  // ✅ FIX 3: Initialize SignalR connection ONCE
+  // ✅ CRITICAL FIX: Initialize SignalR connection ONCE - NO dependencies!
   useEffect(() => {
     if (connectionInitializedRef.current || connectionRef.current) {
       console.log("[SignalR] Connection already initialized, skipping");
       return;
     }
 
-    // Copy ref values to variables for cleanup function
-    const peerConnections = peerConnectionsRef.current;
-    const initiatedPeers = initiatedPeersRef.current;
-
     connectionInitializedRef.current = true;
-    console.log("[SignalR] Initializing connection for eventId:", eventId);
+    console.log(
+      "[SignalR] Initializing connection for eventId:",
+      eventIdRef.current
+    );
 
     const hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(HUB_URL)
@@ -430,21 +435,23 @@ export function useWebRTC({
           return newMap;
         });
 
-        // ✅ FIX 4: Auto-establish connection with late joiners
         if (callStartedRef.current && !initiatedPeersRef.current.has(connId)) {
           console.log(
             "[WebRTC] 🔔 Late joiner detected, initiating call to:",
             connId
           );
 
-          // Longer delay to ensure both sides are ready
           setTimeout(async () => {
             try {
-              // Verify local stream is available
               if (!localStreamRef.current) {
                 console.log(
-                  "[WebRTC] ⚠️ No local stream for late joiner, skipping"
+                  "[WebRTC] ⚠️ No local stream for late joiner, getting stream..."
                 );
+                await getLocalStream();
+              }
+
+              if (!localStreamRef.current) {
+                console.log("[WebRTC] ⚠️ Still no local stream, skipping");
                 return;
               }
 
@@ -460,20 +467,13 @@ export function useWebRTC({
                 ) {
                   await connectionRef.current.invoke(
                     "SendOffer",
-                    eventId,
+                    eventIdRef.current,
                     connId,
                     offer.sdp
                   );
                   initiatedPeersRef.current.add(connId);
                   console.log("[WebRTC] ✓ Offer sent to late joiner:", connId);
                 }
-              } else {
-                console.log(
-                  "[WebRTC] ⚠️ Skipping late joiner offer - state:",
-                  pc.signalingState,
-                  "hasRemote:",
-                  !!pc.remoteDescription
-                );
               }
             } catch (error) {
               console.error(
@@ -482,7 +482,7 @@ export function useWebRTC({
                 error
               );
             }
-          }, 1000); // Increased from 500ms to 1000ms
+          }, 1000);
         }
       }
     );
@@ -547,9 +547,8 @@ export function useWebRTC({
 
             setupPeerConnectionHandlers(pc, fromConnId);
 
-            // ✅ FIX: Ensure we have local stream before adding tracks
             if (!localStreamRef.current) {
-              console.log("[PC] ⚠️ No local stream yet, waiting...");
+              console.log("[PC] ⚠️ No local stream yet, getting...");
               await getLocalStream();
             }
 
@@ -579,7 +578,7 @@ export function useWebRTC({
           await pc.setLocalDescription(answer);
           await hubConnection.invoke(
             "SendAnswer",
-            eventId,
+            eventIdRef.current,
             fromConnId,
             answer.sdp
           );
@@ -679,7 +678,7 @@ export function useWebRTC({
       isJoiningRef.current = false;
       hasJoinedRef.current = false;
 
-      if (onRoomEnded) onRoomEnded();
+      if (onRoomEndedRef.current) onRoomEndedRef.current();
     });
 
     console.log("[SignalR] ✓ Connection handlers setup complete");
@@ -697,9 +696,9 @@ export function useWebRTC({
           console.warn("[SignalR] ⚠️ Error stopping connection:", error);
         }
 
-        peerConnections.forEach((pc) => pc.close());
-        peerConnections.clear();
-        initiatedPeers.clear();
+        peerConnectionsRef.current.forEach((pc) => pc.close());
+        peerConnectionsRef.current.clear();
+        initiatedPeersRef.current.clear();
 
         if (localStreamRef.current) {
           localStreamRef.current.getTracks().forEach((track) => track.stop());
@@ -712,13 +711,8 @@ export function useWebRTC({
 
       cleanup();
     };
-  }, [
-    eventId,
-    createPeerConnection,
-    setupPeerConnectionHandlers,
-    getLocalStream,
-    onRoomEnded,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // ✅ EMPTY dependencies array - initialize ONCE!
 
   // Join room
   const joinRoom = useCallback(async () => {
@@ -756,14 +750,19 @@ export function useWebRTC({
         return joinRoom();
       }
 
-      await conn.invoke("JoinRoom", eventId, userName);
-      console.log("[SignalR] ✓ Joined room:", eventId, "as", userName);
+      await conn.invoke("JoinRoom", eventIdRef.current, userName);
+      console.log(
+        "[SignalR] ✓ Joined room:",
+        eventIdRef.current,
+        "as",
+        userName
+      );
       hasJoinedRef.current = true;
 
       try {
         const participantList = await conn.invoke<Record<string, string>>(
           "GetParticipants",
-          eventId
+          eventIdRef.current
         );
         if (participantList) {
           const newParticipants = new Map<string, Participant>();
@@ -803,7 +802,7 @@ export function useWebRTC({
           try {
             await conn.invoke(
               "SendIceCandidate",
-              eventId,
+              eventIdRef.current,
               item.remoteId,
               item.candidateJson
             );
@@ -823,7 +822,7 @@ export function useWebRTC({
     } finally {
       isJoiningRef.current = false;
     }
-  }, [eventId, userName]);
+  }, [userName]);
 
   // Start call
   const startCall = useCallback(async () => {
@@ -842,7 +841,7 @@ export function useWebRTC({
 
       if (remoteParticipants.length === 0) {
         console.log("[WebRTC] ⚠️ No remote participants to call");
-        callStartedRef.current = true; // ✅ Still mark as started for late joiners
+        callStartedRef.current = true;
         return;
       }
 
@@ -855,7 +854,6 @@ export function useWebRTC({
       callStartedRef.current = true;
 
       for (const remoteId of remoteParticipants) {
-        // Skip if already initiated
         if (initiatedPeersRef.current.has(remoteId)) {
           console.log("[WebRTC] ⚠️ Already initiated call to", remoteId);
           continue;
@@ -893,7 +891,7 @@ export function useWebRTC({
           ) {
             await connectionRef.current.invoke(
               "SendOffer",
-              eventId,
+              eventIdRef.current,
               remoteId,
               offer.sdp
             );
@@ -908,13 +906,7 @@ export function useWebRTC({
       console.error("[WebRTC] ✗ startCall error:", error);
       callStartedRef.current = false;
     }
-  }, [
-    participants,
-    myConnectionId,
-    eventId,
-    getLocalStream,
-    createPeerConnection,
-  ]);
+  }, [participants, myConnectionId, getLocalStream, createPeerConnection]);
 
   // Leave room
   const leaveRoom = useCallback(async () => {
@@ -923,7 +915,7 @@ export function useWebRTC({
 
     try {
       if (conn.state === signalR.HubConnectionState.Connected) {
-        await conn.invoke("LeaveRoom", eventId);
+        await conn.invoke("LeaveRoom", eventIdRef.current);
         console.log("[SignalR] ✓ Left room");
       }
     } catch (error) {
@@ -947,7 +939,7 @@ export function useWebRTC({
     hasJoinedRef.current = false;
 
     console.log("[WebRTC] ✓ Cleanup complete");
-  }, [eventId]);
+  }, []);
 
   // End room (host only)
   const endRoom = useCallback(async () => {
@@ -956,14 +948,14 @@ export function useWebRTC({
 
     try {
       if (conn.state === signalR.HubConnectionState.Connected) {
-        await conn.invoke("EndRoom", eventId);
+        await conn.invoke("EndRoom", eventIdRef.current);
         console.log("[SignalR] ✓ Ended room - broadcast sent");
       }
     } catch (error) {
       console.error("[SignalR] ✗ End room error:", error);
       throw error;
     }
-  }, [eventId]);
+  }, []);
 
   // Toggle audio
   const toggleAudio = useCallback(() => {
@@ -983,14 +975,13 @@ export function useWebRTC({
     return undefined;
   }, [broadcastMediaState]);
 
-  // ✅ FIX 5: Toggle video with proper track replacement
+  // Toggle video
   const toggleVideo = useCallback(async () => {
     if (!localStreamRef.current) return undefined;
 
     try {
       const videoTracks = localStreamRef.current.getVideoTracks();
 
-      // 🔴 If video is ON → turn it OFF by disabling track (NOT stopping)
       if (videoTracks.length > 0 && videoTracks[0].enabled) {
         videoTracks[0].enabled = false;
         setLocalVideoEnabled(false);
@@ -999,9 +990,7 @@ export function useWebRTC({
         return false;
       }
 
-      // 🟢 If video is OFF → turn it back ON
       if (videoTracks.length > 0 && !videoTracks[0].enabled) {
-        // Check if track is still live
         if (videoTracks[0].readyState === "live") {
           videoTracks[0].enabled = true;
           setLocalVideoEnabled(true);
@@ -1011,7 +1000,6 @@ export function useWebRTC({
         }
       }
 
-      // If track is stopped or doesn't exist, request new stream
       console.log("[Media] 🔄 Requesting new video stream...");
       const newVideoStream = await navigator.mediaDevices.getUserMedia({
         video: true,
@@ -1023,7 +1011,6 @@ export function useWebRTC({
         throw new Error("Failed to get video track from new stream");
       }
 
-      // Keep existing audio tracks, add new video track
       const audioTracks = localStreamRef.current.getAudioTracks();
       const combinedStream = new MediaStream();
       audioTracks.forEach((t) => combinedStream.addTrack(t));
@@ -1037,17 +1024,13 @@ export function useWebRTC({
           .join(", ")
       );
 
-      // Stop old video tracks
       videoTracks.forEach((track) => track.stop());
 
-      // Update local stream reference
       localStreamRef.current = combinedStream;
       setLocalStream(combinedStream);
 
-      // Small delay for React state update
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // Update all peer connections with new video track
       await updatePeerConnectionTracks(combinedStream);
 
       setLocalVideoEnabled(true);
