@@ -10,7 +10,7 @@ import {
 } from "@/components";
 import { DeviceSettings } from "@/components/modules/meeting";
 import { useEventMeeting } from "@/hooks/reusable/use-event-meeting";
-import { cn } from "@/lib/utils";
+import { cn, removeSettingMediaFromLocalStorage } from "@/lib/utils";
 import {
   IconLoader2,
   IconMicrophone,
@@ -151,6 +151,12 @@ export default function WaitingRoomPage() {
   // Join meeting
   const handleJoin = () => {
     router.push(`/${locale}/room/${eventId}/meeting`);
+  };
+
+  // Cancel meeting
+  const handleCancel = () => {
+    router.back();
+    removeSettingMediaFromLocalStorage();
   };
 
   if (isLoading) {
@@ -320,7 +326,7 @@ export default function WaitingRoomPage() {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={() => router.back()}
+                    onClick={handleCancel}
                   >
                     Cancel
                   </Button>

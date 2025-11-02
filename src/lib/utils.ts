@@ -141,6 +141,12 @@ export const removeTokensFromLocalStorage = () => {
   localStorage.removeItem("sessionToken");
 };
 
+export const removeSettingMediaFromLocalStorage = () => {
+  if (!isBrowser) return;
+  localStorage.removeItem("meeting_video_enabled");
+  localStorage.removeItem("meeting_audio_enabled");
+};
+
 export const clearLocalStorage = () => {
   if (!isBrowser) return;
   localStorage.clear();
