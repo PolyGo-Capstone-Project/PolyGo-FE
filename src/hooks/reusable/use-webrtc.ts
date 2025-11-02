@@ -436,7 +436,7 @@ export function useWebRTC({
           newMap.set(connId, {
             id: connId,
             name: participantName,
-            role: role === "0" ? "host" : "attendee",
+            role: role === "host" || role === "0" ? "host" : "attendee",
             status: "connecting" as ParticipantStatus,
             audioEnabled: true,
             videoEnabled: true,
