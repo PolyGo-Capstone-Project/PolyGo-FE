@@ -70,6 +70,7 @@
       "noResults": "No matching results"
     },
     "loading": {
+      "default": "Loading",
       "users": "Loading users...",
       "profile": "Loading profile...",
       "more": "Loading more users..."
