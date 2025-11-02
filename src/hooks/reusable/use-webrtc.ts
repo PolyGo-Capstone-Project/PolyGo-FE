@@ -41,12 +41,23 @@ export function useWebRTC({
 }: UseWebRTCProps) {
   const [isConnected, setIsConnected] = useState(false);
   const [myConnectionId, setMyConnectionId] = useState<string>("");
+  const [hostId, setHostId] = useState<string>("");
   const [participants, setParticipants] = useState<Map<string, Participant>>(
     new Map()
   );
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [localAudioEnabled, setLocalAudioEnabled] = useState(true);
   const [localVideoEnabled, setLocalVideoEnabled] = useState(true);
+  const [isHandRaised, setIsHandRaised] = useState(false);
+  const [chatMessages, setChatMessages] = useState<
+    Array<{
+      id: string;
+      senderId: string;
+      senderName: string;
+      message: string;
+      timestamp: Date;
+    }>
+  >([]);
 
   const peerConnectionsRef = useRef<Map<string, ExtendedRTCPeerConnection>>(
     new Map()
@@ -405,17 +416,20 @@ export function useWebRTC({
     // Setup all event handlers
     hubConnection.on(
       "SetRole",
-      (role: string, connId: string, hostId: string) => {
+      (role: string, connId: string, receivedHostId: string) => {
         console.log(
           "[SignalR] SetRole:",
           role,
           "connId:",
           connId,
           "hostId:",
-          hostId
+          receivedHostId
         );
         setMyConnectionId(connId);
         myConnectionIdRef.current = connId;
+        // ✅ FIX: Save hostId to state
+        setHostId(receivedHostId);
+        console.log("[SignalR] ✅ Host ID saved:", receivedHostId);
       }
     );
 
@@ -575,6 +589,117 @@ export function useWebRTC({
         });
       }
     );
+
+    // ✅ Chat message handler
+    hubConnection.on(
+      "ReceiveChatMessage",
+      (userName: string, message: string) => {
+        console.log(`[SignalR] ReceiveChatMessage from ${userName}:`, message);
+        setChatMessages((prev) => [
+          ...prev,
+          {
+            id: `${Date.now()}-${Math.random()}`,
+            senderId: "", // We don't get sender ID from backend
+            senderName: userName,
+            message,
+            timestamp: new Date(),
+          },
+        ]);
+      }
+    );
+
+    // ✅ Raise hand handlers
+    hubConnection.on("ReceiveWave", (connId: string, userName: string) => {
+      console.log(`[SignalR] ReceiveWave from ${userName} (${connId})`);
+      setParticipants((prev) => {
+        const newMap = new Map(prev);
+        const participant = newMap.get(connId);
+        if (participant) {
+          newMap.set(connId, {
+            ...participant,
+            isHandRaised: true,
+          });
+        }
+        return newMap;
+      });
+    });
+
+    hubConnection.on("ReceiveUnwave", (connId: string) => {
+      console.log(`[SignalR] ReceiveUnwave from ${connId}`);
+      setParticipants((prev) => {
+        const newMap = new Map(prev);
+        const participant = newMap.get(connId);
+        if (participant) {
+          newMap.set(connId, {
+            ...participant,
+            isHandRaised: false,
+          });
+        }
+        return newMap;
+      });
+    });
+
+    // ✅ Host control handlers
+    hubConnection.on("ToggleMicCommand", (enabled: boolean) => {
+      console.log(`[SignalR] ToggleMicCommand: ${enabled}`);
+      if (localStreamRef.current) {
+        const audioTrack = localStreamRef.current.getAudioTracks()[0];
+        if (audioTrack) {
+          audioTrack.enabled = enabled;
+          setLocalAudioEnabled(enabled);
+        }
+      }
+    });
+
+    hubConnection.on("ToggleCamCommand", (enabled: boolean) => {
+      console.log(`[SignalR] ToggleCamCommand: ${enabled}`);
+      if (localStreamRef.current) {
+        const videoTrack = localStreamRef.current.getVideoTracks()[0];
+        if (videoTrack) {
+          videoTrack.enabled = enabled;
+          setLocalVideoEnabled(enabled);
+        }
+      }
+    });
+
+    hubConnection.on("MicStateChanged", (connId: string, enabled: boolean) => {
+      console.log(`[SignalR] MicStateChanged: ${connId} = ${enabled}`);
+      setParticipants((prev) => {
+        const newMap = new Map(prev);
+        const participant = newMap.get(connId);
+        if (participant) {
+          newMap.set(connId, {
+            ...participant,
+            audioEnabled: enabled,
+          });
+        }
+        return newMap;
+      });
+    });
+
+    hubConnection.on("CamStateChanged", (connId: string, enabled: boolean) => {
+      console.log(`[SignalR] CamStateChanged: ${connId} = ${enabled}`);
+      setParticipants((prev) => {
+        const newMap = new Map(prev);
+        const participant = newMap.get(connId);
+        if (participant) {
+          newMap.set(connId, {
+            ...participant,
+            videoEnabled: enabled,
+          });
+        }
+        return newMap;
+      });
+    });
+
+    hubConnection.on("KickedFromRoom", (roomName: string) => {
+      console.log("[SignalR] KickedFromRoom:", roomName);
+      alert("You have been kicked from the room by the host.");
+      // Trigger cleanup
+      if (onRoomEndedRef.current) {
+        onRoomEndedRef.current();
+      }
+    });
 
     hubConnection.on(
       "ReceiveOffer",
@@ -1043,6 +1168,164 @@ export function useWebRTC({
     }
   }, [stopAllTracks]);
 
+  // ✅ Send chat message
+  const sendChatMessage = useCallback(
+    async (message: string) => {
+      if (!connectionRef.current || !message.trim()) return;
+      try {
+        await connectionRef.current.invoke(
+          "SendChatMessage",
+          eventIdRef.current,
+          userName,
+          message.trim()
+        );
+        console.log("[SignalR] ✓ Sent chat message");
+      } catch (error) {
+        console.error("[SignalR] ✗ Failed to send chat message:", error);
+      }
+    },
+    [userName]
+  );
+
+  // ✅ Toggle hand raise
+  const toggleHandRaise = useCallback(async () => {
+    if (!connectionRef.current) return;
+    try {
+      if (!isHandRaised) {
+        await connectionRef.current.invoke("SendWave", eventIdRef.current);
+        setIsHandRaised(true);
+        console.log("[SignalR] ✓ Hand raised");
+      } else {
+        await connectionRef.current.invoke("Unwave", eventIdRef.current);
+        setIsHandRaised(false);
+        console.log("[SignalR] ✓ Hand lowered");
+      }
+    } catch (error) {
+      console.error("[SignalR] ✗ Failed to toggle hand raise:", error);
+    }
+  }, [isHandRaised]);
+
+  // ✅ Host: Toggle participant mic
+  const hostToggleMic = useCallback(
+    async (targetConnId: string, enabled: boolean) => {
+      if (!connectionRef.current) return;
+      try {
+        await connectionRef.current.invoke(
+          "ToggleMic",
+          eventIdRef.current,
+          targetConnId,
+          enabled
+        );
+        console.log(
+          `[SignalR] ✓ Host toggled mic for ${targetConnId}: ${enabled}`
+        );
+      } catch (error) {
+        console.error("[SignalR] ✗ Failed to toggle mic:", error);
+      }
+    },
+    []
+  );
+
+  // ✅ Host: Toggle participant camera
+  const hostToggleCam = useCallback(
+    async (targetConnId: string, enabled: boolean) => {
+      if (!connectionRef.current) return;
+      try {
+        await connectionRef.current.invoke(
+          "ToggleCam",
+          eventIdRef.current,
+          targetConnId,
+          enabled
+        );
+        console.log(
+          `[SignalR] ✓ Host toggled cam for ${targetConnId}: ${enabled}`
+        );
+      } catch (error) {
+        console.error("[SignalR] ✗ Failed to toggle cam:", error);
+      }
+    },
+    []
+  );
+
+  // ✅ Host: Kick user
+  const kickUser = useCallback(async (targetConnId: string) => {
+    if (!connectionRef.current) return;
+    try {
+      await connectionRef.current.invoke(
+        "KickUser",
+        eventIdRef.current,
+        targetConnId
+      );
+      console.log(`[SignalR] ✓ Host kicked user: ${targetConnId}`);
+    } catch (error) {
+      console.error("[SignalR] ✗ Failed to kick user:", error);
+    }
+  }, []);
+
+  // ✅ Host: Mute all participants
+  const muteAllParticipants = useCallback(async () => {
+    if (!connectionRef.current) return;
+    const participantIds = Array.from(participants.keys()).filter(
+      (id) => id !== myConnectionIdRef.current
+    );
+    console.log(
+      `[SignalR] Muting all ${participantIds.length} participants...`
+    );
+    for (const id of participantIds) {
+      try {
+        await connectionRef.current.invoke(
+          "ToggleMic",
+          eventIdRef.current,
+          id,
+          false
+        );
+      } catch (error) {
+        console.warn(`[SignalR] ✗ Failed to mute ${id}:`, error);
+      }
+    }
+    console.log("[SignalR] ✓ Muted all participants");
+  }, [participants]);
+
+  // ✅ Host: Turn off all cameras
+  const turnOffAllCameras = useCallback(async () => {
+    if (!connectionRef.current) return;
+    const participantIds = Array.from(participants.keys()).filter(
+      (id) => id !== myConnectionIdRef.current
+    );
+    console.log(
+      `[SignalR] Turning off cameras for ${participantIds.length} participants...`
+    );
+    for (const id of participantIds) {
+      try {
+        await connectionRef.current.invoke(
+          "ToggleCam",
+          eventIdRef.current,
+          id,
+          false
+        );
+      } catch (error) {
+        console.warn(`[SignalR] ✗ Failed to turn off camera for ${id}:`, error);
+      }
+    }
+    console.log("[SignalR] ✓ Turned off all cameras");
+  }, [participants]);
+
+  // ✅ Lower all hands
+  const lowerAllHands = useCallback(async () => {
+    // Since backend doesn't have a LowerAllHands method,
+    // we just update local state. Each client manages their own hand state.
+    setParticipants((prev) => {
+      const newMap = new Map(prev);
+      newMap.forEach((participant, id) => {
+        if (participant.isHandRaised) {
+          newMap.set(id, { ...participant, isHandRaised: false });
+        }
+      });
+      return newMap;
+    });
+    console.log("[SignalR] ✓ Lowered all hands (local state)");
+  }, []);
+
   // Toggle audio
   const toggleAudio = useCallback(() => {
     if (!localStreamRef.current) return undefined;
@@ -1156,10 +1439,13 @@ export function useWebRTC({
   return {
     isConnected,
     myConnectionId,
+    hostId,
     participants,
     localStream,
     localAudioEnabled,
     localVideoEnabled,
+    isHandRaised,
+    chatMessages,
     joinRoom,
     startCall,
     leaveRoom,
@@ -1167,5 +1453,14 @@ export function useWebRTC({
     toggleAudio,
     toggleVideo,
     getLocalStream,
+    // ✅ New methods
+    sendChatMessage,
+    toggleHandRaise,
+    hostToggleMic,
+    hostToggleCam,
+    kickUser,
+    muteAllParticipants,
+    turnOffAllCameras,
+    lowerAllHands,
   };
 }

@@ -48,6 +48,10 @@ export function useMeetingControls() {
     setControls((prev) => ({ ...prev, videoEnabled: enabled }));
   }, []);
 
+  const setHandRaised = useCallback((raised: boolean) => {
+    setControls((prev) => ({ ...prev, isHandRaised: raised }));
+  }, []);
+
   return {
     controls,
     toggleAudio,
@@ -58,5 +62,6 @@ export function useMeetingControls() {
     toggleSettings,
     setAudioEnabled,
     setVideoEnabled,
+    setHandRaised,
   };
 }

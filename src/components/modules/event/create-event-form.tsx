@@ -490,6 +490,7 @@ export function CreateEventForm() {
                 id="capacity"
                 type="number"
                 min={1}
+                max={12}
                 placeholder={t("fields.capacity.placeholder")}
                 {...form.register("capacity", { valueAsNumber: true })}
               />

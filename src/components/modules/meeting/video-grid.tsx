@@ -13,6 +13,7 @@ interface VideoGridProps {
   localAudioEnabled: boolean;
   localVideoEnabled: boolean;
   myConnectionId: string;
+  hostId: string;
   isHost: boolean;
   className?: string;
 }
@@ -25,6 +26,7 @@ export function VideoGrid({
   localAudioEnabled,
   localVideoEnabled,
   myConnectionId,
+  hostId,
   isHost,
   className,
 }: VideoGridProps) {
@@ -45,9 +47,9 @@ export function VideoGrid({
         stream: localStream || undefined,
       };
 
-      // Find host from all participants (including local)
+      // ✅ FIX: Find host using hostId instead of role
       const allParticipants = [local, ...others];
-      const host = allParticipants.find((p) => p.role === "host");
+      const host = allParticipants.find((p) => p.id === hostId);
 
       // Get other attendees (not host)
       const attendees = allParticipants.filter((p) => p.id !== host?.id);
@@ -67,6 +69,7 @@ export function VideoGrid({
       localAudioEnabled,
       localVideoEnabled,
       isHost,
+      hostId,
     ]);
 
   const totalCount = remoteParticipants.length + 1; // +1 for local

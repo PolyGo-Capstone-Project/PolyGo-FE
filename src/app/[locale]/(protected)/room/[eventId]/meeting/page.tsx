@@ -58,10 +58,13 @@ export default function MeetingRoomPage() {
   const {
     isConnected,
     myConnectionId,
+    hostId,
     participants: webrtcParticipants,
     localStream,
     localAudioEnabled,
     localVideoEnabled,
+    isHandRaised,
+    chatMessages: webrtcChatMessages,
     joinRoom,
     startCall,
     leaveRoom,
@@ -69,6 +72,14 @@ export default function MeetingRoomPage() {
     toggleAudio: webrtcToggleAudio,
     toggleVideo: webrtcToggleVideo,
     getLocalStream,
+    sendChatMessage,
+    toggleHandRaise: webrtcToggleHandRaise,
+    hostToggleMic,
+    hostToggleCam,
+    kickUser,
+    muteAllParticipants,
+    turnOffAllCameras,
+    lowerAllHands,
   } = useWebRTC({
     eventId,
     userName: currentUser?.name || "Guest",
@@ -82,15 +93,24 @@ export default function MeetingRoomPage() {
 
   const {
     controls,
-    toggleHandRaise,
     toggleChat,
     toggleParticipants,
     toggleSettings,
     setAudioEnabled,
     setVideoEnabled,
+    setHandRaised,
   } = useMeetingControls();
 
-  // ✅ Sync WebRTC state to UI controls - no dependencies on controls
+  // Sync hand raised state from WebRTC to controls
+  useEffect(() => {
+    setHandRaised(isHandRaised);
+  }, [isHandRaised, setHandRaised]);
+
+  // Sync chat messages from WebRTC
+  useEffect(() => {
+    setChatMessages(webrtcChatMessages);
+  }, [webrtcChatMessages]);
+
   useEffect(() => {
     setAudioEnabled(localAudioEnabled);
   }, [localAudioEnabled, setAudioEnabled]);
@@ -232,32 +252,54 @@ export default function MeetingRoomPage() {
   };
 
   // Handle send chat message
-  const handleSendMessage = (message: string) => {
-    const newMessage: MeetingChatMessage = {
-      id: Date.now().toString(),
-      senderId: myConnectionId,
-      senderName: currentUser?.name || "Guest",
-      message,
-      timestamp: new Date(),
-    };
-    setChatMessages((prev) => [...prev, newMessage]);
+  const handleSendMessage = async (message: string) => {
+    await sendChatMessage(message);
   };
 
-  // Handle participant actions
-  const handleMuteParticipant = (participantId: string) => {
-    toast.info("Mute participant feature (UI only)");
+  // Handle toggle hand raise
+  const handleToggleHandRaise = async () => {
+    await webrtcToggleHandRaise();
   };
 
-  const handleDisableVideoParticipant = (participantId: string) => {
-    toast.info("Disable video feature (UI only)");
+  // Handle participant actions (Host only)
+  const handleMuteParticipant = async (
+    participantId: string,
+    enabled: boolean
+  ) => {
+    if (!isHost) return;
+    await hostToggleMic(participantId, enabled);
   };
 
-  const handleKickParticipant = (participantId: string) => {
-    toast.info("Kick participant feature (UI only)");
+  const handleDisableVideoParticipant = async (
+    participantId: string,
+    enabled: boolean
+  ) => {
+    if (!isHost) return;
+    await hostToggleCam(participantId, enabled);
   };
 
-  const handleLowerAllHands = () => {
-    toast.info("Lower all hands feature (UI only)");
+  const handleKickParticipant = async (participantId: string) => {
+    if (!isHost) return;
+    await kickUser(participantId);
+  };
+
+  const handleLowerAllHands = async () => {
+    if (!isHost) return;
+    await lowerAllHands();
+  };
+
+  // Handle Mute All (Host only)
+  const handleMuteAll = async () => {
+    if (!isHost) return;
+    await muteAllParticipants();
+    toast.success("Muted all participants");
+  };
+
+  // Handle Turn Off All Cameras (Host only)
+  const handleTurnOffAllCameras = async () => {
+    if (!isHost) return;
+    await turnOffAllCameras();
+    toast.success("Turned off all cameras");
   };
 
   if (isLoading || !isInitialized) {
@@ -314,6 +356,7 @@ export default function MeetingRoomPage() {
           localAudioEnabled={controls.audioEnabled}
           localVideoEnabled={controls.videoEnabled}
           myConnectionId={myConnectionId}
+          hostId={hostId} // ✅ ADD: Pass hostId prop
           isHost={isHost}
         />
       </div>
@@ -330,13 +373,15 @@ export default function MeetingRoomPage() {
         hasStartedEvent={hasStartedEvent}
         onToggleAudio={handleToggleAudio}
         onToggleVideo={handleToggleVideo}
-        onToggleHandRaise={toggleHandRaise}
+        onToggleHandRaise={handleToggleHandRaise}
         onToggleChat={toggleChat}
         onToggleParticipants={toggleParticipants}
         onToggleSettings={toggleSettings}
         onLeave={() => setShowLeaveDialog(true)}
         onStartEvent={handleStartEvent}
         onEndEvent={() => setShowEndEventDialog(true)}
+        onMuteAll={handleMuteAll}
+        onTurnOffAllCameras={handleTurnOffAllCameras}
       />
 
       {/* Participants Panel */}
