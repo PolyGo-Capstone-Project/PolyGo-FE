@@ -41,6 +41,7 @@ export function useWebRTC({
 }: UseWebRTCProps) {
   const [isConnected, setIsConnected] = useState(false);
   const [myConnectionId, setMyConnectionId] = useState<string>("");
+  const [hostId, setHostId] = useState<string>("");
   const [participants, setParticipants] = useState<Map<string, Participant>>(
     new Map()
   );
@@ -405,17 +406,20 @@ export function useWebRTC({
     // Setup all event handlers
     hubConnection.on(
       "SetRole",
-      (role: string, connId: string, hostId: string) => {
+      (role: string, connId: string, receivedHostId: string) => {
         console.log(
           "[SignalR] SetRole:",
           role,
           "connId:",
           connId,
           "hostId:",
-          hostId
+          receivedHostId
         );
         setMyConnectionId(connId);
         myConnectionIdRef.current = connId;
+        // ✅ FIX: Save hostId to state
+        setHostId(receivedHostId);
+        console.log("[SignalR] ✅ Host ID saved:", receivedHostId);
       }
     );
 
@@ -1156,6 +1160,7 @@ export function useWebRTC({
   return {
     isConnected,
     myConnectionId,
+    hostId, // ✅ ADD: Export hostId
     participants,
     localStream,
     localAudioEnabled,

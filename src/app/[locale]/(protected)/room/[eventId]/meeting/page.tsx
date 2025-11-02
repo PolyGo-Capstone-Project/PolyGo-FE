@@ -58,6 +58,7 @@ export default function MeetingRoomPage() {
   const {
     isConnected,
     myConnectionId,
+    hostId,
     participants: webrtcParticipants,
     localStream,
     localAudioEnabled,
@@ -90,7 +91,6 @@ export default function MeetingRoomPage() {
     setVideoEnabled,
   } = useMeetingControls();
 
-  // ✅ Sync WebRTC state to UI controls - no dependencies on controls
   useEffect(() => {
     setAudioEnabled(localAudioEnabled);
   }, [localAudioEnabled, setAudioEnabled]);
@@ -314,6 +314,7 @@ export default function MeetingRoomPage() {
           localAudioEnabled={controls.audioEnabled}
           localVideoEnabled={controls.videoEnabled}
           myConnectionId={myConnectionId}
+          hostId={hostId} // ✅ ADD: Pass hostId prop
           isHost={isHost}
         />
       </div>
