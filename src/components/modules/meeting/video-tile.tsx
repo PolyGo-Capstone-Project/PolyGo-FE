@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import {
+  IconCrown,
   IconHandStop,
   IconMicrophoneOff,
   IconVideoOff,
@@ -17,6 +18,7 @@ interface VideoTileProps {
   videoEnabled: boolean;
   isHandRaised: boolean;
   isLocal?: boolean;
+  isHost?: boolean;
   className?: string;
 }
 
@@ -28,6 +30,7 @@ export function VideoTile({
   videoEnabled,
   isHandRaised,
   isLocal = false,
+  isHost = false,
   className,
 }: VideoTileProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -36,13 +39,11 @@ export function VideoTile({
     const videoElement = videoRef.current;
 
     if (videoElement && stream) {
-      // ✅ Check if stream is actually different before updating
       const currentStream = videoElement.srcObject as MediaStream | null;
       const streamId = stream.id;
       const currentStreamId = currentStream?.id;
 
       if (currentStreamId === streamId) {
-        // Same stream, check if tracks changed
         const currentTracks = currentStream?.getTracks().map((t) => t.id) || [];
         const newTracks = stream.getTracks().map((t) => t.id);
 
@@ -57,20 +58,16 @@ export function VideoTile({
         stream.getTracks().map((t) => t.kind)
       );
 
-      // Clear previous stream first
       if (currentStream && currentStreamId !== streamId) {
         videoElement.srcObject = null;
       }
 
-      // Set new srcObject
       videoElement.srcObject = stream;
 
-      // Always mute local video to prevent echo
       if (isLocal) {
         videoElement.muted = true;
       }
 
-      // Force play to handle autoplay restrictions
       const playPromise = videoElement.play();
 
       if (playPromise !== undefined) {
@@ -83,7 +80,6 @@ export function VideoTile({
               `[VideoTile] ⚠️ Autoplay prevented for ${name}:`,
               error
             );
-            // Retry with muted if needed
             if (!isLocal) {
               videoElement.muted = true;
               videoElement
@@ -99,7 +95,6 @@ export function VideoTile({
       videoElement.srcObject = null;
     }
 
-    // Cleanup
     return () => {
       if (videoElement && videoElement.srcObject) {
         console.log(`[VideoTile] Cleaning up stream for ${name}`);
@@ -120,8 +115,9 @@ export function VideoTile({
       className={cn(
         "relative w-full h-full rounded-lg overflow-hidden",
         "bg-secondary/30 border-2 border-transparent",
-        "min-h-[120px]", // ✅ Minimum height to prevent collapse
+        "min-h-[120px]",
         isHandRaised && "border-yellow-500",
+        isHost && "border-primary/50", // Highlight host with primary color
         className
       )}
     >
@@ -132,10 +128,7 @@ export function VideoTile({
           autoPlay
           playsInline
           muted={isLocal}
-          className={cn(
-            "w-full h-full object-cover", // ✅ object-cover maintains aspect ratio
-            "bg-black" // ✅ Black background for letterboxing
-          )}
+          className={cn("w-full h-full object-cover", "bg-black")}
           aria-label={`Video stream for ${name}`}
         >
           <track kind="captions" />
@@ -146,7 +139,6 @@ export function VideoTile({
           <Avatar
             className={cn(
               "border-2 border-border",
-              // ✅ Responsive avatar sizing
               "h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32"
             )}
           >
@@ -154,7 +146,6 @@ export function VideoTile({
             <AvatarFallback
               className={cn(
                 "font-semibold",
-                // ✅ Responsive text sizing
                 "text-lg sm:text-xl md:text-2xl lg:text-3xl"
               )}
             >
@@ -166,8 +157,11 @@ export function VideoTile({
 
       {/* Overlay info */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Name badge */}
+        {/* Name badge with host indicator */}
         <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded flex items-center gap-2 max-w-[calc(100%-1rem)]">
+          {isHost && (
+            <IconCrown className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-400 flex-shrink-0" />
+          )}
           <span className="text-white text-xs sm:text-sm font-medium truncate">
             {isLocal ? `${name} (You)` : name}
           </span>

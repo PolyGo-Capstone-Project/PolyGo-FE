@@ -13,6 +13,7 @@ interface VideoGridProps {
   localAudioEnabled: boolean;
   localVideoEnabled: boolean;
   myConnectionId: string;
+  isHost: boolean;
   className?: string;
 }
 
@@ -24,109 +25,165 @@ export function VideoGrid({
   localAudioEnabled,
   localVideoEnabled,
   myConnectionId,
+  isHost,
   className,
 }: VideoGridProps) {
   // Filter out self from participants and add local user
-  const allParticipants = useMemo(() => {
-    const others = participants.filter((p) => p.id !== myConnectionId);
+  const { localParticipant, remoteParticipants, hostParticipant } =
+    useMemo(() => {
+      const others = participants.filter((p) => p.id !== myConnectionId);
 
-    const localParticipant: Participant = {
-      id: myConnectionId,
-      name: localName,
-      avatarUrl: localAvatarUrl,
-      role: "host",
-      status: "connected",
-      audioEnabled: localAudioEnabled,
-      videoEnabled: localVideoEnabled,
-      isHandRaised: false,
-      stream: localStream || undefined,
-    };
+      const local: Participant = {
+        id: myConnectionId,
+        name: localName,
+        avatarUrl: localAvatarUrl,
+        role: isHost ? "host" : "attendee",
+        status: "connected",
+        audioEnabled: localAudioEnabled,
+        videoEnabled: localVideoEnabled,
+        isHandRaised: false,
+        stream: localStream || undefined,
+      };
 
-    return [localParticipant, ...others];
-  }, [
-    participants,
-    myConnectionId,
-    localStream,
-    localName,
-    localAvatarUrl,
-    localAudioEnabled,
-    localVideoEnabled,
-  ]);
+      // Find host from all participants (including local)
+      const allParticipants = [local, ...others];
+      const host = allParticipants.find((p) => p.role === "host");
 
-  // ✅ IMPROVED: Calculate grid layout with better responsive design
+      // Get other attendees (not host)
+      const attendees = allParticipants.filter((p) => p.id !== host?.id);
+
+      return {
+        localParticipant: local,
+        remoteParticipants: others,
+        hostParticipant: host,
+        attendees,
+      };
+    }, [
+      participants,
+      myConnectionId,
+      localStream,
+      localName,
+      localAvatarUrl,
+      localAudioEnabled,
+      localVideoEnabled,
+      isHost,
+    ]);
+
+  const totalCount = remoteParticipants.length + 1; // +1 for local
+
+  // Fallback: if no host found (shouldn't happen), use old grid layout
+  const allParticipants = [localParticipant, ...remoteParticipants];
+
   const gridLayout = useMemo(() => {
-    const count = allParticipants.length;
+    const count = totalCount;
 
-    // Single participant - full screen
     if (count === 1) {
       return {
         containerClass: "flex items-center justify-center p-4",
-        gridClass: "",
         itemClass: "w-full max-w-4xl aspect-video",
       };
     }
 
-    // Two participants - side by side or stacked
     if (count === 2) {
       return {
         containerClass:
           "grid grid-cols-1 md:grid-cols-2 gap-4 p-4 auto-rows-fr",
-        gridClass: "",
         itemClass: "w-full h-full min-h-[300px]",
       };
     }
 
-    // 3-4 participants - 2x2 grid
     if (count <= 4) {
       return {
         containerClass:
           "grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 auto-rows-fr",
-        gridClass: "",
         itemClass: "w-full h-full min-h-[250px]",
       };
     }
 
-    // 5-6 participants - 2x3 or 3x2 grid
     if (count <= 6) {
       return {
         containerClass:
           "grid grid-cols-2 lg:grid-cols-3 gap-4 p-4 auto-rows-fr",
-        gridClass: "",
         itemClass: "w-full h-full min-h-[200px] max-h-[calc(50vh-2rem)]",
       };
     }
 
-    // 7-9 participants - 3x3 grid
     if (count <= 9) {
       return {
         containerClass:
           "grid grid-cols-2 md:grid-cols-3 gap-3 p-4 auto-rows-fr",
-        gridClass: "",
         itemClass: "w-full h-full min-h-[180px] max-h-[calc(33.33vh-2rem)]",
       };
     }
 
-    // 10-12 participants - 3x4 grid
     if (count <= 12) {
       return {
         containerClass:
           "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 p-4 auto-rows-fr",
-        gridClass: "",
         itemClass: "w-full h-full min-h-[150px] max-h-[calc(25vh-2rem)]",
       };
     }
 
-    // 13+ participants - 4x4 grid with scroll
     return {
       containerClass:
         "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 p-4",
-      gridClass: "",
       itemClass: "w-full aspect-video min-h-[120px]",
     };
-  }, [allParticipants.length]);
+  }, [totalCount]);
 
-  // ✅ For large groups, enable scrolling
-  const needsScroll = allParticipants.length > 12;
+  const needsScroll = totalCount > 12;
+
+  // ✅ NEW LAYOUT: Host ở giữa (lớn), attendees ở bên phải (nhỏ hơn, cuộn dọc)
+  if (hostParticipant) {
+    const attendees = [localParticipant, ...remoteParticipants].filter(
+      (p) => p.id !== hostParticipant.id
+    );
+
+    return (
+      <div className={cn("w-full h-full flex gap-2 p-2", className)}>
+        {/* HOST VIDEO - Center, Large */}
+        <div className="flex-1 flex items-center justify-center min-w-0">
+          <div className="w-full h-full max-w-full max-h-full flex items-center justify-center">
+            <VideoTile
+              name={hostParticipant.name}
+              avatarUrl={hostParticipant.avatarUrl}
+              stream={hostParticipant.stream}
+              audioEnabled={hostParticipant.audioEnabled}
+              videoEnabled={hostParticipant.videoEnabled}
+              isHandRaised={hostParticipant.isHandRaised}
+              isLocal={hostParticipant.id === myConnectionId}
+              isHost={true}
+              className="w-full h-full"
+            />
+          </div>
+        </div>
+
+        {/* ATTENDEES SIDEBAR - Right side, scrollable */}
+        {attendees.length > 0 && (
+          <div className="w-full sm:w-64 md:w-72 lg:w-80 flex flex-col gap-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent">
+            {attendees.map((participant) => (
+              <div
+                key={participant.id}
+                className="w-full aspect-video flex-shrink-0"
+              >
+                <VideoTile
+                  name={participant.name}
+                  avatarUrl={participant.avatarUrl}
+                  stream={participant.stream}
+                  audioEnabled={participant.audioEnabled}
+                  videoEnabled={participant.videoEnabled}
+                  isHandRaised={participant.isHandRaised}
+                  isLocal={participant.id === myConnectionId}
+                  isHost={false}
+                  className="w-full h-full"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -148,7 +205,8 @@ export function VideoGrid({
               audioEnabled={participant.audioEnabled}
               videoEnabled={participant.videoEnabled}
               isHandRaised={participant.isHandRaised}
-              isLocal={index === 0}
+              isLocal={participant.id === myConnectionId}
+              isHost={participant.role === "host"}
             />
           </div>
         ))}
