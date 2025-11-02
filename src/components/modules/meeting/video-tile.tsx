@@ -43,41 +43,43 @@ export function VideoTile({
       const streamId = stream.id;
       const currentStreamId = currentStream?.id;
 
-      // ✅ OPTIMIZED: Skip if same stream and same tracks
-      // Since we now only toggle track.enabled (not replacing tracks), this check is simpler
       if (currentStreamId === streamId) {
         const currentTracks = currentStream?.getTracks().map((t) => t.id) || [];
         const newTracks = stream.getTracks().map((t) => t.id);
 
         if (JSON.stringify(currentTracks) === JSON.stringify(newTracks)) {
-          console.log(
-            `[VideoTile] ⏭️ Skipping - same stream and tracks for ${name}`
-          );
+          console.log(`[VideoTile] ⏭️ Skipping - same stream for ${name}`);
           return;
         }
       }
 
       console.log(
-        `[VideoTile] 📹 Setting stream for ${name}, stream ID: ${streamId}, tracks:`,
-        stream.getTracks().map((t) => `${t.kind}:${t.id}`)
+        `[VideoTile] Setting stream for ${name}, tracks:`,
+        stream.getTracks().map((t) => t.kind)
       );
 
-      // Set stream to video element
+      if (currentStream && currentStreamId !== streamId) {
+        videoElement.srcObject = null;
+      }
+
       videoElement.srcObject = stream;
-      videoElement.muted = isLocal;
+
+      if (isLocal) {
+        videoElement.muted = true;
+      }
 
       const playPromise = videoElement.play();
+
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            console.log(`[VideoTile] ✅ Video playing for ${name}`);
+            console.log(`[VideoTile] ✓ Video playing for ${name}`);
           })
           .catch((error) => {
             console.warn(
               `[VideoTile] ⚠️ Autoplay prevented for ${name}:`,
               error
             );
-            // Try playing with muted for remote users
             if (!isLocal) {
               videoElement.muted = true;
               videoElement
@@ -89,13 +91,15 @@ export function VideoTile({
           });
       }
     } else if (videoElement && !stream) {
-      console.log(`[VideoTile] 🔇 Clearing stream for ${name}`);
+      console.log(`[VideoTile] Clearing stream for ${name}`);
       videoElement.srcObject = null;
     }
 
     return () => {
-      // Don't clear srcObject on cleanup to prevent flicker during re-renders
-      // The stream will be cleared when component unmounts or stream changes
+      if (videoElement && videoElement.srcObject) {
+        console.log(`[VideoTile] Cleaning up stream for ${name}`);
+        videoElement.srcObject = null;
+      }
     };
   }, [stream, name, isLocal]);
 

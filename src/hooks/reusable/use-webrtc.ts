@@ -76,6 +76,19 @@ export function useWebRTC({
     onRoomEndedRef.current = onRoomEnded;
   }, [onRoomEnded]);
 
+  // ✅ FIX: Cleanup function để stop tất cả tracks
+  const stopAllTracks = useCallback(() => {
+    console.log("[Media] 🛑 Stopping all media tracks...");
+    if (localStreamRef.current) {
+      localStreamRef.current.getTracks().forEach((track) => {
+        console.log(`[Media] Stopping track: ${track.kind} (${track.id})`);
+        track.stop();
+      });
+      localStreamRef.current = null;
+      setLocalStream(null);
+    }
+  }, []);
+
   // Get local media stream
   const getLocalStream = useCallback(async () => {
     if (localStreamRef.current) {
@@ -185,7 +198,7 @@ export function useWebRTC({
           "[PC] ✓ ontrack for",
           remoteId,
           "tracks:",
-          event.streams[0].getTracks().map((t) => t.kind)
+          event.streams[0].getTracks().map((t) => `${t.kind}:${t.enabled}`)
         );
         setParticipants((prev) => {
           const newMap = new Map(prev);
@@ -287,6 +300,63 @@ export function useWebRTC({
       return pc;
     },
     [getLocalStream, setupPeerConnectionHandlers]
+  );
+
+  // ✅ FIX: Improved function to update peer connection tracks with proper renegotiation
+  const updatePeerConnectionTracks = useCallback(
+    async (newStream: MediaStream) => {
+      console.log("[WebRTC] 🔄 Updating tracks for all peer connections");
+
+      for (const [remoteId, pc] of peerConnectionsRef.current.entries()) {
+        try {
+          const senders = pc.getSenders();
+
+          // Replace tracks
+          for (const sender of senders) {
+            const track = sender.track;
+            if (!track) continue;
+
+            const newTrack = newStream
+              .getTracks()
+              .find((t) => t.kind === track.kind);
+
+            if (newTrack) {
+              await sender.replaceTrack(newTrack);
+              console.log(
+                `[PC] ✓ Replaced ${track.kind} track for ${remoteId}`
+              );
+            }
+          }
+
+          // ✅ FIX: Always renegotiate after replacing tracks
+          if (
+            pc.signalingState === "stable" &&
+            connectionRef.current?.state ===
+              signalR.HubConnectionState.Connected
+          ) {
+            console.log(`[PC] 🔄 Starting renegotiation for ${remoteId}...`);
+
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+
+            await connectionRef.current.invoke(
+              "SendOffer",
+              eventIdRef.current,
+              remoteId,
+              offer.sdp
+            );
+
+            console.log(`[PC] ✓ Renegotiation completed for ${remoteId}`);
+          }
+        } catch (error) {
+          console.error(
+            `[PC] ✗ Failed to update tracks for ${remoteId}:`,
+            error
+          );
+        }
+      }
+    },
+    []
   );
 
   // Broadcast media state change
@@ -606,8 +676,12 @@ export function useWebRTC({
       peerConnectionsRef.current.clear();
       initiatedPeersRef.current.clear();
 
+      // ✅ FIX: Stop all tracks properly
       if (localStreamRef.current) {
-        localStreamRef.current.getTracks().forEach((track) => track.stop());
+        localStreamRef.current.getTracks().forEach((track) => {
+          console.log(`[Media] 🛑 Stopping track: ${track.kind}`);
+          track.stop();
+        });
         localStreamRef.current = null;
         setLocalStream(null);
       }
@@ -640,6 +714,7 @@ export function useWebRTC({
         peerConnectionsRef.current.clear();
         initiatedPeersRef.current.clear();
 
+        // ✅ FIX: Always stop tracks on unmount
         if (localStreamRef.current) {
           localStreamRef.current.getTracks().forEach((track) => track.stop());
           localStreamRef.current = null;
@@ -866,11 +941,8 @@ export function useWebRTC({
     peerConnectionsRef.current.clear();
     initiatedPeersRef.current.clear();
 
-    if (localStreamRef.current) {
-      localStreamRef.current.getTracks().forEach((track) => track.stop());
-      localStreamRef.current = null;
-      setLocalStream(null);
-    }
+    // ✅ FIX: Always stop tracks when leaving
+    stopAllTracks();
 
     setParticipants(new Map());
     setIsConnected(false);
@@ -879,9 +951,9 @@ export function useWebRTC({
     hasJoinedRef.current = false;
 
     console.log("[WebRTC] ✓ Cleanup complete");
-  }, []);
+  }, [stopAllTracks]);
 
-  // End room (host only)
+  // ✅ FIX: End room with proper cleanup
   const endRoom = useCallback(async () => {
     const conn = connectionRef.current;
     if (!conn) return;
@@ -891,11 +963,29 @@ export function useWebRTC({
         await conn.invoke("EndRoom", eventIdRef.current);
         console.log("[SignalR] ✓ Ended room - broadcast sent");
       }
+
+      // ✅ FIX: Host also needs to cleanup immediately after ending room
+      console.log("[SignalR] 🧹 Host cleanup after ending room...");
+
+      peerConnectionsRef.current.forEach((pc) => pc.close());
+      peerConnectionsRef.current.clear();
+      initiatedPeersRef.current.clear();
+
+      // Stop all tracks
+      stopAllTracks();
+
+      setParticipants(new Map());
+      setIsConnected(false);
+      callStartedRef.current = false;
+      isJoiningRef.current = false;
+      hasJoinedRef.current = false;
+
+      console.log("[SignalR] ✓ Host cleanup complete");
     } catch (error) {
       console.error("[SignalR] ✗ End room error:", error);
       throw error;
     }
-  }, []);
+  }, [stopAllTracks]);
 
   // Toggle audio
   const toggleAudio = useCallback(() => {
@@ -915,32 +1005,97 @@ export function useWebRTC({
     return undefined;
   }, [broadcastMediaState]);
 
-  // Toggle video
+  // ✅ FIX: Simplified and more reliable toggleVideo
   const toggleVideo = useCallback(async () => {
-    if (!localStreamRef.current) return undefined;
-
-    const videoTrack = localStreamRef.current.getVideoTracks()[0];
-
-    if (!videoTrack) {
-      console.warn("[Media] ⚠️ No video track found");
+    if (!localStreamRef.current) {
+      console.warn("[Media] ⚠️ No local stream to toggle video");
       return undefined;
     }
 
-    // ✅ SIMPLE FIX: Chỉ toggle enabled property như waiting room
-    // KHÔNG cần request stream mới, KHÔNG cần stop track
-    videoTrack.enabled = !videoTrack.enabled;
-    setLocalVideoEnabled(videoTrack.enabled);
-    await broadcastMediaState("video", videoTrack.enabled);
+    try {
+      const currentVideoTrack = localStreamRef.current.getVideoTracks()[0];
 
-    console.log(
-      "[Media]",
-      videoTrack.enabled ? "✅ Video enabled" : "✗ Video disabled",
-      "- track.enabled =",
-      videoTrack.enabled
-    );
+      // Case 1: Disabling video (track exists and is enabled)
+      if (currentVideoTrack && currentVideoTrack.enabled) {
+        console.log("[Media] 🔴 Disabling video...");
+        currentVideoTrack.enabled = false;
+        setLocalVideoEnabled(false);
+        await broadcastMediaState("video", false);
+        console.log("[Media] ✓ Video disabled");
+        return false;
+      }
 
-    return videoTrack.enabled;
-  }, [broadcastMediaState]);
+      // Case 2: Enabling video (track exists but is disabled)
+      if (currentVideoTrack && !currentVideoTrack.enabled) {
+        console.log("[Media] 🟢 Enabling video...");
+
+        // Check if the track is still live
+        if (currentVideoTrack.readyState === "live") {
+          console.log("[Media] ✓ Track is live, simply enabling...");
+          currentVideoTrack.enabled = true;
+          setLocalVideoEnabled(true);
+          await broadcastMediaState("video", true);
+          console.log("[Media] ✓ Video enabled");
+          return true;
+        }
+
+        // Track is ended, need to get a new one
+        console.log("[Media] 🔄 Track ended, getting new video stream...");
+      }
+
+      // Case 3: Need to get a new video track (no track or track ended)
+      console.log("[Media] 🎥 Requesting new video stream...");
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
+
+      const newVideoTrack = newStream.getVideoTracks()[0];
+      if (!newVideoTrack) {
+        throw new Error("Failed to get video track from new stream");
+      }
+
+      // Stop old video track if it exists
+      if (currentVideoTrack) {
+        console.log("[Media] 🛑 Stopping old video track...");
+        currentVideoTrack.stop();
+      }
+
+      // Get audio tracks from current stream
+      const audioTracks = localStreamRef.current.getAudioTracks();
+
+      // Create new combined stream
+      const combinedStream = new MediaStream();
+      audioTracks.forEach((track) => combinedStream.addTrack(track));
+      combinedStream.addTrack(newVideoTrack);
+
+      console.log(
+        "[Media] ✓ New stream created with tracks:",
+        combinedStream.getTracks().map((t) => `${t.kind}:${t.id}`)
+      );
+
+      // Update refs and state
+      localStreamRef.current = combinedStream;
+      setLocalStream(combinedStream);
+      setLocalVideoEnabled(true);
+
+      // ✅ CRITICAL: Update all peer connections with the new video track
+      console.log(
+        "[Media] 🔄 Updating peer connections with new video track..."
+      );
+      await updatePeerConnectionTracks(combinedStream);
+
+      // Broadcast the new state
+      await broadcastMediaState("video", true);
+
+      console.log("[Media] ✓ Video re-enabled successfully");
+      return true;
+    } catch (error) {
+      console.error("[Media] ✗ toggleVideo error:", error);
+      setLocalVideoEnabled(false);
+      return undefined;
+    }
+  }, [broadcastMediaState, updatePeerConnectionTracks]);
 
   return {
     isConnected,
