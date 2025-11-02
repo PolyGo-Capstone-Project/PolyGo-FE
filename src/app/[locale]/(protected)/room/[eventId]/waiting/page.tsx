@@ -10,8 +10,10 @@ import {
 } from "@/components";
 import { DeviceSettings } from "@/components/modules/meeting";
 import { useEventMeeting } from "@/hooks/reusable/use-event-meeting";
+import { useMobileDevice } from "@/hooks/use-mobile-device";
 import { cn, removeSettingMediaFromLocalStorage } from "@/lib/utils";
 import {
+  IconDeviceMobile,
   IconLoader2,
   IconMicrophone,
   IconMicrophoneOff,
@@ -28,6 +30,7 @@ export default function WaitingRoomPage() {
   const router = useRouter();
   const t = useTranslations("meeting.waiting");
   const tError = useTranslations("meeting.errors");
+  const tMobile = useTranslations("meeting.mobile");
   const locale = useLocale();
   const eventId = params.eventId as string;
 
@@ -40,6 +43,7 @@ export default function WaitingRoomPage() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const { event, currentUser, canJoin, isLoading } = useEventMeeting(eventId);
+  const isMobileDevice = useMobileDevice();
 
   useEffect(() => {
     if (isInitialized) return;
@@ -175,6 +179,59 @@ export default function WaitingRoomPage() {
             <p className="text-destructive text-center">
               {tError("notAuthorized")}
             </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // ✅ NEW: Block mobile devices - show message to use mobile app
+  if (isMobileDevice) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="max-w-md w-full">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+              <IconDeviceMobile className="h-10 w-10 text-primary" />
+            </div>
+            <CardTitle className="text-2xl">{tMobile("title")}</CardTitle>
+            <CardDescription className="text-base">
+              {tMobile("subtitle")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="rounded-lg bg-muted p-4 text-center space-y-2">
+              <p className="font-semibold text-lg">{tMobile("appTitle")}</p>
+              <p className="text-sm text-muted-foreground">
+                {tMobile("appDescription")}
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Button
+                variant="default"
+                size="lg"
+                className="w-full"
+                onClick={() => {
+                  // TODO: Link to App Store or Play Store
+                  window.open("https://apps.apple.com/app/polygo", "_blank");
+                }}
+              >
+                {tMobile("downloadButton")}
+              </Button>
+
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => router.push(`/${locale}/dashboard`)}
+              >
+                {tMobile("backButton")}
+              </Button>
+            </div>
+
+            <div className="text-center text-xs text-muted-foreground">
+              <p>{tMobile("hint")}</p>
+            </div>
           </CardContent>
         </Card>
       </div>

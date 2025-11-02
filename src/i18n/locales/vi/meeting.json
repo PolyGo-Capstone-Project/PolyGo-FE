@@ -70,6 +70,17 @@
       "eventNotFound": "Không tìm thấy sự kiện",
       "eventEnded": "Sự kiện này đã kết thúc"
     },
+    "mobile": {
+      "title": "Phát hiện Thiết bị Di động",
+      "subtitle": "Cuộc họp video không được hỗ trợ trên trình duyệt di động",
+      "appTitle": "Sử dụng Ứng dụng PolyGo",
+      "appDescription": "Để tham gia cuộc họp video, vui lòng tải và sử dụng ứng dụng PolyGo trên điện thoại của bạn",
+      "downloadButton": "📱 Tải ứng dụng PolyGo",
+      "backButton": "Quay lại Dashboard",
+      "hint": "Hoặc mở trang này trên máy tính để tham gia qua web browser",
+      "notSupportedTitle": "Không hỗ trợ Mobile",
+      "notSupportedMessage": "Vui lòng sử dụng ứng dụng PolyGo trên điện thoại hoặc truy cập từ máy tính"
+    },
     "dialogs": {
       "leaveTitle": "Rời khỏi cuộc họp?",
       "leaveMessage": "Bạn có chắc chắn muốn rời khỏi cuộc họp này?",

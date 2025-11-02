@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Button,
   Label,
   Select,
   SelectContent,
@@ -16,7 +15,6 @@ import {
   IconDeviceSpeaker,
   IconMicrophone,
   IconVideo,
-  IconX,
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
@@ -78,9 +76,6 @@ export function DeviceSettings({ onClose, className }: DeviceSettingsProps) {
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b">
         <h3 className="text-lg font-semibold">{t("title")}</h3>
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          <IconX className="h-4 w-4" />
-        </Button>
       </div>
 
       {/* Content */}

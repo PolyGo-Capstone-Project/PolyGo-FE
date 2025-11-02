@@ -30,7 +30,9 @@
     "SetUpProfile": "Thiết lập hồ sơ thành công!",
     "Subscription": "Đăng ký thành công!",
     "Subscribe": "Nâng cấp gói thành công!",
-    "Cancel": "Hủy đăng ký thành công!"
+    "Cancel": "Hủy đăng ký thành công!",
+    "Kick": "Người dùng đã bị đá ra!",
+    "Unregister": "Hủy đăng ký thành công!"
   },
   "Error": {
     "default": "Đã xảy ra lỗi. Vui lòng thử lại.",

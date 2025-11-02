@@ -16,7 +16,6 @@ import {
   IconMicrophoneOff,
   IconUserOff,
   IconVideoOff,
-  IconX,
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
@@ -73,9 +72,6 @@ export function ParticipantList({
             </Button>
           )}
         </div>
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          <IconX className="h-4 w-4" />
-        </Button>
       </div>
 
       {/* Participant list */}

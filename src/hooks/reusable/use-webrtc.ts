@@ -1137,12 +1137,30 @@ export function useWebRTC({
   // ✅ FIX: End room with proper cleanup
   const endRoom = useCallback(async () => {
     const conn = connectionRef.current;
-    if (!conn) return;
+
+    console.log("[SignalR] 🛑 Ending room...", {
+      hasConnection: !!conn,
+      connectionState: conn?.state,
+      eventId: eventIdRef.current,
+    });
 
     try {
-      if (conn.state === signalR.HubConnectionState.Connected) {
-        await conn.invoke("EndRoom", eventIdRef.current);
-        console.log("[SignalR] ✓ Ended room - broadcast sent");
+      // Try to send EndRoom signal if connected
+      if (conn && conn.state === signalR.HubConnectionState.Connected) {
+        try {
+          await conn.invoke("EndRoom", eventIdRef.current);
+          console.log("[SignalR] ✓ Ended room - broadcast sent");
+        } catch (invokeError) {
+          console.error(
+            "[SignalR] ⚠️ Failed to invoke EndRoom (continuing cleanup):",
+            invokeError
+          );
+          // Continue with cleanup even if invoke fails
+        }
+      } else {
+        console.warn(
+          "[SignalR] ⚠️ Connection not available or not connected, skipping EndRoom invoke"
+        );
       }
 
       // ✅ FIX: Host also needs to cleanup immediately after ending room
@@ -1164,7 +1182,8 @@ export function useWebRTC({
       console.log("[SignalR] ✓ Host cleanup complete");
     } catch (error) {
       console.error("[SignalR] ✗ End room error:", error);
-      throw error;
+      // ✅ Don't throw - still allow cleanup to complete
+      // Just log the error and continue
     }
   }, [stopAllTracks]);
 
