@@ -88,29 +88,7 @@ export default function MeetingRoomPage() {
     setVideoEnabled,
   } = useMeetingControls();
 
-  // ✅ FIX: Đọc trạng thái từ waiting room và apply NGAY khi vào
-  useEffect(() => {
-    const savedAudioState = localStorage.getItem("meeting_audio_enabled");
-    const savedVideoState = localStorage.getItem("meeting_video_enabled");
-
-    if (savedAudioState !== null) {
-      const audioEnabled = savedAudioState === "true";
-      setAudioEnabled(audioEnabled);
-      console.log("[Meeting] Restored audio state from waiting:", audioEnabled);
-    }
-
-    if (savedVideoState !== null) {
-      const videoEnabled = savedVideoState === "true";
-      setVideoEnabled(videoEnabled);
-      console.log("[Meeting] Restored video state from waiting:", videoEnabled);
-    }
-
-    // Clear localStorage sau khi đọc
-    localStorage.removeItem("meeting_audio_enabled");
-    localStorage.removeItem("meeting_video_enabled");
-  }, [setAudioEnabled, setVideoEnabled]);
-
-  // ✅ Sync WebRTC state to UI controls
+  // ✅ Sync WebRTC state to UI controls - no dependencies on controls
   useEffect(() => {
     setAudioEnabled(localAudioEnabled);
   }, [localAudioEnabled, setAudioEnabled]);
@@ -124,12 +102,11 @@ export default function MeetingRoomPage() {
     webrtcParticipants.values()
   );
 
-  // ✅ FIX: Initialize meeting - get local stream FIRST, then join room
+  // ✅ Initialize meeting ONCE
   useEffect(() => {
     if (!isLoading && event && currentUser && canJoin && !isInitialized) {
       const init = async () => {
         try {
-          // ✅ CRITICAL: Get local stream BEFORE joining room
           console.log("[Meeting] Getting local stream before joining...");
           await getLocalStream();
           console.log("[Meeting] ✓ Local stream ready, joining room...");
@@ -137,7 +114,6 @@ export default function MeetingRoomPage() {
           await joinRoom();
           setIsInitialized(true);
 
-          // Check if event is already live
           if (event.status === EventStatus.Live) {
             setHasStartedEvent(true);
           }
@@ -158,36 +134,6 @@ export default function MeetingRoomPage() {
     getLocalStream,
     joinRoom,
     tError,
-  ]);
-
-  // ✅ FIX: Apply saved media states to actual stream after initialization
-  useEffect(() => {
-    if (isInitialized && localStream) {
-      // Apply audio state
-      const audioTrack = localStream.getAudioTracks()[0];
-      if (audioTrack && audioTrack.enabled !== controls.audioEnabled) {
-        audioTrack.enabled = controls.audioEnabled;
-        console.log(
-          "[Meeting] ✓ Applied saved audio state:",
-          controls.audioEnabled
-        );
-      }
-
-      // Apply video state
-      const videoTrack = localStream.getVideoTracks()[0];
-      if (videoTrack && videoTrack.enabled !== controls.videoEnabled) {
-        videoTrack.enabled = controls.videoEnabled;
-        console.log(
-          "[Meeting] ✓ Applied saved video state:",
-          controls.videoEnabled
-        );
-      }
-    }
-  }, [
-    isInitialized,
-    localStream,
-    controls.audioEnabled,
-    controls.videoEnabled,
   ]);
 
   // Auto start call when participants join
@@ -221,12 +167,12 @@ export default function MeetingRoomPage() {
     startCall,
   ]);
 
-  // ✅ FIX: Handle audio toggle - KHÔNG double toggle
+  // Handle audio toggle
   const handleToggleAudio = () => {
     webrtcToggleAudio();
   };
 
-  // ✅ FIX: Handle video toggle - KHÔNG double toggle
+  // Handle video toggle
   const handleToggleVideo = () => {
     webrtcToggleVideo();
   };
@@ -260,7 +206,10 @@ export default function MeetingRoomPage() {
     if (!isHost || !event) return;
 
     try {
+      // 1. End room via SignalR - this broadcasts to ALL participants
       await endRoom();
+
+      // 2. Update event status in database
       await eventApiRequest.updateEventStatusByHost({
         eventId,
         status: EventStatus.Completed,
@@ -268,6 +217,7 @@ export default function MeetingRoomPage() {
 
       toast.success(tControls("endEvent"));
 
+      // 3. Cleanup local resources
       callInitiatedRef.current = false;
       await leaveRoom();
       router.push(`/${locale}/dashboard`);
