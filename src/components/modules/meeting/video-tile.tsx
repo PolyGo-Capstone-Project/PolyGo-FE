@@ -122,19 +122,24 @@ export function VideoTile({
       )}
     >
       {/* Video element or Avatar */}
-      {videoEnabled && stream ? (
+      {stream && (
         <video
           ref={videoRef}
           autoPlay
           playsInline
           muted={isLocal}
-          className={cn("w-full h-full object-cover", "bg-black")}
+          className={cn(
+            "w-full h-full object-cover bg-black",
+            !videoEnabled && "hidden" // ✅ FIX: Hide video when disabled
+          )}
           aria-label={`Video stream for ${name}`}
         >
           <track kind="captions" />
         </video>
-      ) : (
-        /* Avatar fallback */
+      )}
+
+      {/* Avatar fallback - show when no stream OR video disabled */}
+      {(!stream || !videoEnabled) && (
         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
           <Avatar
             className={cn(

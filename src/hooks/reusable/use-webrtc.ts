@@ -419,6 +419,29 @@ export function useWebRTC({
       }
     );
 
+    // ✅ FIX: Handle HostInfo event to add host to participants
+    hubConnection.on("HostInfo", (hostName: string, hostConnId: string) => {
+      console.log("[SignalR] ✓ HostInfo:", hostName, "connId:", hostConnId);
+
+      setParticipants((prev) => {
+        const newMap = new Map(prev);
+        // Check if host already exists
+        if (!newMap.has(hostConnId)) {
+          newMap.set(hostConnId, {
+            id: hostConnId,
+            name: hostName,
+            role: "host",
+            status: "connecting" as ParticipantStatus,
+            audioEnabled: true,
+            videoEnabled: true,
+            isHandRaised: false,
+          });
+          console.log("[SignalR] ✓ Added host to participants:", hostName);
+        }
+        return newMap;
+      });
+    });
+
     hubConnection.on(
       "UserJoined",
       (participantName: string, role: string, connId: string) => {
@@ -465,6 +488,21 @@ export function useWebRTC({
                 return;
               }
 
+              // ✅ FIX: Perfect Negotiation - Only impolite peer creates offer
+              const isPolite = myConnectionIdRef.current < connId;
+
+              if (isPolite) {
+                console.log(
+                  "[WebRTC] 👍 I'm polite, waiting for offer from",
+                  connId
+                );
+                return; // Polite peer waits for offer
+              }
+
+              console.log(
+                "[WebRTC] 😤 I'm impolite, creating offer for",
+                connId
+              );
               const pc = await createPeerConnection(connId);
 
               if (pc.signalingState === "stable" && !pc.remoteDescription) {
@@ -873,6 +911,24 @@ export function useWebRTC({
           console.log("[WebRTC] ⚠️ Already initiated call to", remoteId);
           continue;
         }
+
+        // ✅ FIX: Perfect Negotiation - Only impolite peer creates offer
+        const isPolite = myConnectionId < remoteId;
+
+        if (isPolite) {
+          console.log(
+            "[WebRTC] 👍 I'm polite with",
+            remoteId,
+            "- waiting for their offer"
+          );
+          continue; // Polite peer waits for offer from impolite peer
+        }
+
+        console.log(
+          "[WebRTC] 😤 I'm impolite with",
+          remoteId,
+          "- creating offer"
+        );
 
         try {
           const pc = await createPeerConnection(remoteId);
