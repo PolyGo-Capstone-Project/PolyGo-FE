@@ -1,4 +1,5 @@
 import { useLocale } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
@@ -16,13 +17,23 @@ const sizeClasses: Record<NonNullable<LogoProps["size"]>, string> = {
   lg: "text-2xl",
 };
 
-function LogoContent() {
+const imageDimensions: Record<NonNullable<LogoProps["size"]>, number> = {
+  sm: 45,
+  default: 70,
+  lg: 100,
+};
+
+function LogoContent({ size }: { size: NonNullable<LogoProps["size"]> }) {
   return (
     <>
-      <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-        <span className="text-lg font-extrabold">P</span>
-      </span>
-      <span className="font-bold text-black dark:text-white">PolyGo</span>
+      <Image
+        src="/assets/logo/Primary.png"
+        alt="PolyGo logo"
+        width={imageDimensions[size]}
+        height={imageDimensions[size]}
+        className="rounded-lg"
+        priority
+      />
     </>
   );
 }
@@ -44,14 +55,14 @@ export function Logo({
   if (!withLink) {
     return (
       <div className={containerClass}>
-        <LogoContent />
+        <LogoContent size={size} />
       </div>
     );
   }
 
   return (
     <Link href={href} className={containerClass}>
-      <LogoContent />
+      <LogoContent size={size} />
     </Link>
   );
 }

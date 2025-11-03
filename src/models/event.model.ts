@@ -169,10 +169,13 @@ export const GetEventByIdResSchema = z.object({
   message: z.string(),
 });
 
-// Get event detail for host and admin
-export const GetEventDetailResSchema = z.object({
+export const GetEventStatResSchema = z.object({
   data: EventListItemSchema.extend({
     participants: z.array(participantInfoSchema).default([]),
+    revenue: z.number().min(0).default(0),
+    averageRating: z.number().min(0).max(5).nullable(),
+    totalReviews: z.number().min(0).default(0),
+    reviews: z.array(z.string()).default([]),
   }),
   message: z.string(),
 });
@@ -265,7 +268,7 @@ export type ParticipatedEventResType = z.infer<
 >;
 export type HostedEventResType = z.infer<typeof HostedEventResSchema>;
 export type GetEventByIdResType = z.infer<typeof GetEventByIdResSchema>;
-export type GetEventDetailResType = z.infer<typeof GetEventDetailResSchema>;
+export type GetEventStatResType = z.infer<typeof GetEventStatResSchema>;
 export type CreateEventBodyType = z.infer<typeof CreateEventBodySchema>;
 export type CancelEventBodyType = z.infer<typeof CancelEventBodySchema>;
 export type RegisterEventBodyType = z.infer<typeof RegisterEventBodySchema>;

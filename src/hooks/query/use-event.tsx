@@ -36,8 +36,8 @@ type GetHostedEventsResponse = Awaited<
 type GetEventByIdResponse = Awaited<
   ReturnType<typeof eventApiRequest.getEventById>
 >;
-type GetEventDetailResponse = Awaited<
-  ReturnType<typeof eventApiRequest.getDetailEvent>
+type GetEventStatResponse = Awaited<
+  ReturnType<typeof eventApiRequest.getStatEvent>
 >;
 type CreateEventResponse = Awaited<
   ReturnType<typeof eventApiRequest.createEvent>
@@ -141,15 +141,15 @@ export const useGetEventById = (
   });
 };
 
-export const useGetEventDetail = (
+export const useGetEventStats = (
   id: string,
   query?: GetEventByIdQueryType,
   options?: { enabled?: boolean }
 ) => {
-  return useQuery<GetEventDetailResponse>({
-    queryKey: ["events", "detail", id ?? null, query ?? null],
+  return useQuery<GetEventStatResponse>({
+    queryKey: ["events", "stat", id ?? null, query ?? null],
     queryFn: () =>
-      eventApiRequest.getDetailEvent(id, query as GetEventByIdQueryType),
+      eventApiRequest.getStatEvent(id, query as GetEventByIdQueryType),
     enabled: options?.enabled,
     placeholderData: keepPreviousData,
   });

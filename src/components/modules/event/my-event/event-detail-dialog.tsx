@@ -28,7 +28,7 @@ import {
   Separator,
 } from "@/components/ui";
 import { EventStatus, EventStatusType } from "@/constants";
-import { useGetEventDetail } from "@/hooks";
+import { useGetEventById } from "@/hooks";
 import { formatCurrency } from "@/lib";
 
 type EventDetailDialogProps = {
@@ -43,10 +43,9 @@ export function EventDetailDialog({
   onOpenChange,
 }: EventDetailDialogProps) {
   const t = useTranslations("event.detail");
-  const tMyEvent = useTranslations("event.myEvent.created");
   const locale = useLocale();
 
-  const { data, isLoading, error } = useGetEventDetail(
+  const { data, isLoading, error } = useGetEventById(
     eventId || "",
     { lang: locale },
     { enabled: !!eventId && open }
@@ -98,7 +97,7 @@ export function EventDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[90vw] max-h-[80vh] w-full flex flex-col p-0">
+      <DialogContent className="max-w-[90vw] md:max-w-2xl max-h-[85vh] w-full flex flex-col p-0">
         <DialogHeader className="flex-shrink-0 px-6 pt-6">
           <DialogTitle className="flex items-center justify-between pr-8">
             {isLoading ? t("title") : event?.title || t("title")}
@@ -225,61 +224,6 @@ export function EventDetailDialog({
                     ))}
                   </div>
                 </div>
-
-                {/* Participants List (if available) */}
-                {event.participants && event.participants.length > 0 && (
-                  <>
-                    <Separator />
-                    <div>
-                      <p className="font-semibold mb-3">
-                        {tMyEvent("participants")} ({event.participants.length})
-                      </p>
-                      <ScrollArea className="max-h-64 border rounded-lg p-4">
-                        <div className="space-y-3">
-                          {event.participants.map((participant) => (
-                            <div
-                              key={participant.id}
-                              className="flex items-center gap-3"
-                            >
-                              <Avatar className="h-9 w-9">
-                                <AvatarImage
-                                  src={
-                                    isValidAvatarUrl(participant.avatarUrl)
-                                      ? participant.avatarUrl!
-                                      : undefined
-                                  }
-                                  alt={participant.name}
-                                />
-                                <AvatarFallback>
-                                  {participant.name
-                                    .split(" ")
-                                    .map((n) => n[0])
-                                    .join("")
-                                    .toUpperCase()
-                                    .slice(0, 2)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium truncate">
-                                  {participant.name}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  {format(
-                                    new Date(participant.registeredAt),
-                                    "PPp"
-                                  )}
-                                </p>
-                              </div>
-                              <Badge variant="outline" className="text-xs">
-                                {participant.role}
-                              </Badge>
-                            </div>
-                          ))}
-                        </div>
-                      </ScrollArea>
-                    </div>
-                  </>
-                )}
               </div>
             )}
           </div>
@@ -288,7 +232,7 @@ export function EventDetailDialog({
         <div className="flex justify-end gap-2 px-6 pb-6 pt-4 border-t flex-shrink-0">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             <IconX className="h-4 w-4 mr-2" />
-            {tMyEvent("close")}
+            {t("cancel")}
           </Button>
         </div>
       </DialogContent>
