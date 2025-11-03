@@ -23,13 +23,11 @@ export default function MyEventContent() {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Sidebar - 40% on desktop */}
-        <div className="w-full lg:w-[40%]">
+        <div className="w-full lg:w-[20%]">
           <MyEventSidebar activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
 
-        {/* Calendar - 60% on desktop */}
-        <div className="w-full lg:w-[60%]">
+        <div className="w-full lg:w-[80%]">
           <MyEventCalendar activeTab={activeTab} />
         </div>
       </div>

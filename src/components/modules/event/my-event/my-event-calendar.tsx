@@ -1,10 +1,21 @@
 "use client";
 
-import { format, isSameDay } from "date-fns";
+import {
+  eachDayOfInterval,
+  endOfMonth,
+  endOfWeek,
+  format,
+  isFuture,
+  isSameDay,
+  isSameMonth,
+  isToday,
+  startOfMonth,
+  startOfWeek,
+} from "date-fns";
+import { CalendarIcon, ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { DayPicker } from "react-day-picker";
+import { useMemo, useState } from "react";
 
 import {
   Badge,
@@ -13,14 +24,14 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  ScrollArea,
+  Skeleton,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui";
 import { useGetHostedEvents, useGetParticipatedEvents } from "@/hooks";
-
-import "react-day-picker/dist/style.css";
+import { cn } from "@/lib/utils";
 
 type MyEventCalendarProps = {
   activeTab: "all" | "created" | "joined";
@@ -30,13 +41,14 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
   const t = useTranslations("event.myEvent.calendar");
   const locale = useLocale();
   const router = useRouter();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    new Date()
-  );
-  const [month, setMonth] = useState<Date>(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   // Fetch created events
-  const { data: createdData } = useGetHostedEvents(
+  const {
+    data: createdData,
+    isLoading: isLoadingCreated,
+    isError: isErrorCreated,
+  } = useGetHostedEvents(
     {
       pageNumber: 1,
       pageSize: 100,
@@ -46,7 +58,11 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
   );
 
   // Fetch joined events
-  const { data: joinedData } = useGetParticipatedEvents(
+  const {
+    data: joinedData,
+    isLoading: isLoadingJoined,
+    isError: isErrorJoined,
+  } = useGetParticipatedEvents(
     {
       pageNumber: 1,
       pageSize: 100,
@@ -56,231 +72,253 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
   );
 
   // Get events based on active tab
-  const getEvents = () => {
+  const events = useMemo(() => {
     const created = createdData?.payload?.data?.items || [];
     const joined = joinedData?.payload?.data?.items || [];
 
     if (activeTab === "created") return created;
     if (activeTab === "joined") return joined;
     return [...created, ...joined];
+  }, [createdData, joinedData, activeTab]);
+
+  const isLoading = isLoadingCreated || isLoadingJoined;
+  const isError = isErrorCreated || isErrorJoined;
+
+  // Generate calendar days for month view
+  const calendarDays = useMemo(() => {
+    const start = startOfWeek(startOfMonth(currentDate));
+    const end = endOfWeek(endOfMonth(currentDate));
+    return eachDayOfInterval({ start, end });
+  }, [currentDate]);
+
+  // Get events for a specific day
+  const getEventsForDay = (day: Date) => {
+    return events.filter((event) => isSameDay(new Date(event.startAt), day));
   };
 
-  const events = getEvents();
+  const handlePreviousMonth = () => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1)
+    );
+  };
 
-  // Get dates that have events
-  const eventDates = events.map((event) => new Date(event.startAt));
+  const handleNextMonth = () => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1)
+    );
+  };
 
-  // Get events for selected date
-  const selectedDateEvents = selectedDate
-    ? events.filter((event) => isSameDay(new Date(event.startAt), selectedDate))
-    : [];
+  const handleToday = () => {
+    setCurrentDate(new Date());
+  };
 
   const handleEventClick = (eventId: string) => {
     router.push(`/${locale}/event/${eventId}`);
   };
 
-  const modifiers = {
-    hasEvent: eventDates,
+  const getEventColor = (event: any) => {
+    const startDate = new Date(event.startAt);
+    if (isToday(startDate))
+      return "bg-blue-500 hover:bg-blue-600 border-blue-600";
+    if (isFuture(startDate))
+      return "bg-green-500 hover:bg-green-600 border-green-600";
+    return "bg-gray-400 hover:bg-gray-500 border-gray-500";
   };
 
-  const modifiersClassNames = {
-    hasEvent: "has-event",
-  };
+  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   return (
-    <Card className="h-full">
-      <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
+    <Card className="h-full flex flex-col">
+      <CardHeader className="flex-shrink-0">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CardTitle className="text-2xl font-bold">
+              {format(currentDate, "MMMM yyyy")}
+            </CardTitle>
+            {/* Navigation */}
+            <div className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handlePreviousMonth}
+              >
+                <ChevronLeft className="h-1 w-2" />
+              </Button>
+              <Button variant="outline" size="icon" onClick={handleNextMonth}>
+                <ChevronRight className="h-1 w-2" />
+              </Button>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Today Button */}
+            <div className="hidden sm:flex border rounded-lg overflow-hidden">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleToday}
+                className="hidden sm:inline-flex"
+              >
+                Today
+              </Button>
+            </div>
+          </div>
+        </div>
       </CardHeader>
-      <CardContent>
-        <style jsx global>{`
-          .rdp {
-            --rdp-cell-size: 50px;
-            --rdp-accent-color: hsl(var(--primary));
-            --rdp-background-color: hsl(var(--primary) / 0.1);
-            margin: 0;
-          }
 
-          .rdp-months {
-            justify-content: center;
-          }
-
-          .rdp-month {
-            width: 100%;
-          }
-
-          .rdp-table {
-            width: 100%;
-            max-width: none;
-          }
-
-          .rdp-cell {
-            padding: 4px;
-          }
-
-          .rdp-day {
-            width: 100%;
-            height: 48px;
-            font-size: 14px;
-            border-radius: 8px;
-          }
-
-          .rdp-day:hover:not(.rdp-day_disabled):not(.rdp-day_selected) {
-            background-color: hsl(var(--accent));
-          }
-
-          .rdp-day_selected {
-            background-color: hsl(var(--primary));
-            color: hsl(var(--primary-foreground));
-            font-weight: 600;
-          }
-
-          .rdp-day.has-event {
-            position: relative;
-            font-weight: 600;
-          }
-
-          .rdp-day.has-event::after {
-            content: "";
-            position: absolute;
-            bottom: 4px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 6px;
-            height: 6px;
-            background-color: hsl(var(--primary));
-            border-radius: 50%;
-          }
-
-          .rdp-day_selected.has-event::after {
-            background-color: hsl(var(--primary-foreground));
-          }
-
-          .rdp-caption {
-            display: flex;
-            justify-content: center;
-            padding: 1rem;
-            font-weight: 600;
-            font-size: 16px;
-          }
-
-          .rdp-nav {
-            display: flex;
-            gap: 4px;
-          }
-
-          .rdp-nav_button {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s;
-          }
-
-          .rdp-nav_button:hover:not([disabled]) {
-            background-color: hsl(var(--accent));
-          }
-
-          .rdp-head_cell {
-            font-weight: 600;
-            font-size: 12px;
-            color: hsl(var(--muted-foreground));
-            text-transform: uppercase;
-          }
-
-          @media (max-width: 640px) {
-            .rdp {
-              --rdp-cell-size: 40px;
-            }
-            .rdp-day {
-              height: 40px;
-              font-size: 12px;
-            }
-          }
-        `}</style>
-
-        <DayPicker
-          mode="single"
-          selected={selectedDate}
-          onSelect={setSelectedDate}
-          month={month}
-          onMonthChange={setMonth}
-          modifiers={modifiers}
-          modifiersClassNames={modifiersClassNames}
-          className="mx-auto"
-          showOutsideDays={false}
-        />
-
-        {/* Selected Date Events */}
-        {selectedDate && (
-          <div className="mt-6 space-y-3">
-            <h3 className="font-semibold text-sm text-muted-foreground">
-              {format(selectedDate, "MMMM dd, yyyy")}
+      <CardContent className="flex-1 overflow-hidden p-0">
+        {isLoading ? (
+          <div className="p-6">
+            <Skeleton className="h-[600px] w-full" />
+          </div>
+        ) : isError ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <CalendarIcon className="h-12 w-12 text-destructive mb-4" />
+            <h3 className="font-semibold text-lg mb-2">
+              Failed to Load Events
             </h3>
-            {selectedDateEvents.length > 0 ? (
-              <ScrollArea className="max-h-64">
-                <div className="space-y-2">
-                  {selectedDateEvents.map((event) => (
-                    <Popover key={event.id}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start text-left h-auto py-3"
-                        >
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium truncate">
-                              {event.title}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {format(new Date(event.startAt), "h:mm a")}
-                            </p>
-                          </div>
-                          <Badge variant="secondary" className="ml-2">
-                            {event.numberOfParticipants}/{event.capacity}
-                          </Badge>
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-80">
-                        <div className="space-y-3">
-                          <div>
-                            <h4 className="font-semibold">{event.title}</h4>
-                            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                              {event.description}
-                            </p>
-                          </div>
-                          <div className="space-y-1 text-sm">
-                            <p>
-                              <span className="font-medium">Time:</span>{" "}
-                              {format(new Date(event.startAt), "h:mm a")}
-                            </p>
-                            <p>
-                              <span className="font-medium">Duration:</span>{" "}
-                              {event.expectedDurationInMinutes} minutes
-                            </p>
-                            <p>
-                              <span className="font-medium">Participants:</span>{" "}
-                              {event.numberOfParticipants}/{event.capacity}
-                            </p>
-                          </div>
-                          <Button
-                            className="w-full"
-                            onClick={() => handleEventClick(event.id)}
-                          >
-                            View Details
-                          </Button>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                  ))}
+            <p className="text-sm text-muted-foreground mb-4">
+              Please try again later
+            </p>
+            <Button variant="outline" onClick={() => window.location.reload()}>
+              Retry
+            </Button>
+          </div>
+        ) : (
+          <div className="h-full flex flex-col">
+            {/* Week Days Header */}
+            <div className="grid grid-cols-7 border-b bg-muted/30">
+              {weekDays.map((day) => (
+                <div
+                  key={day}
+                  className="p-2 text-center text-sm font-semibold text-muted-foreground"
+                >
+                  {day}
                 </div>
-              </ScrollArea>
-            ) : (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                {t("noEvents")}
-              </p>
-            )}
+              ))}
+            </div>
+
+            {/* Calendar Grid */}
+            <div className="flex-1 grid grid-cols-7 auto-rows-fr border-t overflow-auto">
+              {calendarDays.map((day, index) => {
+                const dayEvents = getEventsForDay(day);
+                const isCurrentMonth = isSameMonth(day, currentDate);
+                const isDayToday = isToday(day);
+
+                return (
+                  <div
+                    key={index}
+                    className={cn(
+                      "border-b border-r p-2 min-h-[100px] sm:min-h-[120px] overflow-hidden",
+                      !isCurrentMonth && "bg-muted/20",
+                      isDayToday && "bg-blue-50 dark:bg-blue-950/20"
+                    )}
+                  >
+                    {/* Day Number */}
+                    <div className="flex justify-between items-start mb-1">
+                      <span
+                        className={cn(
+                          "text-sm font-medium inline-flex items-center justify-center w-7 h-7 rounded-full",
+                          isDayToday && "bg-blue-500 text-white",
+                          !isCurrentMonth && "text-muted-foreground",
+                          isCurrentMonth && !isDayToday && "text-foreground"
+                        )}
+                      >
+                        {format(day, "d")}
+                      </span>
+                      {dayEvents.length > 0 && (
+                        <Badge variant="secondary" className="text-xs h-5">
+                          {dayEvents.length}
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* Events */}
+                    <div className="space-y-1">
+                      {dayEvents.slice(0, 3).map((event) => (
+                        <TooltipProvider key={event.id}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                onClick={() => handleEventClick(event.id)}
+                                className={cn(
+                                  "w-full text-left px-2 py-1 rounded text-xs font-medium text-white truncate transition-colors border",
+                                  getEventColor(event)
+                                )}
+                              >
+                                <div className="flex items-center gap-1">
+                                  <Clock className="h-3 w-3 shrink-0" />
+                                  <span className="truncate">
+                                    {format(new Date(event.startAt), "h:mm a")}{" "}
+                                    - {event.title}
+                                  </span>
+                                </div>
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-xs">
+                              <div className="space-y-1">
+                                <p className="font-semibold">{event.title}</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {format(new Date(event.startAt), "h:mm a")} •{" "}
+                                  {event.expectedDurationInMinutes} min
+                                </p>
+                                <p className="text-xs">
+                                  {event.numberOfParticipants}/{event.capacity}{" "}
+                                  participants
+                                </p>
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      ))}
+
+                      {dayEvents.length > 3 && (
+                        <button
+                          className="w-full text-left px-2 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          onClick={() => {
+                            // Could open a modal or expand view
+                            console.log(`+${dayEvents.length - 3} more events`);
+                          }}
+                        >
+                          +{dayEvents.length - 3} more
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Mobile Today Button */}
+            <div className="sm:hidden p-4 border-t">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleToday}
+                className="w-full"
+              >
+                <CalendarIcon className="h-4 w-4 mr-2" />
+                Go to Today
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && !isError && events.length === 0 && (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <CalendarIcon className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="font-semibold text-lg mb-2">No Events Yet</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              {activeTab === "created"
+                ? "You haven't created any events yet."
+                : activeTab === "joined"
+                  ? "You haven't joined any events yet."
+                  : "You don't have any events."}
+            </p>
+            <Button onClick={() => router.push(`/${locale}/event`)}>
+              Explore Events
+            </Button>
           </div>
         )}
       </CardContent>

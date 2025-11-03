@@ -39,7 +39,7 @@ export function MyEventSidebar({
   ];
 
   return (
-    <Card className="h-full">
+    <Card>
       <CardContent className="p-4">
         <div className="space-y-2">
           {tabs.map((tab) => {
@@ -52,7 +52,7 @@ export function MyEventSidebar({
                 onClick={() => onTabChange(tab.id)}
                 className={cn(
                   "w-full flex items-center gap-3 p-4 rounded-lg text-left transition-all",
-                  "hover:bg-accent/50",
+                  "hover:bg-accent-foreground/20",
                   isActive
                     ? "bg-primary text-primary-foreground shadow-md"
                     : "bg-background"
