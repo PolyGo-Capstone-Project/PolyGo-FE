@@ -191,7 +191,7 @@ export default function EventListPage() {
               {t("createEvent")}
             </Button>
           </Link>
-          <Link href={`/${locale}/event/my-create`}>
+          <Link href={`/${locale}/my-event`}>
             <Button className="gap-2" variant="outline">
               <CalendarDays className="h-4 w-4" />
               {t("myEvents")}

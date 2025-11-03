@@ -2,6 +2,7 @@
 
 import {
   IconCalendar,
+  IconChartBar,
   IconClock,
   IconEdit,
   IconEye,
@@ -53,6 +54,7 @@ type CreatedEventCardProps = {
   onEdit?: (eventId: string) => void;
   onCancel?: (eventId: string, reason: string) => void;
   onViewDetail?: (eventId: string) => void;
+  onViewStats?: (eventId: string) => void;
   isCancelling?: boolean;
 };
 
@@ -61,6 +63,7 @@ export function CreatedEventCard({
   onEdit,
   onCancel,
   onViewDetail,
+  onViewStats,
   isCancelling = false,
 }: CreatedEventCardProps) {
   const t = useTranslations("event.myEvent.created");
@@ -229,21 +232,27 @@ export function CreatedEventCard({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex flex-wrap gap-2 mt-auto">
+          <div className="grid grid-cols-2 gap-2 mt-auto">
             <Button
               variant="outline"
               size="sm"
-              className="flex-1 min-w-[100px]"
               onClick={() => onViewDetail?.(event.id)}
             >
               <IconEye className="h-4 w-4 mr-1" />
               {t("viewDetail")}
             </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => onViewStats?.(event.id)}
+            >
+              <IconChartBar className="h-4 w-4 mr-1" />
+              {t("viewStats")}
+            </Button>
             {canEdit && onEdit && (
               <Button
                 variant="default"
                 size="sm"
-                className="flex-1 min-w-[100px]"
                 onClick={() => onEdit(event.id)}
               >
                 <IconEdit className="h-4 w-4 mr-1" />
@@ -254,7 +263,6 @@ export function CreatedEventCard({
               <Button
                 variant="destructive"
                 size="sm"
-                className="flex-1 min-w-[100px]"
                 onClick={() => setShowCancelDialog(true)}
                 disabled={isCancelling}
               >

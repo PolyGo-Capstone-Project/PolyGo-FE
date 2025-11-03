@@ -16,12 +16,18 @@ import {
   Separator,
   Skeleton,
 } from "@/components/ui";
-import { useGetParticipatedEvents } from "@/hooks/query/use-event";
+import {
+  useGetParticipatedEvents,
+  useUnregisterEventMutation,
+} from "@/hooks/query/use-event";
+import { handleErrorApi, showSuccessToast } from "@/lib/utils";
 
 const PAGE_SIZE = 6;
 
 export function EventsJoinedTab() {
   const t = useTranslations("event.myEvent.joined");
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
   const locale = useLocale();
   const router = useRouter();
 
@@ -29,26 +35,43 @@ export function EventsJoinedTab() {
   const [historyPage, setHistoryPage] = useState(1);
 
   // Fetch upcoming events - events that haven't started yet
-  const { data: upcomingData, isLoading: upcomingLoading } =
-    useGetParticipatedEvents(
-      {
-        pageNumber: upcomingPage,
-        pageSize: PAGE_SIZE,
-        lang: locale,
-      },
-      { enabled: true }
-    );
+  const {
+    data: upcomingData,
+    isLoading: upcomingLoading,
+    refetch: refetchUpcoming,
+  } = useGetParticipatedEvents(
+    {
+      pageNumber: upcomingPage,
+      pageSize: PAGE_SIZE,
+      lang: locale,
+    },
+    { enabled: true }
+  );
 
   // Fetch history events - events that have completed or cancelled
-  const { data: historyData, isLoading: historyLoading } =
-    useGetParticipatedEvents(
-      {
-        pageNumber: historyPage,
-        pageSize: PAGE_SIZE,
-        lang: locale,
-      },
-      { enabled: true }
-    );
+  const {
+    data: historyData,
+    isLoading: historyLoading,
+    refetch: refetchHistory,
+  } = useGetParticipatedEvents(
+    {
+      pageNumber: historyPage,
+      pageSize: PAGE_SIZE,
+      lang: locale,
+    },
+    { enabled: true }
+  );
+
+  const unregisterMutation = useUnregisterEventMutation({
+    onSuccess: () => {
+      showSuccessToast(t("unregisterDialog.success"), tSuccess);
+      refetchUpcoming();
+      refetchHistory();
+    },
+    onError: (error) => {
+      handleErrorApi({ error, tError });
+    },
+  });
 
   // Filter upcoming events (future events)
   const now = new Date();
@@ -67,6 +90,10 @@ export function EventsJoinedTab() {
     router.push(`/${locale}/event/${eventId}`);
   };
 
+  const handleUnregister = (eventId: string, reason: string) => {
+    unregisterMutation.mutate({ eventId, reason });
+  };
+
   const handleExploreEvents = () => {
     router.push(`/${locale}/event`);
   };
@@ -83,19 +110,21 @@ export function EventsJoinedTab() {
         </div>
 
         {upcomingLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 3 }).map((_, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="h-[400px]" />
             ))}
           </div>
         ) : upcomingEvents.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {upcomingEvents.map((event) => (
                 <JoinedEventCard
                   key={event.id}
                   event={event}
                   onViewDetail={handleViewDetail}
+                  onUnregister={handleUnregister}
+                  isUnregistering={unregisterMutation.isPending}
                 />
               ))}
             </div>
@@ -137,14 +166,14 @@ export function EventsJoinedTab() {
         </div>
 
         {historyLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 3 }).map((_, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="h-[400px]" />
             ))}
           </div>
         ) : historyEvents.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {historyEvents.map((event) => (
                 <JoinedEventCard
                   key={event.id}

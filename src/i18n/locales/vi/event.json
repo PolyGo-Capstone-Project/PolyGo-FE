@@ -252,9 +252,15 @@
     },
     "myEvent": {
       "title": "Sự kiện của tôi",
-      "tabs": {
+      "sidebar": {
+        "all": "Tất cả sự kiện",
         "created": "Sự kiện đã tạo",
         "joined": "Sự kiện đã tham gia"
+      },
+      "calendar": {
+        "title": "Lịch sự kiện",
+        "noEvents": "Không có sự kiện trong ngày này",
+        "selectEvent": "Chọn một sự kiện để xem"
       },
       "created": {
         "title": "Sự kiện đã tạo",
@@ -266,6 +272,7 @@
         "edit": "Chỉnh sửa",
         "cancel": "Hủy sự kiện",
         "viewDetail": "Xem chi tiết",
+        "viewStats": "Xem thống kê",
         "cancelDialog": {
           "title": "Hủy sự kiện",
           "description": "Bạn có chắc chắn muốn hủy sự kiện này? Hành động này không thể hoàn tác.",
@@ -277,8 +284,32 @@
           "success": "Hủy sự kiện thành công",
           "error": "Không thể hủy sự kiện"
         },
-        "participants": "Người tham gia",
-        "close": "Đóng"
+        "stats": {
+          "title": "Thống kê sự kiện",
+          "eventDetails": "Chi tiết sự kiện",
+          "performance": "Hiệu suất",
+          "revenue": "Doanh thu",
+          "averageRating": "Đánh giá trung bình",
+          "reviews": "Lượt đánh giá",
+          "recentFeedback": "Phản hồi gần đây",
+          "participants": "Danh sách người tham gia",
+          "registeredAt": "Đăng ký lúc",
+          "viewProfile": "Xem hồ sơ",
+          "kick": "Xóa",
+          "kickDialog": {
+            "title": "Xóa người tham gia",
+            "description": "Bạn có chắc chắn muốn xóa người tham gia này khỏi sự kiện?",
+            "reason": "Lý do xóa",
+            "reasonPlaceholder": "Vui lòng cung cấp lý do xóa người tham gia...",
+            "confirmButton": "Xóa người tham gia",
+            "cancelButton": "Hủy",
+            "kicking": "Đang xóa...",
+            "success": "Đã xóa người tham gia thành công",
+            "error": "Không thể xóa người tham gia"
+          },
+          "noFeedback": "Chưa có phản hồi nào",
+          "close": "Đóng"
+        }
       },
       "joined": {
         "title": "Sự kiện đã tham gia",
@@ -287,7 +318,20 @@
         "noUpcoming": "Bạn chưa tham gia sự kiện sắp diễn ra nào",
         "noHistory": "Bạn không có lịch sử sự kiện",
         "exploreEvents": "Khám phá sự kiện",
-        "viewDetail": "Xem chi tiết"
+        "viewDetail": "Xem chi tiết",
+        "unregister": "Hủy đăng ký",
+        "cannotUnregister": "Không thể hủy đăng ký trong vòng 6 giờ trước sự kiện",
+        "unregisterDialog": {
+          "title": "Hủy đăng ký sự kiện",
+          "description": "Bạn có chắc chắn muốn hủy đăng ký khỏi sự kiện này?",
+          "reason": "Lý do hủy đăng ký",
+          "reasonPlaceholder": "Vui lòng cung cấp lý do hủy đăng ký...",
+          "confirmButton": "Hủy đăng ký",
+          "cancelButton": "Hủy",
+          "unregistering": "Đang hủy đăng ký...",
+          "success": "Hủy đăng ký thành công",
+          "error": "Không thể hủy đăng ký"
+        }
       }
     },
     "Success": {
