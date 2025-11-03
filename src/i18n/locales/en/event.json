@@ -250,9 +250,15 @@
     },
     "myEvent": {
       "title": "My Events",
-      "tabs": {
-        "created": "Events I Created",
-        "joined": "Events I Joined"
+      "sidebar": {
+        "all": "All Events",
+        "created": "Event I Created",
+        "joined": "Event I Joined"
+      },
+      "calendar": {
+        "title": "Event Calendar",
+        "noEvents": "No events on this day",
+        "selectEvent": "Select an event to view"
       },
       "created": {
         "title": "Events I Created",
@@ -264,6 +270,7 @@
         "edit": "Edit",
         "cancel": "Cancel Event",
         "viewDetail": "View Details",
+        "viewStats": "View Stats",
         "cancelDialog": {
           "title": "Cancel Event",
           "description": "Are you sure you want to cancel this event? This action cannot be undone.",
@@ -275,8 +282,32 @@
           "success": "Event cancelled successfully",
           "error": "Failed to cancel event"
         },
-        "participants": "Participants",
-        "close": "Close"
+        "stats": {
+          "title": "Event Statistics",
+          "eventDetails": "Event Details",
+          "performance": "Performance",
+          "revenue": "Revenue",
+          "averageRating": "Average Rating",
+          "reviews": "Reviews",
+          "recentFeedback": "Recent Feedback",
+          "participants": "Participants List",
+          "registeredAt": "Registered at",
+          "viewProfile": "View Profile",
+          "kick": "Kick",
+          "kickDialog": {
+            "title": "Kick Participant",
+            "description": "Are you sure you want to remove this participant from the event?",
+            "reason": "Reason for removal",
+            "reasonPlaceholder": "Please provide a reason for removing this participant...",
+            "confirmButton": "Kick Participant",
+            "cancelButton": "Cancel",
+            "kicking": "Removing...",
+            "success": "Participant removed successfully",
+            "error": "Failed to remove participant"
+          },
+          "noFeedback": "No feedback yet",
+          "close": "Close"
+        }
       },
       "joined": {
         "title": "Events I Joined",
@@ -285,7 +316,20 @@
         "noUpcoming": "You haven't joined any upcoming events yet",
         "noHistory": "You don't have any event history",
         "exploreEvents": "Explore Events",
-        "viewDetail": "View Details"
+        "viewDetail": "View Details",
+        "unregister": "Unregister",
+        "cannotUnregister": "Cannot unregister within 6 hours of event start",
+        "unregisterDialog": {
+          "title": "Unregister from Event",
+          "description": "Are you sure you want to unregister from this event?",
+          "reason": "Reason for unregistration",
+          "reasonPlaceholder": "Please provide a reason for unregistering...",
+          "confirmButton": "Unregister",
+          "cancelButton": "Cancel",
+          "unregistering": "Unregistering...",
+          "success": "Unregistered successfully",
+          "error": "Failed to unregister"
+        }
       }
     },
     "Success": {

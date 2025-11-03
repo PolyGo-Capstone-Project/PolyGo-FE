@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
   DateTimePicker,
+  EventStats,
   Input,
   Label,
   Select,
@@ -31,7 +32,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components";
-import { EventDetailDialog } from "@/components/modules/admin/events/event-detail-dialog";
 import { UpdateStatusDialog } from "@/components/modules/admin/events/update-status-dialog";
 import { Pagination } from "@/components/shared";
 import { EventStatus } from "@/constants";
@@ -418,7 +418,7 @@ export default function ManageEvents() {
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-1">
-                            <EventDetailDialog eventId={event.id} />
+                            <EventStats eventId={event.id} />
                             {activeTab === "upcoming" && (
                               <UpdateStatusDialog eventId={event.id} />
                             )}

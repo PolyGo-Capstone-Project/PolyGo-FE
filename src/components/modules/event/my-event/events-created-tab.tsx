@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import { CreatedEventCard } from "@/components/modules/event/my-event/created-event-card";
 import { EventDetailDialog } from "@/components/modules/event/my-event/event-detail-dialog";
+import { EventStatDialog } from "@/components/modules/event/my-event/event-stat-dialog";
 import { Pagination } from "@/components/shared";
 import {
   Button,
@@ -38,6 +39,7 @@ export function EventsCreatedTab() {
   const [pastPage, setPastPage] = useState(1);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
+  const [showStatsDialog, setShowStatsDialog] = useState(false);
 
   // Fetch upcoming events (Pending, Approved)
   const {
@@ -115,6 +117,11 @@ export function EventsCreatedTab() {
     setShowDetailDialog(true);
   };
 
+  const handleViewStats = (eventId: string) => {
+    setSelectedEventId(eventId);
+    setShowStatsDialog(true);
+  };
+
   const handleCreateEvent = () => {
     router.push(`/${locale}/event/create`);
   };
@@ -132,14 +139,14 @@ export function EventsCreatedTab() {
           </div>
 
           {upcomingLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 3 }).map((_, i) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton key={i} className="h-[450px]" />
               ))}
             </div>
           ) : upcomingEvents.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {upcomingEvents.map((event) => (
                   <CreatedEventCard
                     key={event.id}
@@ -147,6 +154,7 @@ export function EventsCreatedTab() {
                     onEdit={handleEdit}
                     onCancel={handleCancel}
                     onViewDetail={handleViewDetail}
+                    onViewStats={handleViewStats}
                     isCancelling={cancelEventMutation.isPending}
                   />
                 ))}
@@ -190,19 +198,20 @@ export function EventsCreatedTab() {
           </div>
 
           {pastLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {Array.from({ length: 3 }).map((_, i) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton key={i} className="h-[450px]" />
               ))}
             </div>
           ) : pastEvents.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {pastEvents.map((event) => (
                   <CreatedEventCard
                     key={event.id}
                     event={event}
                     onViewDetail={handleViewDetail}
+                    onViewStats={handleViewStats}
                   />
                 ))}
               </div>
@@ -230,11 +239,18 @@ export function EventsCreatedTab() {
         </div>
       </div>
 
-      {/* Event Detail Dialog */}
+      {/* Event Detail Dialog - uses useGetEventById */}
       <EventDetailDialog
         eventId={selectedEventId}
         open={showDetailDialog}
         onOpenChange={setShowDetailDialog}
+      />
+
+      {/* Event Stats Dialog - uses useGetEventStats */}
+      <EventStatDialog
+        eventId={selectedEventId}
+        open={showStatsDialog}
+        onOpenChange={setShowStatsDialog}
       />
     </>
   );

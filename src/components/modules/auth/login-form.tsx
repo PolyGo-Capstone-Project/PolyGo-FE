@@ -19,10 +19,13 @@ import { useAuthStore, useLoginMutation, useSearchParamsLoader } from "@/hooks";
 import { decodeToken, handleErrorApi, showSuccessToast } from "@/lib/utils";
 import { LoginBodySchema, LoginBodyType } from "@/models";
 
+const REMEMBER_MAIL_KEY = "polygo-remember-mail";
+
 export default function LoginForm() {
   const t = useTranslations("auth.login");
   const locale = useLocale();
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
   const { searchParams, setSearchParams } = useSearchParamsLoader();
   const clearTokens = searchParams?.get("clearTokens");
@@ -56,13 +59,33 @@ export default function LoginForm() {
   useEffect(() => {
     if (clearTokens) {
       setRole();
+      if (typeof window !== "undefined") {
+        localStorage.removeItem(REMEMBER_MAIL_KEY);
+      }
+      setRememberMe(false);
     }
   }, [clearTokens, setRole]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const savedMail = localStorage.getItem(REMEMBER_MAIL_KEY);
+    if (savedMail) {
+      form.setValue("mail", savedMail);
+      setRememberMe(true);
+    }
+  }, [form]);
 
   const onSubmit = async (data: LoginBodyType) => {
     if (loginMutation.isPending) return;
     try {
       const result = await loginMutation.mutateAsync(data);
+      if (typeof window !== "undefined") {
+        if (rememberMe) {
+          localStorage.setItem(REMEMBER_MAIL_KEY, data.mail);
+        } else {
+          localStorage.removeItem(REMEMBER_MAIL_KEY);
+        }
+      }
       showSuccessToast(result.payload?.message, tSuccess);
       const decoded = decodeToken(result.payload.data);
       setRole(decoded.Role);
@@ -150,7 +173,9 @@ export default function LoginForm() {
         <div className="flex items-center space-x-2">
           <Checkbox
             id="remember"
+            checked={rememberMe}
             className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
+            onCheckedChange={(checked) => setRememberMe(Boolean(checked))}
           />
           <Label htmlFor="remember" className="text-sm text-muted-foreground">
             {t("rememberMe")}

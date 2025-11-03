@@ -6,47 +6,39 @@ import { useState } from "react";
 import {
   EventsCreatedTab,
   EventsJoinedTab,
+  MyEventCalendar,
+  MyEventSidebar,
 } from "@/components/modules/event/my-event";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui";
 
 export default function MyEventContent() {
   const t = useTranslations("event.myEvent");
-  const [activeTab, setActiveTab] = useState<string>("created");
+  const [activeTab, setActiveTab] = useState<"all" | "created" | "joined">(
+    "all"
+  );
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold">{t("title")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
-            <TabsList className="grid w-full grid-cols-2 mb-8">
-              <TabsTrigger value="created">{t("tabs.created")}</TabsTrigger>
-              <TabsTrigger value="joined">{t("tabs.joined")}</TabsTrigger>
-            </TabsList>
-            <TabsContent value="created" className="space-y-4">
-              <EventsCreatedTab />
-            </TabsContent>
-            <TabsContent value="joined" className="space-y-4">
-              <EventsJoinedTab />
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+    <div className="container mx-auto py-6 px-4">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">{t("title")}</h1>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-6">
+        <div className="w-full lg:w-[20%]">
+          <MyEventSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        </div>
+
+        <div className="w-full lg:w-[80%]">
+          <MyEventCalendar activeTab={activeTab} />
+        </div>
+      </div>
+
+      {/* Event Cards Section - Only show for created and joined tabs */}
+      {activeTab !== "all" && (
+        <div className="mt-8">
+          {activeTab === "created" && <EventsCreatedTab />}
+          {activeTab === "joined" && <EventsJoinedTab />}
+        </div>
+      )}
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { Logo } from "@/components/ui";
 
 export function Footer() {
   const t = useTranslations("footer");
@@ -23,12 +24,7 @@ export function Footer() {
       <div className="container mx-auto px-4 py-8">
         {/* Block logo + brand */}
         <div className="flex flex-col items-center justify-center gap-3 md:flex-row md:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground text-base font-bold">
-              P
-            </div>
-            <span className="font-semibold text-base">PolyGo</span>
-          </div>
+          <Logo withLink={false} />
 
           {/* Nav desktop (giống cũ) */}
           <nav

@@ -9,6 +9,7 @@ import {
 import { useGetRecommendedEvents, useGetUpcomingEvents } from "@/hooks";
 import type { SearchEventsQueryType } from "@/models";
 import { IconPlus, IconSearch, IconSparkles } from "@tabler/icons-react";
+import { CalendarDays } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -183,12 +184,20 @@ export default function EventListPage() {
           <h1 className="text-3xl font-bold">{t("title")}</h1>
           <p className="text-muted-foreground mt-1">{t("discoverAndJoin")}</p>
         </div>
-        <Link href={`/${locale}/event/create`}>
-          <Button className="gap-2">
-            <IconPlus className="h-4 w-4" />
-            {t("createEvent")}
-          </Button>
-        </Link>
+        <div className="flex gap-4">
+          <Link href={`/${locale}/event/create`}>
+            <Button className="gap-2">
+              <IconPlus className="h-4 w-4" />
+              {t("createEvent")}
+            </Button>
+          </Link>
+          <Link href={`/${locale}/my-event`}>
+            <Button className="gap-2" variant="outline">
+              <CalendarDays className="h-4 w-4" />
+              {t("myEvents")}
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Search Bar */}
