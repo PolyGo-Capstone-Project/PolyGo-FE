@@ -5,7 +5,7 @@ import {
   CreateEventBodyType,
   GetEventByIdQueryType,
   GetEventByIdResType,
-  GetEventDetailResType,
+  GetEventStatResType,
   GetEventsQueryType,
   HostedEventResType,
   KickParticipantBodyType,
@@ -50,9 +50,9 @@ const eventApiRequest = {
   getEventById: createGetOne<GetEventByIdResType, GetEventByIdQueryType>(
     `${prefix}`
   ),
-  //Get event detail for host and admin
-  getDetailEvent: createGetOne<GetEventDetailResType, GetEventByIdQueryType>(
-    `${prefix}/details`
+  //Get event stat for host and admin
+  getStatEvent: createGetOne<GetEventStatResType, GetEventByIdQueryType>(
+    `${prefix}/stats`
   ),
   //Create event - host
   createEvent: (body: CreateEventBodyType) =>

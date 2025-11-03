@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import {
   Card,
   CardContent,
@@ -23,21 +25,15 @@ export default function AuthCard({
     <div className="w-full max-w-xl">
       <Card className="shadow-xl border-border/50">
         <CardHeader className="text-center space-y-3">
-          <div className="mx-auto w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <svg
-                viewBox="0 0 24 24"
-                className="size-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="m2 17 10 5 10-5" />
-                <path d="m2 12 10 5 10-5" />
-              </svg>
+          <div className="mx-auto from-primary to-primary/80 rounded-xl flex items-center justify-center">
+            <div className="flex items-center justify-center rounded-lg text-primary-foreground">
+              <Image
+                src="/assets/logo/Primary2.png"
+                alt="PolyGo logo"
+                width={72}
+                height={72}
+                priority
+              />
             </div>
           </div>
           <CardTitle className="text-2xl font-bold">{title}</CardTitle>

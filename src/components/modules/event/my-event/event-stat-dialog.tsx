@@ -28,25 +28,25 @@ import {
   Separator,
 } from "@/components/ui";
 import { EventStatus, EventStatusType } from "@/constants";
-import { useGetEventDetail } from "@/hooks";
+import { useGetEventStats } from "@/hooks";
 import { formatCurrency } from "@/lib";
 
-type EventDetailDialogProps = {
+type EventStatDialogProps = {
   eventId: string | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
 
-export function EventDetailDialog({
+export function EventStatDialog({
   eventId,
   open,
   onOpenChange,
-}: EventDetailDialogProps) {
+}: EventStatDialogProps) {
   const t = useTranslations("event.detail");
   const tMyEvent = useTranslations("event.myEvent.created");
   const locale = useLocale();
 
-  const { data, isLoading, error } = useGetEventDetail(
+  const { data, isLoading, error } = useGetEventStats(
     eventId || "",
     { lang: locale },
     { enabled: !!eventId && open }
@@ -169,7 +169,7 @@ export function EventDetailDialog({
 
                 <Separator />
 
-                {/* Event Details */}
+                {/* EEventStats */}
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <IconCalendar className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />

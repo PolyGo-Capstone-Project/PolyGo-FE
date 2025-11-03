@@ -22,20 +22,20 @@ import {
   Skeleton,
 } from "@/components/ui";
 import { EventStatus } from "@/constants";
-import { useGetEventDetail } from "@/hooks/query/use-event";
+import { useGetEventStats } from "@/hooks/query/use-event";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import Image from "next/image";
 
-type EventDetailDialogProps = {
+type EventStatsProps = {
   eventId: string;
 };
 
-export function EventDetailDialog({ eventId }: EventDetailDialogProps) {
+export function EventStats({ eventId }: EventStatsProps) {
   const t = useTranslations("admin.events.detail");
   const tStatus = useTranslations("admin.events.status");
   const locale = useLocale();
 
-  const { data, isLoading, isError } = useGetEventDetail(eventId, {
+  const { data, isLoading, isError } = useGetEventStats(eventId, {
     lang: locale,
   });
 

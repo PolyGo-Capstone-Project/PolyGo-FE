@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { CreatedEventCard } from "@/components/modules/event/my-event/created-event-card";
-import { EventDetailDialog } from "@/components/modules/event/my-event/event-detail-dialog";
+import { EventStatDialog } from "@/components/modules/event/my-event/event-stat-dialog";
 import { Pagination } from "@/components/shared";
 import {
   Button,
@@ -231,7 +231,7 @@ export function EventsCreatedTab() {
       </div>
 
       {/* Event Detail Dialog */}
-      <EventDetailDialog
+      <EventStatDialog
         eventId={selectedEventId}
         open={showDetailDialog}
         onOpenChange={setShowDetailDialog}
