@@ -35,7 +35,7 @@
     "Unregister": "Hủy đăng ký thành công!"
   },
   "Error": {
-    "default": "Đã xảy ra lỗi. Vui lòng thử lại.",
+    "default": "Đã xảy ra lỗi.",
     "GetAll": "Lấy dữ liệu thất bại. Vui lòng thử lại.",
     "GetOne": "Lấy dữ liệu thất bại. Vui lòng thử lại.",
     "Create": "Tạo mới thất bại. Vui lòng kiểm tra thông tin và thử lại.",
@@ -61,7 +61,8 @@
     "InvalidFormat": "Định dạng không hợp lệ.",
     "InvalidMailOrPassword": "Email hoặc mật khẩu không đúng.",
     "invalidFileType": "Loại file không hợp lệ. Vui lòng chọn file ảnh.",
-    "fileTooLarge": "Kích thước file quá lớn. Kích thước tối đa là 5MB."
+    "fileTooLarge": "Kích thước file quá lớn. Kích thước tối đa là 5MB.",
+    "EventCannotBeCancelledWithin24Hours": "Sự kiện không thể hủy trong vòng 24 giờ trước thời gian bắt đầu."
   },
   "header": {
     "products": "Sản phẩm",

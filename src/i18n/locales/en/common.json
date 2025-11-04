@@ -35,7 +35,7 @@
     "Unregister": "Unregistered successfully!"
   },
   "Error": {
-    "default": "An error occurred. Please try again.",
+    "default": "An error occurred.",
     "GetAll": "Failed to retrieve data. Please try again.",
     "GetOne": "Failed to retrieve data. Please try again.",
     "Create": "Creation failed. Please check your information and try again.",
@@ -61,7 +61,8 @@
     "InvalidFormat": "Invalid format.",
     "InvalidMailOrPassword": "Invalid email or password.",
     "invalidFileType": "Invalid file type. Please select an image file.",
-    "fileTooLarge": "File size too large. Maximum size is 5MB."
+    "fileTooLarge": "File size too large. Maximum size is 5MB.",
+    "EventCannotBeCancelledWithin24Hours": "Event cannot be cancelled within 24 hours of start time."
   },
   "header": {
     "products": "Products",

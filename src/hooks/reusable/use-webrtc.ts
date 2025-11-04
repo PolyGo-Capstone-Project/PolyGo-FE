@@ -1472,7 +1472,6 @@ export function useWebRTC({
     toggleAudio,
     toggleVideo,
     getLocalStream,
-    // ✅ New methods
     sendChatMessage,
     toggleHandRaise,
     hostToggleMic,
