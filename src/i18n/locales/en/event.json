@@ -102,7 +102,7 @@
           "placeholder": "Maximum participants"
         },
         "fee": {
-          "label": "Fee",
+          "label": "Fee (VND)",
           "placeholder": "0"
         },
         "isPublic": {
@@ -250,6 +250,7 @@
     },
     "myEvent": {
       "title": "My Events",
+      "back": "Back to Events",
       "sidebar": {
         "all": "All Events",
         "created": "Event I Created",
@@ -258,7 +259,31 @@
       "calendar": {
         "title": "Event Calendar",
         "noEvents": "No events on this day",
-        "selectEvent": "Select an event to view"
+        "selectEvent": "Select an event to view",
+        "today": "Today",
+        "goToToday": "Go to Today",
+        "weekDays": {
+          "sun": "Sun",
+          "mon": "Mon",
+          "tue": "Tue",
+          "wed": "Wed",
+          "thu": "Thu",
+          "fri": "Fri",
+          "sat": "Sat"
+        },
+        "loading": "Loading calendar...",
+        "loadError": "Failed to Load Events",
+        "loadErrorMessage": "Please try again later",
+        "retry": "Retry",
+        "noEventsYet": "No Events Yet",
+        "noEventsCreated": "You haven't created any events yet.",
+        "noEventsJoined": "You haven't joined any events yet.",
+        "noEventsAll": "You don't have any events.",
+        "exploreEvents": "Explore Events",
+        "moreEvents": "more",
+        "participants": "participants",
+        "min": "min",
+        "eventsOn": "Events on"
       },
       "created": {
         "title": "Events I Created",

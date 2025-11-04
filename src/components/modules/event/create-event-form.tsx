@@ -38,6 +38,7 @@ import {
 } from "@/hooks";
 import { handleErrorApi, showSuccessToast } from "@/lib/utils";
 import { CreateEventBodySchema, CreateEventBodyType } from "@/models";
+import { toast } from "sonner";
 
 export function CreateEventForm() {
   const t = useTranslations("event.create");
@@ -132,6 +133,11 @@ export function CreateEventForm() {
     };
     reader.readAsDataURL(file);
 
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error(tError("fileTooLarge"));
+      return;
+    }
+
     // Upload to server
     setIsUploadingBanner(true);
     try {
@@ -141,6 +147,7 @@ export function CreateEventForm() {
       form.clearErrors("bannerUrl");
     } catch (error: any) {
       handleErrorApi({ error, setError: form.setError, tError });
+      setBannerPreview(null);
     } finally {
       setIsUploadingBanner(false);
     }

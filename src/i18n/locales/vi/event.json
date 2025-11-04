@@ -102,7 +102,7 @@
           "placeholder": "Số người tối đa"
         },
         "fee": {
-          "label": "Phí tham gia",
+          "label": "Phí tham gia (VND)",
           "placeholder": "0"
         },
         "isPublic": {
@@ -252,6 +252,7 @@
     },
     "myEvent": {
       "title": "Sự kiện của tôi",
+      "back": "Quay lại trang sự kiện",
       "sidebar": {
         "all": "Tất cả sự kiện",
         "created": "Sự kiện đã tạo",
@@ -260,7 +261,31 @@
       "calendar": {
         "title": "Lịch sự kiện",
         "noEvents": "Không có sự kiện trong ngày này",
-        "selectEvent": "Chọn một sự kiện để xem"
+        "selectEvent": "Chọn một sự kiện để xem",
+        "today": "Hôm nay",
+        "goToToday": "Đến hôm nay",
+        "weekDays": {
+          "sun": "Chủ nhật",
+          "mon": "Thứ 2",
+          "tue": "Thứ 3",
+          "wed": "Thứ 4",
+          "thu": "Thứ 5",
+          "fri": "Thứ 6",
+          "sat": "Thứ 7"
+        },
+        "loading": "Đang tải lịch...",
+        "loadError": "Không thể tải sự kiện",
+        "loadErrorMessage": "Vui lòng thử lại sau",
+        "retry": "Thử lại",
+        "noEventsYet": "Chưa có sự kiện",
+        "noEventsCreated": "Bạn chưa tạo sự kiện nào.",
+        "noEventsJoined": "Bạn chưa tham gia sự kiện nào.",
+        "noEventsAll": "Bạn không có sự kiện nào.",
+        "exploreEvents": "Khám phá sự kiện",
+        "moreEvents": "thêm",
+        "participants": "người tham gia",
+        "min": "phút",
+        "eventsOn": "Sự kiện vào ngày"
       },
       "created": {
         "title": "Sự kiện đã tạo",

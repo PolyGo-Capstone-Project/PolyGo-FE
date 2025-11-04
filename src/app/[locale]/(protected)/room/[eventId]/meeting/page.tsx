@@ -91,7 +91,7 @@ export default function MeetingRoomPage() {
     onRoomEnded: () => {
       toast.error(tError("eventEnded"));
       removeSettingMediaFromLocalStorage();
-      router.push(`/${locale}/dashboard`);
+      router.push(`/${locale}/events/${eventId}`);
     },
   });
 
