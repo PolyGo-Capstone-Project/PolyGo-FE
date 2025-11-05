@@ -4,6 +4,7 @@ import eventApiRequest from "@/lib/apis/event";
 import {
   CancelEventBodyType,
   CreateEventBodyType,
+  EventRatingsQueryType,
   GetEventByIdQueryType,
   GetEventsQueryType,
   RegisterEventBodyType,
@@ -60,6 +61,25 @@ type UpdateEventResponse = Awaited<
 
 type UpdateEventStatusResponse = Awaited<
   ReturnType<typeof eventApiRequest.updateEventStatus>
+>;
+
+// NEW: response type
+type GetMyEventRatingResponse = Awaited<
+  ReturnType<typeof eventApiRequest.getMyEventRating>
+>;
+
+// NEW response type
+type GetEventRatingsResponse = Awaited<
+  ReturnType<typeof eventApiRequest.getEventRatings>
+>;
+
+type UpdateEventRatingResponse = Awaited<
+  ReturnType<typeof eventApiRequest.updateEventRating>
+>;
+
+// types cho response
+type CreateEventRatingResponse = Awaited<
+  ReturnType<typeof eventApiRequest.createEventRating>
 >;
 
 // ============= QUERIES =============
@@ -323,6 +343,90 @@ export const useUpdateEventStatusMutation = (options?: {
         queryKey: ["events", "detail"],
       });
       options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+};
+
+// NEW: hook lấy rating của chính user trong sự kiện
+export const useGetMyEventRating = (
+  id: string,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery<GetMyEventRatingResponse>({
+    queryKey: ["events", "my-rating", id ?? null],
+    queryFn: () => eventApiRequest.getMyEventRating(id),
+    enabled: options?.enabled,
+    placeholderData: keepPreviousData,
+  });
+};
+
+// NEW: hook list tất cả đánh giá của 1 sự kiện (có phân trang)
+export const useGetEventRatings = (
+  id: string,
+  query: EventRatingsQueryType,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery<GetEventRatingsResponse>({
+    queryKey: ["events", "ratings", id ?? null, query ?? null],
+    queryFn: () => eventApiRequest.getEventRatings(id, query),
+    enabled: options?.enabled,
+    placeholderData: keepPreviousData,
+  });
+};
+
+export const useUpdateEventRatingMutation = (options?: {
+  onSuccess?: (
+    data: UpdateEventRatingResponse,
+    variables: { eventId: string }
+  ) => void;
+  onError?: (error: unknown) => void;
+}) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      eventId: string;
+      rating: number;
+      comment?: string | null;
+    }) => eventApiRequest.updateEventRating(body),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["events", "my-rating", variables.eventId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["events", "ratings", variables.eventId],
+      });
+      options?.onSuccess?.(data, variables);
+    },
+    onError: options?.onError,
+  });
+};
+
+// NEW: hook tạo rating
+export const useCreateEventRatingMutation = (options?: {
+  onSuccess?: (
+    data: CreateEventRatingResponse,
+    variables: { eventId: string }
+  ) => void;
+  onError?: (error: unknown) => void;
+}) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      eventId: string;
+      rating: number;
+      comment?: string | null;
+      giftId?: string | null;
+      giftQuantity?: number | null;
+    }) => eventApiRequest.createEventRating(body),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["events", "my-rating", variables.eventId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["events", "ratings", variables.eventId],
+      });
+      options?.onSuccess?.(data, variables);
     },
     onError: options?.onError,
   });

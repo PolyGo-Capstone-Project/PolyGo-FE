@@ -3,6 +3,10 @@ import http from "@/lib/http";
 import {
   CancelEventBodyType,
   CreateEventBodyType,
+  CreateEventRatingBodyType,
+  EventMyRatingResType,
+  EventRatingsQueryType,
+  EventRatingsResType,
   GetEventByIdQueryType,
   GetEventByIdResType,
   GetEventStatResType,
@@ -18,6 +22,7 @@ import {
   UnregisterEventBodyType,
   UpcomingEventResType,
   UpdateEventBodyType,
+  UpdateEventRatingBodyType,
   UpdateEventStatusBodyType,
 } from "@/models";
 
@@ -78,6 +83,21 @@ const eventApiRequest = {
   //Update status for host - start/end event
   updateEventStatusByHost: (body: UpdateEventStatusBodyType) =>
     http.put<MessageResType>(`${prefix}/admin/status`, body),
+
+  // NEW method trong eventApiRequest
+  getMyEventRating: (id: string) =>
+    http.get<EventMyRatingResType>(`${prefix}/ratings/${id}/my`),
+
+  // NEW: list all ratings of an event (GET /events/ratings/:id?lang=&pageNumber=&pageSize=)
+  getEventRatings: createGetOne<EventRatingsResType, EventRatingsQueryType>(
+    `${prefix}/ratings`
+  ),
+  updateEventRating: (body: UpdateEventRatingBodyType) =>
+    http.put<MessageResType>(`${prefix}/rating`, body),
+
+  // NEW: tạo rating (POST /events/rating)
+  createEventRating: (body: CreateEventRatingBodyType) =>
+    http.post<MessageResType>(`${prefix}/rating`, body),
 };
 
 export default eventApiRequest;

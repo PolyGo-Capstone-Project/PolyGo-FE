@@ -246,6 +246,21 @@
         "prepareForEvent": "Prepare for the event and mark your calendar",
         "close": "Close",
         "viewMyEventsButton": "View My Events"
+      },
+      "ratings": {
+        "yourRatingTitle": "Your Rating",
+        "allRatingsTitle": "Ratings from Participants",
+        "loading": "Loading ratings...",
+        "noComment": "You have not left a comment yet.",
+        "noRatingYet": "No rating yet.",
+        "editRatingButton": "Edit Rating",
+        "rateButton": "Rate Now",
+        "noRatingsFound": "No ratings found.",
+        "noCommentAll": "(No comment)",
+        "yourStars": "Your Rating",
+        "commentLabel": "Comment",
+        "saveButton": "Save Rating",
+        "commentPlaceholder": "Leave your comment here..."
       }
     },
     "myEvent": {

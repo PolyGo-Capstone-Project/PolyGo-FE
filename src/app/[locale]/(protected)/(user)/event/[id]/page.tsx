@@ -16,7 +16,7 @@ import { format } from "date-fns";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { RegistrationSuccessDialog } from "@/components/modules/event/registration-success-dialog";
 import {
@@ -40,12 +40,17 @@ import {
   Input,
   Label,
   Separator,
+  Textarea,
 } from "@/components/ui";
 import { EventStatus } from "@/constants";
 import {
+  useCreateEventRatingMutation,
   useGetEventById,
+  useGetEventRatings,
+  useGetMyEventRating,
   useRegisterEventMutation,
   useTransactionBalanceQuery,
+  useUpdateEventRatingMutation,
 } from "@/hooks";
 import { useAuthMe } from "@/hooks/query/use-auth";
 import { formatCurrency, handleErrorApi } from "@/lib/utils";
@@ -64,10 +69,26 @@ export default function EventDetailPage() {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
+  // NEW: state form rating
+  const [isEditingRating, setIsEditingRating] = useState(false);
+  const [ratingValue, setRatingValue] = useState<number>(0);
+  const [commentValue, setCommentValue] = useState<string>("");
+
   const { data, isLoading, error } = useGetEventById(eventId, { lang: locale });
   const { data: balanceData } = useTransactionBalanceQuery();
   const { data: userData } = useAuthMe();
   const registerMutation = useRegisterEventMutation();
+
+  const updateRatingMutation = useUpdateEventRatingMutation({
+    onSuccess: () => setIsEditingRating(false),
+    onError: (err) => handleErrorApi({ error: err, tError }),
+  });
+
+  // Khởi tạo mutation mới
+  const createRatingMutation = useCreateEventRatingMutation({
+    onSuccess: () => setIsEditingRating(false),
+    onError: (err) => handleErrorApi({ error: err, tError }),
+  });
 
   const event = data?.payload?.data;
   const balance = balanceData?.payload?.data?.balance ?? 0;
@@ -154,6 +175,89 @@ export default function EventDetailPage() {
     }
   };
 
+  // NEW: fetch đánh giá của chính người dùng cho sự kiện (chỉ khi Completed & đã từng tham dự/host)
+  const { data: myRatingResp, isLoading: isLoadingMyRating } =
+    useGetMyEventRating(eventId, {
+      enabled: Boolean(eventEnd && isRegistered),
+    });
+
+  // Chuẩn hoá dữ liệu trả về (theo http wrapper hiện tại .payload?.data)
+  const myRating = myRatingResp?.payload?.data;
+
+  useEffect(() => {
+    if (myRating?.hasRating) {
+      setRatingValue(Number(myRating.rating ?? 0));
+      setCommentValue(myRating.comment ?? "");
+    } else {
+      setRatingValue(0);
+      setCommentValue("");
+    }
+  }, [myRating?.hasRating, myRating?.rating, myRating?.comment]);
+
+  // NEW: danh sách đánh giá của tất cả người dùng cho sự kiện
+  const { data: eventRatingsResp, isLoading: isLoadingEventRatings } =
+    useGetEventRatings(
+      eventId,
+      { lang: locale, pageNumber: 1, pageSize: 10 },
+      { enabled: Boolean(eventEnd) }
+    );
+
+  const StarPicker = ({
+    value,
+    onChange,
+    disabled,
+  }: {
+    value: number;
+    onChange: (v: number) => void;
+    disabled?: boolean;
+  }) => (
+    <div className="flex items-center gap-1">
+      {Array.from({ length: 5 }).map((_, idx) => {
+        const v = idx + 1;
+        const active = v <= value;
+        return (
+          <button
+            key={v}
+            type="button"
+            className={`text-2xl leading-none ${
+              active ? "text-yellow-500" : "text-muted-foreground/40"
+            } ${disabled ? "opacity-50 cursor-not-allowed" : "hover:scale-105"}`}
+            onClick={() => !disabled && onChange(v)}
+            disabled={disabled}
+          >
+            ★
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  // CẬP NHẬT hàm submit: nếu đã có rating -> PUT, chưa có -> POST
+  const handleSubmitRating = async () => {
+    try {
+      if (myRating?.hasRating) {
+        await updateRatingMutation.mutateAsync({
+          eventId: eventId,
+          rating: ratingValue,
+          comment: commentValue?.trim() || null,
+        });
+      } else {
+        await createRatingMutation.mutateAsync({
+          eventId: eventId,
+          rating: ratingValue,
+          comment: commentValue?.trim() || null,
+          // giftId và giftQuantity là optional – nếu chưa dùng có thể bỏ qua:
+          // giftId: null,
+          // giftQuantity: null,
+        });
+      }
+    } catch {}
+  };
+
+  const ratingItems =
+    eventRatingsResp?.payload?.data
+      ?.items /* nếu wrapper là .data thì đổi lại */ ?? [];
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -188,6 +292,24 @@ export default function EventDetailPage() {
   // Handle join meeting
   const handleJoinMeeting = () => {
     router.push(`/${locale}/room/${eventId}/waiting`);
+  };
+
+  // NEW: render sao dạng Unicode, chỉ hiển thị 1..5
+  const renderStars = (value?: number | null) => {
+    const val = Math.max(0, Math.min(5, Number(value ?? 0)));
+    return (
+      <div className="flex items-center gap-1 text-base leading-none">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <span
+            key={i}
+            aria-hidden="true"
+            className={i < val ? "text-yellow-500" : "text-muted-foreground/40"}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -467,10 +589,163 @@ export default function EventDetailPage() {
                     </p>
                   </div>
                 )}
+
+                {/* Your Rating */}
+                {eventEnd && (isRegistered || isHost) && (
+                  <Card className="shadow-lg">
+                    <CardHeader>
+                      <CardTitle>{t("ratings.yourRatingTitle")}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {isLoadingMyRating ? (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <IconLoader2 className="h-4 w-4 animate-spin" />
+                        </div>
+                      ) : isEditingRating ? (
+                        <div className="space-y-3">
+                          <div className="space-y-1">
+                            <Label>{t("ratings.yourStars")}</Label>
+                            <StarPicker
+                              value={ratingValue}
+                              onChange={setRatingValue}
+                              disabled={updateRatingMutation.isPending}
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <Label htmlFor="rating-comment">
+                              {t("ratings.commentLabel")}
+                            </Label>
+                            <Textarea
+                              id="rating-comment"
+                              placeholder={t("ratings.commentPlaceholder")}
+                              value={commentValue}
+                              onChange={(e) => setCommentValue(e.target.value)}
+                              disabled={updateRatingMutation.isPending}
+                              rows={4}
+                            />
+                            <p className="text-xs text-muted-foreground"></p>
+                          </div>
+
+                          <div className="flex items-center gap-2 pt-1">
+                            <Button
+                              onClick={handleSubmitRating}
+                              disabled={
+                                updateRatingMutation.isPending ||
+                                ratingValue < 1
+                              }
+                            >
+                              {updateRatingMutation.isPending ? (
+                                <>
+                                  <IconLoader2 className="h-4 w-4 animate-spin mr-2" />
+                                  {t("processing")}
+                                </>
+                              ) : (
+                                t("ratings.saveButton")
+                              )}
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => {
+                                setRatingValue(Number(myRating?.rating ?? 0));
+                                setCommentValue(myRating?.comment ?? "");
+                                setIsEditingRating(false);
+                              }}
+                              disabled={updateRatingMutation.isPending}
+                            >
+                              {t("cancel")}
+                            </Button>
+                          </div>
+                        </div>
+                      ) : myRating?.hasRating ? (
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            {renderStars(myRating.rating)}
+                            <span className="text-xs text-muted-foreground">
+                              {myRating.createdAt
+                                ? format(new Date(myRating.createdAt), "PPP")
+                                : ""}
+                            </span>
+                          </div>
+                          {myRating.comment ? (
+                            <p className="text-sm text-foreground">
+                              {myRating.comment}
+                            </p>
+                          ) : (
+                            <p className="text-sm text-muted-foreground italic">
+                              {t("noComment")}
+                            </p>
+                          )}
+                          <div className="pt-2">
+                            <Button
+                              variant="outline"
+                              onClick={() => setIsEditingRating(true)}
+                            >
+                              {t("ratings.editRatingButton")}
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm text-muted-foreground">
+                            {t("ratings.noRatingYet")}
+                          </p>
+                          <Button onClick={() => setIsEditingRating(true)}>
+                            {t("ratings.rateButton")}
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
               </CardContent>
             </Card>
           </div>
         </div>
+
+        {/* All ratings list */}
+        {eventEnd && (
+          <Card className="shadow-lg mt-4">
+            <CardHeader>
+              <CardTitle>{t("ratings.allRatingsTitle")}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {isLoadingEventRatings ? (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <IconLoader2 className="h-4 w-4 animate-spin" />
+                </div>
+              ) : ratingItems.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  {t("ratings.noRatingsFound")}
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {ratingItems.map((r: any) => (
+                    <div key={r.id} className="space-y-2">
+                      <div className="flex items-center gap-3">
+                        {renderStars(r.rating)}
+                        <span className="text-xs text-muted-foreground">
+                          {r.createdAt
+                            ? format(new Date(r.createdAt), "PPP")
+                            : ""}
+                        </span>
+                      </div>
+                      {r.comment ? (
+                        <p className="text-sm text-foreground">{r.comment}</p>
+                      ) : (
+                        <p className="text-sm text-muted-foreground italic">
+                          {t("noCommentAll")}
+                        </p>
+                      )}
+                      <Separator />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Confirmation Dialog for Paid Events */}
