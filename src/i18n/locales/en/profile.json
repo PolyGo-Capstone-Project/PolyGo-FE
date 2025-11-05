@@ -6,9 +6,18 @@
     "sendGift": "Send Gift",
     "addFriend": "Add Friend",
     "pending": "Pending",
-    "acceptFriend": "Accept Request",
+    "acceptFriend": "Accept",
+    "rejectFriend": "Reject",
     "friends": "Friends",
+    "chat": "Chat",
     "share": "Share Profile",
+    "tabs": {
+      "overview": "Overview",
+      "social": "Social"
+    },
+    "social": {
+      "noPosts": "No posts yet"
+    },
     "stats": {
       "title": "Statistics",
       "totalSessions": "Total Sessions",

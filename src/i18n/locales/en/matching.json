@@ -35,6 +35,7 @@
       "acceptFriend": "Accept",
       "rejectFriend": "Reject",
       "friends": "Friends",
+      "chat": "Chat",
       "viewProfile": "View Profile",
       "speaks": "Speaks",
       "learning": "Learning",
@@ -58,7 +59,10 @@
       "unfriend": "Unfriend",
       "close": "Close",
       "requestCount": "{count} request",
-      "requestCount_plural": "{count} requests"
+      "requestCount_plural": "{count} requests",
+      "confirmRemove": "Are you sure you want to remove {name} from your friends?",
+      "confirmRemoveDescription": "You will need to send a new friend request to reconnect.",
+      "remove": "Remove"
     },
     "profile": {
       "title": "User Profile",

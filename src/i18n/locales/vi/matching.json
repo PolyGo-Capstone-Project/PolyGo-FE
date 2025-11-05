@@ -35,6 +35,7 @@
       "acceptFriend": "Chấp nhận",
       "rejectFriend": "Từ chối",
       "friends": "Bạn bè",
+      "chat": "Trò chuyện",
       "viewProfile": "Xem Hồ Sơ",
       "speaks": "Nói được",
       "learning": "Đang học",
@@ -58,7 +59,10 @@
       "unfriend": "Hủy Kết Bạn",
       "close": "Đóng",
       "requestCount": "{count} lời mời",
-      "requestCount_plural": "{count} lời mời"
+      "requestCount_plural": "{count} lời mời",
+      "confirmRemove": "Bạn có chắc chắn muốn xóa {name} khỏi danh sách bạn bè không?",
+      "confirmRemoveDescription": "Bạn sẽ cần gửi một lời mời kết bạn mới để kết nối lại.",
+      "remove": "Xóa"
     },
     "profile": {
       "title": "Hồ Sơ Người Dùng",

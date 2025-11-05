@@ -2,6 +2,7 @@
 
 import {
   IconCheck,
+  IconMessageCircle,
   IconSearch,
   IconSparkles,
   IconUserPlus,
@@ -267,10 +268,10 @@ export function UserCard({
         )}
 
         {user.friendStatus === FriendStatus.Friends && (
-          <Badge variant="default" className="flex-1 justify-center py-2">
-            <IconUserPlus className="mr-2 h-4 w-4" />
-            {t("friends")}
-          </Badge>
+          <Button variant="outline" className="flex-1">
+            <IconMessageCircle className="mr-2 h-4 w-4" />
+            {t("chat")}
+          </Button>
         )}
 
         <Button className="flex-1" onClick={() => onViewProfile(user.id)}>
