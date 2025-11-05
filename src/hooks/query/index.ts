@@ -1,5 +1,6 @@
 export * from "./use-auth";
 export * from "./use-badge";
+export * from "./use-communication";
 export * from "./use-event";
 export * from "./use-friend";
 export * from "./use-gift";

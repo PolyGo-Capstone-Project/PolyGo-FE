@@ -1,6 +1,7 @@
 export * from "./auth.model";
 export * from "./badge.model";
 export * from "./common.model";
+export * from "./communication.model";
 export * from "./event.model";
 export * from "./friend.model";
 export * from "./gift.model";
