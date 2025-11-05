@@ -58,21 +58,6 @@ export const FriendRequestBodySchema = z
   })
   .strict();
 
-// DELETE
-// Xóa bạn bè
-export const RemoveFriendBodySchema = z
-  .object({
-    friendId: z.string(),
-  })
-  .strict();
-
-// Xóa yêu cầu kết bạn đã gửi
-export const CancelFriendRequestBodySchema = z
-  .object({
-    receiverId: z.string(),
-  })
-  .strict();
-
 //types:
 export type FriendType = z.infer<typeof FriendSchema>;
 export type GetFriendsQueryType = z.infer<typeof GetFriendsQuerySchema>;
@@ -87,7 +72,3 @@ export type SendFriendRequestBodyType = z.infer<
   typeof SendFriendRequestBodySchema
 >;
 export type FriendRequestBodyType = z.infer<typeof FriendRequestBodySchema>;
-export type RemoveFriendBodyType = z.infer<typeof RemoveFriendBodySchema>;
-export type CancelFriendRequestBodyType = z.infer<
-  typeof CancelFriendRequestBodySchema
->;

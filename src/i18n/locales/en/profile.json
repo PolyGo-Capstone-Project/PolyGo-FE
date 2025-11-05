@@ -4,6 +4,10 @@
     "edit": "Edit Profile",
     "manageGift": "Manage Gifts",
     "sendGift": "Send Gift",
+    "addFriend": "Add Friend",
+    "pending": "Pending",
+    "acceptFriend": "Accept Request",
+    "friends": "Friends",
     "share": "Share Profile",
     "stats": {
       "title": "Statistics",

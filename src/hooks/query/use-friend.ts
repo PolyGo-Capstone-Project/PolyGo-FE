@@ -29,6 +29,12 @@ type AcceptFriendRequestResponse = Awaited<
 type RejectFriendRequestResponse = Awaited<
   ReturnType<typeof friendApiRequest.rejectFriendRequest>
 >;
+type RemoveFriendResponse = Awaited<
+  ReturnType<typeof friendApiRequest.removeFriend>
+>;
+type CancelFriendRequestResponse = Awaited<
+  ReturnType<typeof friendApiRequest.cancelFriendRequest>
+>;
 
 // ============= QUERY HOOKS =============
 
@@ -134,6 +140,37 @@ export const useRejectFriendRequestMutation = (options?: {
   return useMutation({
     mutationFn: (body: FriendRequestBodyType) =>
       friendApiRequest.rejectFriendRequest(body),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+};
+
+/**
+ * Hook để hủy kết bạn
+ * @param options - Mutation options với callbacks
+ */
+export const useRemoveFriendMutation = (options?: {
+  onSuccess?: (data: RemoveFriendResponse) => void;
+  onError?: (error: unknown) => void;
+}) => {
+  return useMutation({
+    mutationFn: (friendId: string) => friendApiRequest.removeFriend(friendId),
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+};
+
+/**
+ * Hook để hủy lời mời kết bạn đã gửi
+ * @param options - Mutation options với callbacks
+ */
+export const useCancelFriendRequestMutation = (options?: {
+  onSuccess?: (data: CancelFriendRequestResponse) => void;
+  onError?: (error: unknown) => void;
+}) => {
+  return useMutation({
+    mutationFn: (receiverId: string) =>
+      friendApiRequest.cancelFriendRequest(receiverId),
     onSuccess: options?.onSuccess,
     onError: options?.onError,
   });

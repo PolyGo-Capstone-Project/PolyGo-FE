@@ -33,6 +33,12 @@ const friendApiRequest = {
     http.post<MessageResType>(`${prefix}/request/accept`, body),
   rejectFriendRequest: (body: FriendRequestBodyType) =>
     http.post<MessageResType>(`${prefix}/request/reject`, body),
+  // Hủy kết bạn
+  removeFriend: (friendId: string) =>
+    http.delete<MessageResType>(`${prefix}/${friendId}`),
+  //hủy lời mời kết bạn đã gửi
+  cancelFriendRequest: (receiverId: string) =>
+    http.delete<MessageResType>(`${prefix}/request/${receiverId}`),
 };
 
 export default friendApiRequest;
