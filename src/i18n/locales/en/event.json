@@ -260,7 +260,17 @@
         "yourStars": "Your Rating",
         "commentLabel": "Comment",
         "saveButton": "Save Rating",
-        "commentPlaceholder": "Leave your comment here..."
+        "commentPlaceholder": "Leave your comment here...",
+        "editDialogTitle": "Edit rating",
+        "createDialogTitle": "Create rating",
+        "dialogDescription": "Pick stars, leave a comment, and send a gift (optional).",
+        "giftSelectLabel": "Choose a gift (optional)",
+        "giftSelectPlaceholder": "Select a gift…",
+        "available": "available",
+        "giftQuantityLabel": "Gift quantity",
+        "giftQuantityHelper": "Max: {max} available",
+        "noGifts": "You don’t have any gifts.",
+        "buyMore": "Buy gifts"
       }
     },
     "myEvent": {

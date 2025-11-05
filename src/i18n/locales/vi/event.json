@@ -262,7 +262,17 @@
         "yourStars": "Đánh giá",
         "commentLabel": "Nhận xét",
         "saveButton": "Lưu đánh giá",
-        "commentPlaceholder": "Viết nhận xét của bạn ở đây..."
+        "commentPlaceholder": "Viết nhận xét của bạn ở đây...",
+        "editDialogTitle": "Chỉnh sửa đánh giá",
+        "createDialogTitle": "Tạo đánh giá",
+        "dialogDescription": "Chọn số sao, để lại nhận xét và tặng quà (nếu có).",
+        "giftSelectLabel": "Chọn quà tặng (tuỳ chọn)",
+        "giftSelectPlaceholder": "Chọn một món quà…",
+        "available": "còn",
+        "giftQuantityLabel": "Số lượng quà",
+        "giftQuantityHelper": "Tối đa: {max} còn",
+        "noGifts": "Bạn chưa có quà nào.",
+        "buyMore": "Mua quà"
       }
     },
     "myEvent": {

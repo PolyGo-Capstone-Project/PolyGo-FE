@@ -9,6 +9,7 @@ import {
   IconCoin,
   IconLoader2,
   IconMapPin,
+  IconStar,
   IconUsers,
   IconVideo,
 } from "@tabler/icons-react";
@@ -37,8 +38,19 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
   Input,
   Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Separator,
   Textarea,
 } from "@/components/ui";
@@ -48,6 +60,7 @@ import {
   useGetEventById,
   useGetEventRatings,
   useGetMyEventRating,
+  useMyPurchasedGiftsQuery,
   useRegisterEventMutation,
   useTransactionBalanceQuery,
   useUpdateEventRatingMutation,
@@ -74,6 +87,11 @@ export default function EventDetailPage() {
   const [ratingValue, setRatingValue] = useState<number>(0);
   const [commentValue, setCommentValue] = useState<string>("");
 
+  // +++ State mới
+  const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
+  const [giftId, setGiftId] = useState<string>("");
+  const [giftQuantity, setGiftQuantity] = useState<number>(1);
+
   const { data, isLoading, error } = useGetEventById(eventId, { lang: locale });
   const { data: balanceData } = useTransactionBalanceQuery();
   const { data: userData } = useAuthMe();
@@ -89,6 +107,14 @@ export default function EventDetailPage() {
     onSuccess: () => setIsEditingRating(false),
     onError: (err) => handleErrorApi({ error: err, tError }),
   });
+
+  // +++ Fetch danh sách quà đã mua & derive
+  const { data: purchasedGiftsData } = useMyPurchasedGiftsQuery({
+    params: { lang: locale, pageNumber: 1, pageSize: 100 },
+  });
+  const purchasedGifts = purchasedGiftsData?.payload?.data?.items || [];
+  const selectedGift = purchasedGifts.find((g: any) => g.id === giftId);
+  const maxQuantity = selectedGift?.quantity || 0;
 
   const event = data?.payload?.data;
   const balance = balanceData?.payload?.data?.balance ?? 0;
@@ -232,25 +258,30 @@ export default function EventDetailPage() {
     </div>
   );
 
-  // CẬP NHẬT hàm submit: nếu đã có rating -> PUT, chưa có -> POST
+  // !!! Cập nhật handleSubmitRating để gửi kèm giftId/giftQuantity (nếu có)
   const handleSubmitRating = async () => {
     try {
+      const basePayload = {
+        eventId,
+        rating: ratingValue,
+        comment: commentValue?.trim() || null,
+        ...(giftId
+          ? {
+              giftId,
+              giftQuantity: Math.max(
+                1,
+                Math.min(giftQuantity || 1, maxQuantity || 1)
+              ),
+            }
+          : {}),
+      };
+
       if (myRating?.hasRating) {
-        await updateRatingMutation.mutateAsync({
-          eventId: eventId,
-          rating: ratingValue,
-          comment: commentValue?.trim() || null,
-        });
+        await updateRatingMutation.mutateAsync(basePayload);
       } else {
-        await createRatingMutation.mutateAsync({
-          eventId: eventId,
-          rating: ratingValue,
-          comment: commentValue?.trim() || null,
-          // giftId và giftQuantity là optional – nếu chưa dùng có thể bỏ qua:
-          // giftId: null,
-          // giftQuantity: null,
-        });
+        await createRatingMutation.mutateAsync(basePayload);
       }
+      setIsRatingDialogOpen(false);
     } catch {}
   };
 
@@ -573,7 +604,7 @@ export default function EventDetailPage() {
                 )}
 
                 {/* Waiting message for attendees */}
-                {canJoin && !showJoinButton && !isHost && (
+                {canJoin && !showJoinButton && !isHost && !eventEnd && (
                   <div className="w-full py-3 px-4 bg-muted rounded-lg border text-center">
                     <p className="text-sm text-muted-foreground">
                       {t("waitingForHost")}
@@ -592,112 +623,50 @@ export default function EventDetailPage() {
 
                 {/* Your Rating */}
                 {eventEnd && isRegistered && !isHost && (
-                  <Card className="shadow-lg">
-                    <CardHeader>
-                      <CardTitle>{t("ratings.yourRatingTitle")}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {isLoadingMyRating ? (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <IconLoader2 className="h-4 w-4 animate-spin" />
+                  <>
+                    {isLoadingMyRating ? (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <IconLoader2 className="h-4 w-4 animate-spin" />
+                      </div>
+                    ) : myRating?.hasRating ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                          {renderStars(myRating.rating)}
+                          <span className="text-xs text-muted-foreground">
+                            {myRating.createdAt
+                              ? format(new Date(myRating.createdAt), "PPP")
+                              : ""}
+                          </span>
                         </div>
-                      ) : isEditingRating ? (
-                        <div className="space-y-3">
-                          <div className="space-y-1">
-                            <Label>{t("ratings.yourStars")}</Label>
-                            <StarPicker
-                              value={ratingValue}
-                              onChange={setRatingValue}
-                              disabled={updateRatingMutation.isPending}
-                            />
-                          </div>
-
-                          <div className="space-y-1">
-                            <Label htmlFor="rating-comment">
-                              {t("ratings.commentLabel")}
-                            </Label>
-                            <Textarea
-                              id="rating-comment"
-                              placeholder={t("ratings.commentPlaceholder")}
-                              value={commentValue}
-                              onChange={(e) => setCommentValue(e.target.value)}
-                              disabled={updateRatingMutation.isPending}
-                              rows={4}
-                            />
-                            <p className="text-xs text-muted-foreground"></p>
-                          </div>
-
-                          <div className="flex items-center gap-2 pt-1">
-                            <Button
-                              onClick={handleSubmitRating}
-                              disabled={
-                                updateRatingMutation.isPending ||
-                                ratingValue < 1
-                              }
-                            >
-                              {updateRatingMutation.isPending ? (
-                                <>
-                                  <IconLoader2 className="h-4 w-4 animate-spin mr-2" />
-                                  {t("processing")}
-                                </>
-                              ) : (
-                                t("ratings.saveButton")
-                              )}
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={() => {
-                                setRatingValue(Number(myRating?.rating ?? 0));
-                                setCommentValue(myRating?.comment ?? "");
-                                setIsEditingRating(false);
-                              }}
-                              disabled={updateRatingMutation.isPending}
-                            >
-                              {t("cancel")}
-                            </Button>
-                          </div>
-                        </div>
-                      ) : myRating?.hasRating ? (
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3">
-                            {renderStars(myRating.rating)}
-                            <span className="text-xs text-muted-foreground">
-                              {myRating.createdAt
-                                ? format(new Date(myRating.createdAt), "PPP")
-                                : ""}
-                            </span>
-                          </div>
-                          {myRating.comment ? (
-                            <p className="text-sm text-foreground">
-                              {myRating.comment}
-                            </p>
-                          ) : (
-                            <p className="text-sm text-muted-foreground italic">
-                              {t("noComment")}
-                            </p>
-                          )}
-                          <div className="pt-2">
-                            <Button
-                              variant="outline"
-                              onClick={() => setIsEditingRating(true)}
-                            >
-                              {t("ratings.editRatingButton")}
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm text-muted-foreground">
-                            {t("ratings.noRatingYet")}
+                        {myRating.comment ? (
+                          <p className="text-sm text-foreground">
+                            {myRating.comment}
                           </p>
-                          <Button onClick={() => setIsEditingRating(true)}>
-                            {t("ratings.rateButton")}
+                        ) : (
+                          <p className="text-sm text-muted-foreground italic">
+                            {t("noComment")}
+                          </p>
+                        )}
+                        <div className="pt-2">
+                          <Button
+                            variant="outline"
+                            onClick={() => setIsRatingDialogOpen(true)}
+                          >
+                            {t("ratings.editRatingButton")}
                           </Button>
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-muted-foreground">
+                          {t("ratings.noRatingYet")}
+                        </p>
+                        <Button onClick={() => setIsRatingDialogOpen(true)}>
+                          {t("ratings.rateButton")}
+                        </Button>
+                      </div>
+                    )}
+                  </>
                 )}
               </CardContent>
             </Card>
@@ -707,16 +676,20 @@ export default function EventDetailPage() {
         {/* All ratings list */}
         {eventEnd && (
           <Card className="shadow-lg mt-4">
-            <CardHeader>
-              <CardTitle>{t("ratings.allRatingsTitle")}</CardTitle>
+            <CardHeader className="flex justify-center">
+              <CardTitle className="text-center">
+                {t("ratings.allRatingsTitle")}
+              </CardTitle>
             </CardHeader>
+
             <CardContent className="space-y-4">
               {isLoadingEventRatings ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <IconLoader2 className="h-4 w-4 animate-spin" />
                 </div>
               ) : ratingItems.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-lg text-muted-foreground flex items-center justify-center gap-2">
+                  <IconStar className="h-5 w-5 text-yellow-500" />
                   {t("ratings.noRatingsFound")}
                 </p>
               ) : (
@@ -816,6 +789,146 @@ export default function EventDetailPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Rating Dialog  */}
+      <Dialog open={isRatingDialogOpen} onOpenChange={setIsRatingDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {myRating?.hasRating
+                ? t("ratings.editDialogTitle")
+                : t("ratings.createDialogTitle")}
+            </DialogTitle>
+            <DialogDescription>
+              {t("ratings.dialogDescription")}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* Stars */}
+            <div className="space-y-1">
+              <Label>{t("ratings.yourStars")}</Label>
+              <StarPicker
+                value={ratingValue}
+                onChange={setRatingValue}
+                disabled={
+                  updateRatingMutation.isPending ||
+                  createRatingMutation.isPending
+                }
+              />
+            </div>
+
+            {/* Comment */}
+            <div className="space-y-1">
+              <Label htmlFor="rating-comment">
+                {t("ratings.commentLabel")}
+              </Label>
+              <Textarea
+                id="rating-comment"
+                placeholder={t("ratings.commentPlaceholder")}
+                value={commentValue}
+                onChange={(e) => setCommentValue(e.target.value)}
+                disabled={
+                  updateRatingMutation.isPending ||
+                  createRatingMutation.isPending
+                }
+                rows={4}
+              />
+            </div>
+
+            {/* Gift dropdown / Mua quà */}
+            {purchasedGifts.length > 0 ? (
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <Label>{t("ratings.giftSelectLabel")}</Label>
+                  <Select
+                    value={giftId}
+                    onValueChange={(v) => {
+                      setGiftId(v);
+                      setGiftQuantity(1);
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={t("ratings.giftSelectPlaceholder")}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {purchasedGifts.map((gift: any) => (
+                        <SelectItem key={gift.id} value={gift.id}>
+                          {gift.name} ({t("ratings.available")} {gift.quantity})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {giftId && (
+                  <div className="space-y-1">
+                    <Label htmlFor="gift-qty">
+                      {t("ratings.giftQuantityLabel")}
+                    </Label>
+                    <Input
+                      id="gift-qty"
+                      type="number"
+                      min={1}
+                      max={maxQuantity || 1}
+                      value={giftQuantity}
+                      onChange={(e) => setGiftQuantity(Number(e.target.value))}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {t("ratings.giftQuantityHelper", {
+                        max: maxQuantity || 1,
+                      })}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  {t("ratings.noGifts")}
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    router.push(`/${locale}/gifts`);
+                    setIsRatingDialogOpen(false);
+                  }}
+                >
+                  {t("ratings.buyMore")}
+                </Button>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsRatingDialogOpen(false)}
+              disabled={
+                updateRatingMutation.isPending || createRatingMutation.isPending
+              }
+            >
+              {t("cancel")}
+            </Button>
+            <Button
+              onClick={handleSubmitRating}
+              disabled={
+                ratingValue < 1 ||
+                updateRatingMutation.isPending ||
+                createRatingMutation.isPending ||
+                (Boolean(giftId) && (!giftQuantity || giftQuantity < 1))
+              }
+            >
+              {updateRatingMutation.isPending || createRatingMutation.isPending
+                ? t("processing")
+                : t("ratings.saveButton")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Success Dialog */}
       <RegistrationSuccessDialog
