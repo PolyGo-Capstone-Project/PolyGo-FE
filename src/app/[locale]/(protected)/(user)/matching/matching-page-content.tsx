@@ -1,13 +1,10 @@
 "use client";
 
-import { IconSearch, IconSparkles } from "@tabler/icons-react";
-import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-
 import {
+  Badge,
   Button,
   EmptyMatchingState,
+  FriendsDialog,
   Input,
   MatchingFilterSidebar,
   Select,
@@ -19,13 +16,21 @@ import {
   UserCard,
 } from "@/components";
 import {
+  useAcceptFriendRequestMutation,
+  useGetFriendRequests,
   useGetUsersMatching,
   useInterestsQuery,
   useLanguagesQuery,
+  useRejectFriendRequestMutation,
   useSearchUsers,
+  useSendFriendRequestMutation,
 } from "@/hooks";
-import { handleErrorApi } from "@/lib/utils";
+import { handleErrorApi, showErrorToast, showSuccessToast } from "@/lib/utils";
 import type { SearchUserQueryType, UserMatchingItemType } from "@/models";
+import { IconSearch, IconSparkles, IconUsers } from "@tabler/icons-react";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 type SortOption = "recommended" | "newest" | "highestRating" | "onlineFirst";
 
@@ -46,6 +51,9 @@ export default function MatchingPageContent() {
   const t = useTranslations("matching");
   const tSorting = useTranslations("matching.sorting");
   const tError = useTranslations("Error");
+  const tSuccess = useTranslations("Success");
+  // Friends dialog state
+  const [friendsDialogOpen, setFriendsDialogOpen] = useState(false);
 
   // Filters state
   const [filters, setFilters] = useState<MatchingFilters>({
@@ -164,6 +172,54 @@ export default function MatchingPageContent() {
     () => interestsData?.payload.data?.items || [],
     [interestsData]
   );
+
+  // Fetch friend requests for notification badge
+  const { data: friendRequestsData, refetch: refetchFriendRequests } =
+    useGetFriendRequests(
+      { pageNumber: 1, pageSize: 100, lang: locale },
+      { enabled: true }
+    );
+
+  const friendRequestsCount = useMemo(
+    () => friendRequestsData?.payload.data?.items?.length || 0,
+    [friendRequestsData]
+  );
+
+  // Friend mutations
+  const sendFriendRequestMutation = useSendFriendRequestMutation({
+    onSuccess: () => {
+      showSuccessToast("friendRequestSent", tSuccess);
+      setCurrentPage(1);
+      setLoadedUsers([]);
+    },
+    onError: () => {
+      showErrorToast("friendRequestFailed", tError);
+    },
+  });
+
+  const acceptFriendRequestMutation = useAcceptFriendRequestMutation({
+    onSuccess: () => {
+      showSuccessToast("friendRequestAccepted", tSuccess);
+      refetchFriendRequests();
+      setCurrentPage(1);
+      setLoadedUsers([]);
+    },
+    onError: () => {
+      showErrorToast("failAccept", tError);
+    },
+  });
+
+  const rejectFriendRequestMutation = useRejectFriendRequestMutation({
+    onSuccess: () => {
+      showSuccessToast("friendRequestRejected", tSuccess);
+      refetchFriendRequests();
+      setCurrentPage(1);
+      setLoadedUsers([]);
+    },
+    onError: () => {
+      showErrorToast("failReject", tError);
+    },
+  });
 
   // Get current data source
   const currentData = hasActiveFilters ? searchData : matchingData;
@@ -299,7 +355,15 @@ export default function MatchingPageContent() {
   };
 
   const handleAddFriend = (userId: string) => {
-    console.log("Add friend:", userId);
+    sendFriendRequestMutation.mutate({ receiverId: userId });
+  };
+
+  const handleAcceptFriend = (userId: string) => {
+    acceptFriendRequestMutation.mutate({ senderId: userId });
+  };
+
+  const handleRejectFriend = (userId: string) => {
+    rejectFriendRequestMutation.mutate({ senderId: userId });
   };
 
   const handleClearFilters = () => {
@@ -348,12 +412,31 @@ export default function MatchingPageContent() {
   return (
     <div className="container mx-auto py-6 p-4">
       {/* Header */}
-      <div className="mb-6 space-y-2">
-        <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
-          <IconSparkles className="h-8 w-8 text-primary" />
-          {t("title")}
-        </h1>
-        <p className="text-muted-foreground">{t("description")}</p>
+      <div className="flex justify-between mb-6 space-y-2">
+        <div>
+          <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
+            <IconSparkles className="h-8 w-8 text-primary" />
+            {t("title")}
+          </h1>
+          <p className="text-muted-foreground">{t("description")}</p>
+        </div>
+        {/* Friends Button with Badge */}
+        <Button
+          variant="outline"
+          onClick={() => setFriendsDialogOpen(true)}
+          className="relative"
+        >
+          <IconUsers className="mr-2 h-4 w-4" />
+          {t("friends.title")}
+          {friendRequestsCount > 0 && (
+            <Badge
+              variant="destructive"
+              className="absolute -right-2 -top-2 h-5 min-w-5 px-1.5"
+            >
+              {friendRequestsCount}
+            </Badge>
+          )}
+        </Button>
       </div>
 
       {/* Top Bar - Search & Sort */}
@@ -375,7 +458,7 @@ export default function MatchingPageContent() {
           )}
         </div>
 
-        {/* Sort */}
+        {/* Sort & Friends Button */}
         <div className="flex items-center gap-2">
           {/* Mobile Sidebar Toggle */}
           <Button
@@ -480,6 +563,8 @@ export default function MatchingPageContent() {
                     user={user}
                     onViewProfile={handleViewProfile}
                     onAddFriend={handleAddFriend}
+                    onAcceptFriend={handleAcceptFriend}
+                    onRejectFriend={handleRejectFriend}
                   />
                 ))}
               </div>
@@ -541,6 +626,13 @@ export default function MatchingPageContent() {
           )}
         </div>
       </div>
+
+      {/* Friends Dialog */}
+      <FriendsDialog
+        open={friendsDialogOpen}
+        onOpenChange={setFriendsDialogOpen}
+        locale={locale}
+      />
     </div>
   );
 }

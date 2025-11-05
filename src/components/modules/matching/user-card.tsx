@@ -1,6 +1,12 @@
 "use client";
 
-import { IconSearch, IconSparkles, IconUserPlus } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconSearch,
+  IconSparkles,
+  IconUserPlus,
+  IconX,
+} from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
@@ -16,7 +22,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { PlanTypeEnum } from "@/constants";
+import { FriendStatus, PlanTypeEnum } from "@/constants";
 import { UserMatchingItemType } from "@/models";
 import Image from "next/image";
 
@@ -24,15 +30,23 @@ type UserCardProps = {
   user: UserMatchingItemType;
   onViewProfile: (userId: string) => void;
   onAddFriend?: (userId: string) => void;
+  onAcceptFriend?: (userId: string) => void;
+  onRejectFriend?: (userId: string) => void;
 };
 
-export function UserCard({ user, onViewProfile, onAddFriend }: UserCardProps) {
+export function UserCard({
+  user,
+  onViewProfile,
+  onAddFriend,
+  onAcceptFriend,
+  onRejectFriend,
+}: UserCardProps) {
   const speakingLanguages = user.speakingLanguages || [];
   const learningLanguages = user.learningLanguages || [];
   const interests = user.interests || [];
   const t = useTranslations("matching.card");
   const tGender = useTranslations("common.gender");
-  const [isOnline] = useState(Math.random() > 0.5); // Mock online status
+  const [isOnline] = useState(Math.random() > 0.5);
 
   const initials = useMemo(() => {
     return user.name
@@ -212,14 +226,53 @@ export function UserCard({ user, onViewProfile, onAddFriend }: UserCardProps) {
       </CardContent>
 
       <CardFooter className="flex gap-2 pt-4">
-        <Button
-          variant="outline"
-          className="flex-1"
-          onClick={() => onAddFriend?.(user.id)}
-        >
-          <IconUserPlus className="mr-2 h-4 w-4" />
-          {t("addFriend")}
-        </Button>
+        {/* Friend action button based on friendStatus */}
+        {user.friendStatus === FriendStatus.None && (
+          <Button
+            variant="outline"
+            className="flex-1"
+            onClick={() => onAddFriend?.(user.id)}
+          >
+            <IconUserPlus className="mr-2 h-4 w-4" />
+            {t("addFriend")}
+          </Button>
+        )}
+
+        {user.friendStatus === FriendStatus.Sent && (
+          <Button variant="outline" className="flex-1" disabled>
+            <IconUserPlus className="mr-2 h-4 w-4" />
+            {t("pending")}
+          </Button>
+        )}
+
+        {user.friendStatus === FriendStatus.Received && (
+          <>
+            <Button
+              variant="default"
+              className="flex-1"
+              onClick={() => onAcceptFriend?.(user.id)}
+            >
+              <IconCheck className="mr-2 h-4 w-4" />
+              {t("acceptFriend")}
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => onRejectFriend?.(user.id)}
+            >
+              <IconX className="mr-2 h-4 w-4" />
+              {t("rejectFriend")}
+            </Button>
+          </>
+        )}
+
+        {user.friendStatus === FriendStatus.Friends && (
+          <Badge variant="default" className="flex-1 justify-center py-2">
+            <IconUserPlus className="mr-2 h-4 w-4" />
+            {t("friends")}
+          </Badge>
+        )}
+
         <Button className="flex-1" onClick={() => onViewProfile(user.id)}>
           <IconSearch className="mr-2 h-4 w-4" />
           {t("viewProfile")}

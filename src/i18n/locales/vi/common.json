@@ -32,7 +32,12 @@
     "Subscribe": "Nâng cấp gói thành công!",
     "Cancel": "Hủy đăng ký thành công!",
     "Kick": "Người dùng đã bị đá ra!",
-    "Unregister": "Hủy đăng ký thành công!"
+    "Unregister": "Hủy đăng ký thành công!",
+    "friendRequestSent": "Gửi lời mời kết bạn thành công!",
+    "friendRequestRejected": "Từ chối lời mời kết bạn thành công!",
+    "friendRequestAccepted": "Chấp nhận lời mời kết bạn thành công!",
+    "friendRemoved": "Xóa bạn bè thành công!",
+    "friendRequestCancelled": "Hủy lời mời kết bạn thành công!"
   },
   "Error": {
     "default": "Đã xảy ra lỗi.",
@@ -65,7 +70,12 @@
     "fileTooLarge": "Kích thước file quá lớn. Kích thước tối đa là 5MB.",
     "EventCannotBeCancelledWithin24Hours": "Sự kiện không thể hủy trong vòng 24 giờ trước thời gian bắt đầu.",
     "FriendRequestAlreadySent": "Lời mời kết bạn đã được gửi đến người dùng này.",
-    "CannotSendFriendRequestToYourself": "Bạn không thể gửi lời mời kết bạn cho chính mình."
+    "CannotSendFriendRequestToYourself": "Bạn không thể gửi lời mời kết bạn cho chính mình.",
+    "friendRequestFailed": "Gửi lời mời kết bạn thất bại. Vui lòng thử lại.",
+    "failAccept": "Chấp nhận lời mời kết bạn thất bại. Vui lòng thử lại.",
+    "failReject": "Từ chối lời mời kết bạn thất bại. Vui lòng thử lại.",
+    "failRemove": "Xóa bạn bè thất bại. Vui lòng thử lại.",
+    "failCancel": "Hủy lời mời kết bạn thất bại. Vui lòng thử lại."
   },
   "header": {
     "products": "Sản phẩm",
