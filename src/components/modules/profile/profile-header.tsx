@@ -1,10 +1,13 @@
 "use client";
 
 import {
+  IconCheck,
   IconEdit,
   IconGift,
+  IconMessageCircle,
   IconShare,
   IconUserPlus,
+  IconX,
 } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -12,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { FriendStatus } from "@/constants";
 import { Gift } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -24,10 +28,13 @@ type ProfileHeaderProps = {
   introduction: string | null;
   isOnline?: boolean;
   variant?: "own" | "other";
+  friendStatus?: string;
   onEdit?: () => void;
   onSendGift?: () => void;
   onShare?: () => void;
   onAddFriend?: () => void;
+  onRejectFriend?: () => void;
+  onChat?: () => void;
 };
 
 export function ProfileHeader({
@@ -39,10 +46,13 @@ export function ProfileHeader({
   introduction,
   isOnline = true,
   variant = "own",
+  friendStatus,
   onEdit,
   onSendGift,
   onShare,
   onAddFriend,
+  onRejectFriend,
+  onChat,
 }: ProfileHeaderProps) {
   const t = useTranslations("profile");
   const tCommon = useTranslations("common.gender");
@@ -131,27 +141,90 @@ export function ProfileHeader({
           )}
 
           {variant === "other" && (
-            <div className="flex w-full flex-col gap-4 md:w-auto">
-              <div className="flex w-full flex-col gap-2 md:w-auto md:flex-row">
+            <div className="flex w-full flex-col gap-2 md:w-auto">
+              {/* Friend Status Actions */}
+              {friendStatus === FriendStatus.None && onAddFriend && (
+                <Button
+                  onClick={onAddFriend}
+                  size="sm"
+                  variant="outline"
+                  className="w-full md:w-auto"
+                >
+                  <IconUserPlus className="mr-2 h-4 w-4" />
+                  {t("addFriend")}
+                </Button>
+              )}
+
+              {friendStatus === FriendStatus.Sent && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled
+                  className="w-full md:w-auto"
+                >
+                  <IconUserPlus className="mr-2 h-4 w-4" />
+                  {t("pending")}
+                </Button>
+              )}
+
+              {friendStatus === FriendStatus.Received && (
+                <div className="flex gap-2">
+                  <Button
+                    onClick={onAddFriend}
+                    size="sm"
+                    className="flex-1"
+                    variant="outline"
+                  >
+                    <IconCheck className="mr-2 h-4 w-4" />
+                    {t("acceptFriend")}
+                  </Button>
+                  <Button
+                    onClick={onRejectFriend}
+                    size="sm"
+                    variant="destructive"
+                    className="flex-1"
+                  >
+                    <IconX className="mr-2 h-4 w-4" />
+                    {t("rejectFriend")}
+                  </Button>
+                </div>
+              )}
+
+              {friendStatus === FriendStatus.Friends && onChat && (
+                <Button
+                  onClick={onChat}
+                  size="sm"
+                  className="w-full md:w-auto"
+                  variant="outline"
+                >
+                  <IconMessageCircle className="mr-2 h-4 w-4" />
+                  {t("chat")}
+                </Button>
+              )}
+
+              {/* Other Actions */}
+              <div className="flex w-full flex-col gap-2 md:flex-row">
                 {onSendGift && (
-                  <Button onClick={onSendGift} size="sm" variant="outline">
+                  <Button
+                    onClick={onSendGift}
+                    size="sm"
+                    className="flex-1 md:flex-none"
+                  >
                     <IconGift className="mr-2 h-4 w-4" />
                     {t("sendGift")}
                   </Button>
                 )}
-                {onAddFriend && (
-                  <Button onClick={onAddFriend} size="sm" variant="link">
-                    <IconUserPlus className="mr-2 h-4 w-4" />
-                    {/* {t("addFriend")} */}
+                {onShare && (
+                  <Button
+                    onClick={onShare}
+                    size="sm"
+                    variant="link"
+                    className="flex-1 md:flex-none"
+                  >
+                    <IconShare className="h-4 w-4" />
                   </Button>
                 )}
               </div>
-              {onShare && (
-                <Button onClick={onShare} size="sm">
-                  <IconShare className="mr-2 h-4 w-4" />
-                  {t("share")}
-                </Button>
-              )}
             </div>
           )}
         </div>

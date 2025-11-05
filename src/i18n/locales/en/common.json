@@ -37,7 +37,8 @@
     "friendRequestRejected": "Friend request rejected successfully!",
     "friendRequestAccepted": "Friend request accepted successfully!",
     "friendRemoved": "Friend removed successfully!",
-    "friendRequestCancelled": "Friend request cancelled successfully!"
+    "friendRequestCancelled": "Friend request cancelled successfully!",
+    "profileLinkCopied": "Profile link copied!"
   },
   "Error": {
     "default": "An error occurred.",

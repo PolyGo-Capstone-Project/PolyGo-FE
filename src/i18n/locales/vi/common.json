@@ -37,7 +37,8 @@
     "friendRequestRejected": "Từ chối lời mời kết bạn thành công!",
     "friendRequestAccepted": "Chấp nhận lời mời kết bạn thành công!",
     "friendRemoved": "Xóa bạn bè thành công!",
-    "friendRequestCancelled": "Hủy lời mời kết bạn thành công!"
+    "friendRequestCancelled": "Hủy lời mời kết bạn thành công!",
+    "profileLinkCopied": "Đã sao chép liên kết hồ sơ!"
   },
   "Error": {
     "default": "Đã xảy ra lỗi.",

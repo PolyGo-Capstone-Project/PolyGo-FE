@@ -42,12 +42,14 @@ type FriendsDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   locale: string;
+  onDataChange?: () => void;
 };
 
 export function FriendsDialog({
   open,
   onOpenChange,
   locale,
+  onDataChange,
 }: FriendsDialogProps) {
   const t = useTranslations("matching.friends");
   const tSuccess = useTranslations("Success");
@@ -82,6 +84,7 @@ export function FriendsDialog({
       showSuccessToast("friendRequestAccepted", tSuccess);
       refetchFriends();
       refetchReceivedRequests();
+      onDataChange?.();
     },
     onError: () => {
       showErrorToast("failAccept", tError);
@@ -92,6 +95,7 @@ export function FriendsDialog({
     onSuccess: () => {
       showSuccessToast("friendRequestRejected", tSuccess);
       refetchReceivedRequests();
+      onDataChange?.();
     },
     onError: () => {
       showErrorToast("failReject", tError);
@@ -102,6 +106,7 @@ export function FriendsDialog({
     onSuccess: () => {
       showSuccessToast("friendRequestCancelled", tSuccess);
       refetchSentRequests();
+      onDataChange?.();
     },
     onError: () => {
       showErrorToast("failCancel", tError);
@@ -112,6 +117,7 @@ export function FriendsDialog({
     onSuccess: () => {
       showSuccessToast("friendRemoved", tSuccess);
       refetchFriends();
+      onDataChange?.();
     },
     onError: () => {
       showErrorToast("failRemove", tError);
@@ -247,7 +253,7 @@ export function FriendsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="min-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <IconUsers className="h-5 w-5" />
