@@ -1,6 +1,14 @@
 "use client";
 
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
   Avatar,
   AvatarFallback,
   AvatarImage,
@@ -57,6 +65,8 @@ export function FriendsDialog({
   const tCard = useTranslations("matching.card");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("friends");
+  const [friendToRemove, setFriendToRemove] =
+    useState<UserMatchingItemType | null>(null);
 
   // Fetch friends
   const { data: friendsData, refetch: refetchFriends } = useGetFriends(
@@ -144,8 +154,15 @@ export function FriendsDialog({
     rejectMutation.mutate({ senderId: userId });
   };
 
-  const handleRemoveFriend = (userId: string) => {
-    removeMutation.mutate(userId);
+  const handleRemoveFriend = (user: UserMatchingItemType) => {
+    setFriendToRemove(user);
+  };
+
+  const confirmRemoveFriend = () => {
+    if (friendToRemove) {
+      removeMutation.mutate(friendToRemove.id);
+      setFriendToRemove(null);
+    }
   };
 
   const handleCancelRequest = (userId: string) => {
@@ -240,7 +257,7 @@ export function FriendsDialog({
             <Button
               size="sm"
               variant="destructive"
-              onClick={() => handleRemoveFriend(user.id)}
+              onClick={() => handleRemoveFriend(user)}
               disabled={removeMutation.isPending}
             >
               <IconX className="h-4 w-4" />
@@ -252,107 +269,146 @@ export function FriendsDialog({
   );
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="min-w-2xl">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <IconUsers className="h-5 w-5" />
-            {t("title")}
-          </DialogTitle>
-          <DialogDescription>
-            {t("myFriends")}, {t("receivedRequests")}, {t("sentRequests")}
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="min-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <IconUsers className="h-5 w-5" />
+              {t("title")}
+            </DialogTitle>
+            <DialogDescription>
+              {t("myFriends")}, {t("receivedRequests")}, {t("sentRequests")}
+            </DialogDescription>
+          </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="friends" className="relative">
-              {t("myFriends")}
-              {friends.length > 0 && (
-                <Badge variant="secondary" className="ml-2 h-5 min-w-5 px-1.5">
-                  {friends.length}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="received" className="relative">
-              {t("receivedRequests")}
-              {receivedRequests.length > 0 && (
-                <Badge
-                  variant="destructive"
-                  className="ml-2 h-5 min-w-5 px-1.5"
-                >
-                  {receivedRequests.length}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="sent" className="relative">
-              {t("sentRequests")}
-              {sentRequests.length > 0 && (
-                <Badge variant="secondary" className="ml-2 h-5 min-w-5 px-1.5">
-                  {sentRequests.length}
-                </Badge>
-              )}
-            </TabsTrigger>
-          </TabsList>
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="friends" className="relative">
+                {t("myFriends")}
+                {friends.length > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="ml-2 h-5 min-w-5 px-1.5"
+                  >
+                    {friends.length}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="received" className="relative">
+                {t("receivedRequests")}
+                {receivedRequests.length > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="ml-2 h-5 min-w-5 px-1.5"
+                  >
+                    {receivedRequests.length}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="sent" className="relative">
+                {t("sentRequests")}
+                {sentRequests.length > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="ml-2 h-5 min-w-5 px-1.5"
+                  >
+                    {sentRequests.length}
+                  </Badge>
+                )}
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="friends" className="mt-4">
-            <ScrollArea className="h-[400px] pr-4">
-              {friends.length === 0 ? (
-                <div className="flex h-[300px] flex-col items-center justify-center text-center">
-                  <IconUsers className="mb-4 h-12 w-12 text-muted-foreground" />
-                  <p className="text-muted-foreground">{t("noFriends")}</p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {friends.map((friend) => renderUserItem(friend, "friend"))}
-                </div>
-              )}
-            </ScrollArea>
-          </TabsContent>
+            <TabsContent value="friends" className="mt-4">
+              <ScrollArea className="h-[400px] pr-4">
+                {friends.length === 0 ? (
+                  <div className="flex h-[300px] flex-col items-center justify-center text-center">
+                    <IconUsers className="mb-4 h-12 w-12 text-muted-foreground" />
+                    <p className="text-muted-foreground">{t("noFriends")}</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {friends.map((friend) => renderUserItem(friend, "friend"))}
+                  </div>
+                )}
+              </ScrollArea>
+            </TabsContent>
 
-          <TabsContent value="received" className="mt-4">
-            <ScrollArea className="h-[400px] pr-4">
-              {receivedRequests.length === 0 ? (
-                <div className="flex h-[300px] flex-col items-center justify-center text-center">
-                  <IconUserCheck className="mb-4 h-12 w-12 text-muted-foreground" />
-                  <p className="text-muted-foreground">
-                    {t("noReceivedRequests")}
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {receivedRequests.map((request) =>
-                    renderUserItem(request, "received")
-                  )}
-                </div>
-              )}
-            </ScrollArea>
-          </TabsContent>
+            <TabsContent value="received" className="mt-4">
+              <ScrollArea className="h-[400px] pr-4">
+                {receivedRequests.length === 0 ? (
+                  <div className="flex h-[300px] flex-col items-center justify-center text-center">
+                    <IconUserCheck className="mb-4 h-12 w-12 text-muted-foreground" />
+                    <p className="text-muted-foreground">
+                      {t("noReceivedRequests")}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {receivedRequests.map((request) =>
+                      renderUserItem(request, "received")
+                    )}
+                  </div>
+                )}
+              </ScrollArea>
+            </TabsContent>
 
-          <TabsContent value="sent" className="mt-4">
-            <ScrollArea className="h-[400px] pr-4">
-              {sentRequests.length === 0 ? (
-                <div className="flex h-[300px] flex-col items-center justify-center text-center">
-                  <IconUserCheck className="mb-4 h-12 w-12 text-muted-foreground" />
-                  <p className="text-muted-foreground">{t("noSentRequests")}</p>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {sentRequests.map((request) =>
-                    renderUserItem(request, "sent")
-                  )}
-                </div>
-              )}
-            </ScrollArea>
-          </TabsContent>
-        </Tabs>
+            <TabsContent value="sent" className="mt-4">
+              <ScrollArea className="h-[400px] pr-4">
+                {sentRequests.length === 0 ? (
+                  <div className="flex h-[300px] flex-col items-center justify-center text-center">
+                    <IconUserCheck className="mb-4 h-12 w-12 text-muted-foreground" />
+                    <p className="text-muted-foreground">
+                      {t("noSentRequests")}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {sentRequests.map((request) =>
+                      renderUserItem(request, "sent")
+                    )}
+                  </div>
+                )}
+              </ScrollArea>
+            </TabsContent>
+          </Tabs>
 
-        <div className="flex justify-end">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {t("close")}
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+          <div className="flex justify-end">
+            <Button variant="outline" onClick={() => onOpenChange(false)}>
+              {t("close")}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog
+        open={!!friendToRemove}
+        onOpenChange={(open) => !open && setFriendToRemove(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {t("confirmRemove", { name: friendToRemove?.name || "" })}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("confirmRemoveDescription")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmRemoveFriend}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {t("remove")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
