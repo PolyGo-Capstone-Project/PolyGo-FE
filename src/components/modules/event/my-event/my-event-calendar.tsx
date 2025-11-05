@@ -24,6 +24,10 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   Skeleton,
   Tooltip,
   TooltipContent,
@@ -42,6 +46,8 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
   const locale = useLocale();
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Fetch created events
   const {
@@ -54,7 +60,7 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
       pageSize: 100,
       lang: locale,
     },
-    { enabled: activeTab === "all" || activeTab === "created" }
+    { enabled: activeTab === "created" }
   );
 
   // Fetch joined events
@@ -113,8 +119,16 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
   };
 
   const handleEventClick = (eventId: string) => {
+    setIsDialogOpen(false);
     router.push(`/${locale}/event/${eventId}`);
   };
+
+  const handleShowMoreEvents = (day: Date) => {
+    setSelectedDay(day);
+    setIsDialogOpen(true);
+  };
+
+  const selectedDayEvents = selectedDay ? getEventsForDay(selectedDay) : [];
 
   const getEventColor = (event: any) => {
     const startDate = new Date(event.startAt);
@@ -125,7 +139,15 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
     return "bg-gray-400 hover:bg-gray-500 border-gray-500";
   };
 
-  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const weekDays = [
+    t("weekDays.sun"),
+    t("weekDays.mon"),
+    t("weekDays.tue"),
+    t("weekDays.wed"),
+    t("weekDays.thu"),
+    t("weekDays.fri"),
+    t("weekDays.sat"),
+  ];
 
   return (
     <Card className="h-full flex flex-col">
@@ -159,7 +181,7 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
                 onClick={handleToday}
                 className="hidden sm:inline-flex"
               >
-                Today
+                {t("today")}
               </Button>
             </div>
           </div>
@@ -169,19 +191,17 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
       <CardContent className="flex-1 overflow-hidden p-0">
         {isLoading ? (
           <div className="p-6">
-            <Skeleton className="h-[600px] w-full" />
+            <Skeleton className="h-[500px] w-full" />
           </div>
         ) : isError ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <CalendarIcon className="h-12 w-12 text-destructive mb-4" />
-            <h3 className="font-semibold text-lg mb-2">
-              Failed to Load Events
-            </h3>
+            <h3 className="font-semibold text-lg mb-2">{t("loadError")}</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Please try again later
+              {t("loadErrorMessage")}
             </p>
             <Button variant="outline" onClick={() => window.location.reload()}>
-              Retry
+              {t("retry")}
             </Button>
           </div>
         ) : (
@@ -209,7 +229,7 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
                   <div
                     key={index}
                     className={cn(
-                      "border-b border-r p-2 min-h-[100px] sm:min-h-[120px] overflow-hidden",
+                      "border-b border-r p-2 min-h-[80px] sm:min-h-[100px] overflow-hidden",
                       !isCurrentMonth && "bg-muted/20",
                       isDayToday && "bg-blue-50 dark:bg-blue-950/20"
                     )}
@@ -260,11 +280,11 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
                                 <p className="font-semibold">{event.title}</p>
                                 <p className="text-xs text-muted-foreground">
                                   {format(new Date(event.startAt), "h:mm a")} •{" "}
-                                  {event.expectedDurationInMinutes} min
+                                  {event.expectedDurationInMinutes} {t("min")}
                                 </p>
                                 <p className="text-xs">
                                   {event.numberOfParticipants}/{event.capacity}{" "}
-                                  participants
+                                  {t("participants")}
                                 </p>
                               </div>
                             </TooltipContent>
@@ -275,12 +295,9 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
                       {dayEvents.length > 3 && (
                         <button
                           className="w-full text-left px-2 py-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-                          onClick={() => {
-                            // Could open a modal or expand view
-                            console.log(`+${dayEvents.length - 3} more events`);
-                          }}
+                          onClick={() => handleShowMoreEvents(day)}
                         >
-                          +{dayEvents.length - 3} more
+                          +{dayEvents.length - 3} {t("moreEvents")}
                         </button>
                       )}
                     </div>
@@ -298,7 +315,7 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
                 className="w-full"
               >
                 <CalendarIcon className="h-4 w-4 mr-2" />
-                Go to Today
+                {t("goToToday")}
               </Button>
             </div>
           </div>
@@ -308,20 +325,73 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
         {!isLoading && !isError && events.length === 0 && (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <CalendarIcon className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="font-semibold text-lg mb-2">No Events Yet</h3>
+            <h3 className="font-semibold text-lg mb-2">{t("noEventsYet")}</h3>
             <p className="text-sm text-muted-foreground mb-4">
               {activeTab === "created"
-                ? "You haven't created any events yet."
+                ? t("noEventsCreated")
                 : activeTab === "joined"
-                  ? "You haven't joined any events yet."
-                  : "You don't have any events."}
+                  ? t("noEventsJoined")
+                  : t("noEventsAll")}
             </p>
             <Button onClick={() => router.push(`/${locale}/event`)}>
-              Explore Events
+              {t("exploreEvents")}
             </Button>
           </div>
         )}
       </CardContent>
+
+      {/* Events Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedDay && (
+                <>
+                  {t("eventsOn")} {format(selectedDay, "MMMM d, yyyy")}
+                </>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            {selectedDayEvents.map((event) => (
+              <button
+                key={event.id}
+                onClick={() => handleEventClick(event.id)}
+                className={cn(
+                  "w-full text-left p-4 rounded-lg border-2 transition-all hover:shadow-md",
+                  getEventColor(event)
+                )}
+              >
+                <div className="space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <h3 className="font-semibold text-white text-lg">
+                      {event.title}
+                    </h3>
+                    <Badge variant="secondary" className="shrink-0">
+                      {event.numberOfParticipants}/{event.capacity}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-4 text-white/90 text-sm">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      <span>{format(new Date(event.startAt), "h:mm a")}</span>
+                    </div>
+                    <span>•</span>
+                    <span>
+                      {event.expectedDurationInMinutes} {t("min")}
+                    </span>
+                  </div>
+                  {event.description && (
+                    <p className="text-white/80 text-sm line-clamp-2">
+                      {event.description}
+                    </p>
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

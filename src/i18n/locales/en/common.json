@@ -32,10 +32,15 @@
     "Subscribe": "Subscription upgraded successfully!",
     "Cancel": "Subscription cancelled successfully!",
     "Kick": "User kicked successfully!",
-    "Unregister": "Unregistered successfully!"
+    "Unregister": "Unregistered successfully!",
+    "friendRequestSent": "Friend request sent successfully!",
+    "friendRequestRejected": "Friend request rejected successfully!",
+    "friendRequestAccepted": "Friend request accepted successfully!",
+    "friendRemoved": "Friend removed successfully!",
+    "friendRequestCancelled": "Friend request cancelled successfully!"
   },
   "Error": {
-    "default": "An error occurred. Please try again.",
+    "default": "An error occurred.",
     "GetAll": "Failed to retrieve data. Please try again.",
     "GetOne": "Failed to retrieve data. Please try again.",
     "Create": "Creation failed. Please check your information and try again.",
@@ -59,9 +64,18 @@
     "InvalidPassword": "Invalid password format.",
     "PasswordMismatch": "Passwords do not match.",
     "InvalidFormat": "Invalid format.",
+    "MailNotFound": "Email address not found.",
     "InvalidMailOrPassword": "Invalid email or password.",
     "invalidFileType": "Invalid file type. Please select an image file.",
-    "fileTooLarge": "File size too large. Maximum size is 5MB."
+    "fileTooLarge": "File size too large. Maximum size is 5MB.",
+    "EventCannotBeCancelledWithin24Hours": "Event cannot be cancelled within 24 hours of start time.",
+    "FriendRequestAlreadySent": "Friend request has already been sent to this user.",
+    "CannotSendFriendRequestToYourself": "You cannot send a friend request to yourself.",
+    "friendRequestFailed": "Failed to send friend request. Please try again.",
+    "failAccept": "Failed to accept friend request. Please try again.",
+    "failReject": "Failed to reject friend request. Please try again.",
+    "failRemove": "Failed to remove friend. Please try again.",
+    "failCancel": "Failed to cancel friend request. Please try again."
   },
   "header": {
     "products": "Products",

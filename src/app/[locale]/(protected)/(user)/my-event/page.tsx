@@ -1,5 +1,6 @@
 import MyEventContent from "@/app/[locale]/(protected)/(user)/my-event/my-event-content";
 import type { Metadata } from "next";
+import { getLocale } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "My Events - PolyGo",
@@ -7,5 +8,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  return <MyEventContent />;
+  const locale = await getLocale();
+  return <MyEventContent locale={locale} />;
 }

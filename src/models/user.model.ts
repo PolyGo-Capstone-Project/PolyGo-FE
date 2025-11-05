@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { Gender, MeritLevel, PlanTypeEnum } from "@/constants";
+import { FriendStatus, Gender, MeritLevel, PlanTypeEnum } from "@/constants";
 import { BadgeListItemSchema } from "@/models/badge.model";
 import {
   LangQuerySchema,
@@ -108,6 +108,7 @@ export const GiftItem = GiftListItemSchema.pick({
 
 // User item with languages and interests (used in matching and profile view)
 export const UserMatchingItemSchema = UserListItemSchema.extend({
+  friendStatus: z.enum(FriendStatus),
   speakingLanguages: z.array(LanguageItem).default([]),
   learningLanguages: z.array(LanguageItem).default([]),
   interests: z.array(InterestItem).default([]),

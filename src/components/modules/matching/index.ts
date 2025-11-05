@@ -1,4 +1,5 @@
 export { EmptyMatchingState } from "./empty-matching-state";
+export { FriendsDialog } from "./friends-dialog";
 export { MatchingFilterSidebar } from "./matching-filter-sidebar";
 export type { MatchingFilters } from "./matching-filter-sidebar";
 export { MatchingFiltersBar } from "./matching-filters-bar";

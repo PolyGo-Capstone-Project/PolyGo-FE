@@ -76,8 +76,8 @@ export function UpdateStatusDialog({ eventId }: UpdateStatusDialogProps) {
     EventStatus.Pending,
     EventStatus.Approved,
     EventStatus.Rejected,
-    EventStatus.Live,
-    EventStatus.Cancelled,
+    // EventStatus.Live,
+    // EventStatus.Cancelled,
     EventStatus.Completed,
   ];
 
@@ -95,7 +95,7 @@ export function UpdateStatusDialog({ eventId }: UpdateStatusDialogProps) {
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {/* Status Select */}
-          <div className="space-y-2">
+          <div className="space-y-2 w-full">
             <Label htmlFor="status">{t("statusLabel")}</Label>
             <Select
               value={form.watch("status")}
@@ -105,10 +105,10 @@ export function UpdateStatusDialog({ eventId }: UpdateStatusDialogProps) {
                 })
               }
             >
-              <SelectTrigger id="status">
+              <SelectTrigger id="status" className="w-full">
                 <SelectValue placeholder={t("statusPlaceholder")} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="w-full">
                 {statusOptions.map((status) => (
                   <SelectItem key={status} value={status}>
                     {tStatus(status)}
