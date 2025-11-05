@@ -178,7 +178,7 @@ export default function EventDetailPage() {
   // NEW: fetch đánh giá của chính người dùng cho sự kiện (chỉ khi Completed & đã từng tham dự/host)
   const { data: myRatingResp, isLoading: isLoadingMyRating } =
     useGetMyEventRating(eventId, {
-      enabled: Boolean(eventEnd && isRegistered),
+      enabled: Boolean(eventEnd && isRegistered && !isHost),
     });
 
   // Chuẩn hoá dữ liệu trả về (theo http wrapper hiện tại .payload?.data)
@@ -591,7 +591,7 @@ export default function EventDetailPage() {
                 )}
 
                 {/* Your Rating */}
-                {eventEnd && (isRegistered || isHost) && (
+                {eventEnd && isRegistered && !isHost && (
                   <Card className="shadow-lg">
                     <CardHeader>
                       <CardTitle>{t("ratings.yourRatingTitle")}</CardTitle>

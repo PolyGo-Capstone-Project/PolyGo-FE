@@ -89,9 +89,11 @@ const eventApiRequest = {
     http.get<EventMyRatingResType>(`${prefix}/ratings/${id}/my`),
 
   // NEW: list all ratings of an event (GET /events/ratings/:id?lang=&pageNumber=&pageSize=)
-  getEventRatings: createGetOne<EventRatingsResType, EventRatingsQueryType>(
-    `${prefix}/ratings`
-  ),
+  getEventRatings: (id: string, query?: EventRatingsQueryType) =>
+    createGetAll<EventRatingsResType, EventRatingsQueryType>(
+      `${prefix}/ratings/${id}`
+    )(query),
+
   updateEventRating: (body: UpdateEventRatingBodyType) =>
     http.put<MessageResType>(`${prefix}/rating`, body),
 
