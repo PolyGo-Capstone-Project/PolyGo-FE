@@ -7,8 +7,17 @@
     "addFriend": "Kết Bạn",
     "pending": "Chờ xác nhận",
     "acceptFriend": "Chấp Nhận",
+    "rejectFriend": "Từ Chối",
     "friends": "Bạn Bè",
+    "chat": "Trò chuyện",
     "share": "Chia Sẻ Hồ Sơ",
+    "tabs": {
+      "overview": "Tổng Quan",
+      "social": "Mạng Xã Hội"
+    },
+    "social": {
+      "noPosts": "Chưa có bài viết"
+    },
     "stats": {
       "title": "Thống kê",
       "totalSessions": "Tổng buổi học",

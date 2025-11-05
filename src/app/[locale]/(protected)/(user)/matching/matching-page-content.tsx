@@ -76,6 +76,8 @@ export default function MatchingPageContent() {
     hasNextPage: false,
   });
   const [isLoadMorePending, setIsLoadMorePending] = useState(false);
+  const [isRefetchingAfterMutation, setIsRefetchingAfterMutation] =
+    useState(false);
 
   // Debounce search input
   useEffect(() => {
@@ -119,6 +121,7 @@ export default function MatchingPageContent() {
     data: matchingData,
     isLoading: isLoadingMatching,
     error: matchingError,
+    refetch: refetchMatching,
   } = useGetUsersMatching(
     {
       pageNumber: currentPage,
@@ -143,6 +146,7 @@ export default function MatchingPageContent() {
     data: searchData,
     isLoading: isLoadingSearch,
     error: searchError,
+    refetch: refetchSearch,
   } = useSearchUsers(
     (searchParams ?? fallbackSearchQuery) as SearchUserQueryType,
     {
@@ -187,10 +191,18 @@ export default function MatchingPageContent() {
 
   // Friend mutations
   const sendFriendRequestMutation = useSendFriendRequestMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       showSuccessToast("friendRequestSent", tSuccess);
+      // Refetch to update friend status
+      setIsRefetchingAfterMutation(true);
       setCurrentPage(1);
       setLoadedUsers([]);
+      if (hasActiveFilters) {
+        await refetchSearch();
+      } else {
+        await refetchMatching();
+      }
+      setIsRefetchingAfterMutation(false);
     },
     onError: () => {
       showErrorToast("friendRequestFailed", tError);
@@ -198,11 +210,19 @@ export default function MatchingPageContent() {
   });
 
   const acceptFriendRequestMutation = useAcceptFriendRequestMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       showSuccessToast("friendRequestAccepted", tSuccess);
       refetchFriendRequests();
+      // Refetch to update friend status
+      setIsRefetchingAfterMutation(true);
       setCurrentPage(1);
       setLoadedUsers([]);
+      if (hasActiveFilters) {
+        await refetchSearch();
+      } else {
+        await refetchMatching();
+      }
+      setIsRefetchingAfterMutation(false);
     },
     onError: () => {
       showErrorToast("failAccept", tError);
@@ -210,11 +230,19 @@ export default function MatchingPageContent() {
   });
 
   const rejectFriendRequestMutation = useRejectFriendRequestMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       showSuccessToast("friendRequestRejected", tSuccess);
       refetchFriendRequests();
+      // Refetch to update friend status
+      setIsRefetchingAfterMutation(true);
       setCurrentPage(1);
       setLoadedUsers([]);
+      if (hasActiveFilters) {
+        await refetchSearch();
+      } else {
+        await refetchMatching();
+      }
+      setIsRefetchingAfterMutation(false);
     },
     onError: () => {
       showErrorToast("failReject", tError);
@@ -596,11 +624,35 @@ export default function MatchingPageContent() {
           )}
 
           {/* Empty State */}
-          {!isLoadingUsers && sortedUsers.length === 0 && (
-            <EmptyMatchingState
-              hasFilters={hasActiveFilters || filters.onlineOnly}
-              onClearFilters={handleClearFilters}
-            />
+          {!isLoadingUsers &&
+            !isRefetchingAfterMutation &&
+            sortedUsers.length === 0 && (
+              <EmptyMatchingState
+                hasFilters={hasActiveFilters || filters.onlineOnly}
+                onClearFilters={handleClearFilters}
+              />
+            )}
+
+          {/* Refetching State */}
+          {isRefetchingAfterMutation && sortedUsers.length === 0 && (
+            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="space-y-4 rounded-xl border p-6">
+                  <div className="flex items-start gap-4">
+                    <Skeleton className="h-16 w-16 rounded-full" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-24" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-20 w-full" />
+                  <div className="flex gap-2">
+                    <Skeleton className="h-9 flex-1" />
+                    <Skeleton className="h-9 flex-1" />
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
 
           {/* Loading More State */}
@@ -632,6 +684,18 @@ export default function MatchingPageContent() {
         open={friendsDialogOpen}
         onOpenChange={setFriendsDialogOpen}
         locale={locale}
+        onDataChange={async () => {
+          // Refetch to update friend status after dialog interactions
+          setIsRefetchingAfterMutation(true);
+          setCurrentPage(1);
+          setLoadedUsers([]);
+          if (hasActiveFilters) {
+            await refetchSearch();
+          } else {
+            await refetchMatching();
+          }
+          setIsRefetchingAfterMutation(false);
+        }}
       />
     </div>
   );
