@@ -10,10 +10,30 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { MESSAGE_IMAGE_SEPARATOR, MessageEnum } from "@/constants";
 import { ChatMessage } from "@/types";
 import { format } from "date-fns";
 import { enUS, vi } from "date-fns/locale";
 import { ArrowDown, Pin, X } from "lucide-react";
+
+const getImageUrls = (message: ChatMessage) => {
+  if (message.imageUrls?.length) {
+    return message.imageUrls;
+  }
+
+  if (message.type === MessageEnum.Image && message.content) {
+    return [message.content];
+  }
+
+  if (message.type === MessageEnum.Images) {
+    return message.content
+      .split(MESSAGE_IMAGE_SEPARATOR)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [] as string[];
+};
 
 interface PinnedMessagesProps {
   isOpen: boolean;
@@ -66,6 +86,7 @@ export function PinnedMessages({
                 <div className="space-y-3">
                   {pinnedMessages.map((message) => {
                     const isOwn = message.senderId === currentUserId;
+                    const imageUrls = getImageUrls(message);
                     return (
                       <div
                         key={message.id}
@@ -92,18 +113,41 @@ export function PinnedMessages({
                             </span>
                           </div>
 
-                          {message.type === "text" && (
+                          {message.type === MessageEnum.Text ? (
                             <p className="text-sm">{message.content}</p>
-                          )}
-
-                          {message.type === "voice" && (
-                            <p className="text-muted-foreground flex items-center gap-2 text-sm">
-                              🎤 {t("voiceMessage")}
+                          ) : imageUrls.length ? (
+                            <div className="space-y-2">
+                              <p className="text-muted-foreground text-xs font-medium">
+                                {message.type === MessageEnum.Image
+                                  ? t("imageMessage")
+                                  : t("imagesMessage", {
+                                      count: imageUrls.length,
+                                    })}
+                              </p>
+                              <div className="grid grid-cols-3 gap-2">
+                                {imageUrls.slice(0, 3).map((url, index) => (
+                                  <div
+                                    key={`${message.id}-${index}`}
+                                    className="bg-muted relative aspect-square overflow-hidden rounded-md border"
+                                  >
+                                    <img
+                                      src={url}
+                                      alt={t("imageMessage")}
+                                      className="h-full w-full object-cover"
+                                    />
+                                  </div>
+                                ))}
+                                {imageUrls.length > 3 && (
+                                  <div className="bg-muted text-muted-foreground flex items-center justify-center rounded-md text-xs font-medium">
+                                    +{imageUrls.length - 3}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-muted-foreground text-sm">
+                              {message.content}
                             </p>
-                          )}
-
-                          {message.type === "emoji" && (
-                            <p className="text-2xl">{message.content}</p>
                           )}
 
                           <Button

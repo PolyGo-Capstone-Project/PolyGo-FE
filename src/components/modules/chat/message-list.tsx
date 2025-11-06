@@ -4,14 +4,13 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MESSAGE_IMAGE_SEPARATOR } from "@/constants";
 import { cn } from "@/lib/utils";
 import { ChatMessage } from "@/types";
 import { format, isToday, isYesterday } from "date-fns";
 import { enUS, vi } from "date-fns/locale";
-import { Check, CheckCheck, Mic, Pause, Play } from "lucide-react";
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -76,6 +75,63 @@ export function MessageList({
 
   const formatMessageTime = (date: Date) => {
     return format(date, "HH:mm");
+  };
+
+  const extractImageUrls = (message: ChatMessage) => {
+    if (message.type === "Image") {
+      const single = message.imageUrls?.[0] ?? message.content;
+      return single ? [single] : [];
+    }
+
+    if (message.type === "Images") {
+      if (message.imageUrls?.length) {
+        return message.imageUrls;
+      }
+
+      return message.content
+        .split(MESSAGE_IMAGE_SEPARATOR)
+        .map((item) => item.trim())
+        .filter(Boolean);
+    }
+
+    return [];
+  };
+
+  const renderMessageContent = (message: ChatMessage, isOwn: boolean) => {
+    if (message.type === "Image" || message.type === "Images") {
+      const urls = extractImageUrls(message);
+
+      if (!urls.length) {
+        return (
+          <p className="break-words text-xs md:text-sm">{message.content}</p>
+        );
+      }
+
+      const gridCols = urls.length > 1 ? "grid-cols-2" : "grid-cols-1";
+
+      return (
+        <div className={cn("mt-1 grid gap-2", gridCols)}>
+          {urls.map((url) => (
+            <a
+              key={url}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block overflow-hidden rounded-xl"
+            >
+              <img
+                src={url}
+                alt="Chat attachment"
+                className="h-32 w-full rounded-xl object-cover md:h-40"
+                loading="lazy"
+              />
+            </a>
+          ))}
+        </div>
+      );
+    }
+
+    return <p className="break-words text-xs md:text-sm">{message.content}</p>;
   };
 
   const groupMessagesByDate = () => {
@@ -145,6 +201,8 @@ export function MessageList({
             {/* Messages */}
             {group.messages.map((message) => {
               const isOwn = message.senderId === currentUserId;
+              const isMediaMessage =
+                message.type === "Image" || message.type === "Images";
 
               return (
                 <div
@@ -167,49 +225,25 @@ export function MessageList({
                   {/* Message Bubble */}
                   <div
                     className={cn(
-                      "max-w-[75%] rounded-2xl px-3 py-1.5 md:max-w-[70%] md:px-4 md:py-2",
-                      isOwn ? "bg-primary text-primary-foreground" : "bg-muted"
+                      "max-w-[75%] rounded-2xl md:max-w-[70%]",
+                      isMediaMessage ? "p-0" : "px-3 py-1.5 md:px-4 md:py-2",
+                      !isMediaMessage &&
+                        (isOwn
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted")
                     )}
                   >
-                    {message.type === "text" && (
-                      <p className="break-words text-xs md:text-sm">
-                        {message.content}
-                      </p>
-                    )}
+                    {renderMessageContent(message, isOwn)}
 
-                    {message.type === "emoji" && (
-                      <p className="text-2xl md:text-4xl">{message.content}</p>
-                    )}
-
-                    {message.type === "voice" && (
-                      <VoiceMessage
-                        duration={message.voiceDuration || 0}
-                        url={message.voiceUrl || ""}
-                        isOwn={isOwn}
-                      />
-                    )}
-
-                    {/* Time and Status */}
                     <div
                       className={cn(
-                        "mt-0.5 flex items-center gap-1 text-[10px] md:mt-1 md:text-xs",
+                        "mt-1 flex items-center justify-end px-3 pb-1 text-[10px] md:mt-1.5 md:px-4 md:pb-1.5 md:text-xs",
                         isOwn
                           ? "text-primary-foreground/70"
                           : "text-muted-foreground"
                       )}
                     >
                       <span>{formatMessageTime(message.createdAt)}</span>
-                      {isOwn && (
-                        <>
-                          {message.isRead ? (
-                            <CheckCheck className="size-3 md:size-3.5" />
-                          ) : message.isDelivered ? (
-                            <CheckCheck className="size-3 md:size-3.5" />
-                          ) : (
-                            <Check className="size-3 md:size-3.5" />
-                          )}
-                        </>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -219,62 +253,5 @@ export function MessageList({
         ))}
       </div>
     </ScrollArea>
-  );
-}
-
-// Voice Message Component
-function VoiceMessage({
-  duration,
-  url,
-  isOwn,
-}: {
-  duration: number;
-  url: string;
-  isOwn: boolean;
-}) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-  };
-
-  return (
-    <div className="flex items-center gap-2 md:gap-3">
-      <Button
-        size="icon-sm"
-        variant={isOwn ? "secondary" : "outline"}
-        onClick={togglePlay}
-        className={cn(
-          "shrink-0 rounded-full",
-          isOwn && "hover:bg-primary-foreground/20"
-        )}
-      >
-        {isPlaying ? (
-          <Pause className="size-2.5 md:size-3.5" />
-        ) : (
-          <Play className="size-2.5 md:size-3.5" />
-        )}
-      </Button>
-
-      <div className="flex-1">
-        <div className="mb-0.5 h-0.5 w-full rounded-full bg-current/20 md:mb-1 md:h-1">
-          <div
-            className="h-full rounded-full bg-current"
-            style={{ width: `${(currentTime / duration) * 100}%` }}
-          />
-        </div>
-        <div className="flex items-center justify-between text-[10px] md:text-xs">
-          <Mic className="size-2.5 md:size-3" />
-          <span>{formatDuration(duration)}</span>
-        </div>
-      </div>
-    </div>
   );
 }

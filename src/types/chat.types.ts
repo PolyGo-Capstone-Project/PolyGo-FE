@@ -1,10 +1,22 @@
+import { TypeOfMessageEnumType } from "@/constants";
+
 // Chat Types
+
 export interface ChatUser {
   id: string;
   name: string;
-  avatar?: string;
-  isOnline: boolean;
-  lastSeen?: Date;
+  avatar?: string | null;
+  avatarUrl?: string | null;
+  isOnline?: boolean;
+  lastSeen?: Date | null;
+}
+
+export interface ChatLastMessage {
+  type: TypeOfMessageEnumType;
+  content: string;
+  sentAt: Date;
+  isSentByYou: boolean;
+  imageUrls?: string[];
 }
 
 export interface ChatMessage {
@@ -12,20 +24,19 @@ export interface ChatMessage {
   conversationId: string;
   senderId: string;
   content: string;
-  type: "text" | "voice" | "emoji";
-  voiceUrl?: string;
-  voiceDuration?: number;
+  type: TypeOfMessageEnumType;
   createdAt: Date;
-  isRead: boolean;
-  isDelivered: boolean;
+  imageUrls?: string[];
+  isRead?: boolean;
+  isDelivered?: boolean;
 }
 
 export interface ChatConversation {
   id: string;
   user: ChatUser;
-  lastMessage?: ChatMessage;
+  lastMessage: ChatLastMessage | null;
   unreadCount: number;
-  isTyping: boolean;
+  isTyping?: boolean;
   updatedAt: Date;
 }
 

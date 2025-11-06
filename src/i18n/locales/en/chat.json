@@ -33,6 +33,8 @@
     "releaseToSend": "Release to send",
     "recording": "Recording...",
     "voiceMessage": "Voice message",
+    "imageMessage": "Image",
+    "imagesMessage": "{count} images",
     "loadMore": "Load more messages",
     "loadingMessages": "Loading messages...",
     "noMessages": "No messages yet",
@@ -58,6 +60,7 @@
       "loadMessages": "Failed to load messages",
       "sendMessage": "Failed to send message",
       "recordVoice": "Failed to record voice. Please allow microphone access.",
+      "uploadImage": "Failed to upload image",
       "callFailed": "Call failed"
     }
   }

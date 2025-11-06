@@ -4,7 +4,9 @@ import { MessageEnum } from "@/constants";
 import { PaginationMetaSchema, PaginationQuerySchema } from "./common.model";
 
 export const GetMessagesQuerySchema = PaginationQuerySchema;
-export const GetConversationsQuerySchema = PaginationQuerySchema;
+export const GetConversationsQuerySchema = PaginationQuerySchema.extend({
+  name: z.string().min(1).max(100).optional(),
+});
 
 export const UserInfoSchema = z.object({
   id: z.string(),

@@ -43,7 +43,7 @@ export function MessageSearch({
 
     const query = searchQuery.toLowerCase();
     return messages.filter((msg) => {
-      if (msg.type === "text") {
+      if (msg.type === "Text") {
         return msg.content.toLowerCase().includes(query);
       }
       return false;
