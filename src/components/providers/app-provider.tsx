@@ -1,7 +1,6 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect, useRef } from "react";
 
 import { useAuthStore } from "@/hooks";
@@ -56,7 +55,7 @@ export default function AppProvider({
       {children}
       {/* <RefreshToken /> */}
       {/* <ListenLogoutSocket /> */}
-      <ReactQueryDevtools initialIsOpen={false} />
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   );
 }

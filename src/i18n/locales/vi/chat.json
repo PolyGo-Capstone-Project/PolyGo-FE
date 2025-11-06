@@ -55,6 +55,8 @@
     "jumpToMessage": "Đi tới tin nhắn",
     "searchResultsCount": "{count} kết quả",
     "noSearchResults": "Không tìm thấy kết quả",
+    "sendImages": "Gửi ảnh",
+    "sending": "Đang gửi...",
     "error": {
       "loadConversations": "Không thể tải danh sách cuộc trò chuyện",
       "loadMessages": "Không thể tải tin nhắn",

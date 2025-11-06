@@ -1,10 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MESSAGE_IMAGE_SEPARATOR } from "@/constants";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ interface MessageListProps {
   messages: ChatMessage[];
   currentUserId: string;
   isLoading?: boolean;
+  isLoadingMore?: boolean;
   hasMore?: boolean;
   onLoadMore?: () => void;
   locale: string;
@@ -27,6 +28,7 @@ export function MessageList({
   messages,
   currentUserId,
   isLoading = false,
+  isLoadingMore = false,
   hasMore = false,
   onLoadMore,
   locale,
@@ -34,23 +36,84 @@ export function MessageList({
   otherUserAvatar,
 }: MessageListProps) {
   const t = useTranslations("chat");
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const previousScrollHeightRef = useRef<number>(0);
+  const previousMessagesLengthRef = useRef<number>(0);
+  const isLoadingMoreRef = useRef(false);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  const userScrolledRef = useRef(false);
 
+  // Auto-scroll logic when messages change
   useEffect(() => {
-    if (shouldAutoScroll && scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    const { scrollHeight, clientHeight } = viewport;
+    const messagesAdded = messages.length - previousMessagesLengthRef.current;
+
+    // If loading more (prepending old messages)
+    if (isLoadingMoreRef.current && previousScrollHeightRef.current) {
+      const heightDiff = scrollHeight - previousScrollHeightRef.current;
+      if (heightDiff > 0) {
+        viewport.scrollTop = heightDiff;
+      }
+      isLoadingMoreRef.current = false;
     }
+    // If new messages arrived (not from load more)
+    else if (messagesAdded > 0 && !isLoadingMoreRef.current) {
+      // Auto-scroll if user is near bottom OR if it's the initial load
+      if (shouldAutoScroll || previousMessagesLengthRef.current === 0) {
+        // Force scroll to bottom immediately
+        viewport.scrollTop = viewport.scrollHeight;
+
+        // Also use requestAnimationFrame for smoother scroll after render
+        requestAnimationFrame(() => {
+          if (viewport) {
+            viewport.scrollTop = viewport.scrollHeight;
+          }
+        });
+      }
+    }
+
+    previousScrollHeightRef.current = scrollHeight;
+    previousMessagesLengthRef.current = messages.length;
   }, [messages, shouldAutoScroll]);
 
+  // Update isLoadingMore ref
+  useEffect(() => {
+    if (!isLoadingMore) {
+      isLoadingMoreRef.current = false;
+    }
+  }, [isLoadingMore]);
+
   const handleScroll = () => {
-    if (!scrollRef.current) return;
+    const viewport = viewportRef.current;
+    if (!viewport) return;
 
-    const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+    const { scrollTop, scrollHeight, clientHeight } = viewport;
+    const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
 
-    setShouldAutoScroll(scrollHeight - scrollTop - clientHeight < 100);
+    // User is near bottom (within 100px)
+    const isNearBottom = distanceFromBottom < 100;
+    setShouldAutoScroll(isNearBottom);
 
-    if (scrollTop === 0 && hasMore && onLoadMore && !isLoading) {
+    // Mark that user has manually scrolled
+    if (!isNearBottom && !userScrolledRef.current) {
+      userScrolledRef.current = true;
+    } else if (isNearBottom && userScrolledRef.current) {
+      userScrolledRef.current = false;
+    }
+
+    // Load more when scrolled to top
+    if (
+      scrollTop <= 50 &&
+      hasMore &&
+      onLoadMore &&
+      !isLoadingMore &&
+      !isLoading
+    ) {
+      isLoadingMoreRef.current = true;
+      previousScrollHeightRef.current = scrollHeight;
       onLoadMore();
     }
   };
@@ -117,13 +180,14 @@ export function MessageList({
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="block overflow-hidden rounded-xl"
+              className="relative block h-32 w-full overflow-hidden rounded-xl md:h-40"
             >
-              <img
+              <Image
                 src={url}
                 alt="Chat attachment"
-                className="h-32 w-full rounded-xl object-cover md:h-40"
-                loading="lazy"
+                fill
+                className="rounded-xl object-cover"
+                unoptimized
               />
             </a>
           ))}
@@ -133,6 +197,33 @@ export function MessageList({
 
     return <p className="break-words text-xs md:text-sm">{message.content}</p>;
   };
+
+  // Scroll to bottom on initial mount or when first messages load
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (
+      viewport &&
+      messages.length > 0 &&
+      previousMessagesLengthRef.current === 0
+    ) {
+      // Immediate scroll
+      viewport.scrollTop = viewport.scrollHeight;
+
+      // Also schedule after render completes
+      requestAnimationFrame(() => {
+        if (viewport) {
+          viewport.scrollTop = viewport.scrollHeight;
+        }
+      });
+
+      // And a backup with setTimeout
+      setTimeout(() => {
+        if (viewport) {
+          viewport.scrollTop = viewport.scrollHeight;
+        }
+      }, 100);
+    }
+  }, [messages.length]); // When messages first load
 
   const groupMessagesByDate = () => {
     const groups: { date: Date; messages: ChatMessage[] }[] = [];
@@ -177,13 +268,13 @@ export function MessageList({
   const messageGroups = groupMessagesByDate();
 
   return (
-    <ScrollArea
-      className="flex-1 px-3 md:px-4"
-      ref={scrollRef}
+    <div
+      ref={viewportRef}
       onScroll={handleScroll}
+      className="h-full overflow-y-auto"
     >
-      <div className="space-y-3 py-3 md:space-y-4 md:py-4">
-        {isLoading && hasMore && (
+      <div className="space-y-3 px-3 py-3 md:space-y-4 md:px-4 md:py-4">
+        {isLoadingMore && hasMore && (
           <div className="flex justify-center">
             <Skeleton className="h-6 w-24 md:h-8 md:w-32" />
           </div>
@@ -252,6 +343,6 @@ export function MessageList({
           </div>
         ))}
       </div>
-    </ScrollArea>
+    </div>
   );
 }
