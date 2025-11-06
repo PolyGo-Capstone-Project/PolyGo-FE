@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -130,10 +131,12 @@ export function PinnedMessages({
                                     key={`${message.id}-${index}`}
                                     className="bg-muted relative aspect-square overflow-hidden rounded-md border"
                                   >
-                                    <img
+                                    <Image
                                       src={url}
                                       alt={t("imageMessage")}
-                                      className="h-full w-full object-cover"
+                                      fill
+                                      className="object-cover"
+                                      unoptimized
                                     />
                                   </div>
                                 ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
   CallModal,
@@ -12,13 +12,14 @@ import {
   MessageSearch,
 } from "@/components/modules/chat";
 import { Button } from "@/components/ui/button";
-import { MESSAGE_IMAGE_SEPARATOR } from "@/constants";
+import { MESSAGE_IMAGE_SEPARATOR, MessageEnum } from "@/constants";
 import {
   useAuthMe,
   useChatHub,
   useGetConversations,
   useGetMessages,
 } from "@/hooks";
+import communicationApiRequest from "@/lib/apis/communication";
 import mediaApiRequest from "@/lib/apis/media";
 import { HttpError } from "@/lib/http";
 import {
@@ -27,23 +28,17 @@ import {
   GetMessagesQueryType,
   MessageType,
 } from "@/models";
-import {
-  CallState,
-  CallType,
-  ChatConversation,
-  ChatLastMessage,
-  ChatMessage,
-} from "@/types";
+import { CallState, CallType, ChatConversation, ChatMessage } from "@/types";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 
 const DEFAULT_MESSAGES_QUERY: GetMessagesQueryType = {
-  pageNumber: -1,
+  pageNumber: 1,
   pageSize: -1,
 };
 
 const extractImageUrlsFromContent = (
-  type: ChatLastMessage["type"],
+  type: ChatMessage["type"],
   content: string
 ) => {
   if (type === "Image") {
@@ -122,6 +117,9 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   >(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [hasMoreMessages, setHasMoreMessages] = useState(false);
+  const [nextPageToLoad, setNextPageToLoad] = useState<number | null>(2);
+  const [isLoadingMoreMessages, setIsLoadingMoreMessages] = useState(false);
+  const [lastLoadedPage, setLastLoadedPage] = useState(1);
   const [isMobileView, setIsMobileView] = useState(false);
 
   const [pinnedConversationIds, setPinnedConversationIds] = useState<
@@ -225,35 +223,41 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     if (!messagesResponse || !selectedConversationId) return;
 
     const payload = messagesResponse.payload.data;
-    const mappedMessages = payload.items.map(mapMessageToChat);
-    const messageCount = payload.items.length;
+    const currentPage =
+      payload.currentPage ?? DEFAULT_MESSAGES_QUERY.pageNumber ?? 1;
 
-    setMessages(mappedMessages);
-    setHasMoreMessages(payload.hasPreviousPage);
+    const mappedMessages = payload.items
+      .map(mapMessageToChat)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); // Sort descending (newest first from API)
 
-    if (!mappedMessages.length) return;
+    setMessages((prev) => {
+      // For page 1, replace all messages. For page > 1, prepend older messages
+      const merged =
+        currentPage === 1 ? mappedMessages : [...mappedMessages, ...prev];
 
-    const latest = mappedMessages[mappedMessages.length - 1];
+      const unique = new Map<string, ChatMessage>();
 
-    setConversations((prev) =>
-      prev.map((conv) =>
-        conv.id === selectedConversationId
-          ? {
-              ...conv,
-              unreadCount: messageCount,
-              updatedAt: latest.createdAt,
-              lastMessage: {
-                type: latest.type,
-                content: latest.content,
-                sentAt: latest.createdAt,
-                isSentByYou: latest.senderId === currentUserId,
-                imageUrls: latest.imageUrls,
-              },
-            }
-          : conv
-      )
-    );
-  }, [messagesResponse, selectedConversationId, currentUserId]);
+      merged.forEach((message) => {
+        unique.set(message.id, message);
+      });
+
+      // Sort ascending for display (oldest to newest)
+      return Array.from(unique.values()).sort(
+        (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+      );
+    });
+
+    const highestLoadedPage = Math.max(lastLoadedPage, currentPage);
+    if (highestLoadedPage !== lastLoadedPage) {
+      setLastLoadedPage(highestLoadedPage);
+    }
+
+    const totalPages = payload.totalPages ?? highestLoadedPage;
+    const moreAvailable = highestLoadedPage < totalPages;
+
+    setHasMoreMessages(moreAvailable);
+    setNextPageToLoad(moreAvailable ? highestLoadedPage + 1 : null);
+  }, [messagesResponse, selectedConversationId, currentUserId, lastLoadedPage]);
 
   useEffect(() => {
     if (hubError) {
@@ -267,9 +271,16 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   );
 
   const handleSelectConversation = (conversationId: string) => {
+    if (conversationId === selectedConversationId) {
+      return;
+    }
+
     setSelectedConversationId(conversationId);
     setMessages([]);
     setHasMoreMessages(false);
+    setNextPageToLoad(2);
+    setIsLoadingMoreMessages(false);
+    setLastLoadedPage(1);
     setMessagesQuery({ ...DEFAULT_MESSAGES_QUERY });
     setConversations((prev) =>
       prev.map((conv) =>
@@ -280,14 +291,72 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
   const handleBackToList = () => {
     setSelectedConversationId(null);
+    setMessages([]);
+    setHasMoreMessages(false);
+    setNextPageToLoad(2);
+    setLastLoadedPage(1);
+    setIsLoadingMoreMessages(false);
+    setMessagesQuery({ ...DEFAULT_MESSAGES_QUERY });
   };
+
+  const createOptimisticMessage = useCallback(
+    ({
+      content,
+      type,
+      imageUrls,
+    }: {
+      content: string;
+      type: ChatMessage["type"];
+      imageUrls?: string[];
+    }) => {
+      if (!selectedConversationId || !currentUserId) return null;
+
+      const optimisticMessage: ChatMessage = {
+        id:
+          typeof crypto !== "undefined" && crypto.randomUUID
+            ? `optimistic-${crypto.randomUUID()}`
+            : `optimistic-${Date.now()}`,
+        conversationId: selectedConversationId,
+        senderId: currentUserId,
+        content,
+        type,
+        createdAt: new Date(),
+        imageUrls,
+      };
+
+      setMessages((prev) =>
+        [...prev, optimisticMessage].sort(
+          (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+        )
+      );
+
+      return optimisticMessage.id;
+    },
+    [selectedConversationId, currentUserId]
+  );
+
+  const removeOptimisticMessage = useCallback((messageId: string | null) => {
+    if (!messageId) return;
+
+    setMessages((prev) => prev.filter((message) => message.id !== messageId));
+  }, []);
 
   const handleSendTextMessage = async (content: string) => {
     if (!selectedConversationId || !currentUserId) {
       throw new Error("Missing conversation or user");
     }
 
-    await sendTextMessage(selectedConversationId, currentUserId, content);
+    const optimisticId = createOptimisticMessage({
+      content,
+      type: MessageEnum.Text,
+    });
+
+    try {
+      await sendTextMessage(selectedConversationId, currentUserId, content);
+    } catch (error) {
+      removeOptimisticMessage(optimisticId);
+      throw error;
+    }
   };
 
   const handleSendImageMessage = async (files: File[]) => {
@@ -307,17 +376,77 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
       throw new Error("No images uploaded");
     }
 
-    await sendImageMessage(selectedConversationId, currentUserId, imageUrls);
+    const optimisticId = createOptimisticMessage({
+      content: imageUrls.join(MESSAGE_IMAGE_SEPARATOR),
+      type: imageUrls.length > 1 ? MessageEnum.Images : MessageEnum.Image,
+      imageUrls,
+    });
+
+    try {
+      await sendImageMessage(selectedConversationId, currentUserId, imageUrls);
+    } catch (error) {
+      removeOptimisticMessage(optimisticId);
+      throw error;
+    }
   };
 
-  const handleLoadMoreMessages = () => {
-    if (!selectedConversationId || hasMoreMessages === false) return;
-    if (!messagesQuery.pageNumber || messagesQuery.pageNumber < 1) return;
+  const handleLoadMoreMessages = async () => {
+    if (
+      !selectedConversationId ||
+      !hasMoreMessages ||
+      isLoadingMoreMessages ||
+      isFetchingMessages ||
+      !nextPageToLoad
+    ) {
+      return;
+    }
 
-    setMessagesQuery((prev) => ({
-      ...prev,
-      pageNumber: (prev.pageNumber ?? 1) + 1,
-    }));
+    try {
+      setIsLoadingMoreMessages(true);
+
+      const response = await communicationApiRequest.getMessages(
+        selectedConversationId,
+        {
+          pageNumber: nextPageToLoad,
+          pageSize: DEFAULT_MESSAGES_QUERY.pageSize,
+        }
+      );
+
+      const payload = response.payload.data;
+      const loadedPage = payload.currentPage ?? nextPageToLoad;
+      const updatedLastLoadedPage = Math.max(lastLoadedPage, loadedPage);
+      const totalPages = payload.totalPages ?? updatedLastLoadedPage;
+      const moreAvailable = updatedLastLoadedPage < totalPages;
+
+      // Sort descending first (newest first from API response)
+      const mapped = payload.items
+        .map(mapMessageToChat)
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+      setMessages((prev) => {
+        // Prepend older messages
+        const merged = [...mapped, ...prev];
+        const unique = new Map<string, ChatMessage>();
+
+        merged.forEach((message) => {
+          unique.set(message.id, message);
+        });
+
+        // Sort ascending for display (oldest to newest)
+        return Array.from(unique.values()).sort(
+          (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+        );
+      });
+
+      setLastLoadedPage(updatedLastLoadedPage);
+      setHasMoreMessages(moreAvailable);
+      setNextPageToLoad(moreAvailable ? updatedLastLoadedPage + 1 : null);
+    } catch (error) {
+      console.error("Failed to load more messages", error);
+      toast.error(tError("loadMessages"));
+    } finally {
+      setIsLoadingMoreMessages(false);
+    }
   };
 
   const handleStartCall = (type: CallType) => {
@@ -427,6 +556,11 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     if (selectedConversationId === idToDelete) {
       setSelectedConversationId(null);
       setMessages([]);
+      setHasMoreMessages(false);
+      setNextPageToLoad(2);
+      setLastLoadedPage(1);
+      setIsLoadingMoreMessages(false);
+      setMessagesQuery({ ...DEFAULT_MESSAGES_QUERY });
     }
 
     toast.success(tSuccess("Delete"));
@@ -435,6 +569,38 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   const handleSelectMessage = (messageId: string) => {
     console.log("Scroll to message:", messageId);
   };
+
+  useEffect(() => {
+    if (!selectedConversationId) return;
+
+    setConversations((prev) =>
+      prev.map((conv) => {
+        if (conv.id !== selectedConversationId) return conv;
+
+        if (!messages.length) {
+          return {
+            ...conv,
+            unreadCount: 0,
+          };
+        }
+
+        const latest = messages[messages.length - 1];
+
+        return {
+          ...conv,
+          unreadCount: 0,
+          updatedAt: latest.createdAt,
+          lastMessage: {
+            type: latest.type,
+            content: latest.content,
+            sentAt: latest.createdAt,
+            isSentByYou: latest.senderId === currentUserId,
+            imageUrls: latest.imageUrls,
+          },
+        };
+      })
+    );
+  }, [messages, selectedConversationId, currentUserId]);
 
   const isMessagesLoadingState =
     (isLoadingMessages || isFetchingMessages) && messages.length === 0;
@@ -459,7 +625,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
             />
           </div>
         ) : (
-          <div className="flex w-full flex-col">
+          <div className="flex h-full w-full flex-col">
             <div className="flex items-center gap-2 border-b p-3">
               <Button size="icon" variant="ghost" onClick={handleBackToList}>
                 <ArrowLeft className="size-5" />
@@ -477,20 +643,24 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
               </div>
             </div>
 
-            <MessageList
-              messages={messages}
-              currentUserId={currentUserId ?? ""}
-              isLoading={isMessagesLoadingState}
-              hasMore={hasMoreMessages}
-              onLoadMore={handleLoadMoreMessages}
-              locale={locale}
-              otherUserName={selectedConversation.user.name}
-              otherUserAvatar={
-                selectedConversation.user.avatar ??
-                selectedConversation.user.avatarUrl ??
-                undefined
-              }
-            />
+            <div className="flex-1 overflow-hidden">
+              <MessageList
+                key={selectedConversationId ?? "conversation"}
+                messages={messages}
+                currentUserId={currentUserId ?? ""}
+                isLoading={isMessagesLoadingState || isLoadingMoreMessages}
+                isLoadingMore={isLoadingMoreMessages}
+                hasMore={hasMoreMessages}
+                onLoadMore={handleLoadMoreMessages}
+                locale={locale}
+                otherUserName={selectedConversation.user.name}
+                otherUserAvatar={
+                  selectedConversation.user.avatar ??
+                  selectedConversation.user.avatarUrl ??
+                  undefined
+                }
+              />
+            </div>
             <MessageInput
               onSendText={handleSendTextMessage}
               onSendImages={handleSendImageMessage}
@@ -530,8 +700,8 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   }
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] w-full overflow-hidden">
-      <div className="w-80 shrink-0">
+    <div className="flex h-[calc(100vh-5rem)] w-full overflow-hidden">
+      <div className="w-80 h-full shrink-0">
         <ConversationList
           conversations={conversations}
           selectedConversationId={selectedConversationId}
@@ -547,7 +717,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
         />
       </div>
 
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col h-full">
         {selectedConversation ? (
           <>
             <ChatHeader
@@ -560,20 +730,24 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
               locale={locale}
             />
 
-            <MessageList
-              messages={messages}
-              currentUserId={currentUserId ?? ""}
-              isLoading={isMessagesLoadingState}
-              hasMore={hasMoreMessages}
-              onLoadMore={handleLoadMoreMessages}
-              locale={locale}
-              otherUserName={selectedConversation.user.name}
-              otherUserAvatar={
-                selectedConversation.user.avatar ??
-                selectedConversation.user.avatarUrl ??
-                undefined
-              }
-            />
+            <div className="flex-1 overflow-hidden">
+              <MessageList
+                key={selectedConversationId ?? "conversation"}
+                messages={messages}
+                currentUserId={currentUserId ?? ""}
+                isLoading={isMessagesLoadingState || isLoadingMoreMessages}
+                isLoadingMore={isLoadingMoreMessages}
+                hasMore={hasMoreMessages}
+                onLoadMore={handleLoadMoreMessages}
+                locale={locale}
+                otherUserName={selectedConversation.user.name}
+                otherUserAvatar={
+                  selectedConversation.user.avatar ??
+                  selectedConversation.user.avatarUrl ??
+                  undefined
+                }
+              />
+            </div>
 
             <MessageInput
               onSendText={handleSendTextMessage}

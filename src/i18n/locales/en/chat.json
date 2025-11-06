@@ -55,6 +55,8 @@
     "jumpToMessage": "Jump to message",
     "searchResultsCount": "{count} results",
     "noSearchResults": "No results found",
+    "sendImages": "Send Images",
+    "sending": "Sending...",
     "error": {
       "loadConversations": "Failed to load conversations",
       "loadMessages": "Failed to load messages",

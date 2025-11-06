@@ -95,7 +95,10 @@ export const useChatHub = (conversationId?: string) => {
       })
       .catch((err) => {
         console.error("❌ Error connecting to ChatHub:", err);
-        setError(err.message);
+        // Only set error for non-negotiation errors to avoid showing toast on initial load
+        if (!err.message?.includes("negotiation")) {
+          setError(err.message);
+        }
       });
 
     // Handle reconnection
@@ -122,7 +125,8 @@ export const useChatHub = (conversationId?: string) => {
     hubConnection.onclose((error) => {
       console.log("🔴 Connection closed:", error);
       setIsConnected(false);
-      if (error) {
+      // Only set error for actual errors, not normal disconnections
+      if (error && !error.message?.includes("negotiation")) {
         setError(error.message);
       }
     });
@@ -150,7 +154,7 @@ export const useChatHub = (conversationId?: string) => {
           setError(err.message);
         });
     }
-  }, [connection, isConnected, conversationId]);
+  }, [connection, isConnected, conversationId, setError]);
 
   // Listen for incoming messages
   useEffect(() => {
