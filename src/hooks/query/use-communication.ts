@@ -40,7 +40,6 @@ export const useGetMessages = (
     enabled: options?.enabled ?? !!conversationId,
     staleTime: 0,
     refetchOnMount: true,
-    placeholderData: keepPreviousData,
   });
 };
 
@@ -76,7 +75,7 @@ export const useChatHub = (conversationId?: string) => {
     }
 
     const hubConnection = new HubConnectionBuilder()
-      .withUrl(`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/hubs/chat`, {
+      .withUrl(`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/chatHub`, {
         accessTokenFactory: () => token,
       })
       .withAutomaticReconnect()
@@ -204,11 +203,39 @@ export const useChatHub = (conversationId?: string) => {
     }
   };
 
+  const sendImageMessage = async (
+    conversationId: string,
+    senderId: string,
+    imageUrls: string[]
+  ) => {
+    if (!connection || !isConnected) {
+      throw new Error("Not connected to chat hub");
+    }
+
+    if (!imageUrls.length) {
+      throw new Error("No images provided");
+    }
+
+    try {
+      await connection.invoke(
+        "SendImageMessage",
+        conversationId,
+        senderId,
+        imageUrls
+      );
+      console.log("✅ Image message sent successfully");
+    } catch (err: any) {
+      console.error("❌ Error sending image message:", err);
+      throw err;
+    }
+  };
+
   return {
     connection,
     isConnected,
     error,
     sendTextMessage,
+    sendImageMessage,
   };
 };
 

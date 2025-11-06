@@ -106,7 +106,10 @@ export function ChatHeader({
           {/* Avatar with online status */}
           <div className="relative">
             <Avatar className="size-9 md:size-10">
-              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarImage
+                src={user.avatar ?? user.avatarUrl ?? undefined}
+                alt={user.name}
+              />
               <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
             </Avatar>
             {user.isOnline && (

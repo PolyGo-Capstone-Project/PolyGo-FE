@@ -1,5 +1,4 @@
-import http from "@/lib/http";
-import { buildQueryString } from "@/lib/utils";
+import { createGetAll, createGetOne } from "@/lib/apis/factory";
 import {
   ConversationListResType,
   GetConversationsQueryType,
@@ -7,20 +6,18 @@ import {
   MessageListResType,
 } from "@/models";
 
+const prefix = "/conversations";
+
 const communicationApiRequest = {
   // Get messages in a conversation
-  getMessages: (conversationId: string, params?: GetMessagesQueryType) => {
-    const query = buildQueryString(params);
-    return http.get<MessageListResType>(
-      `/conversations/messages/${conversationId}${query}`
-    );
-  },
-
-  // Get all conversations
-  getConversations: (params?: GetConversationsQueryType) => {
-    const query = buildQueryString(params);
-    return http.get<ConversationListResType>(`/conversations${query}`);
-  },
+  getMessages: createGetOne<MessageListResType, GetMessagesQueryType>(
+    `${prefix}/messages`
+  ),
+  // Get conversations
+  getConversations: createGetAll<
+    ConversationListResType,
+    GetConversationsQueryType
+  >(`${prefix}`),
 };
 
 export default communicationApiRequest;
