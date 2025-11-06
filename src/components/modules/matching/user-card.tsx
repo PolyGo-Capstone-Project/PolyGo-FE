@@ -1,31 +1,35 @@
 "use client";
 
 import {
-  IconCheck,
-  IconMessageCircle,
-  IconSearch,
-  IconSparkles,
-  IconUserPlus,
-  IconX,
-} from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Badge,
+  Button,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+  Separator,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components";
 import { FriendStatus, PlanTypeEnum } from "@/constants";
 import { UserMatchingItemType } from "@/models";
+import {
+  IconCheck,
+  IconCrown,
+  IconMessageCircle,
+  IconSearch,
+  IconUserPlus,
+  IconX,
+} from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useMemo, useState } from "react";
 
 type UserCardProps = {
   user: UserMatchingItemType;
@@ -99,10 +103,16 @@ export function UserCard({
             <div className="flex items-center gap-2">
               <CardTitle className="text-xl">{user.name}</CardTitle>
               {isPlusUser && (
-                <div className="flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 px-2 py-0.5">
-                  <IconSparkles className="h-3 w-3 text-white" />
-                  <span className="text-xs font-bold text-white">PLUS</span>
-                </div>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <div className="flex items-center rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 px-2 py-1">
+                      <IconCrown className="h-4 w-4 text-white" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Plus User</p>
+                  </TooltipContent>
+                </Tooltip>
               )}
             </div>
             <CardDescription className="flex flex-wrap items-center gap-2">

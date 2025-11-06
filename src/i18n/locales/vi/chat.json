@@ -33,6 +33,8 @@
     "releaseToSend": "Thả để gửi",
     "recording": "Đang ghi âm...",
     "voiceMessage": "Tin nhắn thoại",
+    "imageMessage": "Hình ảnh",
+    "imagesMessage": "{count} hình ảnh",
     "loadMore": "Tải thêm tin nhắn",
     "loadingMessages": "Đang tải tin nhắn...",
     "noMessages": "Chưa có tin nhắn nào",
@@ -58,6 +60,7 @@
       "loadMessages": "Không thể tải tin nhắn",
       "sendMessage": "Không thể gửi tin nhắn",
       "recordVoice": "Không thể ghi âm. Vui lòng cho phép truy cập microphone.",
+      "uploadImage": "Không thể tải hình ảnh lên",
       "callFailed": "Cuộc gọi thất bại"
     }
   }

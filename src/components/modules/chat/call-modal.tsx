@@ -97,7 +97,10 @@ export function CallModal({
           {/* User Avatar */}
           <div className="relative">
             <Avatar className="size-24 md:size-32">
-              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarImage
+                src={user.avatar ?? user.avatarUrl ?? undefined}
+                alt={user.name}
+              />
               <AvatarFallback className="text-2xl md:text-3xl">
                 {getInitials(user.name)}
               </AvatarFallback>

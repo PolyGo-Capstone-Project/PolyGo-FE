@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   CallModal,
@@ -12,15 +12,98 @@ import {
   MessageSearch,
 } from "@/components/modules/chat";
 import { Button } from "@/components/ui/button";
+import { MESSAGE_IMAGE_SEPARATOR } from "@/constants";
 import {
-  CURRENT_USER_ID,
-  getMessagesForConversation,
-  loadMoreMessages,
-  mockConversations,
-} from "@/lib/mock-chat-data";
-import { CallState, CallType, ChatConversation, ChatMessage } from "@/types";
+  useAuthMe,
+  useChatHub,
+  useGetConversations,
+  useGetMessages,
+} from "@/hooks";
+import mediaApiRequest from "@/lib/apis/media";
+import { HttpError } from "@/lib/http";
+import {
+  ConversationType,
+  GetConversationsQueryType,
+  GetMessagesQueryType,
+  MessageType,
+} from "@/models";
+import {
+  CallState,
+  CallType,
+  ChatConversation,
+  ChatLastMessage,
+  ChatMessage,
+} from "@/types";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
+
+const DEFAULT_MESSAGES_QUERY: GetMessagesQueryType = {
+  pageNumber: -1,
+  pageSize: -1,
+};
+
+const extractImageUrlsFromContent = (
+  type: ChatLastMessage["type"],
+  content: string
+) => {
+  if (type === "Image") {
+    return content ? [content] : [];
+  }
+
+  if (type === "Images") {
+    return content
+      .split(MESSAGE_IMAGE_SEPARATOR)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
+const mapConversationToChat = (
+  conversation: ConversationType
+): ChatConversation => {
+  const lastMessage = conversation.lastMessage
+    ? {
+        type: conversation.lastMessage.type,
+        content: conversation.lastMessage.content,
+        sentAt: new Date(conversation.lastMessage.sentAt),
+        isSentByYou: conversation.lastMessage.isSentByYou,
+        imageUrls: extractImageUrlsFromContent(
+          conversation.lastMessage.type,
+          conversation.lastMessage.content
+        ),
+      }
+    : null;
+
+  const updatedAt = lastMessage?.sentAt ?? new Date(0);
+
+  return {
+    id: conversation.id,
+    user: {
+      id: conversation.user.id,
+      name: conversation.user.name,
+      avatar: conversation.user.avatarUrl,
+      avatarUrl: conversation.user.avatarUrl,
+      isOnline: false,
+      lastSeen: null,
+    },
+    lastMessage,
+    unreadCount: 0,
+    isTyping: false,
+    updatedAt,
+  };
+};
+
+const mapMessageToChat = (message: MessageType): ChatMessage => ({
+  id: message.id,
+  conversationId: message.conversationId,
+  senderId: message.sender.id,
+  content: message.content,
+  type: message.type,
+  createdAt: new Date(message.sentAt),
+  imageUrls: extractImageUrlsFromContent(message.type, message.content),
+});
 
 interface ChatPageContentProps {
   locale: string;
@@ -29,15 +112,16 @@ interface ChatPageContentProps {
 export function ChatPageContent({ locale }: ChatPageContentProps) {
   const t = useTranslations("chat");
   const tSuccess = useTranslations("Success");
+  const tError = useTranslations("chat.error");
+  const { data: authData } = useAuthMe();
+  const currentUserId = authData?.payload.data.id ?? null;
 
-  const [conversations, setConversations] =
-    useState<ChatConversation[]>(mockConversations);
+  const [conversations, setConversations] = useState<ChatConversation[]>([]);
   const [selectedConversationId, setSelectedConversationId] = useState<
     string | null
   >(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
-  const [hasMoreMessages, setHasMoreMessages] = useState(true);
+  const [hasMoreMessages, setHasMoreMessages] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);
 
   const [pinnedConversationIds, setPinnedConversationIds] = useState<
@@ -58,6 +142,36 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   });
   const [isCallModalOpen, setIsCallModalOpen] = useState(false);
 
+  const [messagesQuery, setMessagesQuery] = useState<GetMessagesQueryType>(
+    () => ({ ...DEFAULT_MESSAGES_QUERY })
+  );
+  const [conversationQuery] = useState<GetConversationsQueryType>({
+    pageNumber: 1,
+    pageSize: 50,
+  });
+
+  const {
+    data: conversationsResponse,
+    isLoading: isLoadingConversations,
+    error: conversationsError,
+  } = useGetConversations(conversationQuery, { enabled: true });
+
+  const {
+    data: messagesResponse,
+    isLoading: isLoadingMessages,
+    isFetching: isFetchingMessages,
+    error: messagesError,
+  } = useGetMessages(selectedConversationId ?? "", messagesQuery, {
+    enabled: Boolean(selectedConversationId),
+  });
+
+  const {
+    isConnected,
+    sendTextMessage,
+    sendImageMessage,
+    error: hubError,
+  } = useChatHub(selectedConversationId ?? undefined);
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobileView(window.innerWidth < 768);
@@ -70,138 +184,140 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   }, []);
 
   useEffect(() => {
-    if (selectedConversationId) {
-      setIsLoadingMessages(true);
+    if (!conversationsResponse) return;
 
-      setTimeout(() => {
-        const loadedMessages = getMessagesForConversation(
-          selectedConversationId
-        );
-        setMessages(loadedMessages);
-        setIsLoadingMessages(false);
-        setHasMoreMessages(true);
+    const items = conversationsResponse.payload.data.items ?? [];
 
-        setConversations((prev) =>
-          prev.map((conv) =>
-            conv.id === selectedConversationId
-              ? { ...conv, unreadCount: 0 }
-              : conv
-          )
-        );
-      }, 500);
-    }
-  }, [selectedConversationId]);
+    setConversations((prev) => {
+      const prevMap = new Map(prev.map((conv) => [conv.id, conv]));
+      const mapped = items.map((item) => {
+        const previous = prevMap.get(item.id);
+        const current = mapConversationToChat(item);
+        return {
+          ...current,
+          unreadCount: previous?.unreadCount ?? current.unreadCount,
+          updatedAt: previous?.updatedAt ?? current.updatedAt,
+        };
+      });
+      return mapped;
+    });
+  }, [conversationsResponse]);
 
   useEffect(() => {
-    if (selectedConversationId) {
-      const interval = setInterval(() => {
-        if (Math.random() > 0.8) {
-          setConversations((prev) =>
-            prev.map((conv) =>
-              conv.id === selectedConversationId
-                ? { ...conv, isTyping: !conv.isTyping }
-                : conv
-            )
-          );
-        }
-      }, 5000);
-
-      return () => clearInterval(interval);
+    if (conversationsError) {
+      toast.error(tError("loadConversations"));
     }
-  }, [selectedConversationId]);
+  }, [conversationsError, tError]);
 
-  const selectedConversation = conversations.find(
-    (conv) => conv.id === selectedConversationId
-  );
+  useEffect(() => {
+    if (messagesError) {
+      if (messagesError instanceof HttpError && messagesError.status === 404) {
+        setMessages([]);
+        setHasMoreMessages(false);
+        return;
+      }
 
-  const handleSelectConversation = (conversationId: string) => {
-    setSelectedConversationId(conversationId);
-  };
+      toast.error(tError("loadMessages"));
+    }
+  }, [messagesError, tError]);
 
-  const handleBackToList = () => {
-    setSelectedConversationId(null);
-  };
+  useEffect(() => {
+    if (!messagesResponse || !selectedConversationId) return;
 
-  const handleSendMessage = (
-    content: string,
-    type: "text" | "voice" | "emoji"
-  ) => {
-    if (!selectedConversationId) return;
+    const payload = messagesResponse.payload.data;
+    const mappedMessages = payload.items.map(mapMessageToChat);
+    const messageCount = payload.items.length;
 
-    const newMessage: ChatMessage = {
-      id: `msg-${Date.now()}`,
-      conversationId: selectedConversationId,
-      senderId: CURRENT_USER_ID,
-      content,
-      type,
-      voiceUrl: type === "voice" ? content : undefined,
-      voiceDuration: type === "voice" ? 10 : undefined,
-      createdAt: new Date(),
-      isRead: false,
-      isDelivered: true,
-    };
+    setMessages(mappedMessages);
+    setHasMoreMessages(payload.hasPreviousPage);
 
-    setMessages((prev) => [...prev, newMessage]);
+    if (!mappedMessages.length) return;
+
+    const latest = mappedMessages[mappedMessages.length - 1];
 
     setConversations((prev) =>
       prev.map((conv) =>
         conv.id === selectedConversationId
           ? {
               ...conv,
-              lastMessage: newMessage,
-              updatedAt: new Date(),
+              unreadCount: messageCount,
+              updatedAt: latest.createdAt,
+              lastMessage: {
+                type: latest.type,
+                content: latest.content,
+                sentAt: latest.createdAt,
+                isSentByYou: latest.senderId === currentUserId,
+                imageUrls: latest.imageUrls,
+              },
             }
           : conv
       )
     );
+  }, [messagesResponse, selectedConversationId, currentUserId]);
 
-    setTimeout(() => {
-      const replyMessage: ChatMessage = {
-        id: `msg-${Date.now()}-reply`,
-        conversationId: selectedConversationId,
-        senderId: selectedConversation?.user.id || "user-2",
-        content: "Cảm ơn bạn đã nhắn tin! 😊",
-        type: "text",
-        createdAt: new Date(),
-        isRead: false,
-        isDelivered: true,
-      };
+  useEffect(() => {
+    if (hubError) {
+      toast.error(hubError);
+    }
+  }, [hubError]);
 
-      setMessages((prev) => [...prev, replyMessage]);
+  const selectedConversation = useMemo(
+    () => conversations.find((conv) => conv.id === selectedConversationId),
+    [conversations, selectedConversationId]
+  );
 
-      setConversations((prev) =>
-        prev.map((conv) =>
-          conv.id === selectedConversationId
-            ? {
-                ...conv,
-                lastMessage: replyMessage,
-                updatedAt: new Date(),
-                unreadCount: conv.unreadCount + 1,
-                isTyping: false,
-              }
-            : conv
-        )
-      );
-    }, 2000);
+  const handleSelectConversation = (conversationId: string) => {
+    setSelectedConversationId(conversationId);
+    setMessages([]);
+    setHasMoreMessages(false);
+    setMessagesQuery({ ...DEFAULT_MESSAGES_QUERY });
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === conversationId ? { ...conv, unreadCount: 0 } : conv
+      )
+    );
+  };
+
+  const handleBackToList = () => {
+    setSelectedConversationId(null);
+  };
+
+  const handleSendTextMessage = async (content: string) => {
+    if (!selectedConversationId || !currentUserId) {
+      throw new Error("Missing conversation or user");
+    }
+
+    await sendTextMessage(selectedConversationId, currentUserId, content);
+  };
+
+  const handleSendImageMessage = async (files: File[]) => {
+    if (!selectedConversationId || !currentUserId) {
+      throw new Error("Missing conversation or user");
+    }
+
+    const uploads = await Promise.all(
+      files.map((file) => mediaApiRequest.uploadImage({ file }))
+    );
+
+    const imageUrls = uploads
+      .map((response) => response.payload.data)
+      .filter((url): url is string => Boolean(url));
+
+    if (!imageUrls.length) {
+      throw new Error("No images uploaded");
+    }
+
+    await sendImageMessage(selectedConversationId, currentUserId, imageUrls);
   };
 
   const handleLoadMoreMessages = () => {
-    if (!selectedConversationId || isLoadingMessages) return;
+    if (!selectedConversationId || hasMoreMessages === false) return;
+    if (!messagesQuery.pageNumber || messagesQuery.pageNumber < 1) return;
 
-    setIsLoadingMessages(true);
-
-    setTimeout(() => {
-      const moreMessages = loadMoreMessages(
-        selectedConversationId,
-        messages.length
-      );
-      setMessages((prev) => [...moreMessages, ...prev]);
-      setIsLoadingMessages(false);
-
-      if (messages.length > 30) {
-        setHasMoreMessages(false);
-      }
-    }, 1000);
+    setMessagesQuery((prev) => ({
+      ...prev,
+      pageNumber: (prev.pageNumber ?? 1) + 1,
+    }));
   };
 
   const handleStartCall = (type: CallType) => {
@@ -310,6 +426,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
     if (selectedConversationId === idToDelete) {
       setSelectedConversationId(null);
+      setMessages([]);
     }
 
     toast.success(tSuccess("Delete"));
@@ -318,6 +435,9 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   const handleSelectMessage = (messageId: string) => {
     console.log("Scroll to message:", messageId);
   };
+
+  const isMessagesLoadingState =
+    (isLoadingMessages || isFetchingMessages) && messages.length === 0;
 
   if (isMobileView) {
     return (
@@ -347,7 +467,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
               <div className="flex-1">
                 <ChatHeader
                   user={selectedConversation.user}
-                  isTyping={selectedConversation.isTyping}
+                  isTyping={Boolean(selectedConversation.isTyping)}
                   onVoiceCall={() => handleStartCall("voice")}
                   onVideoCall={() => handleStartCall("video")}
                   onSearchMessages={handleSearchMessages}
@@ -359,16 +479,25 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
             <MessageList
               messages={messages}
-              currentUserId={CURRENT_USER_ID}
-              isLoading={isLoadingMessages}
+              currentUserId={currentUserId ?? ""}
+              isLoading={isMessagesLoadingState}
               hasMore={hasMoreMessages}
               onLoadMore={handleLoadMoreMessages}
               locale={locale}
               otherUserName={selectedConversation.user.name}
-              otherUserAvatar={selectedConversation.user.avatar}
+              otherUserAvatar={
+                selectedConversation.user.avatar ??
+                selectedConversation.user.avatarUrl ??
+                undefined
+              }
             />
-
-            <MessageInput onSendMessage={handleSendMessage} disabled={false} />
+            <MessageInput
+              onSendText={handleSendTextMessage}
+              onSendImages={handleSendImageMessage}
+              disabled={
+                !selectedConversationId || !currentUserId || !isConnected
+              }
+            />
           </div>
         )}
 
@@ -390,7 +519,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
               isOpen={isSearchOpen}
               onClose={() => setIsSearchOpen(false)}
               messages={messages}
-              currentUserId={CURRENT_USER_ID}
+              currentUserId={currentUserId ?? ""}
               onSelectMessage={handleSelectMessage}
               locale={locale}
             />
@@ -423,7 +552,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
           <>
             <ChatHeader
               user={selectedConversation.user}
-              isTyping={selectedConversation.isTyping}
+              isTyping={Boolean(selectedConversation.isTyping)}
               onVoiceCall={() => handleStartCall("voice")}
               onVideoCall={() => handleStartCall("video")}
               onSearchMessages={handleSearchMessages}
@@ -433,16 +562,26 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
             <MessageList
               messages={messages}
-              currentUserId={CURRENT_USER_ID}
-              isLoading={isLoadingMessages}
+              currentUserId={currentUserId ?? ""}
+              isLoading={isMessagesLoadingState}
               hasMore={hasMoreMessages}
               onLoadMore={handleLoadMoreMessages}
               locale={locale}
               otherUserName={selectedConversation.user.name}
-              otherUserAvatar={selectedConversation.user.avatar}
+              otherUserAvatar={
+                selectedConversation.user.avatar ??
+                selectedConversation.user.avatarUrl ??
+                undefined
+              }
             />
 
-            <MessageInput onSendMessage={handleSendMessage} disabled={false} />
+            <MessageInput
+              onSendText={handleSendTextMessage}
+              onSendImages={handleSendImageMessage}
+              disabled={
+                !selectedConversationId || !currentUserId || !isConnected
+              }
+            />
           </>
         ) : (
           <div className="flex h-full flex-col items-center justify-center p-8 text-center">
@@ -477,7 +616,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
             isOpen={isSearchOpen}
             onClose={() => setIsSearchOpen(false)}
             messages={messages}
-            currentUserId={CURRENT_USER_ID}
+            currentUserId={currentUserId ?? ""}
             onSelectMessage={handleSelectMessage}
             locale={locale}
           />

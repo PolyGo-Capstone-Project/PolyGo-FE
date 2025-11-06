@@ -119,18 +119,23 @@ export function ConversationList({
 
     if (!conv.lastMessage) return null;
 
-    const { type, content } = conv.lastMessage;
+    const { type, content, imageUrls } = conv.lastMessage;
 
-    if (type === "voice") {
+    if (type === "Image") {
       return (
         <span className="text-muted-foreground text-xs md:text-sm">
-          🎤 {t("voiceMessage")}
+          🖼 {t("imageMessage")}
         </span>
       );
     }
 
-    if (type === "emoji") {
-      return <span className="text-xs md:text-sm">{content}</span>;
+    if (type === "Images") {
+      const total = imageUrls?.length ?? 1;
+      return (
+        <span className="text-muted-foreground text-xs md:text-sm">
+          🖼 {t("imagesMessage", { count: total })}
+        </span>
+      );
     }
 
     return (
@@ -198,7 +203,9 @@ export function ConversationList({
                     <div className="relative shrink-0">
                       <Avatar className="size-10 md:size-12">
                         <AvatarImage
-                          src={conv.user.avatar}
+                          src={
+                            conv.user.avatar ?? conv.user.avatarUrl ?? undefined
+                          }
                           alt={conv.user.name}
                         />
                         <AvatarFallback>

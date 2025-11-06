@@ -4,13 +4,14 @@ import {
   IconCalendarEvent,
   IconChartBar,
   IconClock,
+  IconCrown,
   IconFlame,
-  IconSparkles,
   IconStar,
   IconTrendingUp,
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlanTypeEnum } from "@/constants";
 
@@ -85,10 +86,16 @@ export function ProfileStats({
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">{tStats("stats.title")}</CardTitle>
           {isPlusUser && (
-            <div className="flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 px-3 py-1">
-              <IconSparkles className="h-4 w-4 text-white" />
-              <span className="text-sm font-bold text-white">PLUS</span>
-            </div>
+            <Tooltip>
+              <TooltipTrigger>
+                <div className="flex items-center rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 px-2 py-2">
+                  <IconCrown className="h-5 w-5 text-white" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Plus User</p>
+              </TooltipContent>
+            </Tooltip>
           )}
         </div>
       </CardHeader>
