@@ -52,6 +52,16 @@
     "create": {
       "title": "Tạo sự kiện mới",
       "description": "Tạo sự kiện và mời mọi người tham gia",
+      "purposeDialog": {
+        "title": "📚 Chào mừng đến với Tạo Sự kiện PolyGo",
+        "description": "Trước khi tạo sự kiện, vui lòng lưu ý:",
+        "point1": "PolyGo là nền tảng giao lưu văn hóa và học tập ngôn ngữ",
+        "point2": "Tất cả sự kiện nên tập trung vào thực hành ngôn ngữ, chia sẻ văn hóa hoặc hoạt động giáo dục",
+        "point3": "Các sự kiện không liên quan đến học ngôn ngữ hoặc giao lưu văn hóa có thể bị xóa",
+        "point4": "Hãy cùng tạo một sự kiện ý nghĩa để mọi người cùng học hỏi và phát triển!",
+        "understand": "Tôi hiểu",
+        "cancel": "Hủy"
+      },
       "basicInfo": "Thông tin cơ bản",
       "details": "Chi tiết sự kiện",
       "settings": "Cài đặt",

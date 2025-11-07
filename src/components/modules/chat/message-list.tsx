@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { ChatMessage } from "@/types";
 import { format, isToday, isYesterday } from "date-fns";
 import { enUS, vi } from "date-fns/locale";
+import { ImagePreviewModal } from "./image-preview-modal";
 
 interface MessageListProps {
   messages: ChatMessage[];
@@ -42,6 +43,9 @@ export function MessageList({
   const isLoadingMoreRef = useRef(false);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   const userScrolledRef = useRef(false);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [previewIndex, setPreviewIndex] = useState(0);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   // Auto-scroll logic when messages change
   useEffect(() => {
@@ -160,6 +164,12 @@ export function MessageList({
     return [];
   };
 
+  const handleImageClick = (urls: string[], clickedIndex: number) => {
+    setPreviewImages(urls);
+    setPreviewIndex(clickedIndex);
+    setIsPreviewOpen(true);
+  };
+
   const renderMessageContent = (message: ChatMessage, isOwn: boolean) => {
     if (message.type === "Image" || message.type === "Images") {
       const urls = extractImageUrls(message);
@@ -170,26 +180,34 @@ export function MessageList({
         );
       }
 
-      const gridCols = urls.length > 1 ? "grid-cols-2" : "grid-cols-1";
+      const gridCols =
+        urls.length === 1
+          ? "grid-cols-1"
+          : urls.length === 2
+            ? "grid-cols-2"
+            : urls.length === 3
+              ? "grid-cols-3"
+              : "grid-cols-2";
 
       return (
         <div className={cn("mt-1 grid gap-2", gridCols)}>
-          {urls.map((url) => (
-            <a
+          {urls.map((url, index) => (
+            <button
               key={url}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative block h-32 w-full overflow-hidden rounded-xl md:h-40"
+              type="button"
+              onClick={() => handleImageClick(urls, index)}
+              className="group relative block overflow-hidden rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
             >
-              <Image
-                src={url}
-                alt="Chat attachment"
-                fill
-                className="rounded-xl object-cover"
-                unoptimized
-              />
-            </a>
+              <div className="relative aspect-square w-full min-w-[200px]">
+                <Image
+                  src={url}
+                  alt={`Chat attachment ${index + 1}`}
+                  fill
+                  className="rounded-lg object-cover transition-transform group-hover:scale-105"
+                  unoptimized
+                />
+              </div>
+            </button>
           ))}
         </div>
       );
@@ -343,6 +361,14 @@ export function MessageList({
           </div>
         ))}
       </div>
+
+      {/* Image Preview Modal */}
+      <ImagePreviewModal
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        images={previewImages}
+        initialIndex={previewIndex}
+      />
     </div>
   );
 }

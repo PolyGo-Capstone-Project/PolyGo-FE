@@ -11,6 +11,7 @@ import {
   MessageList,
   MessageSearch,
 } from "@/components/modules/chat";
+import { useUserPresenceContext } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { MESSAGE_IMAGE_SEPARATOR, MessageEnum } from "@/constants";
 import {
@@ -84,7 +85,7 @@ const mapConversationToChat = (
       lastSeen: null,
     },
     lastMessage,
-    unreadCount: 0,
+    hasSeen: conversation.hasSeen,
     isTyping: false,
     updatedAt,
   };
@@ -167,8 +168,47 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     isConnected,
     sendTextMessage,
     sendImageMessage,
+    markAsRead,
     error: hubError,
-  } = useChatHub(selectedConversationId ?? undefined);
+  } = useChatHub(
+    selectedConversationId ?? undefined,
+    currentUserId ?? undefined
+  );
+
+  // User presence management from context
+  const { isUserOnline, getOnlineStatus, setOnUserStatusChangedCallback } =
+    useUserPresenceContext();
+
+  // Calculate total unread count (conversations where hasSeen is false)
+  const totalUnreadCount = useMemo(() => {
+    return conversations.filter((conv) => !conv.hasSeen).length;
+  }, [conversations]);
+
+  // Listen for realtime user status changes
+  useEffect(() => {
+    const handleStatusChange = (data: {
+      userId: string;
+      isOnline: boolean;
+      lastActiveAt: string;
+    }) => {
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.user.id === data.userId
+            ? {
+                ...conv,
+                user: {
+                  ...conv.user,
+                  isOnline: data.isOnline,
+                  lastSeen: data.isOnline ? null : new Date(data.lastActiveAt),
+                },
+              }
+            : conv
+        )
+      );
+    };
+
+    setOnUserStatusChangedCallback(handleStatusChange);
+  }, [setOnUserStatusChangedCallback]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -193,13 +233,33 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
         const current = mapConversationToChat(item);
         return {
           ...current,
-          unreadCount: previous?.unreadCount ?? current.unreadCount,
+          hasSeen: previous?.hasSeen ?? current.hasSeen,
           updatedAt: previous?.updatedAt ?? current.updatedAt,
         };
       });
       return mapped;
     });
-  }, [conversationsResponse]);
+
+    // Fetch online status for all users in conversations
+    const userIds = items.map((item) => item.user.id);
+    if (userIds.length > 0) {
+      getOnlineStatus(userIds)
+        .then((statusMap) => {
+          setConversations((prev) =>
+            prev.map((conv) => ({
+              ...conv,
+              user: {
+                ...conv.user,
+                isOnline: statusMap[conv.user.id] ?? false,
+              },
+            }))
+          );
+        })
+        .catch((err) => {
+          console.error("Failed to fetch online status:", err);
+        });
+    }
+  }, [conversationsResponse, getOnlineStatus]);
 
   useEffect(() => {
     if (conversationsError) {
@@ -282,11 +342,20 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     setIsLoadingMoreMessages(false);
     setLastLoadedPage(1);
     setMessagesQuery({ ...DEFAULT_MESSAGES_QUERY });
+
+    // Mark conversation as seen when user opens it
     setConversations((prev) =>
       prev.map((conv) =>
-        conv.id === conversationId ? { ...conv, unreadCount: 0 } : conv
+        conv.id === conversationId ? { ...conv, hasSeen: true } : conv
       )
     );
+
+    // Mark conversation as read on backend
+    if (currentUserId) {
+      markAsRead?.(conversationId, currentUserId).catch((err) => {
+        console.error("Failed to mark conversation as read:", err);
+      });
+    }
   };
 
   const handleBackToList = () => {
@@ -580,7 +649,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
         if (!messages.length) {
           return {
             ...conv,
-            unreadCount: 0,
+            hasSeen: true,
           };
         }
 
@@ -588,7 +657,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
         return {
           ...conv,
-          unreadCount: 0,
+          hasSeen: true,
           updatedAt: latest.createdAt,
           lastMessage: {
             type: latest.type,
@@ -714,6 +783,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
           pinnedConversationIds={pinnedConversationIds}
           mutedConversationIds={mutedConversationIds}
           locale={locale}
+          totalUnreadCount={totalUnreadCount}
         />
       </div>
 

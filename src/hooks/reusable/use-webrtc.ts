@@ -605,6 +605,10 @@ export function useWebRTC({
             timestamp: new Date(),
           },
         ]);
+        // Play chat message notification sound
+        import("@/lib/notification-sound").then(({ playChatMessageSound }) => {
+          playChatMessageSound();
+        });
       }
     );
 
@@ -621,6 +625,10 @@ export function useWebRTC({
           });
         }
         return newMap;
+      });
+      // Play hand raise sound when someone else raises their hand
+      import("@/lib/notification-sound").then(({ playHandRaiseSound }) => {
+        playHandRaiseSound();
       });
     });
 
@@ -1213,6 +1221,9 @@ export function useWebRTC({
       if (!isHandRaised) {
         await connectionRef.current.invoke("SendWave", eventIdRef.current);
         setIsHandRaised(true);
+        // Play hand raise sound
+        const { playHandRaiseSound } = await import("@/lib/notification-sound");
+        playHandRaiseSound();
         console.log("[SignalR] ✓ Hand raised");
       } else {
         await connectionRef.current.invoke("Unwave", eventIdRef.current);

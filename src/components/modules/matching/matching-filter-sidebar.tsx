@@ -99,7 +99,7 @@ export function MatchingFilterSidebar({
       <Separator />
 
       {/* Online Only */}
-      <div className="space-y-3">
+      {/* <div className="space-y-3">
         <div className="flex items-center space-x-2">
           <Checkbox
             id="online-only"
@@ -114,9 +114,9 @@ export function MatchingFilterSidebar({
             {t("onlineOnly")}
           </Label>
         </div>
-      </div>
+      </div> */}
 
-      <Separator />
+      {/* <Separator /> */}
 
       {/* Speaking Languages */}
       <div className="space-y-3">

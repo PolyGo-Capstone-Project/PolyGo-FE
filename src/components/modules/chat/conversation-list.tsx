@@ -41,6 +41,7 @@ interface ConversationListProps {
   pinnedConversationIds: Set<string>;
   mutedConversationIds: Set<string>;
   locale: string;
+  totalUnreadCount?: number; // ✅ Add total unread count prop
 }
 
 export function ConversationList({
@@ -55,6 +56,7 @@ export function ConversationList({
   pinnedConversationIds,
   mutedConversationIds,
   locale,
+  totalUnreadCount = 0, // ✅ Get total unread count
 }: ConversationListProps) {
   const t = useTranslations("chat");
   const [searchQuery, setSearchQuery] = useState("");
@@ -153,9 +155,17 @@ export function ConversationList({
     <div className="flex h-full w-full flex-col border-r">
       {/* Header */}
       <div className="border-b p-3 md:p-4">
-        <h2 className="mb-3 text-lg font-semibold md:mb-4 md:text-xl">
-          {t("title")}
-        </h2>
+        <div className="mb-3 flex items-center justify-between md:mb-4">
+          <h2 className="text-lg font-semibold md:text-xl">{t("title")}</h2>
+          {totalUnreadCount > 0 && (
+            <Badge
+              variant="default"
+              className="rounded-full px-2 py-0.5 text-xs font-semibold"
+            >
+              {totalUnreadCount > 99 ? "99+" : totalUnreadCount}
+            </Badge>
+          )}
+        </div>
 
         {/* Search */}
         <div className="relative">
@@ -240,13 +250,8 @@ export function ConversationList({
                         <div className="min-w-0 flex-1">
                           {renderLastMessage(conv)}
                         </div>
-                        {conv.unreadCount > 0 && !isMuted && (
-                          <Badge
-                            variant="default"
-                            className="shrink-0 rounded-full px-1.5 py-0 text-[10px] md:px-2 md:text-xs"
-                          >
-                            {conv.unreadCount}
-                          </Badge>
+                        {!conv.hasSeen && !isMuted && (
+                          <div className="size-2 shrink-0 rounded-full bg-primary md:size-2.5" />
                         )}
                       </div>
                     </div>

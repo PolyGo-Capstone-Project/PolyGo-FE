@@ -52,6 +52,16 @@
     "create": {
       "title": "Create New Event",
       "description": "Create an event and invite people to join",
+      "purposeDialog": {
+        "title": "📚 Welcome to PolyGo Event Creation",
+        "description": "Before you create your event, please remember:",
+        "point1": "PolyGo is a platform for cultural exchange and language learning",
+        "point2": "All events should focus on language practice, cultural sharing, or educational activities",
+        "point3": "Events unrelated to language learning or cultural exchange may be removed",
+        "point4": "Let's create a meaningful event that brings people together to learn and grow!",
+        "understand": "I Understand",
+        "cancel": "Cancel"
+      },
       "basicInfo": "Basic Information",
       "details": "Event Details",
       "settings": "Settings",
