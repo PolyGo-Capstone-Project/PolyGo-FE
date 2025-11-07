@@ -1,16 +1,23 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { LoadingSpinner } from "@/components";
 import CreatePostCard from "@/components/modules/social/create-post-card";
 import FriendSidebar from "@/components/modules/social/friend-side-bar";
 import PostCard from "@/components/modules/social/post-card";
 import SuggestedGamesCard from "@/components/modules/social/suggested-games-card";
+import { useUserPresenceContext } from "@/components/providers";
+import { useGetFriends } from "@/hooks";
 
 // ---------------------- Types (GIỮ TRONG PAGE) ----------------------
-type Author = { name: string; avatar: string; initials: string };
+type Author = {
+  name: string;
+  avatar: string;
+  initials: string;
+  userId?: string; // Add optional userId for presence checking
+};
 type Comment = { id: string; author: Author; content: string; timeAgo: string };
 type ReactionType = "heart" | "laugh" | "angry";
 type Post = {
@@ -263,6 +270,39 @@ export default function SocialContent({ locale }: ContentProps) {
     {}
   );
 
+  // Get real friends from API
+  const lang = useMemo(() => locale.split("-")[0], [locale]);
+  const { data: friendsData } = useGetFriends(
+    { lang, pageNumber: 1, pageSize: 100 },
+    { enabled: true }
+  );
+
+  // Get presence context for online status
+  const { isUserOnline } = useUserPresenceContext();
+
+  // Convert friends to Author format and filter online ones
+  const allFriends: Author[] = useMemo(() => {
+    if (!friendsData?.payload?.data?.items) return mockOnlineFriends;
+
+    return friendsData.payload.data.items.map((friend: any) => ({
+      name: friend.name,
+      avatar: friend.avatarUrl || "",
+      initials: friend.name
+        .split(" ")
+        .map((n: string) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2),
+      userId: friend.id, // Add userId for presence check
+    }));
+  }, [friendsData]);
+
+  const onlineFriends: Author[] = useMemo(() => {
+    return allFriends.filter((friend) =>
+      friend.userId ? isUserOnline(friend.userId) : false
+    );
+  }, [allFriends, isUserOnline]);
+
   useEffect(() => {
     getSocialPosts().then((data) => {
       setPosts(data);
@@ -364,7 +404,9 @@ export default function SocialContent({ locale }: ContentProps) {
             <FriendSidebar
               t={t}
               suggestedFriends={mockSuggestedFriends}
-              onlineFriends={mockOnlineFriends}
+              onlineFriends={
+                onlineFriends.length > 0 ? onlineFriends : mockOnlineFriends
+              }
             />
           </div>
         </div>

@@ -85,7 +85,7 @@ const mapConversationToChat = (
       lastSeen: null,
     },
     lastMessage,
-    unreadCount: 0,
+    unreadCount: conversation.unreadCount ?? 0, // ✅ Fix: Get from API instead of hardcode
     isTyping: false,
     updatedAt,
   };
@@ -175,6 +175,11 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   // User presence management from context
   const { isUserOnline, getOnlineStatus, setOnUserStatusChangedCallback } =
     useUserPresenceContext();
+
+  // Calculate total unread count
+  const totalUnreadCount = useMemo(() => {
+    return conversations.reduce((total, conv) => total + conv.unreadCount, 0);
+  }, [conversations]);
 
   // Listen for realtime user status changes
   useEffect(() => {
@@ -773,6 +778,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
           pinnedConversationIds={pinnedConversationIds}
           mutedConversationIds={mutedConversationIds}
           locale={locale}
+          totalUnreadCount={totalUnreadCount}
         />
       </div>
 

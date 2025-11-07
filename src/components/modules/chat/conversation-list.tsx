@@ -41,6 +41,7 @@ interface ConversationListProps {
   pinnedConversationIds: Set<string>;
   mutedConversationIds: Set<string>;
   locale: string;
+  totalUnreadCount?: number; // ✅ Add total unread count prop
 }
 
 export function ConversationList({
@@ -55,6 +56,7 @@ export function ConversationList({
   pinnedConversationIds,
   mutedConversationIds,
   locale,
+  totalUnreadCount = 0, // ✅ Get total unread count
 }: ConversationListProps) {
   const t = useTranslations("chat");
   const [searchQuery, setSearchQuery] = useState("");
@@ -153,9 +155,17 @@ export function ConversationList({
     <div className="flex h-full w-full flex-col border-r">
       {/* Header */}
       <div className="border-b p-3 md:p-4">
-        <h2 className="mb-3 text-lg font-semibold md:mb-4 md:text-xl">
-          {t("title")}
-        </h2>
+        <div className="mb-3 flex items-center justify-between md:mb-4">
+          <h2 className="text-lg font-semibold md:text-xl">{t("title")}</h2>
+          {totalUnreadCount > 0 && (
+            <Badge
+              variant="default"
+              className="rounded-full px-2 py-0.5 text-xs font-semibold"
+            >
+              {totalUnreadCount > 99 ? "99+" : totalUnreadCount}
+            </Badge>
+          )}
+        </div>
 
         {/* Search */}
         <div className="relative">

@@ -17,6 +17,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components";
+import { useUserPresenceContext } from "@/components/providers";
 import { FriendStatus, PlanTypeEnum } from "@/constants";
 import { UserMatchingItemType } from "@/models";
 import {
@@ -29,7 +30,7 @@ import {
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 type UserCardProps = {
   user: UserMatchingItemType;
@@ -51,7 +52,10 @@ export function UserCard({
   const interests = user.interests || [];
   const t = useTranslations("matching.card");
   const tGender = useTranslations("common.gender");
-  const [isOnline] = useState(Math.random() > 0.5);
+
+  // Get online status from presence context
+  const { isUserOnline } = useUserPresenceContext();
+  const isOnline = isUserOnline(user.id);
 
   const initials = useMemo(() => {
     return user.name

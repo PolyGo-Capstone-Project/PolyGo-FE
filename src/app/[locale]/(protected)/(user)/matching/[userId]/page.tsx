@@ -26,6 +26,7 @@ import {
   TabsTrigger,
   UserNotFound,
 } from "@/components";
+import { useUserPresenceContext } from "@/components/providers";
 import { FriendStatus } from "@/constants";
 import {
   useAcceptFriendRequestMutation,
@@ -92,6 +93,9 @@ export default function UserProfilePage() {
   const [lang] = useState(initialLang);
 
   const userId = params.userId as string;
+
+  // Get presence context for online status
+  const { isUserOnline } = useUserPresenceContext();
 
   // Fetch user profile
   const {
@@ -240,7 +244,7 @@ export default function UserProfilePage() {
           meritLevel={user.meritLevel}
           gender={user.gender}
           introduction={user.introduction}
-          isOnline={true}
+          isOnline={isUserOnline(userId)}
           variant="other"
           friendStatus={user.friendStatus}
           onSendGift={handleSendGift}

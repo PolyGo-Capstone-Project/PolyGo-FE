@@ -28,6 +28,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components";
+import { useUserPresenceContext } from "@/components/providers";
 import {
   useAuthMe,
   useCurrentSubscriptionQuery,
@@ -82,6 +83,9 @@ export default function ProfilePage() {
   const locale = useLocale();
   const lang = useMemo(() => (locale ? locale.split("-")[0] : "en"), [locale]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+  // Get presence context for online status
+  const { isUserOnline } = useUserPresenceContext();
 
   // Fetch user data
   const { data: authData, isLoading: isLoadingAuth } = useAuthMe();
@@ -174,7 +178,7 @@ export default function ProfilePage() {
         meritLevel={user.meritLevel}
         gender={user.gender}
         introduction={user.introduction}
-        isOnline={true}
+        isOnline={isUserOnline(user.id)}
         onEdit={() => setEditDialogOpen(true)}
       />
 
