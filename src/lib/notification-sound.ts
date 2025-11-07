@@ -50,3 +50,19 @@ export const playNotificationSoundFromFile = (soundPath: string) => {
     console.error("Failed to play notification sound:", error);
   }
 };
+
+/**
+ * Play hand raise sound
+ * Usage: playHandRaiseSound()
+ */
+export const playHandRaiseSound = () => {
+  playNotificationSoundFromFile("/sounds/handraise.mp3");
+};
+
+/**
+ * Play chat message notification sound
+ * Usage: playChatMessageSound()
+ */
+export const playChatMessageSound = () => {
+  playNotificationSoundFromFile("/sounds/handraise.mp3");
+};
