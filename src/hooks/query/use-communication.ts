@@ -2,6 +2,7 @@
 
 import envConfig from "@/config";
 import communicationApiRequest from "@/lib/apis/communication";
+import { playNotificationSoundFromFile } from "@/lib/notification-sound";
 import { getSessionTokenFromLocalStorage } from "@/lib/utils";
 import {
   ConversationReadUpdatedType,
@@ -59,7 +60,7 @@ export const useGetConversations = (
 };
 
 // ============= SIGNALR HUB CONNECTION =============
-export const useChatHub = (conversationId?: string) => {
+export const useChatHub = (conversationId?: string, currentUserId?: string) => {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -164,6 +165,11 @@ export const useChatHub = (conversationId?: string) => {
     const handleReceiveMessage = (message: RealtimeMessageType) => {
       console.log("📨 Received message:", message);
 
+      // Play notification sound ONLY for incoming messages (not from current user)
+      if (currentUserId && message.senderId !== currentUserId) {
+        playNotificationSoundFromFile("/sounds/notification.mp3");
+      }
+
       // Invalidate messages to refetch with full sender info from server
       queryClient.invalidateQueries({
         queryKey: ["messages", message.conversationId],
@@ -189,7 +195,7 @@ export const useChatHub = (conversationId?: string) => {
       connection.off("ReceiveMessage", handleReceiveMessage);
       connection.off("ConversationReadUpdated", handleConversationReadUpdated);
     };
-  }, [connection, queryClient]);
+  }, [connection, queryClient, currentUserId]);
 
   // Send text message
   const sendTextMessage = async (
@@ -271,8 +277,14 @@ export const useChatHub = (conversationId?: string) => {
 };
 
 // ============= MUTATION HOOK FOR SENDING MESSAGES =============
-export const useSendMessage = (conversationId: string) => {
-  const { sendTextMessage, isConnected } = useChatHub(conversationId);
+export const useSendMessage = (
+  conversationId: string,
+  currentUserId?: string
+) => {
+  const { sendTextMessage, isConnected } = useChatHub(
+    conversationId,
+    currentUserId
+  );
   const queryClient = useQueryClient();
 
   return useMutation({

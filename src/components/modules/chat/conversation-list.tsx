@@ -250,13 +250,8 @@ export function ConversationList({
                         <div className="min-w-0 flex-1">
                           {renderLastMessage(conv)}
                         </div>
-                        {conv.unreadCount > 0 && !isMuted && (
-                          <Badge
-                            variant="default"
-                            className="shrink-0 rounded-full px-1.5 py-0 text-[10px] md:px-2 md:text-xs"
-                          >
-                            {conv.unreadCount}
-                          </Badge>
+                        {!conv.hasSeen && !isMuted && (
+                          <div className="size-2 shrink-0 rounded-full bg-primary md:size-2.5" />
                         )}
                       </div>
                     </div>

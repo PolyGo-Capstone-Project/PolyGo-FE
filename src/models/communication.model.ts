@@ -42,7 +42,7 @@ export const ConversationSchema = z.object({
   id: z.string(),
   lastMessage: LastMessageSchema.nullable(),
   user: UserInfoSchema,
-  unreadCount: z.number().int().nonnegative().default(0), // ✅ Add unread count
+  hasSeen: z.boolean(), // ✅ Backend returns hasSeen (boolean) not unreadCount
 });
 
 export const ConversationListResSchema = z.object({
