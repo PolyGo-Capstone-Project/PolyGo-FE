@@ -4,6 +4,7 @@ import envConfig from "@/config";
 import communicationApiRequest from "@/lib/apis/communication";
 import { getSessionTokenFromLocalStorage } from "@/lib/utils";
 import {
+  ConversationReadUpdatedType,
   GetConversationsQueryType,
   GetMessagesQueryType,
   RealtimeMessageType,
@@ -172,10 +173,21 @@ export const useChatHub = (conversationId?: string) => {
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     };
 
+    const handleConversationReadUpdated = (
+      data: ConversationReadUpdatedType
+    ) => {
+      console.log("👁️ Conversation read updated:", data);
+
+      // Invalidate conversations to update read status
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    };
+
     connection.on("ReceiveMessage", handleReceiveMessage);
+    connection.on("ConversationReadUpdated", handleConversationReadUpdated);
 
     return () => {
       connection.off("ReceiveMessage", handleReceiveMessage);
+      connection.off("ConversationReadUpdated", handleConversationReadUpdated);
     };
   }, [connection, queryClient]);
 
@@ -234,12 +246,27 @@ export const useChatHub = (conversationId?: string) => {
     }
   };
 
+  const markAsRead = async (conversationId: string, userId: string) => {
+    if (!connection || !isConnected) {
+      throw new Error("Not connected to chat hub");
+    }
+
+    try {
+      await connection.invoke("MarkAsRead", conversationId, userId);
+      console.log("✅ Marked conversation as read");
+    } catch (err: any) {
+      console.error("❌ Error marking as read:", err);
+      throw err;
+    }
+  };
+
   return {
     connection,
     isConnected,
     error,
     sendTextMessage,
     sendImageMessage,
+    markAsRead,
   };
 };
 

@@ -167,6 +167,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     isConnected,
     sendTextMessage,
     sendImageMessage,
+    markAsRead,
     error: hubError,
   } = useChatHub(selectedConversationId ?? undefined);
 
@@ -287,6 +288,13 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
         conv.id === conversationId ? { ...conv, unreadCount: 0 } : conv
       )
     );
+
+    // Mark conversation as read when user opens it
+    if (currentUserId) {
+      markAsRead?.(conversationId, currentUserId).catch((err) => {
+        console.error("Failed to mark conversation as read:", err);
+      });
+    }
   };
 
   const handleBackToList = () => {

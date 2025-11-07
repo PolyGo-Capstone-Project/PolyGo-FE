@@ -57,7 +57,13 @@ export const RealtimeMessageSchema = z.object({
   type: z.enum(MessageEnum),
   content: z.string(),
   conversationId: z.string(),
-  createdTime: z.string(),
+  sentAt: z.string(), // Changed from createdTime to sentAt to match BE
+});
+
+export const ConversationReadUpdatedSchema = z.object({
+  conversationId: z.string(),
+  userId: z.string(),
+  hasSeen: z.boolean(),
 });
 
 // ============= TYPES =============
@@ -72,3 +78,6 @@ export type GetConversationsQueryType = z.infer<
   typeof GetConversationsQuerySchema
 >;
 export type RealtimeMessageType = z.infer<typeof RealtimeMessageSchema>;
+export type ConversationReadUpdatedType = z.infer<
+  typeof ConversationReadUpdatedSchema
+>;
