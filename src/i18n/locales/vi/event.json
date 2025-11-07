@@ -248,6 +248,33 @@
         "prepareForEvent": "Chuẩn bị cho sự kiện và đánh dấu lịch",
         "close": "Đóng",
         "viewMyEventsButton": "Xem sự kiện của tôi"
+      },
+      "ratings": {
+        "yourRatingTitle": "Đánh giá của bạn",
+        "allRatingsTitle": "Đánh giá từ người tham gia",
+        "loading": "Đang tải đánh giá…",
+        "noComment": "Bạn chưa để lại nhận xét.",
+        "noRatingYet": "Chưa đánh giá.",
+        "editRatingButton": "Chỉnh sửa đánh giá",
+        "rateButton": "Đánh giá",
+        "noRatingsFound": "Chưa có đánh giá nào.",
+        "noCommentAll": "(Không có nhận xét)",
+        "yourStars": "Đánh giá",
+        "commentLabel": "Nhận xét",
+        "saveButton": "Lưu đánh giá",
+        "commentPlaceholder": "Viết nhận xét của bạn ở đây...",
+        "editDialogTitle": "Chỉnh sửa đánh giá",
+        "createDialogTitle": "Tạo đánh giá",
+        "dialogDescription": "Chọn số sao, để lại nhận xét và tặng quà (nếu có).",
+        "giftSelectLabel": "Chọn quà tặng (tuỳ chọn)",
+        "giftSelectPlaceholder": "Chọn một món quà…",
+        "available": "còn",
+        "giftQuantityLabel": "Số lượng quà",
+        "giftQuantityHelper": "Tối đa: {max} còn",
+        "noGifts": "Bạn chưa có quà nào.",
+        "buyMore": "Mua quà",
+        "shareYourThoughts": "Chia sẻ suy nghĩ của bạn về sự kiện này",
+        "rateThisEvent": "Đánh giá sự kiện này"
       }
     },
     "myEvent": {
