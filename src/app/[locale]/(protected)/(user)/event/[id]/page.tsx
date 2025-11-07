@@ -7,6 +7,7 @@ import {
   IconCheck,
   IconClock,
   IconCoin,
+  IconEdit,
   IconLoader2,
   IconMapPin,
   IconStar,
@@ -620,64 +621,97 @@ export default function EventDetailPage() {
                     </p>
                   </div>
                 )}
-
-                {/* Your Rating */}
-                {eventEnd && isRegistered && !isHost && (
-                  <>
-                    {isLoadingMyRating ? (
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <IconLoader2 className="h-4 w-4 animate-spin" />
-                      </div>
-                    ) : myRating?.hasRating ? (
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                          {renderStars(myRating.rating)}
-                          <span className="text-xs text-muted-foreground">
-                            {myRating.createdAt
-                              ? format(new Date(myRating.createdAt), "PPP")
-                              : ""}
-                          </span>
-                        </div>
-                        {myRating.comment ? (
-                          <p className="text-sm text-foreground">
-                            {myRating.comment}
-                          </p>
-                        ) : (
-                          <p className="text-sm text-muted-foreground italic">
-                            {t("noComment")}
-                          </p>
-                        )}
-                        <div className="pt-2">
-                          <Button
-                            variant="outline"
-                            onClick={() => setIsRatingDialogOpen(true)}
-                          >
-                            {t("ratings.editRatingButton")}
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm text-muted-foreground">
-                          {t("ratings.noRatingYet")}
-                        </p>
-                        <Button onClick={() => setIsRatingDialogOpen(true)}>
-                          {t("ratings.rateButton")}
-                        </Button>
-                      </div>
-                    )}
-                  </>
-                )}
               </CardContent>
             </Card>
           </div>
         </div>
 
+        {/* Your Rating */}
+        {eventEnd && isRegistered && !isHost && (
+          <Card className="shadow-lg mt-8">
+            <CardHeader className="flex justify-center">
+              <CardTitle className="flex items-center gap-2 font-bold text-3xl">
+                {/* <IconStar className="h-5 w-5 text-yellow-500" /> */}
+                {myRating?.hasRating
+                  ? t("ratings.yourRatingTitle")
+                  : t("ratings.rateThisEvent")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {isLoadingMyRating ? (
+                <div className="flex items-center justify-center gap-2 py-8">
+                  <IconLoader2 className="h-4 w-4 animate-spin text-primary" />
+                </div>
+              ) : myRating?.hasRating ? (
+                <div className="space-y-4">
+                  <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        {renderStars(myRating.rating)}
+                        {/* <span className="text-sm font-medium">
+                          {myRating.rating}/5
+                        </span> */}
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {myRating.createdAt
+                          ? format(new Date(myRating.createdAt), "PPP")
+                          : ""}
+                      </span>
+                    </div>
+                    {/* <Separator /> */}
+                    {myRating.comment ? (
+                      <p className="text-sm text-foreground leading-relaxed">
+                        {myRating.comment}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-muted-foreground italic">
+                        {t("noComment")}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setIsRatingDialogOpen(true)}
+                      className="gap-2"
+                    >
+                      <IconEdit className="h-4 w-4" />
+                      {t("ratings.editRatingButton")}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8 space-y-4">
+                  <div className="flex justify-center">
+                    <IconStar className="h-12 w-12 text-muted-foreground/30" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-base font-medium">
+                      {t("ratings.noRatingYet")}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {t("ratings.shareYourThoughts")}
+                    </p>
+                  </div>
+                  <Button
+                    className="w-min"
+                    onClick={() => setIsRatingDialogOpen(true)}
+                  >
+                    {t("ratings.rateButton")}
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
         {/* All ratings list */}
         {eventEnd && (
           <Card className="shadow-lg mt-4">
             <CardHeader className="flex justify-center">
-              <CardTitle className="text-center">
+              <CardTitle className="text-center font-bold text-3xl">
                 {t("ratings.allRatingsTitle")}
               </CardTitle>
             </CardHeader>
@@ -838,7 +872,7 @@ export default function EventDetailPage() {
 
             {/* Gift dropdown / Mua quà */}
             {purchasedGifts.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-1">
                 <div className="space-y-1">
                   <Label>{t("ratings.giftSelectLabel")}</Label>
                   <Select
@@ -848,14 +882,21 @@ export default function EventDetailPage() {
                       setGiftQuantity(1);
                     }}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue
                         placeholder={t("ratings.giftSelectPlaceholder")}
                       />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent
+                      position="popper"
+                      className="w-[var(--radix-select-trigger-width)] max-h-80"
+                    >
                       {purchasedGifts.map((gift: any) => (
-                        <SelectItem key={gift.id} value={gift.id}>
+                        <SelectItem
+                          key={gift.id}
+                          value={gift.id}
+                          className="whitespace-normal break-words py-2"
+                        >
                           {gift.name} ({t("ratings.available")} {gift.quantity})
                         </SelectItem>
                       ))}

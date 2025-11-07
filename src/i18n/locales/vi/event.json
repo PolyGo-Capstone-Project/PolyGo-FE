@@ -272,7 +272,9 @@
         "giftQuantityLabel": "Số lượng quà",
         "giftQuantityHelper": "Tối đa: {max} còn",
         "noGifts": "Bạn chưa có quà nào.",
-        "buyMore": "Mua quà"
+        "buyMore": "Mua quà",
+        "shareYourThoughts": "Chia sẻ suy nghĩ của bạn về sự kiện này",
+        "rateThisEvent": "Đánh giá sự kiện này"
       }
     },
     "myEvent": {

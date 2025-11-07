@@ -270,7 +270,9 @@
         "giftQuantityLabel": "Gift quantity",
         "giftQuantityHelper": "Max: {max} available",
         "noGifts": "You don’t have any gifts.",
-        "buyMore": "Buy gifts"
+        "buyMore": "Buy gifts",
+        "shareYourThoughts": "Share your thoughts about this event",
+        "rateThisEvent": "Rate this event"
       }
     },
     "myEvent": {
