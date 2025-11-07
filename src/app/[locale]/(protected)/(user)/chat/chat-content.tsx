@@ -11,6 +11,7 @@ import {
   MessageList,
   MessageSearch,
 } from "@/components/modules/chat";
+import { useUserPresenceContext } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { MESSAGE_IMAGE_SEPARATOR, MessageEnum } from "@/constants";
 import {
@@ -171,6 +172,36 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     error: hubError,
   } = useChatHub(selectedConversationId ?? undefined);
 
+  // User presence management from context
+  const { isUserOnline, getOnlineStatus, setOnUserStatusChangedCallback } =
+    useUserPresenceContext();
+
+  // Listen for realtime user status changes
+  useEffect(() => {
+    const handleStatusChange = (data: {
+      userId: string;
+      isOnline: boolean;
+      lastActiveAt: string;
+    }) => {
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.user.id === data.userId
+            ? {
+                ...conv,
+                user: {
+                  ...conv.user,
+                  isOnline: data.isOnline,
+                  lastSeen: data.isOnline ? null : new Date(data.lastActiveAt),
+                },
+              }
+            : conv
+        )
+      );
+    };
+
+    setOnUserStatusChangedCallback(handleStatusChange);
+  }, [setOnUserStatusChangedCallback]);
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobileView(window.innerWidth < 768);
@@ -200,7 +231,27 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
       });
       return mapped;
     });
-  }, [conversationsResponse]);
+
+    // Fetch online status for all users in conversations
+    const userIds = items.map((item) => item.user.id);
+    if (userIds.length > 0) {
+      getOnlineStatus(userIds)
+        .then((statusMap) => {
+          setConversations((prev) =>
+            prev.map((conv) => ({
+              ...conv,
+              user: {
+                ...conv.user,
+                isOnline: statusMap[conv.user.id] ?? false,
+              },
+            }))
+          );
+        })
+        .catch((err) => {
+          console.error("Failed to fetch online status:", err);
+        });
+    }
+  }, [conversationsResponse, getOnlineStatus]);
 
   useEffect(() => {
     if (conversationsError) {

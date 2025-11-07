@@ -3,6 +3,7 @@
 import { useLocale } from "next-intl";
 
 import { UserHeader } from "@/components";
+import { UserPresenceProvider } from "@/components/providers";
 import { AuthLoading } from "@/components/shared/auth-loading";
 import { Role } from "@/constants";
 import { useAuthGuard } from "@/hooks";
@@ -28,11 +29,13 @@ export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
     return null;
   }
 
-  // Render user content
+  // Render user content with presence tracking
   return (
-    <div className="min-h-screen flex flex-col">
-      <UserHeader />
-      <main>{children}</main>
-    </div>
+    <UserPresenceProvider>
+      <div className="min-h-screen flex flex-col">
+        <UserHeader />
+        <main>{children}</main>
+      </div>
+    </UserPresenceProvider>
   );
 }
