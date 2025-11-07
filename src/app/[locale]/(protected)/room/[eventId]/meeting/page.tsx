@@ -91,7 +91,7 @@ export default function MeetingRoomPage() {
     onRoomEnded: () => {
       toast.error(tError("eventEnded"));
       removeSettingMediaFromLocalStorage();
-      router.push(`/${locale}/events/${eventId}`);
+      router.push(`/${locale}/event/${eventId}`);
     },
   });
 
@@ -232,14 +232,13 @@ export default function MeetingRoomPage() {
     if (!isHost || !event) return;
 
     try {
-      // 1. End room via SignalR - this broadcasts to ALL participants
-      await endRoom();
-
       // 2. Update event status in database
       await eventApiRequest.updateEventStatusByHost({
         eventId,
         status: EventStatus.Completed,
       });
+      // 1. End room via SignalR - this broadcasts to ALL participants
+      await endRoom();
 
       toast.success(tControls("endEvent"));
     } catch (error) {

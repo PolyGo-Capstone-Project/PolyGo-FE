@@ -2,8 +2,10 @@
 
 import envConfig from "@/config";
 import communicationApiRequest from "@/lib/apis/communication";
+import { playNotificationSoundFromFile } from "@/lib/notification-sound";
 import { getSessionTokenFromLocalStorage } from "@/lib/utils";
 import {
+  ConversationReadUpdatedType,
   GetConversationsQueryType,
   GetMessagesQueryType,
   RealtimeMessageType,
@@ -58,7 +60,7 @@ export const useGetConversations = (
 };
 
 // ============= SIGNALR HUB CONNECTION =============
-export const useChatHub = (conversationId?: string) => {
+export const useChatHub = (conversationId?: string, currentUserId?: string) => {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -163,6 +165,11 @@ export const useChatHub = (conversationId?: string) => {
     const handleReceiveMessage = (message: RealtimeMessageType) => {
       console.log("📨 Received message:", message);
 
+      // Play notification sound ONLY for incoming messages (not from current user)
+      if (currentUserId && message.senderId !== currentUserId) {
+        playNotificationSoundFromFile("/sounds/notification.mp3");
+      }
+
       // Invalidate messages to refetch with full sender info from server
       queryClient.invalidateQueries({
         queryKey: ["messages", message.conversationId],
@@ -172,12 +179,23 @@ export const useChatHub = (conversationId?: string) => {
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     };
 
+    const handleConversationReadUpdated = (
+      data: ConversationReadUpdatedType
+    ) => {
+      console.log("👁️ Conversation read updated:", data);
+
+      // Invalidate conversations to update read status
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    };
+
     connection.on("ReceiveMessage", handleReceiveMessage);
+    connection.on("ConversationReadUpdated", handleConversationReadUpdated);
 
     return () => {
       connection.off("ReceiveMessage", handleReceiveMessage);
+      connection.off("ConversationReadUpdated", handleConversationReadUpdated);
     };
-  }, [connection, queryClient]);
+  }, [connection, queryClient, currentUserId]);
 
   // Send text message
   const sendTextMessage = async (
@@ -234,18 +252,39 @@ export const useChatHub = (conversationId?: string) => {
     }
   };
 
+  const markAsRead = async (conversationId: string, userId: string) => {
+    if (!connection || !isConnected) {
+      throw new Error("Not connected to chat hub");
+    }
+
+    try {
+      await connection.invoke("MarkAsRead", conversationId, userId);
+      console.log("✅ Marked conversation as read");
+    } catch (err: any) {
+      console.error("❌ Error marking as read:", err);
+      throw err;
+    }
+  };
+
   return {
     connection,
     isConnected,
     error,
     sendTextMessage,
     sendImageMessage,
+    markAsRead,
   };
 };
 
 // ============= MUTATION HOOK FOR SENDING MESSAGES =============
-export const useSendMessage = (conversationId: string) => {
-  const { sendTextMessage, isConnected } = useChatHub(conversationId);
+export const useSendMessage = (
+  conversationId: string,
+  currentUserId?: string
+) => {
+  const { sendTextMessage, isConnected } = useChatHub(
+    conversationId,
+    currentUserId
+  );
   const queryClient = useQueryClient();
 
   return useMutation({

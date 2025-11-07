@@ -35,7 +35,7 @@ export interface ChatConversation {
   id: string;
   user: ChatUser;
   lastMessage: ChatLastMessage | null;
-  unreadCount: number;
+  hasSeen: boolean; // Changed from unreadCount to match backend
   isTyping?: boolean;
   updatedAt: Date;
 }
