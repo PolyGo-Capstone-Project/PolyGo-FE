@@ -240,6 +240,62 @@ export const KickParticipantBodySchema = z
   })
   .strict();
 
+// NEW: My rating for an event
+export const EventMyRatingResSchema = z.object({
+  data: z.object({
+    hasRating: z.boolean(),
+    id: z.string().optional().nullable(),
+    rating: z.number().min(1).max(5).optional().nullable(),
+    comment: z.string().optional().nullable(),
+    createdAt: z.iso.datetime().optional().nullable(),
+  }),
+  message: z.string(),
+});
+
+// NEW: Rating item của 1 user
+export const EventRatingUserSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  avatarUrl: z.string().optional().nullable(),
+});
+
+export const EventRatingListItemSchema = z.object({
+  id: z.string(),
+  rating: z.number().min(1).max(5),
+  comment: z.string().optional().nullable(),
+  createdAt: z.iso.datetime(),
+  user: EventRatingUserSchema,
+});
+
+// NEW: Query cho list ratings (lang + page)
+export const EventRatingsQuerySchema = PaginationLangQuerySchema;
+
+// NEW: Response list ratings (có meta phân trang)
+export const EventRatingsResSchema = z.object({
+  data: z.object({
+    items: z.array(EventRatingListItemSchema),
+    ...PaginationMetaSchema.shape,
+  }),
+  message: z.string(),
+});
+
+export const UpdateEventRatingBodySchema = z
+  .object({
+    eventId: z.string(),
+    rating: z.number().min(1).max(5),
+    comment: z.string().max(2000).optional().nullable(),
+  })
+  .strict();
+
+export const CreateEventRatingBodySchema = z
+  .object({
+    eventId: z.string(),
+    rating: z.number().min(1).max(5),
+    comment: z.string().max(2000).optional().nullable(),
+    giftId: z.string().optional().nullable(), // optional
+    giftQuantity: z.number().min(0).optional().nullable(), // optional
+  })
+  .strict();
 // METHOD PUT ==================================================================
 
 // Update event - host
@@ -277,4 +333,18 @@ export type KickParticipantBodyType = z.infer<typeof KickParticipantBodySchema>;
 export type UpdateEventBodyType = z.infer<typeof UpdateEventBodySchema>;
 export type UpdateEventStatusBodyType = z.infer<
   typeof UpdateEventStatusBodySchema
+>;
+
+// NEW types:
+export type EventMyRatingResType = z.infer<typeof EventMyRatingResSchema>;
+// NEW types
+export type EventRatingListItemType = z.infer<typeof EventRatingListItemSchema>;
+export type EventRatingsQueryType = z.infer<typeof EventRatingsQuerySchema>;
+export type EventRatingsResType = z.infer<typeof EventRatingsResSchema>;
+// NEW type
+export type UpdateEventRatingBodyType = z.infer<
+  typeof UpdateEventRatingBodySchema
+>;
+export type CreateEventRatingBodyType = z.infer<
+  typeof CreateEventRatingBodySchema
 >;
