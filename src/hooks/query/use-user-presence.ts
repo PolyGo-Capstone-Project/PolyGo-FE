@@ -143,12 +143,53 @@ export const useUserPresence = (options?: UseUserPresenceOptions) => {
       }
     });
 
+    // Handle beforeunload - graceful disconnect when user closes tab/browser
+    const handleBeforeUnload = () => {
+      console.log("🚪 [UserPresenceHub] Browser/tab closing, disconnecting...");
+      if (connectionRef.current) {
+        // Use synchronous stop for beforeunload
+        try {
+          connectionRef.current.stop();
+          console.log(
+            "✅ [UserPresenceHub] Connection stopped on beforeunload"
+          );
+        } catch (err) {
+          console.error(
+            "❌ [UserPresenceHub] Error stopping on beforeunload:",
+            err
+          );
+        }
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
     // Cleanup
     return () => {
+      console.log("🔌 [UserPresenceHub] Cleaning up connection...");
+
+      // Remove beforeunload listener
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+
+      // Stop connection gracefully
       if (connectionRef.current) {
-        connectionRef.current.stop().catch((err) => {
-          console.error("Error stopping UserPresenceHub connection:", err);
-        });
+        const currentState = connectionRef.current.state;
+        console.log(
+          "📊 [UserPresenceHub] Current connection state:",
+          currentState
+        );
+
+        connectionRef.current
+          .stop()
+          .then(() => {
+            console.log("✅ [UserPresenceHub] Connection stopped successfully");
+          })
+          .catch((err) => {
+            console.error(
+              "❌ [UserPresenceHub] Error stopping connection:",
+              err
+            );
+          });
       }
     };
   }, []);
