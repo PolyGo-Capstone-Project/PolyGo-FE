@@ -38,6 +38,7 @@ type UserCardProps = {
   onAddFriend?: (userId: string) => void;
   onAcceptFriend?: (userId: string) => void;
   onRejectFriend?: (userId: string) => void;
+  onChatWithUser?: (userId: string) => void;
 };
 
 export function UserCard({
@@ -46,6 +47,7 @@ export function UserCard({
   onAddFriend,
   onAcceptFriend,
   onRejectFriend,
+  onChatWithUser,
 }: UserCardProps) {
   const speakingLanguages = user.speakingLanguages || [];
   const learningLanguages = user.learningLanguages || [];
@@ -282,7 +284,11 @@ export function UserCard({
         )}
 
         {user.friendStatus === FriendStatus.Friends && (
-          <Button variant="outline" className="flex-1">
+          <Button
+            variant="outline"
+            className="flex-1"
+            onClick={() => onChatWithUser?.(user.id)}
+          >
             <IconMessageCircle className="mr-2 h-4 w-4" />
             {t("chat")}
           </Button>
