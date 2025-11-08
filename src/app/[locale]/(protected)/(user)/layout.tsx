@@ -6,6 +6,7 @@ import { UserHeader } from "@/components";
 import { UserPresenceProvider } from "@/components/providers";
 import { AuthLoading } from "@/components/shared/auth-loading";
 import { Role } from "@/constants";
+import { ChatNotificationProvider } from "@/contexts/chat-notification-context";
 import { useAuthGuard } from "@/hooks";
 
 interface ProtectedLayoutProps {
@@ -29,13 +30,15 @@ export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
     return null;
   }
 
-  // Render user content with presence tracking
+  // Render user content with presence tracking and chat notifications
   return (
     <UserPresenceProvider>
-      <div className="min-h-screen flex flex-col">
-        <UserHeader />
-        <main>{children}</main>
-      </div>
+      <ChatNotificationProvider>
+        <div className="min-h-screen flex flex-col">
+          <UserHeader />
+          <main>{children}</main>
+        </div>
+      </ChatNotificationProvider>
     </UserPresenceProvider>
   );
 }
