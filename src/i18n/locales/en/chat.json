@@ -50,6 +50,8 @@
     "unmuteConversation": "Unmute Notifications",
     "cancel": "Cancel",
     "delete": "Delete",
+    "deleteMessage": "Delete Message",
+    "copyMessage": "Copy Message",
     "you": "You",
     "them": "Them",
     "jumpToMessage": "Jump to message",
@@ -61,6 +63,8 @@
       "loadConversations": "Failed to load conversations",
       "loadMessages": "Failed to load messages",
       "sendMessage": "Failed to send message",
+      "deleteMessage": "Failed to delete message",
+      "copyMessage": "Failed to copy message",
       "recordVoice": "Failed to record voice. Please allow microphone access.",
       "uploadImage": "Failed to upload image",
       "callFailed": "Call failed"

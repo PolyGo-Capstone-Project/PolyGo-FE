@@ -5,12 +5,20 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MESSAGE_IMAGE_SEPARATOR } from "@/constants";
 import { cn } from "@/lib/utils";
 import { ChatMessage } from "@/types";
 import { format, isToday, isYesterday } from "date-fns";
 import { enUS, vi } from "date-fns/locale";
+import { Copy, MoreVertical, Trash2 } from "lucide-react";
 import { ImagePreviewModal } from "./image-preview-modal";
 
 interface MessageListProps {
@@ -23,6 +31,8 @@ interface MessageListProps {
   locale: string;
   otherUserName: string;
   otherUserAvatar?: string;
+  onDeleteMessage?: (messageId: string) => void;
+  onCopyMessage?: (content: string) => void;
 }
 
 export function MessageList({
@@ -35,6 +45,8 @@ export function MessageList({
   locale,
   otherUserName,
   otherUserAvatar,
+  onDeleteMessage,
+  onCopyMessage,
 }: MessageListProps) {
   const t = useTranslations("chat");
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -317,7 +329,7 @@ export function MessageList({
                 <div
                   key={message.id}
                   className={cn(
-                    "flex items-end gap-1.5 md:gap-2",
+                    "group flex items-end gap-1.5 md:gap-2",
                     isOwn ? "justify-end" : "justify-start"
                   )}
                 >
@@ -329,6 +341,40 @@ export function MessageList({
                         {getInitials(otherUserName)}
                       </AvatarFallback>
                     </Avatar>
+                  )}
+
+                  {/* Message actions - left side for own messages */}
+                  {isOwn && (onDeleteMessage || onCopyMessage) && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 self-center opacity-0 transition-opacity group-hover:opacity-100 hover:bg-muted"
+                        >
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start">
+                        {onCopyMessage && (
+                          <DropdownMenuItem
+                            onClick={() => onCopyMessage(message.content)}
+                          >
+                            <Copy className="mr-2 h-4 w-4" />
+                            {t("copyMessage")}
+                          </DropdownMenuItem>
+                        )}
+                        {onDeleteMessage && (
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => onDeleteMessage(message.id)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            {t("deleteMessage")}
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   )}
 
                   {/* Message Bubble */}
@@ -355,6 +401,29 @@ export function MessageList({
                       <span>{formatMessageTime(message.createdAt)}</span>
                     </div>
                   </div>
+
+                  {/* Message actions - right side for other user's messages */}
+                  {!isOwn && onCopyMessage && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 self-center opacity-0 transition-opacity group-hover:opacity-100 hover:bg-muted"
+                        >
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => onCopyMessage(message.content)}
+                        >
+                          <Copy className="mr-2 h-4 w-4" />
+                          {t("copyMessage")}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </div>
               );
             })}

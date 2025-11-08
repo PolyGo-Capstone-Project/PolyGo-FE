@@ -38,7 +38,8 @@
     "friendRequestAccepted": "Friend request accepted successfully!",
     "friendRemoved": "Friend removed successfully!",
     "friendRequestCancelled": "Friend request cancelled successfully!",
-    "profileLinkCopied": "Profile link copied!"
+    "profileLinkCopied": "Profile link copied!",
+    "copy": "Copy message successful!"
   },
   "Error": {
     "default": "An error occurred.",
@@ -76,7 +77,9 @@
     "failAccept": "Failed to accept friend request. Please try again.",
     "failReject": "Failed to reject friend request. Please try again.",
     "failRemove": "Failed to remove friend. Please try again.",
-    "failCancel": "Failed to cancel friend request. Please try again."
+    "failCancel": "Failed to cancel friend request. Please try again.",
+    "conversationNotFound": "Conversation not found. Please try again.",
+    "copyMessage": "Failed to copy message. Please try again."
   },
   "header": {
     "products": "Products",

@@ -29,6 +29,12 @@ type GetMessagesResponse = Awaited<
 type GetConversationsResponse = Awaited<
   ReturnType<typeof communicationApiRequest.getConversations>
 >;
+type GetConversationByIdResponse = Awaited<
+  ReturnType<typeof communicationApiRequest.getConversationById>
+>;
+type GetConversationsByUserIdResponse = Awaited<
+  ReturnType<typeof communicationApiRequest.getConversationsByUserId>
+>;
 
 // ============= QUERIES =============
 export const useGetMessages = (
@@ -56,6 +62,47 @@ export const useGetConversations = (
     staleTime: 0,
     refetchOnMount: true,
     placeholderData: keepPreviousData,
+  });
+};
+
+export const useGetConversationById = (
+  conversationId: string,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery<GetConversationByIdResponse>({
+    queryKey: ["conversation", conversationId],
+    queryFn: () => communicationApiRequest.getConversationById(conversationId),
+    enabled: options?.enabled ?? !!conversationId,
+    staleTime: 0,
+    refetchOnMount: true,
+  });
+};
+
+export const useGetConversationsByUserId = (
+  userId: string,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery<GetConversationsByUserIdResponse>({
+    queryKey: ["conversations", userId],
+    queryFn: () => communicationApiRequest.getConversationsByUserId(userId),
+    enabled: options?.enabled ?? !!userId,
+    staleTime: 0,
+    refetchOnMount: true,
+  });
+};
+
+// ============= Mutations =============
+
+export const useDeleteMessage = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (messageId: string) =>
+      communicationApiRequest.deleteMessage(messageId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["messages"] });
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    },
   });
 };
 

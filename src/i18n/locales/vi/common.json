@@ -38,7 +38,8 @@
     "friendRequestAccepted": "Chấp nhận lời mời kết bạn thành công!",
     "friendRemoved": "Xóa bạn bè thành công!",
     "friendRequestCancelled": "Hủy lời mời kết bạn thành công!",
-    "profileLinkCopied": "Đã sao chép liên kết hồ sơ!"
+    "profileLinkCopied": "Đã sao chép liên kết hồ sơ!",
+    "copy": "Đã sao chép tin nhắn"
   },
   "Error": {
     "default": "Đã xảy ra lỗi.",
@@ -76,7 +77,9 @@
     "failAccept": "Chấp nhận lời mời kết bạn thất bại. Vui lòng thử lại.",
     "failReject": "Từ chối lời mời kết bạn thất bại. Vui lòng thử lại.",
     "failRemove": "Xóa bạn bè thất bại. Vui lòng thử lại.",
-    "failCancel": "Hủy lời mời kết bạn thất bại. Vui lòng thử lại."
+    "failCancel": "Hủy lời mời kết bạn thất bại. Vui lòng thử lại.",
+    "conversationNotFound": "Không tìm thấy cuộc trò chuyện. Vui lòng thử lại.",
+    "copyMessage": "Sao chép tin nhắn thất bại. Vui lòng thử lại."
   },
   "header": {
     "products": "Sản phẩm",

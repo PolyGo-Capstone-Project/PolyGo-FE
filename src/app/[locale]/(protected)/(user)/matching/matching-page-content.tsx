@@ -25,6 +25,7 @@ import {
   useSearchUsers,
   useSendFriendRequestMutation,
 } from "@/hooks";
+import communicationApiRequest from "@/lib/apis/communication";
 import { handleErrorApi, showErrorToast, showSuccessToast } from "@/lib/utils";
 import type { SearchUserQueryType, UserMatchingItemType } from "@/models";
 import { IconSearch, IconSparkles, IconUsers } from "@tabler/icons-react";
@@ -394,6 +395,25 @@ export default function MatchingPageContent() {
     rejectFriendRequestMutation.mutate({ senderId: userId });
   };
 
+  const handleChatWithUser = async (userId: string) => {
+    try {
+      // Fetch conversation for this user
+      const conversationData =
+        await communicationApiRequest.getConversationsByUserId(userId);
+
+      if (!conversationData?.payload?.data?.id) {
+        showErrorToast("conversationNotFound", tError);
+        return;
+      }
+
+      const conversationId = conversationData.payload.data.id;
+      router.push(`/${locale}/chat?conversationId=${conversationId}`);
+    } catch (error) {
+      console.error("Failed to get conversation:", error);
+      showErrorToast("conversationNotFound", tError);
+    }
+  };
+
   const handleClearFilters = () => {
     setFilters({
       search: "",
@@ -593,6 +613,7 @@ export default function MatchingPageContent() {
                     onAddFriend={handleAddFriend}
                     onAcceptFriend={handleAcceptFriend}
                     onRejectFriend={handleRejectFriend}
+                    onChatWithUser={handleChatWithUser}
                   />
                 ))}
               </div>
