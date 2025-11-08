@@ -23,11 +23,11 @@ export const LastMessageSchema = z.object({
 
 export const MessageSchema = z.object({
   id: z.string(),
-  content: z.string(),
-  type: z.enum(MessageEnum),
   conversationId: z.string(),
-  sentAt: z.string(),
+  type: z.enum(MessageEnum),
   sender: UserInfoSchema,
+  content: z.string(),
+  sentAt: z.string(),
 });
 
 export const MessageListResSchema = z.object({
@@ -40,9 +40,9 @@ export const MessageListResSchema = z.object({
 
 export const ConversationSchema = z.object({
   id: z.string(),
+  hasSeen: z.boolean(),
   lastMessage: LastMessageSchema.nullable(),
   user: UserInfoSchema,
-  hasSeen: z.boolean(), // ✅ Backend returns hasSeen (boolean) not unreadCount
 });
 
 export const ConversationListResSchema = z.object({
@@ -67,6 +67,15 @@ export const ConversationReadUpdatedSchema = z.object({
   hasSeen: z.boolean(),
 });
 
+// Get conversations by id => conversation
+export const GetConversationByIdResSchema = z.object({
+  data: ConversationSchema,
+  message: z.string(),
+});
+
+// Get conversations by user id => conversations
+export const GetConversationsByUserIdResSchema = GetConversationByIdResSchema;
+
 // ============= TYPES =============
 export type UserInfoType = z.infer<typeof UserInfoSchema>;
 export type LastMessageType = z.infer<typeof LastMessageSchema>;
@@ -81,4 +90,10 @@ export type GetConversationsQueryType = z.infer<
 export type RealtimeMessageType = z.infer<typeof RealtimeMessageSchema>;
 export type ConversationReadUpdatedType = z.infer<
   typeof ConversationReadUpdatedSchema
+>;
+export type GetConversationByIdResType = z.infer<
+  typeof GetConversationByIdResSchema
+>;
+export type GetConversationsByUserIdResType = z.infer<
+  typeof GetConversationsByUserIdResSchema
 >;

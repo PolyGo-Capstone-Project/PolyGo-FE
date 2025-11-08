@@ -30,6 +30,7 @@ import { useUserPresenceContext } from "@/components/providers";
 import { FriendStatus } from "@/constants";
 import {
   useAcceptFriendRequestMutation,
+  useGetConversationsByUserId,
   useGetUserProfile,
   useRejectFriendRequestMutation,
   useSendFriendRequestMutation,
@@ -104,6 +105,12 @@ export default function UserProfilePage() {
     error: userError,
     refetch,
   } = useGetUserProfile(userId, lang, { enabled: !!userId });
+
+  // Fetch conversation with this user (only enabled when they are friends)
+  const { data: conversationData } = useGetConversationsByUserId(userId, {
+    enabled:
+      !!userId && userData?.payload.data.friendStatus === FriendStatus.Friends,
+  });
 
   // Friend mutations
   const sendFriendRequestMutation = useSendFriendRequestMutation({
@@ -225,7 +232,14 @@ export default function UserProfilePage() {
   };
 
   const handleChat = () => {
-    router.push(`/${locale}/chat`);
+    if (!conversationData) {
+      showErrorToast("conversationNotFound", tError);
+      return;
+    }
+
+    const conversationId = conversationData.payload.data.id;
+    // Navigate to chat with conversationId as query param
+    router.push(`/${locale}/chat?conversationId=${conversationId}`);
   };
 
   // Handle send gift

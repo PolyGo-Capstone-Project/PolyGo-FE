@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
@@ -17,6 +18,7 @@ import { MESSAGE_IMAGE_SEPARATOR, MessageEnum } from "@/constants";
 import {
   useAuthMe,
   useChatHub,
+  useDeleteMessage,
   useGetConversations,
   useGetMessages,
 } from "@/hooks";
@@ -111,6 +113,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   const tError = useTranslations("chat.error");
   const { data: authData } = useAuthMe();
   const currentUserId = authData?.payload.data.id ?? null;
+  const searchParams = useSearchParams();
 
   const [conversations, setConversations] = useState<ChatConversation[]>([]);
   const [selectedConversationId, setSelectedConversationId] = useState<
@@ -175,6 +178,8 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     currentUserId ?? undefined
   );
 
+  const deleteMessageMutation = useDeleteMessage();
+
   // User presence management from context
   const { isUserOnline, getOnlineStatus, setOnUserStatusChangedCallback } =
     useUserPresenceContext();
@@ -220,6 +225,45 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  // Auto-select conversation from URL params
+  useEffect(() => {
+    const conversationIdFromUrl = searchParams.get("conversationId");
+    if (conversationIdFromUrl && conversations.length > 0) {
+      const conversationExists = conversations.some(
+        (conv) => conv.id === conversationIdFromUrl
+      );
+      if (
+        conversationExists &&
+        selectedConversationId !== conversationIdFromUrl
+      ) {
+        setSelectedConversationId(conversationIdFromUrl);
+        setMessages([]);
+        setHasMoreMessages(false);
+        setNextPageToLoad(2);
+        setIsLoadingMoreMessages(false);
+        setLastLoadedPage(1);
+        setMessagesQuery({ ...DEFAULT_MESSAGES_QUERY });
+
+        // Mark conversation as seen when user opens it
+        setConversations((prev) =>
+          prev.map((conv) =>
+            conv.id === conversationIdFromUrl
+              ? { ...conv, hasSeen: true }
+              : conv
+          )
+        );
+
+        // Mark conversation as read on backend
+        if (currentUserId) {
+          markAsRead?.(conversationIdFromUrl, currentUserId).catch((err) => {
+            console.error("Failed to mark conversation as read:", err);
+          });
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, conversations.length]);
 
   useEffect(() => {
     if (!conversationsResponse) return;
@@ -639,6 +683,28 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     console.log("Scroll to message:", messageId);
   };
 
+  const handleDeleteMessage = async (messageId: string) => {
+    try {
+      await deleteMessageMutation.mutateAsync(messageId);
+      // Remove the message from local state immediately for better UX
+      setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
+      toast.success(tSuccess("Delete"));
+    } catch (error) {
+      console.error("Failed to delete message:", error);
+      toast.error(tError("deleteMessage"));
+    }
+  };
+
+  const handleCopyMessage = async (content: string) => {
+    try {
+      await navigator.clipboard.writeText(content);
+      toast.success(tSuccess("Copy"));
+    } catch (error) {
+      console.error("Failed to copy message:", error);
+      toast.error(tError("copyMessage"));
+    }
+  };
+
   useEffect(() => {
     if (!selectedConversationId) return;
 
@@ -728,6 +794,8 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                   selectedConversation.user.avatarUrl ??
                   undefined
                 }
+                onDeleteMessage={handleDeleteMessage}
+                onCopyMessage={handleCopyMessage}
               />
             </div>
             <MessageInput
@@ -816,6 +884,8 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                   selectedConversation.user.avatarUrl ??
                   undefined
                 }
+                onDeleteMessage={handleDeleteMessage}
+                onCopyMessage={handleCopyMessage}
               />
             </div>
 

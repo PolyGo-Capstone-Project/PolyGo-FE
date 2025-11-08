@@ -50,6 +50,8 @@
     "unmuteConversation": "Bật thông báo",
     "cancel": "Hủy",
     "delete": "Xóa",
+    "deleteMessage": "Xóa tin nhắn",
+    "copyMessage": "Sao chép tin nhắn",
     "you": "Bạn",
     "them": "Họ",
     "jumpToMessage": "Đi tới tin nhắn",
@@ -61,6 +63,8 @@
       "loadConversations": "Không thể tải danh sách cuộc trò chuyện",
       "loadMessages": "Không thể tải tin nhắn",
       "sendMessage": "Không thể gửi tin nhắn",
+      "deleteMessage": "Không thể xóa tin nhắn",
+      "copyMessage": "Không thể sao chép tin nhắn",
       "recordVoice": "Không thể ghi âm. Vui lòng cho phép truy cập microphone.",
       "uploadImage": "Không thể tải hình ảnh lên",
       "callFailed": "Cuộc gọi thất bại"
