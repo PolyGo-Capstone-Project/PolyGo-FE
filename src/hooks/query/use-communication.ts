@@ -107,12 +107,22 @@ export const useDeleteMessage = () => {
 };
 
 // ============= SIGNALR HUB CONNECTION =============
-export const useChatHub = (conversationId?: string, currentUserId?: string) => {
+export const useChatHub = (
+  conversationId?: string,
+  currentUserId?: string,
+  onNewMessage?: (message: RealtimeMessageType) => void
+) => {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
   const connectionRef = useRef<HubConnection | null>(null);
+  const onNewMessageRef = useRef(onNewMessage);
+
+  // Update callback ref when it changes
+  useEffect(() => {
+    onNewMessageRef.current = onNewMessage;
+  }, [onNewMessage]);
 
   // Initialize connection
   useEffect(() => {
@@ -126,10 +136,31 @@ export const useChatHub = (conversationId?: string, currentUserId?: string) => {
     const hubConnection = new HubConnectionBuilder()
       .withUrl(`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/chatHub`, {
         accessTokenFactory: () => token,
+        // Add timeout configurations to prevent disconnections
+        timeout: 100000, // 100 seconds
+        withCredentials: false,
       })
-      .withAutomaticReconnect()
+      .withAutomaticReconnect({
+        nextRetryDelayInMilliseconds: (retryContext) => {
+          // Exponential backoff: 0s, 2s, 10s, 30s, then 30s
+          if (retryContext.previousRetryCount === 0) {
+            return 0;
+          }
+          if (retryContext.previousRetryCount === 1) {
+            return 2000;
+          }
+          if (retryContext.previousRetryCount === 2) {
+            return 10000;
+          }
+          return 30000;
+        },
+      })
       .configureLogging(LogLevel.Information)
       .build();
+
+    // Set server timeout (keep-alive)
+    hubConnection.serverTimeoutInMilliseconds = 60000; // 60 seconds
+    hubConnection.keepAliveIntervalInMilliseconds = 15000; // 15 seconds
 
     connectionRef.current = hubConnection;
     setConnection(hubConnection);
@@ -161,10 +192,23 @@ export const useChatHub = (conversationId?: string, currentUserId?: string) => {
       setIsConnected(true);
       setError(null);
 
+      // Invalidate queries to refetch latest data after reconnection
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      if (conversationId) {
+        queryClient.invalidateQueries({
+          queryKey: ["messages", conversationId],
+        });
+      }
+
       // Rejoin conversation if exists
       if (conversationId && connectionRef.current) {
         connectionRef.current
           .invoke("JoinConversation", conversationId)
+          .then(() => {
+            console.log(
+              `✅ Rejoined conversation after reconnect: ${conversationId}`
+            );
+          })
           .catch((err) => {
             console.error("❌ Error rejoining conversation:", err);
           });
@@ -215,6 +259,11 @@ export const useChatHub = (conversationId?: string, currentUserId?: string) => {
       // Play notification sound ONLY for incoming messages (not from current user)
       if (currentUserId && message.senderId !== currentUserId) {
         playNotificationSoundFromFile("/sounds/notification.mp3");
+      }
+
+      // Call the callback if provided (for updating local state immediately)
+      if (onNewMessageRef.current) {
+        onNewMessageRef.current(message);
       }
 
       // Invalidate messages to refetch with full sender info from server

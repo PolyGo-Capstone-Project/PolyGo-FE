@@ -15,6 +15,7 @@ import {
 import { useUserPresenceContext } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { MESSAGE_IMAGE_SEPARATOR, MessageEnum } from "@/constants";
+import { useChatNotification } from "@/contexts/chat-notification-context";
 import {
   useAuthMe,
   useChatHub,
@@ -30,6 +31,7 @@ import {
   GetConversationsQueryType,
   GetMessagesQueryType,
   MessageType,
+  RealtimeMessageType,
 } from "@/models";
 import { CallState, CallType, ChatConversation, ChatMessage } from "@/types";
 import { ArrowLeft, MessageCircle } from "lucide-react";
@@ -167,6 +169,30 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     enabled: Boolean(selectedConversationId),
   });
 
+  // Handle new messages from SignalR
+  const handleNewMessage = useCallback(
+    (message: RealtimeMessageType) => {
+      // If message is from another conversation (not currently selected), mark it as unread
+      if (
+        message.conversationId !== selectedConversationId &&
+        message.senderId !== currentUserId
+      ) {
+        console.log(
+          "📬 New message from another conversation:",
+          message.conversationId
+        );
+        setConversations((prev) =>
+          prev.map((conv) =>
+            conv.id === message.conversationId
+              ? { ...conv, hasSeen: false, updatedAt: new Date() }
+              : conv
+          )
+        );
+      }
+    },
+    [selectedConversationId, currentUserId]
+  );
+
   const {
     isConnected,
     sendTextMessage,
@@ -175,7 +201,8 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     error: hubError,
   } = useChatHub(
     selectedConversationId ?? undefined,
-    currentUserId ?? undefined
+    currentUserId ?? undefined,
+    handleNewMessage
   );
 
   const deleteMessageMutation = useDeleteMessage();
@@ -184,10 +211,18 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   const { isUserOnline, getOnlineStatus, setOnUserStatusChangedCallback } =
     useUserPresenceContext();
 
+  // Chat notification management
+  const { setUnreadChatCount } = useChatNotification();
+
   // Calculate total unread count (conversations where hasSeen is false)
   const totalUnreadCount = useMemo(() => {
     return conversations.filter((conv) => !conv.hasSeen).length;
   }, [conversations]);
+
+  // Sync unread count with notification context
+  useEffect(() => {
+    setUnreadChatCount(totalUnreadCount);
+  }, [totalUnreadCount, setUnreadChatCount]);
 
   // Listen for realtime user status changes
   useEffect(() => {
@@ -275,9 +310,23 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
       const mapped = items.map((item) => {
         const previous = prevMap.get(item.id);
         const current = mapConversationToChat(item);
+
+        // Priority for hasSeen:
+        // 1. If it's the currently selected conversation, keep it as seen (true)
+        // 2. If server says hasSeen is false (new message), use server value
+        // 3. Otherwise, keep previous value
+        let hasSeen = current.hasSeen;
+        if (item.id === selectedConversationId) {
+          hasSeen = true; // Always mark selected conversation as seen
+        } else if (!current.hasSeen) {
+          hasSeen = false; // Server says there's unread message
+        } else if (previous) {
+          hasSeen = previous.hasSeen; // Keep previous state
+        }
+
         return {
           ...current,
-          hasSeen: previous?.hasSeen ?? current.hasSeen,
+          hasSeen,
           updatedAt: previous?.updatedAt ?? current.updatedAt,
         };
       });
@@ -303,7 +352,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
           console.error("Failed to fetch online status:", err);
         });
     }
-  }, [conversationsResponse, getOnlineStatus]);
+  }, [conversationsResponse, getOnlineStatus, selectedConversationId]);
 
   useEffect(() => {
     if (conversationsError) {
