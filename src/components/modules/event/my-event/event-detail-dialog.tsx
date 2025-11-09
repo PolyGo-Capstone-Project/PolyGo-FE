@@ -3,6 +3,7 @@
 import {
   IconCalendar,
   IconClock,
+  IconEye,
   IconLoader2,
   IconMapPin,
   IconUsers,
@@ -30,6 +31,7 @@ import {
 import { EventStatus, EventStatusType } from "@/constants";
 import { useGetEventById } from "@/hooks";
 import { formatCurrency } from "@/lib";
+import { useRouter } from "next/navigation";
 
 type EventDetailDialogProps = {
   eventId: string | null;
@@ -44,6 +46,7 @@ export function EventDetailDialog({
 }: EventDetailDialogProps) {
   const t = useTranslations("event.detail");
   const locale = useLocale();
+  const router = useRouter();
 
   const { data, isLoading, error } = useGetEventById(
     eventId || "",
@@ -93,6 +96,12 @@ export function EventDetailDialog({
 
     const config = statusConfig[status];
     return <Badge variant={config.variant}>{config.label}</Badge>;
+  };
+
+  const handleToEventPage = () => {
+    if (!eventId) return;
+    onOpenChange(false);
+    router.push(`/${locale}/event/${eventId}`);
   };
 
   return (
@@ -229,7 +238,11 @@ export function EventDetailDialog({
           </div>
         </ScrollArea>
 
-        <div className="flex justify-end gap-2 px-6 pb-6 pt-4 border-t flex-shrink-0">
+        <div className="flex justify-between gap-2 px-6 pb-6 pt-4 border-t flex-shrink-0">
+          <Button onClick={() => handleToEventPage()}>
+            <IconEye className="h-4 w-4" />
+            {t("detail")}
+          </Button>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             <IconX className="h-4 w-4 mr-2" />
             {t("cancel")}

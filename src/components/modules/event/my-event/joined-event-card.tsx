@@ -94,81 +94,104 @@ export function JoinedEventCard({
 
   return (
     <>
-      <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300">
-        {/* Banner */}
-        <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-background">
+      <Card className="group overflow-hidden hover:shadow-lg transition-all duration-200 border hover:border-primary/50 flex flex-col h-full">
+        {/* Compact Banner */}
+        <div className="relative h-36 w-full overflow-hidden bg-gradient-to-br from-primary/10 to-muted/20">
           {hasBanner ? (
-            <Image
-              src={event.bannerUrl}
-              alt={event.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-            />
+            <>
+              <Image
+                src={event.bannerUrl}
+                alt={event.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            </>
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <IconCalendar className="h-12 w-12 text-muted-foreground/30" />
+              <IconCalendar className="h-10 w-10 text-muted-foreground/20" />
             </div>
           )}
-          <div className="absolute top-3 right-3">
+          <div className="absolute top-2 right-2 z-10">
             {event.fee === 0 ? (
-              <Badge className="bg-green-500/90 text-white border-0 shadow-lg">
+              <Badge className="bg-emerald-500 text-white border-0 shadow text-[10px] px-2 py-0.5">
                 {tCommon("free")}
               </Badge>
             ) : (
-              <Badge className="bg-blue-500/90 text-white border-0 shadow-lg">
+              <Badge className="bg-blue-600 text-white border-0 shadow text-[10px] px-2 py-0.5">
                 {formatCurrency(event.fee)}
               </Badge>
             )}
           </div>
         </div>
 
-        <CardContent className="p-4 space-y-4">
-          {/* Title & Description */}
+        <CardContent className="p-4 space-y-3 flex-1 flex flex-col">
+          {/* Compact Title */}
           <div>
-            <h3 className="font-semibold text-lg line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+            <h3 className="font-semibold text-base line-clamp-1 group-hover:text-primary transition-colors">
               {event.title}
             </h3>
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {event.description}
-            </p>
           </div>
 
-          {/* Event Details */}
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <IconCalendar className="size-4 flex-shrink-0 text-primary" />
-              <span>{format(new Date(event.startAt), "PPP")}</span>
+          {/* Compact Event Details - Inline */}
+          <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1.5">
+              <IconCalendar className="h-3.5 w-3.5 text-primary" />
+              <span className="font-medium">
+                {format(new Date(event.startAt), "MMM dd")}
+              </span>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <IconClock className="size-4 flex-shrink-0 text-primary" />
-              <span>{event.expectedDurationInMinutes} minutes</span>
+            <div className="flex items-center gap-1.5">
+              <IconClock className="h-3.5 w-3.5 text-blue-500" />
+              <span>{event.expectedDurationInMinutes}m</span>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <IconUsers className="size-4 flex-shrink-0 text-primary" />
+            <div className="flex items-center gap-1.5">
+              <IconUsers className="h-3.5 w-3.5 text-green-500" />
               <span>
-                {event.numberOfParticipants}/{event.capacity} participants
+                {event.numberOfParticipants}/{event.capacity}
               </span>
             </div>
           </div>
 
-          {/* Language & Host */}
-          <div className="flex items-center justify-between pt-2 border-t">
-            <Badge variant="outline">{event.language.name}</Badge>
-            <p className="text-sm text-muted-foreground">
-              Hosted by {event.host.name}
-            </p>
+          {/* Compact Host & Language */}
+          <div className="flex items-center justify-between gap-2 pt-1 border-t border-border/30">
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5">
+              {event.language.name}
+            </Badge>
+            <div className="flex items-center gap-1.5">
+              <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary">
+                {event.host.avatarUrl ? (
+                  <Image
+                    src={event.host.avatarUrl}
+                    alt={event.host.name}
+                    width={20}
+                    height={20}
+                    className="w-5 h-5 rounded-full object-cover"
+                  />
+                ) : (
+                  event.host.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .slice(0, 2)
+                    .join("")
+                )}
+              </div>
+              <span className="text-xs text-muted-foreground truncate max-w-[100px]">
+                {event.host.name}
+              </span>
+            </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-2 pt-2">
+          {/* Compact Action Buttons */}
+          <div className="flex gap-1.5 mt-auto">
             <Button
               variant="default"
               size="sm"
-              className="flex-1"
+              className="flex-1 h-8 text-xs"
               onClick={() => onViewDetail?.(event.id)}
             >
-              <IconEye className="size-4 mr-1" />
-              {t("viewDetail")}
+              <IconEye className="h-3.5 w-3.5 mr-1" />
+              View
             </Button>
 
             {isUpcoming &&
@@ -177,12 +200,12 @@ export function JoinedEventCard({
                 <Button
                   variant="destructive"
                   size="sm"
-                  className="flex-1"
+                  className="flex-1 h-8 text-xs"
                   onClick={() => setShowUnregisterDialog(true)}
                   disabled={isUnregistering}
                 >
-                  <IconUserMinus className="size-4 mr-1" />
-                  {t("unregister")}
+                  <IconUserMinus className="h-3.5 w-3.5 mr-1" />
+                  Leave
                 </Button>
               ) : (
                 <TooltipProvider>
@@ -192,11 +215,11 @@ export function JoinedEventCard({
                         <Button
                           variant="destructive"
                           size="sm"
-                          className="w-full"
+                          className="w-full h-8 text-xs"
                           disabled
                         >
-                          <IconUserMinus className="size-4 mr-1" />
-                          {t("unregister")}
+                          <IconUserMinus className="h-3.5 w-3.5 mr-1" />
+                          Leave
                         </Button>
                       </div>
                     </TooltipTrigger>

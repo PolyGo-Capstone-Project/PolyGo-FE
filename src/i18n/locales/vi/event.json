@@ -31,6 +31,14 @@
     "language": "Ngôn ngữ",
     "free": "Miễn phí",
     "paid": "Có phí",
+    "status": {
+      "pending": "Đang chờ",
+      "approved": "Đã duyệt",
+      "rejected": "Từ chối",
+      "live": "Đang diễn ra",
+      "cancelled": "Đã hủy",
+      "completed": "Đã hoàn thành"
+    },
     "filters": {
       "title": "Bộ lọc",
       "language": "Ngôn ngữ",
@@ -202,6 +210,7 @@
     },
     "detail": {
       "title": "Chi tiết sự kiện",
+      "detail": "Trang thông tin sự kiện",
       "free": "Miễn phí",
       "back": "Quay lại danh sách",
       "register": "Đăng ký tham gia",
@@ -331,10 +340,31 @@
         "noUpcoming": "Bạn chưa tạo sự kiện sắp diễn ra nào",
         "noPast": "Bạn không có sự kiện nào đã qua",
         "createFirst": "Tạo sự kiện đầu tiên",
+        "createEvent": "Tạo sự kiện",
+        "createNewEvent": "Tạo sự kiện mới",
+        "pastEventsDescription": "Các sự kiện đã hoàn thành và đã qua sẽ hiển thị ở đây",
         "edit": "Chỉnh sửa",
         "cancel": "Hủy sự kiện",
         "viewDetail": "Xem chi tiết",
         "viewStats": "Xem thống kê",
+        "eventCount": {
+          "singular": "sự kiện",
+          "plural": "sự kiện"
+        },
+        "cardStats": {
+          "totalEvents": "Tổng số sự kiện",
+          "upcomingEvents": "Sắp diễn ra",
+          "completed": "Đã hoàn thành",
+          "totalParticipants": "Tổng số người tham gia"
+        },
+        "search": {
+          "placeholder": "Tìm kiếm sự kiện theo tiêu đề hoặc mô tả...",
+          "filterByStatus": "Lọc theo trạng thái",
+          "allStatus": "Tất cả trạng thái",
+          "pending": "Đang chờ",
+          "approved": "Đã duyệt",
+          "live": "Đang diễn ra"
+        },
         "cancelDialog": {
           "title": "Hủy sự kiện",
           "description": "Bạn có chắc chắn muốn hủy sự kiện này? Hành động này không thể hoàn tác.",
@@ -379,10 +409,27 @@
         "history": "Lịch sử",
         "noUpcoming": "Bạn chưa tham gia sự kiện sắp diễn ra nào",
         "noHistory": "Bạn không có lịch sử sự kiện",
+        "historyEventsDescription": "Các sự kiện đã qua sẽ hiển thị ở đây",
         "exploreEvents": "Khám phá sự kiện",
         "viewDetail": "Xem chi tiết",
         "unregister": "Hủy đăng ký",
         "cannotUnregister": "Không thể hủy đăng ký trong vòng 6 giờ trước sự kiện",
+        "eventCount": {
+          "singular": "sự kiện",
+          "plural": "sự kiện"
+        },
+        "cardStats": {
+          "totalJoined": "Tổng số đã tham gia",
+          "upcomingEvents": "Sắp diễn ra",
+          "attended": "Đã tham dự",
+          "totalFeesPaid": "Tổng phí đã thanh toán"
+        },
+        "search": {
+          "placeholder": "Tìm kiếm sự kiện theo tiêu đề hoặc mô tả...",
+          "sortBy": "Sắp xếp theo",
+          "sortByDate": "Sắp xếp theo ngày",
+          "sortByName": "Sắp xếp theo tên"
+        },
         "unregisterDialog": {
           "title": "Hủy đăng ký sự kiện",
           "description": "Bạn có chắc chắn muốn hủy đăng ký khỏi sự kiện này?",

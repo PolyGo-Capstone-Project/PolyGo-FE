@@ -31,6 +31,14 @@
     "language": "Language",
     "free": "Free",
     "paid": "Paid",
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "live": "Live",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    },
     "filters": {
       "title": "Filters",
       "language": "Language",
@@ -202,6 +210,7 @@
     },
     "detail": {
       "title": "Event Details",
+      "detail": "Event Information",
       "free": "Free",
       "back": "Back to Events",
       "register": "Register for Event",
@@ -329,10 +338,31 @@
         "noUpcoming": "You haven't created any upcoming events yet",
         "noPast": "You don't have any past events",
         "createFirst": "Create your first event",
+        "createEvent": "Create Event",
+        "createNewEvent": "Create New Event",
+        "pastEventsDescription": "Your completed and past events will appear here",
         "edit": "Edit",
         "cancel": "Cancel Event",
         "viewDetail": "View Details",
         "viewStats": "View Stats",
+        "eventCount": {
+          "singular": "event",
+          "plural": "events"
+        },
+        "cardStats": {
+          "totalEvents": "Total Events",
+          "upcomingEvents": "Upcoming",
+          "completed": "Completed",
+          "totalParticipants": "Total Participants"
+        },
+        "search": {
+          "placeholder": "Search events by title or description...",
+          "filterByStatus": "Filter by status",
+          "allStatus": "All Status",
+          "pending": "Pending",
+          "approved": "Approved",
+          "live": "Live"
+        },
         "cancelDialog": {
           "title": "Cancel Event",
           "description": "Are you sure you want to cancel this event? This action cannot be undone.",
@@ -377,10 +407,27 @@
         "history": "History",
         "noUpcoming": "You haven't joined any upcoming events yet",
         "noHistory": "You don't have any event history",
+        "historyEventsDescription": "Your past events will appear here",
         "exploreEvents": "Explore Events",
         "viewDetail": "View Details",
         "unregister": "Unregister",
         "cannotUnregister": "Cannot unregister within 6 hours of event start",
+        "eventCount": {
+          "singular": "event",
+          "plural": "events"
+        },
+        "cardStats": {
+          "totalJoined": "Total Joined",
+          "upcomingEvents": "Upcoming",
+          "attended": "Attended",
+          "totalFeesPaid": "Total Fees Paid"
+        },
+        "search": {
+          "placeholder": "Search events by title or description...",
+          "sortBy": "Sort by",
+          "sortByDate": "Sort by Date",
+          "sortByName": "Sort by Name"
+        },
         "unregisterDialog": {
           "title": "Unregister from Event",
           "description": "Are you sure you want to unregister from this event?",
