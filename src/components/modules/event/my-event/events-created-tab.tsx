@@ -204,49 +204,55 @@ export function EventsCreatedTab() {
         {/* Stats Summary */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent>
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <IconCalendarEvent className="size-5 text-primary" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{stats.total}</p>
-                  <p className="text-xs text-muted-foreground">Total Events</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("cardStats.totalEvents")}
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent>
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-500/10 rounded-lg">
                   <IconClock className="size-5 text-blue-500" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{stats.upcoming}</p>
-                  <p className="text-xs text-muted-foreground">Upcoming</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("cardStats.upcomingEvents")}
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent>
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-green-500/10 rounded-lg">
                   <IconCheck className="size-5 text-green-500" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold">{stats.completed}</p>
-                  <p className="text-xs text-muted-foreground">Completed</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("cardStats.completed")}
+                  </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
+            <CardContent>
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-purple-500/10 rounded-lg">
                   <IconUsers className="size-5 text-purple-500" />
@@ -256,7 +262,7 @@ export function EventsCreatedTab() {
                     {stats.totalParticipants}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Total Participants
+                    {t("cardStats.totalParticipants")}
                   </p>
                 </div>
               </div>
@@ -271,7 +277,7 @@ export function EventsCreatedTab() {
               <div className="relative flex-1">
                 <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search events by title or description..."
+                  placeholder={t("search.placeholder")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -283,13 +289,15 @@ export function EventsCreatedTab() {
                 onValueChange={(value: any) => setStatusFilter(value)}
               >
                 <SelectTrigger className="w-full md:w-[180px]">
-                  <SelectValue placeholder="Filter by status" />
+                  <SelectValue placeholder={t("search.filterByStatus")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="live">Live</SelectItem>
+                  <SelectItem value="all">{t("search.allStatus")}</SelectItem>
+                  <SelectItem value="pending">{t("search.pending")}</SelectItem>
+                  <SelectItem value="approved">
+                    {t("search.approved")}
+                  </SelectItem>
+                  <SelectItem value="live">{t("search.live")}</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -320,12 +328,14 @@ export function EventsCreatedTab() {
               <h2 className="text-2xl font-semibold">{t("upcoming")}</h2>
               <p className="text-sm text-muted-foreground mt-1">
                 {upcomingEvents.length}{" "}
-                {upcomingEvents.length === 1 ? "event" : "events"}
+                {upcomingEvents.length === 1
+                  ? t("eventCount.singular")
+                  : t("eventCount.plural")}
               </p>
             </div>
             <Button onClick={handleCreateEvent} size="sm">
               <IconPlus className="size-4 mr-2" />
-              Create Event
+              {t("createEvent")}
             </Button>
           </div>
 
@@ -390,7 +400,7 @@ export function EventsCreatedTab() {
                   <EmptyContent>
                     <Button onClick={handleCreateEvent}>
                       <IconPlus className="size-4 mr-2" />
-                      Create New Event
+                      {t("createNewEvent")}
                     </Button>
                   </EmptyContent>
                 </Empty>
@@ -408,7 +418,9 @@ export function EventsCreatedTab() {
               <h2 className="text-2xl font-semibold">{t("past")}</h2>
               <p className="text-sm text-muted-foreground mt-1">
                 {pastEvents.length}{" "}
-                {pastEvents.length === 1 ? "event" : "events"}
+                {pastEvents.length === 1
+                  ? t("eventCount.singular")
+                  : t("eventCount.plural")}
               </p>
             </div>
           </div>
@@ -467,7 +479,7 @@ export function EventsCreatedTab() {
                   <EmptyHeader>
                     <EmptyTitle>{t("noPast")}</EmptyTitle>
                     <EmptyDescription>
-                      Your completed and past events will appear here
+                      {t("pastEventsDescription")}
                     </EmptyDescription>
                   </EmptyHeader>
                 </Empty>

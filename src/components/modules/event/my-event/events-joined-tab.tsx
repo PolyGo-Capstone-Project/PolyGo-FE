@@ -177,49 +177,55 @@ export function EventsJoinedTab() {
       {/* Stats Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
-          <CardContent className="pt-6">
+          <CardContent>
             <div className="flex items-center gap-3">
               <div className="p-2 bg-primary/10 rounded-lg">
                 <IconTicket className="size-5 text-primary" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats.total}</p>
-                <p className="text-xs text-muted-foreground">Total Joined</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("cardStats.totalJoined")}
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="pt-6">
+          <CardContent>
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-500/10 rounded-lg">
                 <IconClock className="size-5 text-blue-500" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats.upcoming}</p>
-                <p className="text-xs text-muted-foreground">Upcoming</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("cardStats.upcomingEvents")}
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="pt-6">
+          <CardContent>
             <div className="flex items-center gap-3">
               <div className="p-2 bg-green-500/10 rounded-lg">
                 <IconCheck className="size-5 text-green-500" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats.attended}</p>
-                <p className="text-xs text-muted-foreground">Attended</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("cardStats.attended")}
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="pt-6">
+          <CardContent>
             <div className="flex items-center gap-3">
               <div className="p-2 bg-purple-500/10 rounded-lg">
                 <IconCalendarEvent className="size-5 text-purple-500" />
@@ -228,7 +234,9 @@ export function EventsJoinedTab() {
                 <p className="text-2xl font-bold">
                   {stats.totalFees.toLocaleString()}
                 </p>
-                <p className="text-xs text-muted-foreground">Total Fees Paid</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("cardStats.totalFeesPaid")}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -242,7 +250,7 @@ export function EventsJoinedTab() {
             <div className="relative flex-1">
               <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
               <Input
-                placeholder="Search events by title or description..."
+                placeholder={t("search.placeholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -254,11 +262,11 @@ export function EventsJoinedTab() {
               onValueChange={(value: any) => setSortBy(value)}
             >
               <SelectTrigger className="w-full md:w-[180px]">
-                <SelectValue placeholder="Sort by" />
+                <SelectValue placeholder={t("search.sortBy")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="date">Sort by Date</SelectItem>
-                <SelectItem value="name">Sort by Name</SelectItem>
+                <SelectItem value="date">{t("search.sortByDate")}</SelectItem>
+                <SelectItem value="name">{t("search.sortByName")}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -289,7 +297,9 @@ export function EventsJoinedTab() {
             <h2 className="text-2xl font-semibold">{t("upcoming")}</h2>
             <p className="text-sm text-muted-foreground mt-1">
               {upcomingEvents.length}{" "}
-              {upcomingEvents.length === 1 ? "event" : "events"}
+              {upcomingEvents.length === 1
+                ? t("eventCount.singular")
+                : t("eventCount.plural")}
             </p>
           </div>
         </div>
@@ -352,7 +362,7 @@ export function EventsJoinedTab() {
                 <EmptyContent>
                   <Button onClick={handleExploreEvents}>
                     <IconSearch className="size-4 mr-2" />
-                    Explore Events
+                    {t("exploreEvents")}
                   </Button>
                 </EmptyContent>
               </Empty>
@@ -370,7 +380,9 @@ export function EventsJoinedTab() {
             <h2 className="text-2xl font-semibold">{t("history")}</h2>
             <p className="text-sm text-muted-foreground mt-1">
               {historyEvents.length}{" "}
-              {historyEvents.length === 1 ? "event" : "events"}
+              {historyEvents.length === 1
+                ? t("eventCount.singular")
+                : t("eventCount.plural")}
             </p>
           </div>
         </div>
@@ -428,7 +440,7 @@ export function EventsJoinedTab() {
                 <EmptyHeader>
                   <EmptyTitle>{t("noHistory")}</EmptyTitle>
                   <EmptyDescription>
-                    Your past events will appear here
+                    {t("historyEventsDescription")}
                   </EmptyDescription>
                 </EmptyHeader>
               </Empty>
