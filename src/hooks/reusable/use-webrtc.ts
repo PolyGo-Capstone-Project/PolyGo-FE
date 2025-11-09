@@ -936,7 +936,8 @@ export function useWebRTC({
         return joinRoom();
       }
 
-      await conn.invoke("JoinRoom", eventIdRef.current, userName);
+      // Pass isHost (new BE parameter) so server knows whether this client is host
+      await conn.invoke("JoinRoom", eventIdRef.current, userName, isHost);
       console.log(
         "[SignalR] ✓ Joined room:",
         eventIdRef.current,
@@ -1008,7 +1009,7 @@ export function useWebRTC({
     } finally {
       isJoiningRef.current = false;
     }
-  }, [userName]);
+  }, [userName, isHost]);
 
   // Start call
   const startCall = useCallback(async () => {

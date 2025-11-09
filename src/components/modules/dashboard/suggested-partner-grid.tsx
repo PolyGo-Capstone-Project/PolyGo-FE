@@ -11,9 +11,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components";
+import communicationApiRequest from "@/lib/apis/communication";
+import { showErrorToast } from "@/lib/utils";
+import { IconEye } from "@tabler/icons-react";
 import { Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function SuggestedPartnersGrid({
   partners,
@@ -36,6 +40,28 @@ export function SuggestedPartnersGrid({
   t: ReturnType<typeof useTranslations>;
 }) {
   const router = useRouter();
+  const tError = useTranslations("Error");
+  const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
+
+  const handleChatClick = async (e: React.MouseEvent, userId: string) => {
+    e.stopPropagation();
+    setLoadingUserId(userId);
+
+    try {
+      // Get or create conversation with this user
+      const response =
+        await communicationApiRequest.getConversationsByUserId(userId);
+      const conversationId = response.payload.data.id;
+
+      // Navigate to chat with conversation ID
+      router.push(`/${locale}/chat?conversationId=${conversationId}`);
+    } catch (error: any) {
+      const errorMessage = error?.payload?.message || "unknownError";
+      showErrorToast(errorMessage, tError);
+    } finally {
+      setLoadingUserId(null);
+    }
+  };
 
   return (
     <Card>
@@ -110,18 +136,19 @@ export function SuggestedPartnersGrid({
                         router.push(`/${locale}/matching/${p.id}`);
                       }}
                     >
+                      <IconEye className="w-4 h-4 mr-1" />
                       {t("profile", { defaultValue: "Profile" })}
                     </Button>
-                    <Button
+                    {/* <Button
                       size="sm"
                       className="flex-1"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/${locale}/chat`);
-                      }}
+                      onClick={(e) => handleChatClick(e, p.id)}
+                      disabled={loadingUserId === p.id}
                     >
-                      {t("chat", { defaultValue: "Chat" })}
-                    </Button>
+                      {loadingUserId === p.id
+                        ? t("loading", { defaultValue: "Loading..." })
+                        : t("chat", { defaultValue: "Chat" })}
+                    </Button> */}
                   </div>
                 </CardContent>
               </Card>

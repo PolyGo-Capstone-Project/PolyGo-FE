@@ -15,11 +15,13 @@ import { RecentChatItemType } from "@/components/modules/dashboard/recent-chat";
 import {
   useAuthMe,
   useCurrentSubscriptionQuery,
+  useGetConversations,
   useGetUpcomingEvents,
   useGetUsersMatching,
 } from "@/hooks";
 import { UserMatchingItemType } from "@/models";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
+import { enUS, vi } from "date-fns/locale";
 import {
   CreditCard,
   Gamepad2,
@@ -79,31 +81,6 @@ const mockQuickActions: QuickActionItemType[] = [
   },
 ];
 
-const mockRecentChats: RecentChatItemType[] = [
-  {
-    id: 1,
-    name: "An craft",
-    last: "Ready for our practice?",
-    ago: "3m",
-    avatarUrl:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc9APxkj0xClmrU3PpMZglHQkx446nQPG6lA&s", // Ví dụ có avatar
-  },
-  {
-    id: 2,
-    name: "Davis",
-    last: "Study plan for Spanish practice…",
-    ago: "5m",
-    avatarUrl: null, // Ví dụ không có avatar
-  },
-  {
-    id: 3,
-    name: "Tâm",
-    last: "Bài học ngữ pháp tiếng Việt mới",
-    ago: "1h",
-    avatarUrl: "https://i.pravatar.cc/150?img=53",
-  },
-];
-
 const isValidAvatarUrl = (url?: string | null) => !!url;
 const getInitials = (name: string) =>
   name
@@ -130,9 +107,37 @@ const useSuggestedPartners = () => {
   return { suggestedPartners, isLoading };
 };
 
-/* ======================================================= */
-/* ======================== PAGE ========================== */
-/* ======================================================= */
+const useRecentChats = (locale: string) => {
+  const { data, isLoading } = useGetConversations(
+    {
+      pageNumber: 1,
+      pageSize: 5, // Get 5 most recent chats
+    },
+    { enabled: true }
+  );
+
+  const dateFnsLocale = locale === "vi" ? vi : enUS;
+
+  const recentChats: RecentChatItemType[] = useMemo(() => {
+    if (!data?.payload.data?.items) return [];
+
+    return data.payload.data.items.map((conversation) => ({
+      id: conversation.id,
+      name: conversation.user.name,
+      avatarUrl: conversation.user.avatarUrl,
+      last: conversation.lastMessage?.content || "",
+      ago: conversation.lastMessage?.sentAt
+        ? formatDistanceToNow(new Date(conversation.lastMessage.sentAt), {
+            addSuffix: true,
+            locale: dateFnsLocale,
+          })
+        : "",
+    }));
+  }, [data, dateFnsLocale]);
+
+  return { recentChats, isLoading };
+};
+
 interface ContentProps {
   locale: string;
 }
@@ -142,6 +147,7 @@ export default function DashboardContent({ locale }: ContentProps) {
   const { data: authData, isLoading: isLoadingAuth } = useAuthMe();
   const { suggestedPartners, isLoading: isLoadingPartners } =
     useSuggestedPartners();
+  const { recentChats, isLoading: isLoadingChats } = useRecentChats(locale);
 
   // Check subscription plan
   const { data: subscriptionData } = useCurrentSubscriptionQuery({
@@ -258,9 +264,10 @@ export default function DashboardContent({ locale }: ContentProps) {
             />
 
             <RecentChats
-              chats={mockRecentChats}
-              isValidAvatarUrl={isValidAvatarUrl} // Hàm kiểm tra URL
-              getInitials={getInitials} // Hàm lấy chữ viết tắt
+              chats={recentChats}
+              isValidAvatarUrl={isValidAvatarUrl}
+              getInitials={getInitials}
+              locale={locale}
             />
 
             {/* Upgrade Plus Card - Only show for Free plan */}

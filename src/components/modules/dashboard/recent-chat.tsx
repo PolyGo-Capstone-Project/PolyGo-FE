@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 export interface RecentChatItemType {
   id: string | number;
@@ -15,14 +16,21 @@ interface RecentChatsProps {
   chats: RecentChatItemType[];
   isValidAvatarUrl: (url?: string | null) => boolean;
   getInitials: (name: string) => string;
+  locale: string;
 }
 
 export function RecentChats({
   chats,
   isValidAvatarUrl,
   getInitials,
+  locale,
 }: RecentChatsProps) {
   const t = useTranslations("dashboard");
+  const router = useRouter();
+
+  const handleChatClick = (conversationId: string | number) => {
+    router.push(`/${locale}/chat?conversationId=${conversationId}`);
+  };
 
   return (
     <Card>
@@ -40,6 +48,7 @@ export function RecentChats({
           return (
             <div
               key={c.id}
+              onClick={() => handleChatClick(c.id)}
               className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent cursor-pointer transition-colors"
             >
               <div
