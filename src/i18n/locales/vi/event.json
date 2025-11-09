@@ -31,6 +31,14 @@
     "language": "Ngôn ngữ",
     "free": "Miễn phí",
     "paid": "Có phí",
+    "status": {
+      "pending": "Đang chờ",
+      "approved": "Đã duyệt",
+      "rejected": "Từ chối",
+      "live": "Đang diễn ra",
+      "cancelled": "Đã hủy",
+      "completed": "Đã hoàn thành"
+    },
     "filters": {
       "title": "Bộ lọc",
       "language": "Ngôn ngữ",
@@ -202,6 +210,7 @@
     },
     "detail": {
       "title": "Chi tiết sự kiện",
+      "detail": "Trang thông tin sự kiện",
       "free": "Miễn phí",
       "back": "Quay lại danh sách",
       "register": "Đăng ký tham gia",

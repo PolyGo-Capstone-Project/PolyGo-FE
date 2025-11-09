@@ -31,6 +31,14 @@
     "language": "Language",
     "free": "Free",
     "paid": "Paid",
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "live": "Live",
+      "cancelled": "Cancelled",
+      "completed": "Completed"
+    },
     "filters": {
       "title": "Filters",
       "language": "Language",
@@ -202,6 +210,7 @@
     },
     "detail": {
       "title": "Event Details",
+      "detail": "Event Information",
       "free": "Free",
       "back": "Back to Events",
       "register": "Register for Event",

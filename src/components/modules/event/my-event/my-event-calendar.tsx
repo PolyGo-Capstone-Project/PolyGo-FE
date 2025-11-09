@@ -84,7 +84,13 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
 
     if (activeTab === "created") return created;
     if (activeTab === "joined") return joined;
-    return [...created, ...joined];
+
+    // For "all" tab, merge and deduplicate by event ID
+    const allEvents = [...created, ...joined];
+    const uniqueEvents = allEvents.filter(
+      (event, index, self) => index === self.findIndex((e) => e.id === event.id)
+    );
+    return uniqueEvents;
   }, [createdData, joinedData, activeTab]);
 
   const isLoading = isLoadingCreated || isLoadingJoined;

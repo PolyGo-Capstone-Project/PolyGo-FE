@@ -1,18 +1,35 @@
 "use client";
 
-import { IconSearch } from "@tabler/icons-react";
+import {
+  IconCalendarEvent,
+  IconCheck,
+  IconClock,
+  IconGridDots,
+  IconLayoutList,
+  IconSearch,
+  IconTicket,
+} from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { JoinedEventCard } from "@/components/modules/event/my-event/joined-event-card";
 import { Pagination } from "@/components/shared";
 import {
   Button,
+  Card,
+  CardContent,
   Empty,
   EmptyContent,
+  EmptyDescription,
   EmptyHeader,
   EmptyTitle,
+  Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Separator,
   Skeleton,
 } from "@/components/ui";
@@ -22,7 +39,7 @@ import {
 } from "@/hooks/query/use-event";
 import { handleErrorApi, showSuccessToast } from "@/lib/utils";
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 8;
 
 export function EventsJoinedTab() {
   const t = useTranslations("event.myEvent.joined");
@@ -33,30 +50,20 @@ export function EventsJoinedTab() {
 
   const [upcomingPage, setUpcomingPage] = useState(1);
   const [historyPage, setHistoryPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"date" | "name">("date");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  // Fetch upcoming events - events that haven't started yet
+  // Fetch ALL participated events with a large page size
+  // We'll filter and paginate on the client side
   const {
-    data: upcomingData,
-    isLoading: upcomingLoading,
-    refetch: refetchUpcoming,
+    data: allEventsData,
+    isLoading: isLoading,
+    refetch: refetchEvents,
   } = useGetParticipatedEvents(
     {
-      pageNumber: upcomingPage,
-      pageSize: PAGE_SIZE,
-      lang: locale,
-    },
-    { enabled: true }
-  );
-
-  // Fetch history events - events that have completed or cancelled
-  const {
-    data: historyData,
-    isLoading: historyLoading,
-    refetch: refetchHistory,
-  } = useGetParticipatedEvents(
-    {
-      pageNumber: historyPage,
-      pageSize: PAGE_SIZE,
+      pageNumber: 1,
+      pageSize: 100, // Fetch more to handle client-side pagination
       lang: locale,
     },
     { enabled: true }
@@ -65,26 +72,79 @@ export function EventsJoinedTab() {
   const unregisterMutation = useUnregisterEventMutation({
     onSuccess: () => {
       showSuccessToast(t("unregisterDialog.success"), tSuccess);
-      refetchUpcoming();
-      refetchHistory();
+      refetchEvents();
     },
     onError: (error) => {
       handleErrorApi({ error, tError });
     },
   });
 
-  // Filter upcoming events (future events)
-  const now = new Date();
-  const upcomingEvents =
-    upcomingData?.payload?.data?.items?.filter(
-      (event) => new Date(event.startAt) > now
-    ) || [];
+  // Memoize current time to avoid recreating Date object on every render
+  const now = useMemo(() => new Date(), []);
 
-  // Filter history events (past events)
-  const historyEvents =
-    historyData?.payload?.data?.items?.filter(
-      (event) => new Date(event.startAt) <= now
-    ) || [];
+  // Get all events
+  const allEvents = allEventsData?.payload?.data?.items || [];
+
+  // Filter and separate upcoming vs history events
+  const { upcomingEvents, historyEvents } = useMemo(() => {
+    let upcoming = allEvents.filter((event) => new Date(event.startAt) > now);
+    let history = allEvents.filter((event) => new Date(event.startAt) <= now);
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      upcoming = upcoming.filter(
+        (event) =>
+          event.title.toLowerCase().includes(query) ||
+          event.description.toLowerCase().includes(query)
+      );
+      history = history.filter(
+        (event) =>
+          event.title.toLowerCase().includes(query) ||
+          event.description.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply sorting to upcoming (earliest first)
+    if (sortBy === "date") {
+      upcoming.sort(
+        (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+      );
+    } else if (sortBy === "name") {
+      upcoming.sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    // Apply sorting to history (latest first)
+    if (sortBy === "date") {
+      history.sort(
+        (a, b) => new Date(b.startAt).getTime() - new Date(a.startAt).getTime()
+      );
+    } else if (sortBy === "name") {
+      history.sort((a, b) => a.title.localeCompare(b.title));
+    }
+
+    return { upcomingEvents: upcoming, historyEvents: history };
+  }, [allEvents, searchQuery, sortBy, now]);
+
+  // Client-side pagination for upcoming events
+  const upcomingTotalPages = Math.ceil(upcomingEvents.length / PAGE_SIZE);
+  const upcomingPaginatedEvents = useMemo(() => {
+    const startIndex = (upcomingPage - 1) * PAGE_SIZE;
+    return upcomingEvents.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [upcomingEvents, upcomingPage]);
+
+  // Client-side pagination for history events
+  const historyTotalPages = Math.ceil(historyEvents.length / PAGE_SIZE);
+  const historyPaginatedEvents = useMemo(() => {
+    const startIndex = (historyPage - 1) * PAGE_SIZE;
+    return historyEvents.slice(startIndex, startIndex + PAGE_SIZE);
+  }, [historyEvents, historyPage]);
+
+  // Reset to page 1 when filters change
+  useMemo(() => {
+    setUpcomingPage(1);
+    setHistoryPage(1);
+  }, [searchQuery, sortBy]);
 
   const handleViewDetail = (eventId: string) => {
     router.push(`/${locale}/event/${eventId}`);
@@ -98,27 +158,167 @@ export function EventsJoinedTab() {
     router.push(`/${locale}/event`);
   };
 
-  const upcomingMeta = upcomingData?.payload?.data;
-  const historyMeta = historyData?.payload?.data;
+  // Calculate stats
+  const stats = useMemo(() => {
+    const totalFees = allEvents
+      .filter((e) => new Date(e.startAt) <= now)
+      .reduce((sum, e) => sum + e.fee, 0);
+
+    return {
+      total: allEvents.length,
+      upcoming: upcomingEvents.length,
+      attended: allEvents.filter((e) => new Date(e.startAt) <= now).length,
+      totalFees,
+    };
+  }, [allEvents, upcomingEvents, now]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Stats Summary */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <IconTicket className="size-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{stats.total}</p>
+                <p className="text-xs text-muted-foreground">Total Joined</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-500/10 rounded-lg">
+                <IconClock className="size-5 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{stats.upcoming}</p>
+                <p className="text-xs text-muted-foreground">Upcoming</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-500/10 rounded-lg">
+                <IconCheck className="size-5 text-green-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{stats.attended}</p>
+                <p className="text-xs text-muted-foreground">Attended</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-purple-500/10 rounded-lg">
+                <IconCalendarEvent className="size-5 text-purple-500" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">
+                  {stats.totalFees.toLocaleString()}
+                </p>
+                <p className="text-xs text-muted-foreground">Total Fees Paid</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Search & Sort Controls */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+              <Input
+                placeholder="Search events by title or description..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            <Select
+              value={sortBy}
+              onValueChange={(value: any) => setSortBy(value)}
+            >
+              <SelectTrigger className="w-full md:w-[180px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="date">Sort by Date</SelectItem>
+                <SelectItem value="name">Sort by Name</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <div className="flex gap-2">
+              <Button
+                variant={viewMode === "grid" ? "default" : "outline"}
+                size="icon"
+                onClick={() => setViewMode("grid")}
+              >
+                <IconGridDots className="size-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "outline"}
+                size="icon"
+                onClick={() => setViewMode("list")}
+              >
+                <IconLayoutList className="size-4" />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Upcoming Events Section */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold">{t("upcoming")}</h2>
+          <div>
+            <h2 className="text-2xl font-semibold">{t("upcoming")}</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              {upcomingEvents.length}{" "}
+              {upcomingEvents.length === 1 ? "event" : "events"}
+            </p>
+          </div>
         </div>
 
-        {upcomingLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {isLoading ? (
+          <div
+            className={
+              viewMode === "grid"
+                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+                : "space-y-4"
+            }
+          >
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-[400px]" />
+              <Skeleton
+                key={i}
+                className={viewMode === "grid" ? "h-[260px]" : "h-[130px]"}
+              />
             ))}
           </div>
-        ) : upcomingEvents.length > 0 ? (
+        ) : upcomingPaginatedEvents.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {upcomingEvents.map((event) => (
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+                  : "space-y-4"
+              }
+            >
+              {upcomingPaginatedEvents.map((event) => (
                 <JoinedEventCard
                   key={event.id}
                   event={event}
@@ -128,32 +328,36 @@ export function EventsJoinedTab() {
                 />
               ))}
             </div>
-            {upcomingMeta && upcomingMeta.totalPages > 1 && (
+            {upcomingTotalPages > 1 && (
               <div className="mt-6">
                 <Pagination
-                  currentPage={upcomingMeta.currentPage}
-                  totalPages={upcomingMeta.totalPages}
-                  totalItems={upcomingMeta.totalItems}
-                  pageSize={upcomingMeta.pageSize}
-                  hasNextPage={upcomingMeta.hasNextPage}
-                  hasPreviousPage={upcomingMeta.hasPreviousPage}
+                  currentPage={upcomingPage}
+                  totalPages={upcomingTotalPages}
+                  totalItems={upcomingEvents.length}
+                  pageSize={PAGE_SIZE}
+                  hasNextPage={upcomingPage < upcomingTotalPages}
+                  hasPreviousPage={upcomingPage > 1}
                   onPageChange={setUpcomingPage}
                 />
               </div>
             )}
           </>
         ) : (
-          <Empty>
-            <EmptyHeader>
-              <EmptyTitle>{t("noUpcoming")}</EmptyTitle>
-            </EmptyHeader>
-            <EmptyContent>
-              <Button onClick={handleExploreEvents}>
-                <IconSearch className="size-4 mr-2" />
-                {t("exploreEvents")}
-              </Button>
-            </EmptyContent>
-          </Empty>
+          <Card>
+            <CardContent className="py-12">
+              <Empty>
+                <EmptyHeader>
+                  <EmptyTitle>{t("noUpcoming")}</EmptyTitle>
+                </EmptyHeader>
+                <EmptyContent>
+                  <Button onClick={handleExploreEvents}>
+                    <IconSearch className="size-4 mr-2" />
+                    Explore Events
+                  </Button>
+                </EmptyContent>
+              </Empty>
+            </CardContent>
+          </Card>
         )}
       </div>
 
@@ -162,19 +366,40 @@ export function EventsJoinedTab() {
       {/* History Section */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold">{t("history")}</h2>
+          <div>
+            <h2 className="text-2xl font-semibold">{t("history")}</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              {historyEvents.length}{" "}
+              {historyEvents.length === 1 ? "event" : "events"}
+            </p>
+          </div>
         </div>
 
-        {historyLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {isLoading ? (
+          <div
+            className={
+              viewMode === "grid"
+                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+                : "space-y-4"
+            }
+          >
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="h-[400px]" />
+              <Skeleton
+                key={i}
+                className={viewMode === "grid" ? "h-[260px]" : "h-[130px]"}
+              />
             ))}
           </div>
-        ) : historyEvents.length > 0 ? (
+        ) : historyPaginatedEvents.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {historyEvents.map((event) => (
+            <div
+              className={
+                viewMode === "grid"
+                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+                  : "space-y-4"
+              }
+            >
+              {historyPaginatedEvents.map((event) => (
                 <JoinedEventCard
                   key={event.id}
                   event={event}
@@ -182,26 +407,33 @@ export function EventsJoinedTab() {
                 />
               ))}
             </div>
-            {historyMeta && historyMeta.totalPages > 1 && (
+            {historyTotalPages > 1 && (
               <div className="mt-6">
                 <Pagination
-                  currentPage={historyMeta.currentPage}
-                  totalPages={historyMeta.totalPages}
-                  totalItems={historyMeta.totalItems}
-                  pageSize={historyMeta.pageSize}
-                  hasNextPage={historyMeta.hasNextPage}
-                  hasPreviousPage={historyMeta.hasPreviousPage}
+                  currentPage={historyPage}
+                  totalPages={historyTotalPages}
+                  totalItems={historyEvents.length}
+                  pageSize={PAGE_SIZE}
+                  hasNextPage={historyPage < historyTotalPages}
+                  hasPreviousPage={historyPage > 1}
                   onPageChange={setHistoryPage}
                 />
               </div>
             )}
           </>
         ) : (
-          <Empty>
-            <EmptyHeader>
-              <EmptyTitle>{t("noHistory")}</EmptyTitle>
-            </EmptyHeader>
-          </Empty>
+          <Card>
+            <CardContent className="py-12">
+              <Empty>
+                <EmptyHeader>
+                  <EmptyTitle>{t("noHistory")}</EmptyTitle>
+                  <EmptyDescription>
+                    Your past events will appear here
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>
