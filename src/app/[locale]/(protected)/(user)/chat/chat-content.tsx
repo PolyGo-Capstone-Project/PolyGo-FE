@@ -11,7 +11,7 @@ import {
   MessageList,
   MessageSearch,
 } from "@/components/modules/chat";
-import { useUserPresenceContext } from "@/components/providers";
+import { useUserCommunicationHubContext } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { MESSAGE_IMAGE_SEPARATOR, MessageEnum } from "@/constants";
 import { useChatNotification } from "@/contexts/chat-notification-context";
@@ -207,7 +207,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
   // User presence management from context
   const { isUserOnline, getOnlineStatus, setOnUserStatusChangedCallback } =
-    useUserPresenceContext();
+    useUserCommunicationHubContext();
 
   // Chat notification management
   const { setUnreadChatCount } = useChatNotification();

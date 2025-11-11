@@ -10,7 +10,7 @@ import {
 } from "@microsoft/signalr";
 import { useEffect, useRef, useState } from "react";
 
-interface UseUserPresenceOptions {
+interface useUserCommunicationHubOptions {
   onUserStatusChanged?: (data: UserStatusChangedType) => void;
 }
 
@@ -26,7 +26,9 @@ interface UseUserPresenceOptions {
  * @param options - Configuration options
  * @returns Connection state and utility methods
  */
-export const useUserPresence = (options?: UseUserPresenceOptions) => {
+export const useUserCommunicationHub = (
+  options?: useUserCommunicationHubOptions
+) => {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);

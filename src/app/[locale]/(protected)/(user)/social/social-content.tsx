@@ -8,7 +8,7 @@ import CreatePostCard from "@/components/modules/social/create-post-card";
 import FriendSidebar from "@/components/modules/social/friend-side-bar";
 import PostCard from "@/components/modules/social/post-card";
 import SuggestedGamesCard from "@/components/modules/social/suggested-games-card";
-import { useUserPresenceContext } from "@/components/providers";
+import { useUserCommunicationHubContext } from "@/components/providers";
 import { useGetFriends } from "@/hooks";
 
 // ---------------------- Types (GIỮ TRONG PAGE) ----------------------
@@ -278,7 +278,7 @@ export default function SocialContent({ locale }: ContentProps) {
   );
 
   // Get presence context for online status
-  const { isUserOnline } = useUserPresenceContext();
+  const { isUserOnline } = useUserCommunicationHubContext();
 
   // Convert friends to Author format and filter online ones
   const allFriends: Author[] = useMemo(() => {
