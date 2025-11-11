@@ -30,7 +30,25 @@
     "difficulty": "Difficulty",
     "allDifficulties": "All Difficulties",
     "category": "Category",
-    "allCategories": "All Categories"
+    "allCategories": "All Categories",
+    "searchPlaceholder": "Search vocabulary sets...",
+    "wordset": {
+      "difficulty": {
+        "Easy": "Easy",
+        "Medium": "Medium",
+        "Hard": "Hard"
+      },
+      "category": {
+        "Food": "Food",
+        "Travel": "Travel",
+        "Business": "Business",
+        "Tech": "Technology",
+        "Culture": "Culture",
+        "Daily": "Daily",
+        "Education": "Education",
+        "Health": "Health"
+      }
+    }
   },
   "mysets": {
     "title": "My Puzzle Sets",
@@ -43,7 +61,9 @@
     "totalPlays": "Total Plays",
     "avgRating": "Avg Rating",
     "section": {
-      "mySets": "My Puzzle Sets"
+      "mySets": "My Puzzle Sets",
+      "approved": "Approved",
+      "pending": "Pending"
     },
     "noCreatedSets": "You haven't created any puzzle sets yet.",
     "noPlayedSets": "You haven't played any puzzle sets yet."
@@ -75,12 +95,18 @@
     "quit": "Quit Game",
     "continue": "Continue Playing",
     "submit": "Submit Answer",
-    "reshuffle": "Reshuffle"
+    "reshuffle": "Reshuffle",
+    "submitEdit": "Submit Edit"
   },
   "create": {
     "title": "Create Word Puzzle Set",
     "subtitle": "Create a new vocabulary puzzle for the community",
     "mySets": "My Sets",
+    "minRequired": "Please add at least 5 words.",
+    "submitting": "Saving...",
+    "word": {
+      "minRequired": "Please add at least {n} words."
+    },
     "basicInfo": {
       "title": "Basic Information",
       "fields": {
@@ -187,5 +213,85 @@
     "creator": "Created By",
     "rating": "rating",
     "messageCreator": "Message Creator"
+  },
+  "admin": {
+    "wordsets": {
+      "title": "Manage Wordsets",
+      "description": "View, filter, and moderate user-submitted word sets.",
+      "tableTitle": "Wordset List",
+      "tableDescription": "A comprehensive list of all submitted word sets.",
+      "refresh": "Refresh Data",
+      "errorTitle": "Failed to Load Wordsets",
+      "error": "There was an error retrieving the data. Please try again.",
+      "retry": "Retry",
+      "emptyTitle": "No Wordsets Found",
+      "emptyDescription": "No word sets match your current filters.",
+      "updateStatus": {
+        "title": "Update Wordset Status",
+        "description": "Select a new status for the wordset and provide a reason if necessary.",
+        "statusLabel": "New Status",
+        "statusPlaceholder": "Select a status...",
+        "reasonLabel": "Reason",
+        "reasonPlaceholder": "Enter the reason for the status change (e.g., rejection reason)",
+        "reasonOptional": "Optional. Required for 'Rejected' status.",
+        "cancel": "Cancel",
+        "submit": "Save Changes",
+        "submitting": "Saving..."
+      },
+      "filters": {
+        "title": "Filters",
+        "description": "Adjust filters to refine the list of word sets.",
+        "search": "Search by title...",
+        "status": "Status",
+        "allStatuses": "All Statuses",
+        "language": "Language",
+        "allLanguages": "All Languages",
+        "difficulty": "Difficulty",
+        "allDifficulties": "All Difficulties",
+        "category": "Category",
+        "allCategories": "All Categories",
+        "clearFilters": "Clear Filters",
+        "apply": "Apply Filters",
+        "wordset": {
+          "difficulty": {
+            "easy": "Easy",
+            "medium": "Medium",
+            "hard": "Hard"
+          },
+          "category": {
+            "SCIENCE": "Science",
+            "HISTORY": "History",
+            "TECHNOLOGY": "Technology",
+            "LITERATURE": "Literature",
+            "GEOGRAPHY": "Geography",
+            "OTHERS": "Others"
+          }
+        }
+      },
+      "columns": {
+        "no": "No.",
+        "title": "Title",
+        "creator": "Creator",
+        "status": "Status",
+        "category": "Category",
+        "difficulty": "Difficulty",
+        "words": "Words"
+      },
+      "status": {
+        "Draft": "Draft",
+        "Pending": "Pending",
+        "Approved": "Approved",
+        "Rejected": "Rejected"
+      },
+      "detail": {
+        "title": "Wordset Details",
+        "description": "Review the words and metadata for this set.",
+        "wordsList": "Words Included",
+        "words": "words",
+        "word": "Word",
+        "definition": "Definition",
+        "hint": "Hint"
+      }
+    }
   }
 }

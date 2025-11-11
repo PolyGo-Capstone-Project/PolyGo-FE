@@ -26,11 +26,32 @@
   },
   "filters": {
     "language": "Ngôn ngữ",
-    "allLanguages": "Tất cả Ngôn ngữ",
     "difficulty": "Độ khó",
-    "allDifficulties": "Tất cả Độ khó",
-    "category": "Danh mục",
-    "allCategories": "Tất cả Danh mục"
+    "category": "Chủ đề",
+    "allLanguages": "Tất cả ngôn ngữ",
+    "allDifficulties": "Tất cả độ khó",
+    "allCategories": "Tất cả chủ đề",
+    "searchPlaceholder": "Tìm bộ từ vựng...",
+    "wordset": {
+      "difficulty": {
+        "Easy": "Dễ",
+        "Medium": "Trung bình",
+        "Hard": "Khó"
+      },
+      "category": {
+        "Food": "Ẩm thực",
+        "Travel": "Du lịch",
+        "Business": "Kinh doanh",
+        "Tech": "Công nghệ",
+        "Culture": "Văn hóa",
+        "Daily": "Sinh hoạt",
+        "Education": "Giáo dục",
+        "Health": "Sức khỏe"
+      }
+    },
+    "Error": {
+      "default": "Có lỗi xảy ra. Vui lòng thử lại."
+    }
   },
   "mysets": {
     "title": "Bộ Câu Đố Của Tôi",
@@ -43,7 +64,9 @@
     "totalPlays": "Tổng số lượt chơi",
     "avgRating": "Đánh giá TB",
     "section": {
-      "mySets": "Bộ Câu Đố Của Tôi"
+      "mySets": "Bộ Câu Đố Của Tôi",
+      "approved": "Đã duyệt",
+      "pending": "Đang chờ duyệt"
     },
     "noCreatedSets": "Bạn chưa tạo bất kỳ bộ câu đố nào.",
     "noPlayedSets": "Bạn chưa chơi bất kỳ bộ câu đố nào."
@@ -75,12 +98,18 @@
     "quit": "Thoát trò chơi",
     "continue": "Tiếp tục chơi",
     "submit": "Gửi đáp án",
-    "reshuffle": "Xáo trộn lại"
+    "reshuffle": "Xáo trộn lại",
+    "submitEdit": "Cập nhật"
   },
   "create": {
     "title": "Tạo Bộ Ghép Chữ",
     "subtitle": "Tạo một câu đố từ vựng mới cho cộng đồng",
     "mySets": "Bộ Của Tôi",
+    "minRequired": "Vui lòng thêm ít nhất 5 từ.",
+    "submitting": "Đang lưu...",
+    "word": {
+      "minRequired": "Vui lòng thêm ít nhất {n} từ."
+    },
     "basicInfo": {
       "title": "Thông tin cơ bản",
       "fields": {
@@ -187,5 +216,85 @@
     "creator": "Được tạo bởi",
     "rating": "đánh giá",
     "messageCreator": "Nhắn tin cho Người tạo"
+  },
+  "admin": {
+    "wordsets": {
+      "title": "Quản lý Bộ từ",
+      "description": "Xem, lọc và kiểm duyệt các bộ từ do người dùng gửi.",
+      "tableTitle": "Danh sách Bộ từ",
+      "tableDescription": "Danh sách đầy đủ tất cả các bộ từ đã được gửi.",
+      "refresh": "Làm mới Dữ liệu",
+      "errorTitle": "Tải Bộ từ thất bại",
+      "error": "Đã xảy ra lỗi khi truy xuất dữ liệu. Vui lòng thử lại.",
+      "retry": "Thử lại",
+      "emptyTitle": "Không tìm thấy Bộ từ nào",
+      "emptyDescription": "Không có bộ từ nào khớp với bộ lọc hiện tại của bạn.",
+      "updateStatus": {
+        "title": "Cập nhật Trạng thái Bộ từ",
+        "description": "Chọn trạng thái mới cho bộ từ và cung cấp lý do nếu cần.",
+        "statusLabel": "Trạng thái Mới",
+        "statusPlaceholder": "Chọn một trạng thái...",
+        "reasonLabel": "Lý do",
+        "reasonPlaceholder": "Nhập lý do thay đổi trạng thái (ví dụ: lý do từ chối)",
+        "reasonOptional": "Tùy chọn. Bắt buộc đối với trạng thái 'Đã Từ Chối'.",
+        "cancel": "Hủy",
+        "submit": "Lưu Thay Đổi",
+        "submitting": "Đang Lưu..."
+      },
+      "filters": {
+        "title": "Bộ lọc",
+        "description": "Điều chỉnh các bộ lọc để tinh chỉnh danh sách bộ từ.",
+        "search": "Tìm kiếm theo tiêu đề...",
+        "status": "Trạng thái",
+        "allStatuses": "Tất cả Trạng thái",
+        "language": "Ngôn ngữ",
+        "allLanguages": "Tất cả Ngôn ngữ",
+        "difficulty": "Độ khó",
+        "allDifficulties": "Tất cả Độ khó",
+        "category": "Danh mục",
+        "allCategories": "Tất cả Danh mục",
+        "clearFilters": "Xóa Bộ lọc",
+        "apply": "Áp dụng Bộ lọc",
+        "wordset": {
+          "difficulty": {
+            "easy": "Dễ",
+            "medium": "Trung bình",
+            "hard": "Khó"
+          },
+          "category": {
+            "SCIENCE": "Khoa học",
+            "HISTORY": "Lịch sử",
+            "TECHNOLOGY": "Công nghệ",
+            "LITERATURE": "Văn học",
+            "GEOGRAPHY": "Địa lý",
+            "OTHERS": "Khác"
+          }
+        }
+      },
+      "columns": {
+        "no": "STT",
+        "title": "Tiêu đề",
+        "creator": "Người tạo",
+        "status": "Trạng thái",
+        "category": "Danh mục",
+        "difficulty": "Độ khó",
+        "words": "Số từ"
+      },
+      "status": {
+        "Draft": "Nháp",
+        "Pending": "Đang chờ",
+        "Approved": "Đã duyệt",
+        "Rejected": "Đã từ chối"
+      },
+      "detail": {
+        "title": "Chi tiết Bộ từ",
+        "description": "Xem lại các từ và siêu dữ liệu cho bộ từ này.",
+        "wordsList": "Các từ bao gồm",
+        "words": "từ",
+        "word": "Từ",
+        "definition": "Định nghĩa",
+        "hint": "Gợi ý"
+      }
+    }
   }
 }
