@@ -29,8 +29,6 @@ import { MoreVertical, Phone, Search, Trash2, User, Video } from "lucide-react";
 interface ChatHeaderProps {
   user: ChatUser;
   isTyping: boolean;
-  onVoiceCall: () => void;
-  onVideoCall: () => void;
   onSearchMessages: () => void;
   onDeleteConversation: () => void;
   locale: string;
@@ -40,8 +38,6 @@ interface ChatHeaderProps {
 export function ChatHeader({
   user,
   isTyping,
-  onVoiceCall,
-  onVideoCall,
   onSearchMessages,
   onDeleteConversation,
   locale,
@@ -136,7 +132,6 @@ export function ChatHeader({
             <Button
               size="icon-sm"
               variant="ghost"
-              onClick={onVoiceCall}
               title={t("voiceCall")}
               className="md:size-9"
             >
@@ -145,7 +140,6 @@ export function ChatHeader({
             <Button
               size="icon-sm"
               variant="ghost"
-              onClick={onVideoCall}
               title={t("videoCall")}
               className="md:size-9"
             >

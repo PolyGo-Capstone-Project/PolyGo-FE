@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
-  CallModal,
   ChatHeader,
   ConversationList,
   MessageInput,
@@ -33,7 +32,7 @@ import {
   MessageType,
   RealtimeMessageType,
 } from "@/models";
-import { CallState, CallType, ChatConversation, ChatMessage } from "@/types";
+import { CallState, ChatConversation, ChatMessage } from "@/types";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -144,7 +143,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     isMuted: false,
     isVideoOff: false,
   });
-  const [isCallModalOpen, setIsCallModalOpen] = useState(false);
 
   const [messagesQuery, setMessagesQuery] = useState<GetMessagesQueryType>(
     () => ({ ...DEFAULT_MESSAGES_QUERY })
@@ -611,61 +609,10 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     }
   };
 
-  const handleStartCall = (type: CallType) => {
-    if (!selectedConversationId) return;
-
-    setCallState({
-      conversationId: selectedConversationId,
-      type,
-      status: "calling",
-      isMuted: false,
-      isVideoOff: false,
-    });
-    setIsCallModalOpen(true);
-
-    setTimeout(() => {
-      setCallState((prev) => ({
-        ...prev,
-        status: "connected",
-        startTime: new Date(),
-      }));
-    }, 3000);
-  };
-
-  const handleEndCall = () => {
-    setCallState({
-      conversationId: null,
-      type: "voice",
-      status: "idle",
-      isMuted: false,
-      isVideoOff: false,
-    });
-    setIsCallModalOpen(false);
-  };
-
-  const handleAcceptCall = () => {
-    setCallState((prev) => ({
-      ...prev,
-      status: "connected",
-      startTime: new Date(),
-    }));
-  };
-
-  const handleDeclineCall = () => {
-    handleEndCall();
-  };
-
   const handleToggleMute = () => {
     setCallState((prev) => ({
       ...prev,
       isMuted: !prev.isMuted,
-    }));
-  };
-
-  const handleToggleVideo = () => {
-    setCallState((prev) => ({
-      ...prev,
-      isVideoOff: !prev.isVideoOff,
     }));
   };
 
@@ -818,8 +765,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                 <ChatHeader
                   user={selectedConversation.user}
                   isTyping={Boolean(selectedConversation.isTyping)}
-                  onVoiceCall={() => handleStartCall("voice")}
-                  onVideoCall={() => handleStartCall("video")}
                   onSearchMessages={handleSearchMessages}
                   onDeleteConversation={() => handleDeleteConversation()}
                   locale={locale}
@@ -859,18 +804,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
         {selectedConversation && (
           <>
-            <CallModal
-              isOpen={isCallModalOpen}
-              onClose={handleEndCall}
-              user={selectedConversation.user}
-              callState={callState}
-              onEndCall={handleEndCall}
-              onAcceptCall={handleAcceptCall}
-              onDeclineCall={handleDeclineCall}
-              onToggleMute={handleToggleMute}
-              onToggleVideo={handleToggleVideo}
-            />
-
             <MessageSearch
               isOpen={isSearchOpen}
               onClose={() => setIsSearchOpen(false)}
@@ -910,8 +843,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
             <ChatHeader
               user={selectedConversation.user}
               isTyping={Boolean(selectedConversation.isTyping)}
-              onVoiceCall={() => handleStartCall("voice")}
-              onVideoCall={() => handleStartCall("video")}
               onSearchMessages={handleSearchMessages}
               onDeleteConversation={() => handleDeleteConversation()}
               locale={locale}
@@ -963,18 +894,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
       {selectedConversation && (
         <>
-          <CallModal
-            isOpen={isCallModalOpen}
-            onClose={handleEndCall}
-            user={selectedConversation.user}
-            callState={callState}
-            onEndCall={handleEndCall}
-            onAcceptCall={handleAcceptCall}
-            onDeclineCall={handleDeclineCall}
-            onToggleMute={handleToggleMute}
-            onToggleVideo={handleToggleVideo}
-          />
-
           <MessageSearch
             isOpen={isSearchOpen}
             onClose={() => setIsSearchOpen(false)}
