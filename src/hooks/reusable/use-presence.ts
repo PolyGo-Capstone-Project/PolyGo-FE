@@ -15,7 +15,7 @@ interface UseUserPresenceOptions {
 }
 
 /**
- * Hook to manage user presence via SignalR UserPresenceHub
+ * Hook to manage user presence via SignalR CommunicationHub
  *
  * Features:
  * - Auto connect/disconnect based on authentication
@@ -35,11 +35,11 @@ export const useUserPresence = (options?: UseUserPresenceOptions) => {
 
   // Initialize connection
   useEffect(() => {
-    console.log("🚀 [UserPresenceHub] Initializing connection...");
+    console.log("🚀 [CommunicationHub] Initializing connection...");
     const token = getSessionTokenFromLocalStorage();
 
     if (!token) {
-      console.error("❌ [UserPresenceHub] No authentication token found");
+      console.error("❌ [CommunicationHub] No authentication token found");
       setError("No authentication token found");
       return;
     }
@@ -49,17 +49,17 @@ export const useUserPresence = (options?: UseUserPresenceOptions) => {
       const payload = JSON.parse(atob(token.split(".")[1]));
       currentUserIdRef.current =
         payload.userId || payload.sub || payload.Id || null;
-      console.log("🔑 [UserPresenceHub] Token payload:", payload);
+      console.log("🔑 [CommunicationHub] Token payload:", payload);
       console.log(
-        "👤 [UserPresenceHub] Current user ID:",
+        "👤 [CommunicationHub] Current user ID:",
         currentUserIdRef.current
       );
     } catch (err) {
-      console.error("❌ [UserPresenceHub] Failed to parse token:", err);
+      console.error("❌ [CommunicationHub] Failed to parse token:", err);
     }
 
     const hubConnection = new HubConnectionBuilder()
-      .withUrl(`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/userPresenceHub`, {
+      .withUrl(`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/communicationHub`, {
         accessTokenFactory: () => token,
       })
       .withAutomaticReconnect()
@@ -67,8 +67,8 @@ export const useUserPresence = (options?: UseUserPresenceOptions) => {
       .build();
 
     console.log(
-      "🔗 [UserPresenceHub] Hub URL:",
-      `${envConfig.NEXT_PUBLIC_API_ENDPOINT}/userPresenceHub`
+      "🔗 [CommunicationHub] Hub URL:",
+      `${envConfig.NEXT_PUBLIC_API_ENDPOINT}/communicationHub`
     );
 
     connectionRef.current = hubConnection;
@@ -78,37 +78,37 @@ export const useUserPresence = (options?: UseUserPresenceOptions) => {
     hubConnection
       .start()
       .then(() => {
-        console.log("✅ [UserPresenceHub] Connected successfully");
+        console.log("✅ [CommunicationHub] Connected successfully");
         setIsConnected(true);
         setError(null);
 
         // Update online status after connection
         if (currentUserIdRef.current) {
           console.log(
-            "📡 [UserPresenceHub] Updating online status for:",
+            "📡 [CommunicationHub] Updating online status for:",
             currentUserIdRef.current
           );
           hubConnection
             .invoke("UpdateUserOnlineStatus", currentUserIdRef.current)
             .then(() => {
               console.log(
-                "✅ [UserPresenceHub] Online status updated successfully"
+                "✅ [CommunicationHub] Online status updated successfully"
               );
             })
             .catch((err) => {
               console.error(
-                "❌ [UserPresenceHub] Error updating online status:",
+                "❌ [CommunicationHub] Error updating online status:",
                 err
               );
             });
         } else {
           console.warn(
-            "⚠️ [UserPresenceHub] No current user ID found, skipping status update"
+            "⚠️ [CommunicationHub] No current user ID found, skipping status update"
           );
         }
       })
       .catch((err) => {
-        console.error("❌ [UserPresenceHub] Error connecting:", err);
+        console.error("❌ [CommunicationHub] Error connecting:", err);
         if (!err.message?.includes("negotiation")) {
           setError(err.message);
         }
@@ -116,12 +116,12 @@ export const useUserPresence = (options?: UseUserPresenceOptions) => {
 
     // Handle reconnection
     hubConnection.onreconnecting((error) => {
-      console.log("🔄 Reconnecting to UserPresenceHub...", error);
+      console.log("🔄 Reconnecting to CommunicationHub...", error);
       setIsConnected(false);
     });
 
     hubConnection.onreconnected((connectionId) => {
-      console.log("✅ Reconnected to UserPresenceHub:", connectionId);
+      console.log("✅ Reconnected to CommunicationHub:", connectionId);
       setIsConnected(true);
       setError(null);
 
@@ -136,7 +136,7 @@ export const useUserPresence = (options?: UseUserPresenceOptions) => {
     });
 
     hubConnection.onclose((error) => {
-      console.log("🔴 UserPresenceHub connection closed:", error);
+      console.log("🔴 CommunicationHub connection closed:", error);
       setIsConnected(false);
       if (error && !error.message?.includes("negotiation")) {
         setError(error.message);
@@ -145,17 +145,19 @@ export const useUserPresence = (options?: UseUserPresenceOptions) => {
 
     // Handle beforeunload - graceful disconnect when user closes tab/browser
     const handleBeforeUnload = () => {
-      console.log("🚪 [UserPresenceHub] Browser/tab closing, disconnecting...");
+      console.log(
+        "🚪 [CommunicationHub] Browser/tab closing, disconnecting..."
+      );
       if (connectionRef.current) {
         // Use synchronous stop for beforeunload
         try {
           connectionRef.current.stop();
           console.log(
-            "✅ [UserPresenceHub] Connection stopped on beforeunload"
+            "✅ [CommunicationHub] Connection stopped on beforeunload"
           );
         } catch (err) {
           console.error(
-            "❌ [UserPresenceHub] Error stopping on beforeunload:",
+            "❌ [CommunicationHub] Error stopping on beforeunload:",
             err
           );
         }
@@ -166,7 +168,7 @@ export const useUserPresence = (options?: UseUserPresenceOptions) => {
 
     // Cleanup
     return () => {
-      console.log("🔌 [UserPresenceHub] Cleaning up connection...");
+      console.log("🔌 [CommunicationHub] Cleaning up connection...");
 
       // Remove beforeunload listener
       window.removeEventListener("beforeunload", handleBeforeUnload);
@@ -175,18 +177,20 @@ export const useUserPresence = (options?: UseUserPresenceOptions) => {
       if (connectionRef.current) {
         const currentState = connectionRef.current.state;
         console.log(
-          "📊 [UserPresenceHub] Current connection state:",
+          "📊 [CommunicationHub] Current connection state:",
           currentState
         );
 
         connectionRef.current
           .stop()
           .then(() => {
-            console.log("✅ [UserPresenceHub] Connection stopped successfully");
+            console.log(
+              "✅ [CommunicationHub] Connection stopped successfully"
+            );
           })
           .catch((err) => {
             console.error(
-              "❌ [UserPresenceHub] Error stopping connection:",
+              "❌ [CommunicationHub] Error stopping connection:",
               err
             );
           });
@@ -213,7 +217,7 @@ export const useUserPresence = (options?: UseUserPresenceOptions) => {
   // Update user online status
   const updateOnlineStatus = async (userId: string) => {
     if (!connection || !isConnected) {
-      throw new Error("Not connected to UserPresenceHub");
+      throw new Error("Not connected to CommunicationHub");
     }
 
     try {
@@ -230,7 +234,7 @@ export const useUserPresence = (options?: UseUserPresenceOptions) => {
     userIds: string[]
   ): Promise<Record<string, boolean>> => {
     if (!connection || !isConnected) {
-      throw new Error("Not connected to UserPresenceHub");
+      throw new Error("Not connected to CommunicationHub");
     }
 
     try {
