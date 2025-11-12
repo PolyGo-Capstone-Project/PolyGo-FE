@@ -6,6 +6,7 @@ import { UserHeader } from "@/components";
 import { UserPresenceProvider } from "@/components/providers";
 import { AuthLoading } from "@/components/shared/auth-loading";
 import { Role } from "@/constants";
+import { CallProvider } from "@/contexts/call-context";
 import { ChatNotificationProvider } from "@/contexts/chat-notification-context";
 import { useAuthGuard } from "@/hooks";
 
@@ -34,10 +35,12 @@ export default function ProtectedLayout({ children }: ProtectedLayoutProps) {
   return (
     <UserPresenceProvider>
       <ChatNotificationProvider>
-        <div className="min-h-screen flex flex-col">
-          <UserHeader />
-          <main>{children}</main>
-        </div>
+        <CallProvider>
+          <div className="min-h-screen flex flex-col">
+            <UserHeader />
+            <main>{children}</main>
+          </div>
+        </CallProvider>
       </ChatNotificationProvider>
     </UserPresenceProvider>
   );

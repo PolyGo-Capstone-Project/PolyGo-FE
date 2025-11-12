@@ -17,7 +17,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components";
-import { useUserPresenceContext } from "@/components/providers";
+import { useUserCommunicationHubContext } from "@/components/providers";
 import { FriendStatus, PlanTypeEnum } from "@/constants";
 import { UserMatchingItemType } from "@/models";
 import {
@@ -56,7 +56,7 @@ export function UserCard({
   const tGender = useTranslations("common.gender");
 
   // Get online status from presence context
-  const { isUserOnline } = useUserPresenceContext();
+  const { isUserOnline } = useUserCommunicationHubContext();
   const isOnline = isUserOnline(user.id);
 
   const initials = useMemo(() => {
