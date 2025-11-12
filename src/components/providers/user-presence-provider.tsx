@@ -1,6 +1,6 @@
 "use client";
 
-import { useUserPresence } from "@/hooks";
+import { useUserCommunicationHub } from "@/hooks";
 import { UserStatusChangedType } from "@/models/presence.model";
 import {
   createContext,
@@ -28,11 +28,11 @@ const UserPresenceContext = createContext<UserPresenceContextValue | null>(
   null
 );
 
-export const useUserPresenceContext = () => {
+export const useUserCommunicationHubContext = () => {
   const context = useContext(UserPresenceContext);
   if (!context) {
     throw new Error(
-      "useUserPresenceContext must be used within UserPresenceProvider"
+      "useUserCommunicationHubContext must be used within UserPresenceProvider"
     );
   }
   return context;
@@ -47,7 +47,7 @@ interface UserPresenceProviderProps {
  *
  * Usage:
  * 1. Wrap your app with <UserPresenceProvider>
- * 2. Use useUserPresenceContext() to access online users
+ * 2. Use useUserCommunicationHubContext() to access online users
  *
  * Benefits:
  * - Single WebSocket connection for entire app
@@ -76,7 +76,7 @@ export function UserPresenceProvider({ children }: UserPresenceProviderProps) {
   }, []);
 
   const { isConnected, error, updateOnlineStatus, getOnlineStatus } =
-    useUserPresence({
+    useUserCommunicationHub({
       onUserStatusChanged: handleUserStatusChanged,
     });
 

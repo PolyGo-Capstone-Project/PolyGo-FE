@@ -28,7 +28,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components";
-import { useUserPresenceContext } from "@/components/providers";
+import { useUserCommunicationHubContext } from "@/components/providers";
 import {
   useAuthMe,
   useCurrentSubscriptionQuery,
@@ -85,7 +85,7 @@ export default function ProfilePage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   // Get presence context for online status
-  const { isUserOnline } = useUserPresenceContext();
+  const { isUserOnline } = useUserCommunicationHubContext();
 
   // Fetch user data
   const { data: authData, isLoading: isLoadingAuth } = useAuthMe();
