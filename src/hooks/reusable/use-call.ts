@@ -105,17 +105,21 @@ export const useCall = (options?: UseCallOptions) => {
     onCallAccepted: async (data: CallAcceptedData) => {
       console.log("✅ [Call] Call accepted by:", data.userId);
 
-      setCallState((prev) => ({
-        ...prev,
-        status: "connected",
-        peerId: data.userId,
-      }));
+      // Don't set status to "connected" yet - wait for WebRTC connection
+      // Status will be set to "connected" in onconnectionstatechange handler
+      // Keep status as "calling" while WebRTC connection is being established
 
       // Only initialize WebRTC if we are the CALLER
       // Receiver already initialized WebRTC in acceptCall()
       if (isCallerRef.current) {
         console.log("[Call] 📞 We are caller, initializing WebRTC...");
-        await initializeWebRTCConnection(data.userId, callState.isVideoCall);
+        // Use the current peerId from state (the person we called)
+        if (callState.peerId) {
+          await initializeWebRTCConnection(
+            callState.peerId,
+            callState.isVideoCall
+          );
+        }
       } else {
         console.log(
           "[Call] 📲 We are receiver, WebRTC already initialized in acceptCall()"
@@ -230,118 +234,137 @@ export const useCall = (options?: UseCallOptions) => {
   );
 
   // Create peer connection
-  const createPeerConnection = useCallback((): ExtendedRTCPeerConnection => {
-    console.log("[PC] Creating new peer connection");
+  const createPeerConnection = useCallback(
+    (peerId: string): ExtendedRTCPeerConnection => {
+      console.log("[PC] Creating new peer connection for:", peerId);
 
-    const pc = new RTCPeerConnection({
-      iceServers: DEFAULT_ICE_SERVERS,
-    }) as ExtendedRTCPeerConnection;
+      const pc = new RTCPeerConnection({
+        iceServers: DEFAULT_ICE_SERVERS,
+      }) as ExtendedRTCPeerConnection;
 
-    pc._pendingRemoteCandidates = [];
+      pc._pendingRemoteCandidates = [];
 
-    // Apply pending ICE candidates
-    pc._applyPendingCandidates = async () => {
-      while (
-        pc._pendingRemoteCandidates &&
-        pc._pendingRemoteCandidates.length > 0
-      ) {
-        const candidate = pc._pendingRemoteCandidates.shift();
-        if (candidate) {
-          try {
-            await pc.addIceCandidate(candidate);
-            console.log("[PC] ✓ Applied queued ICE candidate");
-          } catch (error) {
-            console.warn("[PC] ✗ Failed to apply queued ICE candidate", error);
+      // Apply pending ICE candidates
+      pc._applyPendingCandidates = async () => {
+        while (
+          pc._pendingRemoteCandidates &&
+          pc._pendingRemoteCandidates.length > 0
+        ) {
+          const candidate = pc._pendingRemoteCandidates.shift();
+          if (candidate) {
+            try {
+              await pc.addIceCandidate(candidate);
+              console.log("[PC] ✓ Applied queued ICE candidate");
+            } catch (error) {
+              console.warn(
+                "[PC] ✗ Failed to apply queued ICE candidate",
+                error
+              );
+            }
           }
         }
-      }
-    };
+      };
 
-    // ICE candidate handler
-    pc.onicecandidate = (event) => {
-      if (!event.candidate) {
-        console.log("[PC] ICE gathering complete");
-        return;
-      }
+      // ICE candidate handler
+      pc.onicecandidate = (event) => {
+        if (!event.candidate) {
+          console.log("[PC] ICE gathering complete");
+          return;
+        }
 
-      const candidateJson = JSON.stringify(event.candidate);
-      if (callState.peerId) {
+        const candidateJson = JSON.stringify(event.candidate);
         communicationHub
-          .sendIceCandidate(callState.peerId, candidateJson)
+          .sendIceCandidate(peerId, candidateJson)
           .catch((err) =>
             console.error("[PC] ✗ Failed to send ICE candidate:", err)
           );
-      }
-    };
+      };
 
-    // Track handler
-    pc.ontrack = (event) => {
-      console.log(
-        "[PC] ✓ ontrack - tracks:",
-        event.streams[0].getTracks().map((t) => `${t.kind}:${t.enabled}`)
-      );
+      // Track handler
+      pc.ontrack = (event) => {
+        console.log(
+          "[PC] ✓ ontrack - tracks:",
+          event.streams[0].getTracks().map((t) => `${t.kind}:${t.enabled}`)
+        );
 
-      remoteStreamRef.current = event.streams[0];
-      setCallState((prev) => ({
-        ...prev,
-        remoteStream: event.streams[0],
-      }));
-    };
+        remoteStreamRef.current = event.streams[0];
+        setCallState((prev) => ({
+          ...prev,
+          remoteStream: event.streams[0],
+        }));
+      };
 
-    // Connection state handlers
-    pc.oniceconnectionstatechange = () => {
-      console.log("[PC] ICE state:", pc.iceConnectionState);
+      // Connection state handlers
+      pc.oniceconnectionstatechange = () => {
+        console.log("[PC] ICE state:", pc.iceConnectionState);
 
-      if (pc.iceConnectionState === "disconnected") {
-        console.log("[PC] ⚠️ ICE disconnected - waiting for reconnection...");
-        setTimeout(() => {
-          if (pc.iceConnectionState === "disconnected") {
-            console.log("[PC] 🔄 Still disconnected, attempting ICE restart");
-            pc.restartIce?.();
-          }
-        }, 3000);
-      } else if (pc.iceConnectionState === "failed") {
-        console.log("[PC] ⚠️ ICE failed - attempting immediate restart");
-        pc.restartIce?.();
-      }
-    };
-
-    pc.onconnectionstatechange = () => {
-      console.log("[PC] Connection state:", pc.connectionState);
-
-      if (pc.connectionState === "connected") {
-        setCallState((prev) => ({ ...prev, status: "connected" }));
-      } else if (
-        pc.connectionState === "failed" ||
-        pc.connectionState === "closed"
-      ) {
-        cleanupCall();
-        setCallState((prev) => ({ ...prev, status: "failed" }));
-      }
-    };
-
-    // Perfect Negotiation
-    pc.onnegotiationneeded = async () => {
-      try {
-        makingOfferRef.current = true;
-        await pc.setLocalDescription();
-
-        if (pc.localDescription && callState.peerId) {
-          await communicationHub.sendOffer(
-            callState.peerId,
-            pc.localDescription.sdp!
-          );
-          console.log("[PC] ✓ Sent offer via negotiation");
+        if (pc.iceConnectionState === "disconnected") {
+          console.log("[PC] ⚠️ ICE disconnected - waiting for reconnection...");
+          setTimeout(() => {
+            if (pc.iceConnectionState === "disconnected") {
+              console.log("[PC] 🔄 Still disconnected, attempting ICE restart");
+              pc.restartIce?.();
+            }
+          }, 3000);
+        } else if (pc.iceConnectionState === "failed") {
+          console.log("[PC] ⚠️ ICE failed - attempting immediate restart");
+          pc.restartIce?.();
         }
-      } catch (err) {
-        console.error("[PC] ✗ Negotiation error:", err);
-      } finally {
-        makingOfferRef.current = false;
-      }
-    };
+      };
 
-    return pc;
-  }, [callState.peerId, communicationHub]);
+      pc.onconnectionstatechange = () => {
+        console.log("[PC] Connection state:", pc.connectionState);
+
+        if (pc.connectionState === "connected") {
+          setCallState((prev) => ({ ...prev, status: "connected" }));
+        } else if (
+          pc.connectionState === "failed" ||
+          pc.connectionState === "closed"
+        ) {
+          // Inline cleanup instead of calling cleanupCall
+          if (peerConnectionRef.current) {
+            peerConnectionRef.current.close();
+            peerConnectionRef.current = null;
+          }
+          if (localStreamRef.current) {
+            localStreamRef.current.getTracks().forEach((track) => track.stop());
+            localStreamRef.current = null;
+          }
+          remoteStreamRef.current = null;
+          setCallState((prev) => ({ ...prev, status: "failed" }));
+        }
+      };
+
+      // Perfect Negotiation (Only for caller)
+      pc.onnegotiationneeded = async () => {
+        // Only caller should create and send offer
+        if (!isCallerRef.current) {
+          console.log("[PC] ⚠️ Skipping negotiation - we are receiver");
+          return;
+        }
+
+        try {
+          console.log(
+            "[PC] 🔄 Negotiation needed - creating offer (as caller)"
+          );
+          makingOfferRef.current = true;
+          await pc.setLocalDescription();
+
+          if (pc.localDescription) {
+            await communicationHub.sendOffer(peerId, pc.localDescription.sdp!);
+            console.log("[PC] ✓ Sent offer via negotiation (as caller)");
+          }
+        } catch (err) {
+          console.error("[PC] ✗ Negotiation error:", err);
+        } finally {
+          makingOfferRef.current = false;
+        }
+      };
+
+      return pc;
+    },
+    [communicationHub]
+  );
 
   // Initialize WebRTC connection
   const initializeWebRTCConnection = useCallback(
@@ -354,7 +377,7 @@ export const useCall = (options?: UseCallOptions) => {
 
         // Create peer connection if not exists
         if (!peerConnectionRef.current) {
-          peerConnectionRef.current = createPeerConnection();
+          peerConnectionRef.current = createPeerConnection(peerId);
         }
 
         const pc = peerConnectionRef.current;
@@ -376,65 +399,97 @@ export const useCall = (options?: UseCallOptions) => {
         });
 
         console.log("[WebRTC] ✓ Connection initialized");
+
+        // If we are the CALLER, create and send offer immediately
+        if (isCallerRef.current) {
+          console.log("[WebRTC] 📞 We are caller - creating offer now");
+          try {
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+
+            if (pc.localDescription) {
+              await communicationHub.sendOffer(
+                peerId,
+                pc.localDescription.sdp!
+              );
+              console.log("[WebRTC] ✅ Sent offer to receiver");
+            }
+          } catch (err) {
+            console.error("[WebRTC] ✗ Failed to create/send offer:", err);
+          }
+        }
       } catch (error) {
         console.error("[WebRTC] ✗ Failed to initialize connection:", error);
         throw error;
       }
     },
-    [getLocalStream, createPeerConnection]
+    [getLocalStream, createPeerConnection, communicationHub]
   );
 
   // Handle receive offer
   const handleReceiveOffer = useCallback(
     async (sdp: string) => {
       try {
-        const pc = peerConnectionRef.current || createPeerConnection();
-        peerConnectionRef.current = pc;
+        console.log(
+          "[PC] 📨 Handling received offer, isCaller:",
+          isCallerRef.current
+        );
 
-        // Perfect Negotiation - check if we should ignore this offer
-        const offerCollision =
-          pc.signalingState !== "stable" || makingOfferRef.current;
-
-        ignoreOfferRef.current = offerCollision;
-
-        if (ignoreOfferRef.current) {
-          console.log("[PC] ⚠️ Ignoring offer due to collision");
+        // If we are the caller and making an offer, ignore incoming offer (collision)
+        if (isCallerRef.current && makingOfferRef.current) {
+          console.log("[PC] ⚠️ Ignoring offer - we are caller making offer");
           return;
         }
 
-        // Add local stream if not already added
-        if (!localStreamRef.current && callState.isVideoCall !== undefined) {
-          const stream = await getLocalStream(callState.isVideoCall);
-          stream.getTracks().forEach((track) => {
-            pc.addTrack(track, stream);
-          });
-        }
+        // If we are the receiver, process the offer and send answer
+        if (!isCallerRef.current) {
+          const pc = peerConnectionRef.current;
+          if (!pc) {
+            console.warn(
+              "[PC] ⚠️ No peer connection when receiving offer as receiver"
+            );
+            return;
+          }
 
-        await pc.setRemoteDescription({ type: "offer", sdp });
-        console.log("[PC] ✓ Set remote description (offer)");
+          // Add local stream if not already added
+          if (!localStreamRef.current && callState.isVideoCall !== undefined) {
+            const stream = await getLocalStream(callState.isVideoCall);
+            const existingSenders = pc.getSenders();
+            const existingTrackIds = new Set(
+              existingSenders.map((s) => s.track?.id).filter(Boolean)
+            );
 
-        if (pc._applyPendingCandidates) {
-          await pc._applyPendingCandidates();
-        }
+            stream.getTracks().forEach((track) => {
+              if (!existingTrackIds.has(track.id)) {
+                pc.addTrack(track, stream);
+                console.log("[PC] ✓ Added", track.kind, "track to answer");
+              }
+            });
+          }
 
-        const answer = await pc.createAnswer();
-        await pc.setLocalDescription(answer);
+          await pc.setRemoteDescription({ type: "offer", sdp });
+          console.log("[PC] ✓ Set remote description (offer)");
 
-        if (callState.peerId) {
-          await communicationHub.sendAnswer(callState.peerId, answer.sdp!);
-          console.log("[PC] ✓ Sent answer");
+          if (pc._applyPendingCandidates) {
+            await pc._applyPendingCandidates();
+          }
+
+          const answer = await pc.createAnswer();
+          await pc.setLocalDescription(answer);
+
+          if (callState.peerId) {
+            await communicationHub.sendAnswer(callState.peerId, answer.sdp!);
+            console.log("[PC] ✓ Sent answer as receiver");
+          }
+        } else {
+          // We are caller but not making offer, this is a collision
+          console.log("[PC] ⚠️ Offer collision detected - ignoring");
         }
       } catch (error) {
         console.error("[PC] ✗ Failed to handle offer:", error);
       }
     },
-    [
-      createPeerConnection,
-      getLocalStream,
-      callState.isVideoCall,
-      callState.peerId,
-      communicationHub,
-    ]
+    [getLocalStream, callState.isVideoCall, callState.peerId, communicationHub]
   );
 
   // Handle receive answer
@@ -581,18 +636,16 @@ export const useCall = (options?: UseCallOptions) => {
       // Get local stream
       await getLocalStream(callState.isVideoCall);
 
-      // Respond to call via SignalR
-      await communicationHub.respondCall(callState.peerId, true);
-
-      // Initialize WebRTC connection (receiver initializes here)
+      // Initialize WebRTC connection (receiver initializes here, but won't create offer)
       await initializeWebRTCConnection(callState.peerId, callState.isVideoCall);
 
-      setCallState((prev) => ({
-        ...prev,
-        status: "connected",
-      }));
+      // Respond to call via SignalR (this tells caller we accepted)
+      await communicationHub.respondCall(callState.peerId, true);
 
-      console.log("[Call] ✓ Call accepted");
+      // Don't set status to "connected" yet - wait for WebRTC connection
+      // Status will be set when onconnectionstatechange fires
+
+      console.log("[Call] ✓ Call accepted - waiting for offer from caller");
     } catch (error) {
       console.error("[Call] ✗ Failed to accept call:", error);
       throw error;
