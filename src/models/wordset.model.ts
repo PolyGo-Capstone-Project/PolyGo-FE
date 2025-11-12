@@ -344,6 +344,70 @@ export const MyBestWordsetScoreResponseSchema = z.object({
   message: z.string(),
 });
 
+// [ADD] ==== GAMEPLAY: common word schema ====
+export const GameWordSchema = z.object({
+  id: z.string(),
+  scrambledWord: z.string(),
+  definition: z.string(),
+  hint: z.string().optional().nullable(),
+});
+
+// [ADD] ==== GAMEPLAY: Start game (POST /wordsets/:id/start) ====
+export const StartWordsetGameDataSchema = z.object({
+  wordSetId: z.string(),
+  totalWords: z.number().int(),
+  currentWordIndex: z.number().int(),
+  currentWord: GameWordSchema,
+  startTime: z.string(), // ISO
+});
+
+export const StartWordsetGameResSchema = z.object({
+  data: StartWordsetGameDataSchema,
+  message: z.string(),
+});
+
+// [ADD] ==== GAMEPLAY: Play (POST /wordsets/play) ====
+export const PlayWordsetBodySchema = z.object({
+  wordSetId: z.string(),
+  wordId: z.string(),
+  answer: z.string(),
+});
+
+export const PlayWordsetResSchema = z.object({
+  data: z.object({
+    isCorrect: z.boolean(),
+    isCompleted: z.boolean(),
+    currentWordIndex: z.number().int(),
+    totalWords: z.number().int(),
+    mistakes: z.number().int(),
+    hintsUsed: z.number().int(),
+    score: z.number().int(),
+    xpEarned: z.number().int(),
+    completionTimeInSeconds: z.number().int(),
+    // Khi chưa complete sẽ có nextWord; khi complete có thể không có
+    nextWord: GameWordSchema.optional(),
+  }),
+  message: z.string(),
+});
+
+// [ADD] ==== GAMEPLAY: Game state (GET /wordsets/:id/game-state) ====
+export const WordsetGameStateDataSchema = z.object({
+  wordSetId: z.string(),
+  totalWords: z.number().int(),
+  currentWordIndex: z.number().int(),
+  completedWords: z.number().int(),
+  currentWord: GameWordSchema,
+  mistakes: z.number().int(),
+  hintsUsed: z.number().int(),
+  elapsedTime: z.number().int(), // seconds
+  startTime: z.string(),
+});
+
+export const WordsetGameStateResSchema = z.object({
+  data: WordsetGameStateDataSchema,
+  message: z.string(),
+});
+
 /* ====== Types ====== */
 //List game cho user
 export type WordsetListItemType = z.infer<typeof WordsetListItemSchema>;
@@ -405,3 +469,8 @@ export type MyBestWordsetScore = z.infer<typeof MyBestWordsetScoreSchema>;
 export type MyBestWordsetScoreResponse = z.infer<
   typeof MyBestWordsetScoreResponseSchema
 >;
+// [ADD] ==== GAMEPLAY: Export types ====
+export type StartWordsetGameResType = z.infer<typeof StartWordsetGameResSchema>;
+export type PlayWordsetBodyType = z.infer<typeof PlayWordsetBodySchema>;
+export type PlayWordsetResType = z.infer<typeof PlayWordsetResSchema>;
+export type WordsetGameStateResType = z.infer<typeof WordsetGameStateResSchema>;

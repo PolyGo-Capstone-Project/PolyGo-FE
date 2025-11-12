@@ -175,6 +175,9 @@
     }
   },
   "play": {
+    "title": "Play Word Puzzle",
+    "description": "Solve the vocabulary puzzle.",
+    "loading": "Loading puzzle set...",
     "time": "Time",
     "progress": "Progress",
     "mistakes": "Mistakes",

@@ -15,10 +15,14 @@ import {
   GetWordsetsQueryType,
   GetWordsetsResType,
   MyBestWordsetScoreResponse,
+  PlayWordsetBodyType,
+  PlayWordsetResType,
+  StartWordsetGameResType,
   UpdateWordsetBodyType,
   UpdateWordsetResType,
   UpdateWordsetStatusBodyType,
   UpdateWordsetStatusResType,
+  WordsetGameStateResType,
   WordsetLeaderboardResponse,
 } from "@/models";
 
@@ -92,6 +96,18 @@ export const wordsetApiRequest = {
     http.get<MyBestWordsetScoreResponse>(
       `${prefix}/${id}/my-best-score?lang=${params?.lang ?? "vi"}`
     ),
+
+  // [ADD] GAMEPLAY: start – POST /wordsets/:id/start
+  startGame: (wordsetId: string) =>
+    http.post<StartWordsetGameResType>(`${prefix}/${wordsetId}/start`, {}),
+
+  // [ADD] GAMEPLAY: play – POST /wordsets/play
+  play: (body: PlayWordsetBodyType) =>
+    http.post<PlayWordsetResType>(`${prefix}/play`, body),
+
+  // [ADD] GAMEPLAY: game-state – GET /wordsets/:id/game-state
+  getGameState: (wordsetId: string) =>
+    http.get<WordsetGameStateResType>(`${prefix}/${wordsetId}/game-state`),
 };
 
 export default wordsetApiRequest;

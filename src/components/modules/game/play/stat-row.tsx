@@ -60,13 +60,20 @@ export default function StatsRow({
         value={mistakesValue}
         icon={<XCircle className="h-5 w-5" />}
       />
-      {hintsLabel != null && hintsValue != null && (
+      {/* {hintsLabel != null && hintsValue != null && (
         <StatCard
           label={hintsLabel}
           value={hintsValue}
           icon={<Lightbulb className="h-5 w-5" />}
         />
-      )}
+      )} */}
+      <StatCard
+        // Nếu hintsLabel là null hoặc undefined, dùng "Hints"
+        label={hintsLabel ?? "Hints"}
+        // Nếu hintsValue là null hoặc undefined, dùng giá trị mặc định (ví dụ: 0)
+        value={hintsValue ?? 0}
+        icon={<Lightbulb className="h-5 w-5" />}
+      />
     </div>
   );
 }

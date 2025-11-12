@@ -11,8 +11,12 @@ import {
   GetWordsetByIdResType,
   GetWordsetsQueryType,
   MyBestWordsetScoreResponse,
+  PlayWordsetBodyType,
+  PlayWordsetResType,
+  StartWordsetGameResType,
   UpdateWordsetBodyType,
   UpdateWordsetResType,
+  WordsetGameStateResType,
   WordsetLeaderboardResponse,
 } from "@/models";
 import {
@@ -273,4 +277,65 @@ export const useMyBestWordsetScoreQuery = (
       return res.payload; // giữ convention payload
     },
     enabled: (options?.enabled ?? true) && Boolean(id),
+  });
+
+/* ============ GAMEPLAY: START ============ */
+// [ADD] Start game mutation
+export const useStartWordsetGameMutation = (options?: {
+  onSuccess?: (data: StartWordsetGameResType) => void;
+  onError?: (err: unknown) => void;
+}) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (wordsetId: string) => wordsetApiRequest.startGame(wordsetId),
+    onSuccess: (res) => {
+      // invalidate game-state ngay sau khi start
+      qc.invalidateQueries({
+        queryKey: ["wordset", res.payload.data.wordSetId, "game-state"],
+      });
+      options?.onSuccess?.(res.payload);
+    },
+    onError: options?.onError,
+  });
+};
+
+/* ============ GAMEPLAY: PLAY ANSWER ============ */
+// [ADD] Play answer mutation
+export const usePlayWordsetMutation = (options?: {
+  onSuccess?: (data: PlayWordsetResType, vars: PlayWordsetBodyType) => void;
+  onError?: (err: unknown) => void;
+}) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: PlayWordsetBodyType) => wordsetApiRequest.play(body),
+    onSuccess: (res, vars) => {
+      // làm mới game-state để đồng bộ tiến độ, currentWord, mistakes...
+      qc.invalidateQueries({
+        queryKey: ["wordset", vars.wordSetId, "game-state"],
+      });
+      options?.onSuccess?.(res.payload, vars);
+    },
+    onError: options?.onError,
+  });
+};
+
+/* ============ GAMEPLAY: GAME STATE ============ */
+// [ADD] Pollable game-state query
+export const useWordsetGameStateQuery = (
+  wordsetId?: string,
+  options?: {
+    enabled?: boolean;
+    refetchInterval?: number | false; // cho phép polling
+  }
+) =>
+  useQuery<WordsetGameStateResType>({
+    queryKey: ["wordset", wordsetId ?? null, "game-state"],
+    queryFn: async () => {
+      const res = await wordsetApiRequest.getGameState(wordsetId as string);
+      return res.payload;
+    },
+    enabled: (options?.enabled ?? true) && Boolean(wordsetId),
+    placeholderData: keepPreviousData,
+    // cho phép truyền polling từ ngoài (ví dụ 1000ms)
+    refetchInterval: options?.refetchInterval,
   });

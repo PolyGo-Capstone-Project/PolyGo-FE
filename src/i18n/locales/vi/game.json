@@ -178,6 +178,9 @@
     }
   },
   "play": {
+    "title": "Chơi Bộ Ghép Chữ",
+    "description": "Giải câu đố từ vựng.",
+    "loading": "Đang tải bộ câu đố...",
     "time": "Thời gian",
     "progress": "Tiến độ",
     "mistakes": "Sai sót",
