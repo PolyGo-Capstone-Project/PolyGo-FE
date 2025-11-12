@@ -14,6 +14,8 @@ import { useEffect, useRef, useState } from "react";
 export interface IncomingCallData {
   callerId: string;
   isVideoCall: boolean;
+  callerName?: string;
+  callerAvatar?: string;
 }
 
 export interface CallAcceptedData {
@@ -256,12 +258,24 @@ export const useUserCommunicationHub = (
     if (!connection) return;
 
     // Incoming call
-    const handleIncomingCall = (callerId: string, isVideoCall: boolean) => {
+    const handleIncomingCall = (
+      callerId: string,
+      isVideoCall: boolean,
+      callerName?: string,
+      callerAvatar?: string
+    ) => {
       console.log(
         `📞 [Call] Incoming ${isVideoCall ? "video" : "voice"} call from:`,
-        callerId
+        callerId,
+        "Name:",
+        callerName
       );
-      options?.onIncomingCall?.({ callerId, isVideoCall });
+      options?.onIncomingCall?.({
+        callerId,
+        isVideoCall,
+        callerName,
+        callerAvatar,
+      });
     };
 
     // Call accepted

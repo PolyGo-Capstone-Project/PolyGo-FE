@@ -48,7 +48,12 @@ export interface CallState {
 }
 
 interface UseCallOptions {
-  onIncomingCall?: (callerId: string, isVideoCall: boolean) => void;
+  onIncomingCall?: (data: {
+    callerId: string;
+    isVideoCall: boolean;
+    callerName?: string;
+    callerAvatar?: string;
+  }) => void;
   onCallEnded?: () => void;
   onCallFailed?: (reason: string) => void;
   onCallDeclined?: () => void;
@@ -80,7 +85,7 @@ export const useCall = (options?: UseCallOptions) => {
   const remoteStreamRef = useRef<MediaStream | null>(null);
   const makingOfferRef = useRef<boolean>(false);
   const ignoreOfferRef = useRef<boolean>(false);
-  const isCallerRef = useRef<boolean>(false); // Track if we initiated the call
+  const isCallerRef = useRef<boolean>(false);
 
   // ==================== COMMUNICATION HUB ====================
   const communicationHub = useUserCommunicationHub({
@@ -88,7 +93,9 @@ export const useCall = (options?: UseCallOptions) => {
     onIncomingCall: (data: IncomingCallData) => {
       console.log(
         `📞 [Call] Incoming ${data.isVideoCall ? "video" : "voice"} call from:`,
-        data.callerId
+        data.callerId,
+        "Name:",
+        data.callerName
       );
 
       setCallState((prev) => ({
@@ -98,12 +105,13 @@ export const useCall = (options?: UseCallOptions) => {
         peerId: data.callerId,
       }));
 
-      options?.onIncomingCall?.(data.callerId, data.isVideoCall);
+      options?.onIncomingCall?.(data);
     },
 
     // Handle call accepted
     onCallAccepted: async (data: CallAcceptedData) => {
       console.log("✅ [Call] Call accepted by:", data.userId);
+      console.log("[Call] 🔍 isCallerRef.current:", isCallerRef.current);
 
       // Don't set status to "connected" yet - wait for WebRTC connection
       // Status will be set to "connected" in onconnectionstatechange handler
@@ -113,13 +121,14 @@ export const useCall = (options?: UseCallOptions) => {
       // Receiver already initialized WebRTC in acceptCall()
       if (isCallerRef.current) {
         console.log("[Call] 📞 We are caller, initializing WebRTC...");
-        // Use the current peerId from state (the person we called)
-        if (callState.peerId) {
-          await initializeWebRTCConnection(
-            callState.peerId,
-            callState.isVideoCall
-          );
-        }
+        // Use data.userId (the person who accepted our call)
+        setCallState((prev) => {
+          // Initialize WebRTC with the current state
+          if (prev.peerId) {
+            initializeWebRTCConnection(prev.peerId, prev.isVideoCall);
+          }
+          return prev; // Don't change state yet
+        });
       } else {
         console.log(
           "[Call] 📲 We are receiver, WebRTC already initialized in acceptCall()"
@@ -564,7 +573,6 @@ export const useCall = (options?: UseCallOptions) => {
     // Reset refs
     makingOfferRef.current = false;
     ignoreOfferRef.current = false;
-    isCallerRef.current = false; // Reset caller flag
 
     console.log("[Call] ✓ Cleanup complete");
   }, []);
@@ -695,6 +703,10 @@ export const useCall = (options?: UseCallOptions) => {
       await communicationHub.endCall();
 
       cleanupCall();
+
+      // Reset caller flag when call ends
+      isCallerRef.current = false;
+
       setCallState((prev) => ({
         ...prev,
         status: "ended",
@@ -739,17 +751,27 @@ export const useCall = (options?: UseCallOptions) => {
   const toggleVideo = useCallback(async () => {
     if (!localStreamRef.current) return undefined;
 
-    const videoTrack = localStreamRef.current.getVideoTracks()[0];
-    if (!videoTrack) {
-      console.warn("[Media] ⚠️ No video track available");
-      return undefined;
-    }
-
     try {
-      // Case 1: Disabling video
-      if (videoTrack.enabled) {
+      const videoTrack = localStreamRef.current.getVideoTracks()[0];
+
+      // Case 1: Disabling video (stop track completely)
+      if (videoTrack && callState.localVideoEnabled) {
         console.log("[Media] 🔴 Disabling video...");
-        videoTrack.enabled = false;
+
+        // Stop and remove video track
+        videoTrack.stop();
+
+        // Update peer connection - remove video sender
+        const pc = peerConnectionRef.current;
+        if (pc) {
+          const senders = pc.getSenders();
+          const videoSender = senders.find((s) => s.track?.kind === "video");
+          if (videoSender) {
+            await videoSender.replaceTrack(null);
+            console.log("[PC] ✓ Removed video track from peer connection");
+          }
+        }
+
         setCallState((prev) => ({
           ...prev,
           localVideoEnabled: false,
@@ -760,14 +782,49 @@ export const useCall = (options?: UseCallOptions) => {
         return false;
       }
 
-      // Case 2: Enabling video
-      console.log("[Media] 🟢 Enabling video...");
+      // Case 2: Enabling video (get fresh track)
+      if (!callState.localVideoEnabled) {
+        console.log("[Media] � Enabling video...");
 
-      // Check if track is still live
-      if (videoTrack.readyState === "live") {
-        videoTrack.enabled = true;
+        // Get new video stream
+        const newStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+
+        const newVideoTrack = newStream.getVideoTracks()[0];
+        if (!newVideoTrack) {
+          throw new Error("Failed to get video track from new stream");
+        }
+
+        // Get audio tracks from current stream
+        const audioTracks = localStreamRef.current.getAudioTracks();
+
+        // Create new combined stream
+        const combinedStream = new MediaStream();
+        audioTracks.forEach((track) => combinedStream.addTrack(track));
+        combinedStream.addTrack(newVideoTrack);
+
+        // Update peer connection with new video track
+        const pc = peerConnectionRef.current;
+        if (pc) {
+          const senders = pc.getSenders();
+          const videoSender = senders.find((s) => s.track?.kind === "video");
+          if (videoSender) {
+            await videoSender.replaceTrack(newVideoTrack);
+            console.log("[PC] ✓ Replaced video track");
+          } else {
+            // No video sender exists, add one
+            pc.addTrack(newVideoTrack, combinedStream);
+            console.log("[PC] ✓ Added video track");
+          }
+        }
+
+        // Update refs and state
+        localStreamRef.current = combinedStream;
         setCallState((prev) => ({
           ...prev,
+          localStream: combinedStream,
           localVideoEnabled: true,
         }));
 
@@ -776,51 +833,7 @@ export const useCall = (options?: UseCallOptions) => {
         return true;
       }
 
-      // Track ended, need new stream
-      console.log("[Media] 🔄 Track ended, getting new video stream...");
-      const newStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false,
-      });
-
-      const newVideoTrack = newStream.getVideoTracks()[0];
-      if (!newVideoTrack) {
-        throw new Error("Failed to get video track from new stream");
-      }
-
-      // Stop old track
-      videoTrack.stop();
-
-      // Get audio tracks from current stream
-      const audioTracks = localStreamRef.current.getAudioTracks();
-
-      // Create new combined stream
-      const combinedStream = new MediaStream();
-      audioTracks.forEach((track) => combinedStream.addTrack(track));
-      combinedStream.addTrack(newVideoTrack);
-
-      // Update peer connection tracks
-      const pc = peerConnectionRef.current;
-      if (pc) {
-        const senders = pc.getSenders();
-        const videoSender = senders.find((s) => s.track?.kind === "video");
-        if (videoSender) {
-          await videoSender.replaceTrack(newVideoTrack);
-          console.log("[PC] ✓ Replaced video track");
-        }
-      }
-
-      // Update refs and state
-      localStreamRef.current = combinedStream;
-      setCallState((prev) => ({
-        ...prev,
-        localStream: combinedStream,
-        localVideoEnabled: true,
-      }));
-
-      await communicationHub.toggleMedia(callState.localAudioEnabled, true);
-      console.log("[Media] ✓ Video re-enabled successfully");
-      return true;
+      return callState.localVideoEnabled;
     } catch (error) {
       console.error("[Media] ✗ toggleVideo error:", error);
       setCallState((prev) => ({

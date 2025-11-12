@@ -59,27 +59,27 @@ export function CallProvider({ children }: CallProviderProps) {
   // ✅ FIX: Use the new useCall hook with WebRTC support
   const callHook = useCallHook({
     // Incoming call event
-    onIncomingCall: useCallback((callerId: string, isVideoCall: boolean) => {
-      console.log("📞 [CallContext] Incoming call received:", {
-        callerId,
-        isVideoCall,
-      });
+    onIncomingCall: useCallback(
+      (data: {
+        callerId: string;
+        isVideoCall: boolean;
+        callerName?: string;
+        callerAvatar?: string;
+      }) => {
+        console.log("📞 [CallContext] Incoming call received:", data);
 
-      // Get caller info from ref (fallback to ID if name not found)
-      const callerInfo = userInfoMapRef.current[callerId] || {
-        name: callerId,
-      };
+        const callData = {
+          callerId: data.callerId,
+          callerName: data.callerName || data.callerId, // Fallback to ID if name not provided
+          callerAvatar: data.callerAvatar,
+          isVideoCall: data.isVideoCall,
+        };
 
-      const callData = {
-        callerId,
-        callerName: callerInfo.name,
-        callerAvatar: callerInfo.avatar,
-        isVideoCall,
-      };
-
-      console.log("📞 [CallContext] Setting incoming call state:", callData);
-      setIncomingCall(callData);
-    }, []),
+        console.log("📞 [CallContext] Setting incoming call state:", callData);
+        setIncomingCall(callData);
+      },
+      []
+    ),
 
     // Call ended event
     onCallEnded: useCallback(() => {

@@ -105,9 +105,9 @@ export function CallModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-gray-900 flex flex-col text-white">
+    <div className="fixed inset-0 z-50 bg-gray-900 flex flex-col text-white h-screen">
       {/* Header */}
-      <div className="p-4 bg-gray-800/50 backdrop-blur-sm">
+      <div className="p-4 bg-gray-800/50 backdrop-blur-sm flex-shrink-0">
         <div className="text-center">
           <h1 className="text-xl font-semibold">
             {isVideoCall ? "Video Call" : "Voice Call"}
@@ -118,9 +118,9 @@ export function CallModal({
       </div>
 
       {/* Video Container */}
-      <div className="flex-1 relative bg-gray-950">
-        {/* Remote Video (Full Screen) */}
-        {isVideoCall && (
+      <div className="flex-1 relative bg-gray-950 overflow-hidden min-h-0">
+        {/* Remote Video (Full Screen) - show when video is enabled */}
+        {callState.remoteVideoEnabled && (
           <video
             ref={remoteVideoRef}
             autoPlay
@@ -131,8 +131,8 @@ export function CallModal({
           </video>
         )}
 
-        {/* Remote Audio Only Display */}
-        {!isVideoCall && (
+        {/* Remote Audio Only Display - show when video is disabled */}
+        {!callState.remoteVideoEnabled && (
           <div className="w-full h-full flex items-center justify-center">
             <div className="text-center">
               <div className="w-32 h-32 rounded-full bg-gray-700 flex items-center justify-center mx-auto mb-4">
@@ -148,8 +148,8 @@ export function CallModal({
           </div>
         )}
 
-        {/* Local Video (Picture-in-Picture) */}
-        {isVideoCall && callState.localStream && (
+        {/* Local Video (Picture-in-Picture) - show when local video is enabled */}
+        {callState.localVideoEnabled && callState.localStream && (
           <div className="absolute top-4 right-4 w-48 h-36 rounded-lg overflow-hidden border-2 border-gray-700 bg-gray-800 shadow-xl">
             <video
               ref={localVideoRef}
@@ -193,7 +193,7 @@ export function CallModal({
       </div>
 
       {/* Controls */}
-      <div className="p-6 bg-gray-800/50 backdrop-blur-sm">
+      <div className="p-6 bg-gray-800/50 backdrop-blur-sm flex-shrink-0">
         <div className="flex items-center justify-center gap-4">
           {/* Microphone Toggle */}
           <Button
@@ -219,23 +219,19 @@ export function CallModal({
             <PhoneOff className="w-7 h-7" />
           </Button>
 
-          {/* Camera Toggle (only for video calls) */}
-          {isVideoCall && (
-            <Button
-              size="lg"
-              variant={
-                callState.localVideoEnabled ? "secondary" : "destructive"
-              }
-              className="rounded-full w-14 h-14"
-              onClick={onToggleCamera}
-            >
-              {callState.localVideoEnabled ? (
-                <Video className="w-6 h-6" />
-              ) : (
-                <VideoOff className="w-6 h-6" />
-              )}
-            </Button>
-          )}
+          {/* Camera Toggle - available for both video and voice calls */}
+          <Button
+            size="lg"
+            variant={callState.localVideoEnabled ? "secondary" : "destructive"}
+            className="rounded-full w-14 h-14"
+            onClick={onToggleCamera}
+          >
+            {callState.localVideoEnabled ? (
+              <Video className="w-6 h-6" />
+            ) : (
+              <VideoOff className="w-6 h-6" />
+            )}
+          </Button>
         </div>
 
         {/* Media State Indicators */}
@@ -248,16 +244,14 @@ export function CallModal({
             )}
             <span>Your mic</span>
           </div>
-          {isVideoCall && (
-            <div className="flex items-center gap-1">
-              {callState.localVideoEnabled ? (
-                <Video className="w-3 h-3" />
-              ) : (
-                <VideoOff className="w-3 h-3" />
-              )}
-              <span>Your camera</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1">
+            {callState.localVideoEnabled ? (
+              <Video className="w-3 h-3" />
+            ) : (
+              <VideoOff className="w-3 h-3" />
+            )}
+            <span>Your camera</span>
+          </div>
         </div>
       </div>
 
