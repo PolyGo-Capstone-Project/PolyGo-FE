@@ -262,6 +262,88 @@ export const UpdateWordsetStatusBodySchema = z.object({
 
 export const UpdateWordsetStatusResSchema = MessageResSchema;
 
+//played tab
+/* ====== My Played Wordsets ====== */
+export const MyPlayedWordsetItemSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  description: z.string().optional().nullable(),
+  difficulty: z.enum(WordsetDifficulty),
+  category: z.string(),
+  bestTime: z.number().int(),
+  bestScore: z.number().int(),
+  playCount: z.number().int(),
+  lastPlayed: z.string(), // ISO datetime
+  creator: z.object({
+    id: z.string(),
+    name: z.string(),
+    avatarUrl: z.string().optional().nullable(),
+  }),
+});
+
+export const GetMyPlayedWordsetsResSchema = z.object({
+  data: z.object({
+    items: z.array(MyPlayedWordsetItemSchema),
+    ...PaginationMetaSchema.shape,
+  }),
+  message: z.string(),
+});
+
+/* ======================= Leaderboard ======================= */
+export const WordsetLeaderboardPlayerSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  avatarUrl: z.string().nullable().optional(),
+});
+
+export const WordsetLeaderboardItemSchema = z.object({
+  rank: z.number(),
+  player: WordsetLeaderboardPlayerSchema,
+  completionTimeInSecs: z.number(),
+  score: z.number(),
+  mistakes: z.number(),
+  hintsUsed: z.number(),
+  xpEarned: z.number(),
+  completedAt: z.string(),
+  isMe: z.boolean(),
+});
+
+export const WordsetLeaderboardDataSchema = z.object({
+  items: z.array(WordsetLeaderboardItemSchema),
+  // Tái sử dụng meta chuẩn
+  totalItems: PaginationMetaSchema.shape.totalItems,
+  currentPage: PaginationMetaSchema.shape.currentPage,
+  totalPages: PaginationMetaSchema.shape.totalPages,
+  pageSize: PaginationMetaSchema.shape.pageSize,
+  hasPreviousPage: PaginationMetaSchema.shape.hasPreviousPage,
+  hasNextPage: PaginationMetaSchema.shape.hasNextPage,
+});
+
+export const WordsetLeaderboardResponseSchema = z.object({
+  data: WordsetLeaderboardDataSchema,
+  message: z.string(),
+});
+
+//best score
+
+/* ======================= My Best Score ======================= */
+export const MyBestWordsetScoreSchema = z.object({
+  hasPlayed: z.boolean(),
+  completionTimeInSecs: z.number().optional(),
+  score: z.number().optional(),
+  mistakes: z.number().optional(),
+  hintsUsed: z.number().optional(),
+  xpEarned: z.number().optional(),
+  completedAt: z.string().optional(),
+  rank: z.number().optional(),
+  totalPlayers: z.number().optional(),
+});
+
+export const MyBestWordsetScoreResponseSchema = z.object({
+  data: MyBestWordsetScoreSchema,
+  message: z.string(),
+});
+
 /* ====== Types ====== */
 //List game cho user
 export type WordsetListItemType = z.infer<typeof WordsetListItemSchema>;
@@ -299,4 +381,27 @@ export type UpdateWordsetStatusBodyType = z.infer<
 >;
 export type UpdateWordsetStatusResType = z.infer<
   typeof UpdateWordsetStatusResSchema
+>;
+//Played tab
+export type MyPlayedWordsetItemType = z.infer<typeof MyPlayedWordsetItemSchema>;
+export type GetMyPlayedWordsetsResType = z.infer<
+  typeof GetMyPlayedWordsetsResSchema
+>;
+//Leaderboard
+export type WordsetLeaderboardPlayer = z.infer<
+  typeof WordsetLeaderboardPlayerSchema
+>;
+export type WordsetLeaderboardItem = z.infer<
+  typeof WordsetLeaderboardItemSchema
+>;
+export type WordsetLeaderboardData = z.infer<
+  typeof WordsetLeaderboardDataSchema
+>;
+export type WordsetLeaderboardResponse = z.infer<
+  typeof WordsetLeaderboardResponseSchema
+>;
+//best score
+export type MyBestWordsetScore = z.infer<typeof MyBestWordsetScoreSchema>;
+export type MyBestWordsetScoreResponse = z.infer<
+  typeof MyBestWordsetScoreResponseSchema
 >;

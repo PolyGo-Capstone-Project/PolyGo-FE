@@ -2,12 +2,10 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
 import { WordsetCategory, WordsetDifficulty } from "@/models";
-import { Tag, Timer } from "lucide-react";
+import { Tag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
@@ -144,7 +142,7 @@ export default function CatDiff({
         </div>
 
         {/* Estimated Time */}
-        <div className="grid gap-2">
+        {/* <div className="grid gap-2">
           <Label htmlFor="time">{t("create.catDiff.estimate")}</Label>
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
             <div className="relative sm:w-56">
@@ -172,7 +170,7 @@ export default function CatDiff({
               </Label>
             </div>
           </div>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );

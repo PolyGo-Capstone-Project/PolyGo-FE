@@ -9,14 +9,17 @@ import {
   GetAdminWordsetsQueryType,
   GetAdminWordsetsResType,
   GetMyCreatedWordsetsResType,
+  GetMyPlayedWordsetsResType,
   GetWordsetByIdQueryType,
   GetWordsetByIdResType,
   GetWordsetsQueryType,
   GetWordsetsResType,
+  MyBestWordsetScoreResponse,
   UpdateWordsetBodyType,
   UpdateWordsetResType,
   UpdateWordsetStatusBodyType,
   UpdateWordsetStatusResType,
+  WordsetLeaderboardResponse,
 } from "@/models";
 
 const prefix = "/wordsets";
@@ -63,6 +66,32 @@ export const wordsetApiRequest = {
   /* ===== ADMIN: PUT /wordsets/admin/status ===== */
   updateStatus: (body: UpdateWordsetStatusBodyType) =>
     http.put<UpdateWordsetStatusResType>(`${prefix}/admin/status`, body),
+
+  //played tab
+  // GET my played
+  getMyPlayed: (params: {
+    lang?: string;
+    pageNumber?: number;
+    pageSize?: number;
+  }) =>
+    http.get<GetMyPlayedWordsetsResType>(
+      `${prefix}/my/played?lang=${params.lang ?? "vi"}&pageNumber=${params.pageNumber ?? 1}&pageSize=${params.pageSize ?? 10}`
+    ),
+
+  // GET leaderboard: /wordsets/:id/leaderboard?lang=&pageNumber=&pageSize=
+  getLeaderboard: (
+    id: string,
+    params?: { lang?: string; pageNumber?: number; pageSize?: number }
+  ) =>
+    http.get<WordsetLeaderboardResponse>(
+      `${prefix}/${id}/leaderboard?lang=${params?.lang ?? "vi"}&pageNumber=${params?.pageNumber ?? 1}&pageSize=${params?.pageSize ?? 10}`
+    ),
+
+  // GET my best score: /wordsets/:id/my-best-score?lang=
+  getMyBestScore: (id: string, params?: { lang?: string }) =>
+    http.get<MyBestWordsetScoreResponse>(
+      `${prefix}/${id}/my-best-score?lang=${params?.lang ?? "vi"}`
+    ),
 };
 
 export default wordsetApiRequest;

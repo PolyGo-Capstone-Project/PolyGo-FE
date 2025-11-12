@@ -89,24 +89,26 @@ export default function CreatedTab() {
   });
 
   // unwrap items
-  const items = data?.data?.items ?? [];
+  // const items = data?.data?.items ?? [];
+  const memoItems = useMemo(() => data?.data?.items ?? [], [data?.data?.items]);
 
   // Split groups
   const approvedItems = useMemo(
-    () => items.filter((s) => isApproved(s.status)),
-    [items]
+    () => memoItems.filter((s) => isApproved(s.status)),
+    [memoItems]
   );
   const pendingItems = useMemo(
-    () => items.filter((s) => isPending(s.status)),
-    [items]
+    () => memoItems.filter((s) => isPending(s.status)),
+    [memoItems]
   );
 
   // Stats
-  const total = data?.data?.totalItems ?? items.length;
+  const total = data?.data?.totalItems ?? memoItems.length;
   const approvedCount = approvedItems.length;
   const playsSum = useMemo(
-    () => items.reduce((acc, s) => acc + (s.totalPlays ?? s.playCount ?? 0), 0),
-    [items]
+    () =>
+      memoItems.reduce((acc, s) => acc + (s.totalPlays ?? s.playCount ?? 0), 0),
+    [memoItems]
   );
   const avgRating = 0.0;
 
@@ -800,14 +802,24 @@ function ItemRow({
             </Button>
           </div>
           <div className="flex gap-2">
-            <Button
+            {status === "pending" && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onEdit}
+                aria-label="Edit"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            )}
+            {/* <Button
               variant="ghost"
               size="icon"
               onClick={onEdit}
               aria-label="Edit"
             >
               <Pencil className="h-4 w-4" />
-            </Button>
+            </Button> */}
             <Button
               variant="ghost"
               size="icon"

@@ -6,11 +6,14 @@ import {
   GetAdminWordsetsQueryType,
   GetAdminWordsetsResType,
   GetMyCreatedWordsetsResType,
+  GetMyPlayedWordsetsResType,
   GetWordsetByIdQueryType,
   GetWordsetByIdResType,
   GetWordsetsQueryType,
+  MyBestWordsetScoreResponse,
   UpdateWordsetBodyType,
   UpdateWordsetResType,
+  WordsetLeaderboardResponse,
 } from "@/models";
 import {
   keepPreviousData,
@@ -56,7 +59,6 @@ export const useGetAdminWordsets = (
 };
 
 // Cập nhật trạng thái (Draft/Pending/Approved/Rejected) – kèm optional rejectionReason
-// Cập nhật trạng thái (Draft/Pending/Approved/Rejected) – optional rejectionReason
 export const useUpdateWordsetStatusMutation = (options?: {
   onSuccess?: (
     data: UpdateWordsetStatusResponse,
@@ -229,4 +231,46 @@ export const useAdminWordsetsQuery = (params?: GetAdminWordsetsQueryType) =>
       return res.payload; // đồng bộ convention trả về payload
     },
     placeholderData: keepPreviousData,
+  });
+
+//played tab
+export const useMyPlayedWordsetsQuery = (params: Params) =>
+  useQuery<GetMyPlayedWordsetsResType>({
+    queryKey: ["my-played-wordsets", params],
+    queryFn: async () => {
+      const res = await wordsetApiRequest.getMyPlayed(params);
+      return res.payload; // giữ convention trả về payload
+    },
+    placeholderData: keepPreviousData,
+  });
+
+/* ===== NEW: Leaderboard ===== */
+export const useWordsetLeaderboardQuery = (
+  id?: string,
+  params?: { lang?: string; pageNumber?: number; pageSize?: number },
+  options?: { enabled?: boolean }
+) =>
+  useQuery<WordsetLeaderboardResponse>({
+    queryKey: ["wordset", id ?? null, "leaderboard", params ?? null],
+    queryFn: async () => {
+      const res = await wordsetApiRequest.getLeaderboard(id as string, params);
+      return res.payload; // giữ convention payload
+    },
+    enabled: (options?.enabled ?? true) && Boolean(id),
+    placeholderData: keepPreviousData,
+  });
+
+/* ===== NEW: My Best Score ===== */
+export const useMyBestWordsetScoreQuery = (
+  id?: string,
+  params?: { lang?: string },
+  options?: { enabled?: boolean }
+) =>
+  useQuery<MyBestWordsetScoreResponse>({
+    queryKey: ["wordset", id ?? null, "my-best-score", params ?? null],
+    queryFn: async () => {
+      const res = await wordsetApiRequest.getMyBestScore(id as string, params);
+      return res.payload; // giữ convention payload
+    },
+    enabled: (options?.enabled ?? true) && Boolean(id),
   });

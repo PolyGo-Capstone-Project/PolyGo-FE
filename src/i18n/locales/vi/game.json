@@ -63,6 +63,8 @@
     "approved": "Đã duyệt",
     "totalPlays": "Tổng số lượt chơi",
     "avgRating": "Đánh giá TB",
+    "createdTab": "Do tôi tạo",
+    "playedTab": "Tôi đã chơi",
     "section": {
       "mySets": "Bộ Câu Đố Của Tôi",
       "approved": "Đã duyệt",
@@ -75,6 +77,8 @@
     "setsPlayed": "Bộ đã chơi",
     "completions": "Số lần hoàn thành",
     "bestRank": "Hạng tốt nhất",
+    "bestScore": "Điểm tốt nhất",
+    "avgBestScore": "Điểm TB tốt nhất",
     "avgRank": "Hạng TB",
     "section": {
       "history": "Lịch sử Trò chơi"
@@ -82,7 +86,7 @@
     "createdBy": "Được tạo bởi",
     "lastPlayed": "Lần chơi cuối",
     "rank": "Hạng",
-    "best": "Tốt nhất",
+    "best": "Nhanh nhất",
     "completions2": "lần hoàn thành"
   },
   "meta": {
@@ -215,7 +219,10 @@
     "hints": "Gợi ý",
     "creator": "Được tạo bởi",
     "rating": "đánh giá",
-    "messageCreator": "Nhắn tin cho Người tạo"
+    "messageCreator": "Nhắn tin cho Người tạo",
+    "createdOn": "Tạo vào",
+    "noRank": "Chưa có hạng",
+    "na": "N/A"
   },
   "admin": {
     "wordsets": {
@@ -296,5 +303,9 @@
         "hint": "Gợi ý"
       }
     }
+  },
+  "common": {
+    "loading": "Đang tải...",
+    "error": "Lỗi"
   }
 }

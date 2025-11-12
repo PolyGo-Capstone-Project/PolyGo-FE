@@ -60,6 +60,8 @@
     "approved": "Approved",
     "totalPlays": "Total Plays",
     "avgRating": "Avg Rating",
+    "createdTab": "Created by Me",
+    "playedTab": "Played by Me",
     "section": {
       "mySets": "My Puzzle Sets",
       "approved": "Approved",
@@ -73,6 +75,8 @@
     "completions": "Completions",
     "bestRank": "Best Rank",
     "avgRank": "Avg Rank",
+    "bestScore": "Best Score",
+    "avgBestScore": "Avg Best Score",
     "section": {
       "history": "Game History"
     },
@@ -212,7 +216,10 @@
     "hints": "Hints",
     "creator": "Created By",
     "rating": "rating",
-    "messageCreator": "Message Creator"
+    "messageCreator": "Message Creator",
+    "createdOn": "Created On",
+    "noRank": "No Rank",
+    "na": "N/A"
   },
   "admin": {
     "wordsets": {
@@ -293,5 +300,9 @@
         "hint": "Hint"
       }
     }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error"
   }
 }
