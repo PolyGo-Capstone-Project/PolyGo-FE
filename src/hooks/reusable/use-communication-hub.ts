@@ -10,8 +10,43 @@ import {
 } from "@microsoft/signalr";
 import { useEffect, useRef, useState } from "react";
 
+// ==================== TYPES ====================
+export interface IncomingCallData {
+  callerId: string;
+  isVideoCall: boolean;
+}
+
+export interface CallAcceptedData {
+  userId: string;
+}
+
+export interface CallDeclinedData {
+  userId: string;
+}
+
+export interface CallFailedData {
+  reason: string;
+}
+
+export interface MediaStateUpdate {
+  userId: string;
+  micOn: boolean;
+  camOn: boolean;
+}
+
 interface useUserCommunicationHubOptions {
   onUserStatusChanged?: (data: UserStatusChangedType) => void;
+  // Call events
+  onIncomingCall?: (data: IncomingCallData) => void;
+  onCallAccepted?: (data: CallAcceptedData) => void;
+  onCallDeclined?: (data: CallDeclinedData) => void;
+  onCallFailed?: (data: CallFailedData) => void;
+  onCallEnded?: () => void;
+  onMediaStateUpdate?: (data: MediaStateUpdate) => void;
+  // WebRTC signaling events
+  onReceiveOffer?: (sdp: string) => void;
+  onReceiveAnswer?: (sdp: string) => void;
+  onReceiveIceCandidate?: (candidate: string) => void;
 }
 
 /**
@@ -216,6 +251,103 @@ export const useUserCommunicationHub = (
     };
   }, [connection, options]);
 
+  // ==================== CALL EVENT LISTENERS ====================
+  useEffect(() => {
+    if (!connection) return;
+
+    // Incoming call
+    const handleIncomingCall = (callerId: string, isVideoCall: boolean) => {
+      console.log(
+        `📞 [Call] Incoming ${isVideoCall ? "video" : "voice"} call from:`,
+        callerId
+      );
+      options?.onIncomingCall?.({ callerId, isVideoCall });
+    };
+
+    // Call accepted
+    const handleCallAccepted = (userId: string) => {
+      console.log("✅ [Call] Call accepted by:", userId);
+      options?.onCallAccepted?.({ userId });
+    };
+
+    // Call declined
+    const handleCallDeclined = (userId: string) => {
+      console.log("❌ [Call] Call declined by:", userId);
+      options?.onCallDeclined?.({ userId });
+    };
+
+    // Call failed
+    const handleCallFailed = (reason: string) => {
+      console.log("⚠️ [Call] Call failed:", reason);
+      options?.onCallFailed?.({ reason });
+    };
+
+    // Call ended
+    const handleCallEnded = () => {
+      console.log("📴 [Call] Call ended");
+      options?.onCallEnded?.();
+    };
+
+    // Media state update
+    const handleUpdateMediaState = (
+      userId: string,
+      micOn: boolean,
+      camOn: boolean
+    ) => {
+      console.log(
+        `🎤📹 [Call] Media state update from ${userId}: mic=${micOn}, cam=${camOn}`
+      );
+      options?.onMediaStateUpdate?.({ userId, micOn, camOn });
+    };
+
+    // Register all call event listeners
+    connection.on("IncomingCall", handleIncomingCall);
+    connection.on("CallAccepted", handleCallAccepted);
+    connection.on("CallDeclined", handleCallDeclined);
+    connection.on("CallFailed", handleCallFailed);
+    connection.on("CallEnded", handleCallEnded);
+    connection.on("UpdateMediaState", handleUpdateMediaState);
+
+    return () => {
+      connection.off("IncomingCall", handleIncomingCall);
+      connection.off("CallAccepted", handleCallAccepted);
+      connection.off("CallDeclined", handleCallDeclined);
+      connection.off("CallFailed", handleCallFailed);
+      connection.off("CallEnded", handleCallEnded);
+      connection.off("UpdateMediaState", handleUpdateMediaState);
+    };
+  }, [connection, options]);
+
+  // ==================== WEBRTC SIGNALING LISTENERS ====================
+  useEffect(() => {
+    if (!connection) return;
+
+    const handleReceiveOffer = (sdp: string) => {
+      console.log("📨 [WebRTC] Received offer");
+      options?.onReceiveOffer?.(sdp);
+    };
+
+    const handleReceiveAnswer = (sdp: string) => {
+      console.log("📨 [WebRTC] Received answer");
+      options?.onReceiveAnswer?.(sdp);
+    };
+
+    const handleReceiveIceCandidate = (candidate: string) => {
+      console.log("📨 [WebRTC] Received ICE candidate");
+      options?.onReceiveIceCandidate?.(candidate);
+    };
+
+    connection.on("ReceiveOffer", handleReceiveOffer);
+    connection.on("ReceiveAnswer", handleReceiveAnswer);
+    connection.on("ReceiveIceCandidate", handleReceiveIceCandidate);
+
+    return () => {
+      connection.off("ReceiveOffer", handleReceiveOffer);
+      connection.off("ReceiveAnswer", handleReceiveAnswer);
+      connection.off("ReceiveIceCandidate", handleReceiveIceCandidate);
+    };
+  }, [connection, options]);
+
   // Update user online status
   const updateOnlineStatus = async (userId: string) => {
     if (!connection || !isConnected) {
@@ -252,12 +384,182 @@ export const useUserCommunicationHub = (
     }
   };
 
+  // ==================== CALL METHODS ====================
+
+  /**
+   * Start a voice/video call with another user
+   * @param receiverId - ID of the user to call
+   * @param isVideoCall - true for video call, false for voice call
+   */
+  const startCall = async (receiverId: string, isVideoCall: boolean) => {
+    if (!connection || !isConnected) {
+      throw new Error("Not connected to CommunicationHub");
+    }
+
+    if (!currentUserIdRef.current) {
+      throw new Error("Current user ID not found");
+    }
+
+    try {
+      // Backend gets callerId from JWT token, only send receiverId and isVideoCall
+      await connection.invoke("StartCall", receiverId, isVideoCall);
+      console.log(
+        `✅ [Call] Started ${isVideoCall ? "video" : "voice"} call to:`,
+        receiverId
+      );
+    } catch (err: any) {
+      console.error("❌ [Call] Error starting call:", err);
+      throw err;
+    }
+  };
+
+  /**
+   * Respond to an incoming call
+   * @param callerId - ID of the caller
+   * @param accepted - true to accept, false to decline
+   */
+  const respondCall = async (callerId: string, accepted: boolean) => {
+    if (!connection || !isConnected) {
+      throw new Error("Not connected to CommunicationHub");
+    }
+
+    if (!currentUserIdRef.current) {
+      throw new Error("Current user ID not found");
+    }
+
+    try {
+      // Backend gets receiverId from JWT token, only send callerId and accepted
+      await connection.invoke("RespondCall", callerId, accepted);
+      console.log(
+        `✅ [Call] ${accepted ? "Accepted" : "Declined"} call from:`,
+        callerId
+      );
+    } catch (err: any) {
+      console.error("❌ [Call] Error responding to call:", err);
+      throw err;
+    }
+  };
+
+  /**
+   * Toggle microphone and/or camera during a call
+   * @param micOn - Microphone state
+   * @param camOn - Camera state
+   */
+  const toggleMedia = async (micOn: boolean, camOn: boolean) => {
+    if (!connection || !isConnected) {
+      throw new Error("Not connected to CommunicationHub");
+    }
+
+    if (!currentUserIdRef.current) {
+      throw new Error("Current user ID not found");
+    }
+
+    try {
+      // Backend gets userId from JWT token, only send micOn and camOn
+      await connection.invoke("ToggleMedia", micOn, camOn);
+      console.log(`✅ [Call] Toggled media: mic=${micOn}, cam=${camOn}`);
+    } catch (err: any) {
+      console.error("❌ [Call] Error toggling media:", err);
+      throw err;
+    }
+  };
+
+  /**
+   * End the current call
+   */
+  const endCall = async () => {
+    if (!connection || !isConnected) {
+      throw new Error("Not connected to CommunicationHub");
+    }
+
+    try {
+      await connection.invoke("EndCall");
+      console.log("✅ [Call] Ended call");
+    } catch (err: any) {
+      console.error("❌ [Call] Error ending call:", err);
+      throw err;
+    }
+  };
+
+  // ==================== WEBRTC SIGNALING METHODS ====================
+
+  /**
+   * Send WebRTC offer to peer
+   * @param receiverId - ID of the peer
+   * @param sdp - Session Description Protocol string
+   */
+  const sendOffer = async (receiverId: string, sdp: string) => {
+    if (!connection || !isConnected) {
+      throw new Error("Not connected to CommunicationHub");
+    }
+
+    try {
+      await connection.invoke("SendOffer", receiverId, sdp);
+      console.log("✅ [WebRTC] Sent offer to:", receiverId);
+    } catch (err: any) {
+      console.error("❌ [WebRTC] Error sending offer:", err);
+      throw err;
+    }
+  };
+
+  /**
+   * Send WebRTC answer to peer
+   * @param receiverId - ID of the peer
+   * @param sdp - Session Description Protocol string
+   */
+  const sendAnswer = async (receiverId: string, sdp: string) => {
+    if (!connection || !isConnected) {
+      throw new Error("Not connected to CommunicationHub");
+    }
+
+    try {
+      await connection.invoke("SendAnswer", receiverId, sdp);
+      console.log("✅ [WebRTC] Sent answer to:", receiverId);
+    } catch (err: any) {
+      console.error("❌ [WebRTC] Error sending answer:", err);
+      throw err;
+    }
+  };
+
+  /**
+   * Send ICE candidate to peer
+   * @param receiverId - ID of the peer
+   * @param candidate - ICE candidate JSON string
+   */
+  const sendIceCandidate = async (receiverId: string, candidate: string) => {
+    if (!connection || !isConnected) {
+      throw new Error("Not connected to CommunicationHub");
+    }
+
+    try {
+      await connection.invoke("SendIceCandidate", receiverId, candidate);
+      console.log("✅ [WebRTC] Sent ICE candidate to:", receiverId);
+    } catch (err: any) {
+      console.error("❌ [WebRTC] Error sending ICE candidate:", err);
+      throw err;
+    }
+  };
+
   return {
+    // Connection state
     connection,
     isConnected,
     error,
+    currentUserId: currentUserIdRef.current,
+
+    // Online presence methods
     updateOnlineStatus,
     getOnlineStatus,
-    currentUserId: currentUserIdRef.current,
+
+    // Call methods
+    startCall,
+    respondCall,
+    toggleMedia,
+    endCall,
+
+    // WebRTC signaling methods
+    sendOffer,
+    sendAnswer,
+    sendIceCandidate,
   };
 };
