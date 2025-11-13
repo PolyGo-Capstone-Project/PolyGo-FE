@@ -18,7 +18,6 @@ import { useChatNotification } from "@/contexts/chat-notification-context";
 import {
   useAuthMe,
   useChatHub,
-  useDeleteMessage,
   useGetConversations,
   useGetMessages,
 } from "@/hooks";
@@ -196,14 +195,13 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     sendTextMessage,
     sendImageMessage,
     markAsRead,
+    deleteMessage,
     error: hubError,
   } = useChatHub(
     selectedConversationId ?? undefined,
     currentUserId ?? undefined,
     handleNewMessage
   );
-
-  const deleteMessageMutation = useDeleteMessage();
 
   // User presence management from context
   const { isUserOnline, getOnlineStatus, setOnUserStatusChangedCallback } =
@@ -681,7 +679,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
   const handleDeleteMessage = async (messageId: string) => {
     try {
-      await deleteMessageMutation.mutateAsync(messageId);
+      await deleteMessage(messageId);
       // Remove the message from local state immediately for better UX
       setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
       toast.success(tSuccess("Delete"));
@@ -807,7 +805,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
             <MessageSearch
               isOpen={isSearchOpen}
               onClose={() => setIsSearchOpen(false)}
-              messages={messages}
+              conversationId={selectedConversationId}
               currentUserId={currentUserId ?? ""}
               onSelectMessage={handleSelectMessage}
               locale={locale}
@@ -897,7 +895,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
           <MessageSearch
             isOpen={isSearchOpen}
             onClose={() => setIsSearchOpen(false)}
-            messages={messages}
+            conversationId={selectedConversationId}
             currentUserId={currentUserId ?? ""}
             onSelectMessage={handleSelectMessage}
             locale={locale}
