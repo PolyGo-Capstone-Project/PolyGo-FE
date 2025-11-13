@@ -11,3 +11,4 @@ export * from "./media.model";
 export * from "./subscription.model";
 export * from "./transaction.model";
 export * from "./user.model";
+export * from "./wordset.model";

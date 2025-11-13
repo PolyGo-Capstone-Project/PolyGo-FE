@@ -7,6 +7,7 @@ import { getSessionTokenFromLocalStorage } from "@/lib/utils";
 import {
   ConversationReadUpdatedType,
   GetConversationsQueryType,
+  GetMessageSearchQueryType,
   GetMessagesQueryType,
   RealtimeMessageType,
 } from "@/models";
@@ -34,6 +35,12 @@ type GetConversationByIdResponse = Awaited<
 >;
 type GetConversationsByUserIdResponse = Awaited<
   ReturnType<typeof communicationApiRequest.getConversationsByUserId>
+>;
+type SearchMessagesResponse = Awaited<
+  ReturnType<typeof communicationApiRequest.searchMessages>
+>;
+type GetConversationMediaResponse = Awaited<
+  ReturnType<typeof communicationApiRequest.getMedia>
 >;
 
 // ============= QUERIES =============
@@ -91,18 +98,37 @@ export const useGetConversationsByUserId = (
   });
 };
 
-// ============= Mutations =============
+// ============= Additional Queries =============
 
-export const useDeleteMessage = () => {
-  const queryClient = useQueryClient();
+export const useSearchMessages = (
+  conversationId: string,
+  query: GetMessageSearchQueryType,
+  options?: { enabled?: boolean }
+) => {
+  const hasSearchContent = Boolean(query.content?.trim());
 
-  return useMutation({
-    mutationFn: (messageId: string) =>
-      communicationApiRequest.deleteMessage(messageId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["messages"] });
-      queryClient.invalidateQueries({ queryKey: ["conversations"] });
-    },
+  return useQuery<SearchMessagesResponse>({
+    queryKey: ["messages", "search", conversationId, query],
+    queryFn: () =>
+      communicationApiRequest.searchMessages(conversationId, query),
+    enabled:
+      (options?.enabled ?? true) && Boolean(conversationId) && hasSearchContent,
+    staleTime: 0,
+    refetchOnMount: true,
+  });
+};
+
+export const useGetConversationMedia = (
+  conversationId: string,
+  query: GetMessagesQueryType,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery<GetConversationMediaResponse>({
+    queryKey: ["messages", "media", conversationId, query],
+    queryFn: () => communicationApiRequest.getMedia(conversationId, query),
+    enabled: (options?.enabled ?? true) && Boolean(conversationId),
+    staleTime: 0,
+    refetchOnMount: true,
   });
 };
 
@@ -362,6 +388,22 @@ export const useChatHub = (
     }
   };
 
+  const deleteMessage = async (messageId: string) => {
+    if (!connection || !isConnected) {
+      throw new Error("Not connected to chat hub");
+    }
+
+    try {
+      await connection.invoke("DeleteMessage", messageId);
+      console.log("✅ Deleted message successfully");
+      queryClient.invalidateQueries({ queryKey: ["messages"] });
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    } catch (err: any) {
+      console.error("❌ Error deleting message:", err);
+      throw err;
+    }
+  };
+
   return {
     connection,
     isConnected,
@@ -369,6 +411,7 @@ export const useChatHub = (
     sendTextMessage,
     sendImageMessage,
     markAsRead,
+    deleteMessage,
   };
 };
 

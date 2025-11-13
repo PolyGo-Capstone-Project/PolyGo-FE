@@ -13,42 +13,10 @@ import {
 import { cn } from "@/lib/utils";
 import { Medal } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useMemo, useState } from "react";
 
-type LeaderRow = {
-  id: string;
-  name: string;
-  avatar?: string;
-  timeSec: number;
-  isYou?: boolean;
-  score: number;
-  mistakes: number;
-  hints: number;
-  lastPlayedAgo: string;
-};
-
-const DEFAULT_LEADERS: LeaderRow[] = [
-  {
-    id: "1",
-    name: "NguyenMinh",
-    avatar: "https://i.pravatar.cc/150?img=5",
-    timeSec: 145,
-    isYou: true,
-    score: 98,
-    mistakes: 0,
-    hints: 0,
-    lastPlayedAgo: "2d ago",
-  },
-  {
-    id: "2",
-    name: "JohnEN",
-    avatar: "https://i.pravatar.cc/150?img=53",
-    timeSec: 190,
-    score: 85,
-    mistakes: 2,
-    hints: 1,
-    lastPlayedAgo: "4d ago",
-  },
-];
+// hooks gọi API
+import { useWordsetLeaderboardQuery } from "@/hooks";
 
 const mmss = (s: number) => {
   const m = Math.floor(s / 60).toString();
@@ -58,15 +26,55 @@ const mmss = (s: number) => {
   return `${m}:${sec}`;
 };
 
+const timeAgo = (iso: string) => {
+  try {
+    const d = new Date(iso).getTime();
+    const diff = Date.now() - d;
+    const minutes = Math.round(diff / 60000);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.round(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.round(hours / 24);
+    return `${days}d ago`;
+  } catch {
+    return "";
+  }
+};
+
 export default function TopPlayersCard({
   className,
-  leaders,
+  wordsetId,
+  lang = "vi",
 }: {
   className?: string;
-  leaders?: LeaderRow[];
+  wordsetId?: string;
+  lang?: string;
 }) {
   const t = useTranslations();
-  const rows = leaders ?? DEFAULT_LEADERS;
+
+  // (tuỳ tương lai) filter theo "all/week/month" – hiện backend chưa có param, nên chỉ UI
+  const [range, setRange] = useState<"all" | "week" | "month">("all");
+
+  const { data, isLoading } = useWordsetLeaderboardQuery(
+    wordsetId,
+    { lang, pageNumber: 1, pageSize: 10 },
+    { enabled: Boolean(wordsetId) }
+  );
+
+  const rows = useMemo(() => {
+    const src = data?.data?.items ?? [];
+    return src.map((it) => ({
+      id: `${it.player.id}-${it.rank}-${it.completedAt}`,
+      name: it.player.name,
+      avatar: it.player.avatarUrl || "",
+      timeSec: it.completionTimeInSecs,
+      isYou: it.isMe,
+      score: it.score,
+      mistakes: it.mistakes,
+      hints: it.hintsUsed,
+      lastPlayedAgo: timeAgo(it.completedAt),
+    }));
+  }, [data?.data?.items]);
 
   return (
     <Card className={cn(className)}>
@@ -74,7 +82,7 @@ export default function TopPlayersCard({
         <CardTitle className="text-base md:text-lg">
           {t("lb.topPlayers", { default: "Top Players" })}
         </CardTitle>
-        <Select defaultValue="all">
+        <Select value={range} onValueChange={(v) => setRange(v as any)}>
           <SelectTrigger className="w-36">
             <SelectValue placeholder={t("lb.range", { default: "All Time" })} />
           </SelectTrigger>
@@ -93,6 +101,18 @@ export default function TopPlayersCard({
       </CardHeader>
 
       <CardContent className="space-y-3">
+        {isLoading && (
+          <div className="text-sm text-muted-foreground">
+            {t("common.loading", { default: "Loading..." })}
+          </div>
+        )}
+
+        {!isLoading && rows.length === 0 && (
+          <div className="text-sm text-muted-foreground">
+            {t("lb.noPlayers", { default: "No players yet." })}
+          </div>
+        )}
+
         {rows.map((row, i) => (
           <div
             key={row.id}
@@ -113,7 +133,9 @@ export default function TopPlayersCard({
                 {row.avatar ? (
                   <AvatarImage src={row.avatar} alt={row.name} />
                 ) : (
-                  <AvatarFallback>{row.name.slice(0, 2)}</AvatarFallback>
+                  <AvatarFallback>
+                    {row.name?.slice(0, 2)?.toUpperCase()}
+                  </AvatarFallback>
                 )}
               </Avatar>
 

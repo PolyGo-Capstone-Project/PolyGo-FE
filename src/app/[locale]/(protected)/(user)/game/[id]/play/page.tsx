@@ -1,37 +1,24 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { Progress } from "@/components/ui/progress";
 
-// Components (đã tách)
+// Components
 import HeaderCard from "@/components/modules/game/play/header-card";
 import PlayCard from "@/components/modules/game/play/play-card";
 import QuitDialog from "@/components/modules/game/play/quit-dialog";
 import StatsRow from "@/components/modules/game/play/stat-row";
 
-// --------- Kiểu dữ liệu dùng riêng trang ----------
-type WordItem = {
-  id: string;
-  word: string;
-  letters: string[];
-  definition: string;
-  pronunciation?: string;
-  hint?: string;
-};
-
-type PuzzleMeta = {
-  id: string;
-  title: string;
-  description: string;
-  languageLabel: string;
-  category: string;
-  level: "easy" | "medium" | "hard";
-  estTimeMin: number;
-  words: WordItem[];
-};
+// ✅ hooks API
+import {
+  usePlayWordsetMutation,
+  useStartWordsetGameMutation,
+  useWordsetDetailQuery,
+  useWordsetGameStateQuery,
+} from "@/hooks";
 
 // --------- Helper shuffle chỉ dùng trong trang ----------
 function shuffle<T>(arr: T[]) {
@@ -42,54 +29,80 @@ export default function PlayGamePage() {
   const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
+  const params = useParams<{ id: string }>();
+  const wordsetId = params?.id;
 
-  // ===== Mock API (đặt ngay tại nơi sử dụng) =====
-  const PUZZLE: PuzzleMeta = useMemo(
-    () => ({
-      id: "vn-food",
-      title: "Vietnamese Food Vocabulary",
-      description:
-        "Learn essential Vietnamese food terms and cooking vocabulary",
-      languageLabel: "Vietnamese",
-      category: "food",
-      level: "easy",
-      estTimeMin: 8,
-      words: [
-        {
-          id: "pho",
-          word: "pho",
-          letters: shuffle(["P", "H", "Ơ"]),
-          definition: "Traditional Vietnamese noodle soup with beef or chicken",
-          pronunciation: "/fəː/",
-          hint: "Vietnam's most famous dish",
-        },
-        {
-          id: "tea",
-          word: "tea",
-          letters: shuffle(["T", "E", "A"]),
-          definition: "A popular hot drink made by infusing dried leaves",
-          hint: "Often served with milk",
-        },
-      ],
-    }),
-    []
-  );
+  // ===== Lấy meta (title/desc/lang/category/...) từ detail =====
+  const { data: detailRes } = useWordsetDetailQuery({
+    id: wordsetId,
+    lang: locale,
+    enabled: Boolean(wordsetId),
+  });
+  const detail = detailRes?.data;
 
-  // ===== State =====
-  const [index, setIndex] = useState(0);
+  // ===== GAME STATE (polling mỗi 1s để hiển thị đồng hồ, mistakes, tiến độ) =====
+  const { data: gameStateRes } = useWordsetGameStateQuery(wordsetId, {
+    enabled: Boolean(wordsetId),
+    refetchInterval: 1000,
+  });
+  const gameState = gameStateRes?.data;
+
+  // ===== START + PLAY mutations =====
+  const { mutate: startGame } = useStartWordsetGameMutation({
+    onSuccess: (res) => {
+      const w = res.data.currentWord;
+      setCurrentWord(w);
+      setLetters(w.scrambledWord.split(""));
+      setAnswer("");
+    },
+  });
+
+  const { mutateAsync: playAnswerAsync } = usePlayWordsetMutation({
+    onSuccess: (res) => {
+      const d = res.data;
+      if (d.isCompleted) {
+        router.push(`/${locale}/game/${wordsetId}/leaderboard`);
+        return;
+      }
+      if (d.isCorrect && d.nextWord) {
+        setCurrentWord(d.nextWord);
+        setLetters(d.nextWord.scrambledWord.split(""));
+        setAnswer("");
+      }
+    },
+  });
+
+  // ===== local state hiển thị từ hiện tại + input =====
+  const [currentWord, setCurrentWord] = useState<
+    | {
+        id: string;
+        scrambledWord: string;
+        definition: string;
+        hint?: string | null;
+      }
+    | undefined
+  >(undefined);
+
+  const [letters, setLetters] = useState<string[]>([]);
   const [answer, setAnswer] = useState("");
-  const [mistakes, setMistakes] = useState(0);
-  const [hintsUsed] = useState(0);
-  const [elapsed, setElapsed] = useState(0); // seconds
   const [quitOpen, setQuitOpen] = useState(false);
 
-  const current = PUZZLE.words[index];
-  const progress = Math.round((index / PUZZLE.words.length) * 100);
-
+  // ===== Start game ngay khi vào trang =====
   useEffect(() => {
-    const id = setInterval(() => setElapsed((s) => s + 1), 1000);
-    return () => clearInterval(id);
-  }, []);
+    if (wordsetId) startGame(wordsetId);
+  }, [wordsetId, startGame]);
+
+  // ===== Derived UI values từ game-state =====
+  const completed = gameState?.completedWords ?? 0;
+  const total = gameState?.totalWords ?? 0;
+  const mistakes = gameState?.mistakes ?? 0;
+  const hintsUsed = gameState?.hintsUsed ?? 0;
+  const elapsed = gameState?.elapsedTime ?? 0;
+
+  const progressPct = useMemo(() => {
+    if (!total) return 0;
+    return Math.round((completed / total) * 100);
+  }, [completed, total]);
 
   const mmss = (s: number) => {
     const m = Math.floor(s / 60).toString();
@@ -98,32 +111,46 @@ export default function PlayGamePage() {
   };
 
   const reshuffle = () => {
-    // re-order letters — chỉ để tăng cảm giác chơi
-    current.letters = shuffle(current.letters);
-    setAnswer((a) => a); // trigger re-render
+    // chỉ đổi thứ tự hiển thị, KHÔNG đổi từ server trả về
+    setLetters((prev) => shuffle(prev));
   };
 
-  const submit = () => {
-    if (!current) return;
-    if (answer.trim().toLowerCase() === current.word.toLowerCase()) {
-      if (index + 1 < PUZZLE.words.length) {
-        setIndex((i) => i + 1);
-        setAnswer("");
-      } else {
-        router.push(`/${locale}/game/${PUZZLE.id}/leaderboard`);
-      }
-    } else {
-      setMistakes((m) => m + 1);
+  const submit = async (): Promise<boolean> => {
+    if (!currentWord || !wordsetId) return false;
+    try {
+      const res = await playAnswerAsync({
+        wordSetId: wordsetId,
+        wordId: currentWord.id,
+        answer: answer.trim(),
+      });
+      // true => flash xanh, false => flash đỏ
+      return Boolean(res.payload?.data?.isCorrect);
+    } catch {
+      return false;
     }
   };
+
+  // Map dữ liệu cho PlayCard
+  const wordForUI =
+    currentWord &&
+    ({
+      id: currentWord.id,
+      word: "", // không lộ đáp án
+      letters,
+      definition: currentWord.definition,
+      hint: currentWord.hint ?? undefined,
+    } as const);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-6 space-y-6">
       <HeaderCard
-        title={PUZZLE.title}
-        description={PUZZLE.description}
-        languageLabel={PUZZLE.languageLabel}
-        category={PUZZLE.category}
+        title={detail?.title ?? t("play.title", { default: "Wordset" })}
+        description={
+          detail?.description ??
+          t("play.description", { default: "Solve the vocabulary puzzle." })
+        }
+        languageLabel={detail?.language?.name ?? ""}
+        category={detail?.category ?? ""}
         onQuit={() => setQuitOpen(true)}
       />
 
@@ -131,34 +158,45 @@ export default function PlayGamePage() {
         timeLabel={t("play.time", { default: "Time" })}
         timeValue={mmss(elapsed)}
         progressLabel={t("play.progress", { default: "Progress" })}
-        progressValue={`${index}/${PUZZLE.words.length}`}
+        progressValue={`${completed}/${total || 0}`}
         mistakesLabel={t("play.mistakes", { default: "Mistakes" })}
         mistakesValue={mistakes}
-        // Nếu muốn hiển thị hints: truyền thêm props
-        // hintsLabel={t("play.hintsUsed", { default: "Hints Used" })}
-        // hintsValue={hintsUsed}
+        // Hints đã bật mặc định trong component
+        hintsLabel={t("play.hintsUsed", { default: "Hints" })}
+        hintsValue={hintsUsed}
       />
 
       <div className="space-y-2">
         <div className="text-sm font-medium">
           {t("play.progressBar", { default: "Progress" })}
         </div>
-        <Progress value={progress} />
+        <Progress value={progressPct} />
       </div>
 
-      <PlayCard
-        word={current}
-        tUnscramble={t("play.unscramble", { default: "Unscramble this word:" })}
-        tDefinition={t("play.definition", { default: "Definition:" })}
-        tHint={t("play.hint", { default: "Hint:" })}
-        tPlaceholder={t("play.typeHere", { default: "Type the word here..." })}
-        tSubmit={t("play.submit", { default: "Submit Answer" })}
-        tReshuffle={t("play.reshuffle", { default: "Reshuffle" })}
-        answer={answer}
-        setAnswer={setAnswer}
-        onSubmit={submit}
-        onReshuffle={reshuffle}
-      />
+      {wordForUI ? (
+        <PlayCard
+          word={wordForUI}
+          tUnscramble={t("play.unscramble", {
+            default: "Unscramble this word:",
+          })}
+          tDefinition={t("play.definition", { default: "Definition:" })}
+          tHint={t("play.hint", { default: "Hint:" })}
+          tPlaceholder={t("play.typeHere", {
+            default: "Type the word here...",
+          })}
+          tSubmit={t("play.submit", { default: "Submit Answer" })}
+          tReshuffle={t("play.reshuffle", { default: "Reshuffle" })}
+          answer={answer}
+          setAnswer={setAnswer}
+          onSubmit={submit}
+          onReshuffle={reshuffle}
+        />
+      ) : (
+        // Trạng thái chưa có currentWord (đang start/poll)
+        <div className="text-sm text-muted-foreground">
+          {t("play.loading", { default: "Preparing your game..." })}
+        </div>
+      )}
 
       <QuitDialog
         open={quitOpen}
@@ -167,7 +205,7 @@ export default function PlayGamePage() {
         desc={t("play.quitDesc", {
           default: "Are you sure you want to quit? Your progress will be lost.",
         })}
-        progressText={`${index}/${PUZZLE.words.length}`}
+        progressText={`${completed}/${total || 0}`}
         wordsLabel={t("meta.words", { default: "words" })}
         continueText={t("play.continue", { default: "Continue Playing" })}
         quitText={t("play.quit", { default: "Quit Game" })}

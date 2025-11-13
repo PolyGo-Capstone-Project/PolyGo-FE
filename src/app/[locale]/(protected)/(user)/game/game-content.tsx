@@ -4,109 +4,83 @@ import FiltersBar from "@/components/modules/game/filter-bar";
 import HowToPlay from "@/components/modules/game/how-to-play";
 import PuzzleCard from "@/components/modules/game/puzzle-card";
 import WordPuzzleHeader from "@/components/modules/game/word-puzzle-header";
+import { useWordsetsQuery } from "@/hooks";
+import {
+  GetWordsetsQueryType,
+  WordsetCategory,
+  WordsetDifficulty,
+  WordsetListItemType,
+} from "@/models";
+import { useLocale } from "next-intl";
 import { useMemo, useState } from "react";
 
-/** ====== Types chỉ dùng trong trang này ====== */
-type Creator = { name: string; avatarUrl?: string; initials: string };
-type PuzzleSet = {
-  id: string;
-  title: string;
-  description: string;
-  language: string;
-  languageLabel: string;
-  level: "easy" | "medium" | "hard";
-  category: string;
-  wordCount: number;
-  estTimeMin: number;
-  plays: number;
-  bestTimeSec?: number;
-  creator: Creator;
-  avatar?: string;
-};
+/** ====== Helpers ====== */
+const toCardLevel = (d?: string): "easy" | "medium" | "hard" =>
+  (d ?? "Medium").toLowerCase() as "easy" | "medium" | "hard";
 
-/** ====== Mock data chỉ dùng trong trang này ====== */
-const MOCK_PUZZLES: PuzzleSet[] = [
-  {
-    id: "vn-food",
-    title: "Vietnamese Food Vocabulary",
-    description: "Learn essential Vietnamese food terms and cooking vocabulary",
-    language: "vi",
-    languageLabel: "Vietnamese",
-    level: "easy",
-    category: "food",
-    wordCount: 6,
-    estTimeMin: 8,
-    plays: 156,
-    bestTimeSec: 245,
-    creator: {
-      name: "NguyenMinh",
-      initials: "NM",
-      avatarUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc9APxkj0xClmrU3PpMZglHQkx446nQPG6lA&s",
-    },
+const toInitials = (name?: string) =>
+  (name || "U")
+    .trim()
+    .split(/\s+/)
+    .map((s) => s[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+/** ====== Adapter ====== */
+const adaptWordsetToCard = (it: WordsetListItemType) => ({
+  id: it.id,
+  title: it.title,
+  description: it.description ?? "",
+  language: it.language?.code ?? "",
+  languageLabel: it.language?.name ?? "",
+  level: toCardLevel(it.difficulty),
+  category: it.category ?? "",
+  wordCount: it.wordCount ?? 0,
+  estTimeMin: it.estimatedTimeInMinutes ?? 0,
+  plays: it.playCount ?? 0,
+  bestTimeSec: it.averageTimeInSeconds ?? undefined,
+  creator: {
+    name: it.creator?.name ?? "Unknown",
+    initials: toInitials(it.creator?.name),
+    avatarUrl: it.creator?.avatarUrl ?? undefined,
   },
-  {
-    id: "fr-cinema",
-    title: "French Cinema Vocabulary",
-    description: "Essential terms for discussing French films and cinema",
-    language: "fr",
-    languageLabel: "French",
-    level: "medium",
-    category: "culture",
-    wordCount: 5,
-    estTimeMin: 12,
-    plays: 89,
-    bestTimeSec: 380,
-    creator: {
-      name: "AnnaFR",
-      initials: "AF",
-      avatarUrl: "https://i.pravatar.cc/150?img=32",
-    },
-  },
-  {
-    id: "en-business",
-    title: "Business English Essentials",
-    description: "Key vocabulary for professional English communication",
-    language: "en",
-    languageLabel: "English",
-    level: "hard",
-    category: "business",
-    wordCount: 5,
-    estTimeMin: 15,
-    plays: 234,
-    bestTimeSec: 500,
-    creator: {
-      name: "JohnEN",
-      initials: "JE",
-      avatarUrl: "https://i.pravatar.cc/150?img=53",
-    },
-  },
-];
+});
 
 export default function GameContent() {
+  const locale = useLocale();
   const [q, setQ] = useState("");
   const [langFilter, setLangFilter] = useState<string>("all");
-  const [levelFilter, setLevelFilter] = useState<string>("all");
-  const [catFilter, setCatFilter] = useState<string>("all");
+  const [levelFilter, setLevelFilter] = useState<"all" | WordsetDifficulty>(
+    "all"
+  );
+  const [catFilter, setCatFilter] = useState<"all" | WordsetCategory>("all");
 
-  const puzzles = useMemo<PuzzleSet[]>(() => {
-    return MOCK_PUZZLES.filter((p) => {
-      const matchesQuery = q
-        ? (p.title + p.description + p.languageLabel + p.category)
-            .toLowerCase()
-            .includes(q.toLowerCase())
-        : true;
-      const matchesLang = langFilter === "all" || p.language === langFilter;
-      const matchesLevel = levelFilter === "all" || p.level === levelFilter;
-      const matchesCat = catFilter === "all" || p.category === catFilter;
-      return matchesQuery && matchesLang && matchesLevel && matchesCat;
-    });
-  }, [q, langFilter, levelFilter, catFilter]);
+  const params: GetWordsetsQueryType = useMemo(
+    () => ({
+      lang: locale,
+      name: q || undefined,
+      languageIds: langFilter !== "all" ? [langFilter] : undefined,
+      difficulty: levelFilter === "all" ? undefined : levelFilter,
+      category: catFilter === "all" ? undefined : catFilter,
+      pageNumber: 1,
+      pageSize: 30,
+    }),
+    [locale, q, langFilter, levelFilter, catFilter]
+  );
+
+  const { data: res, isLoading } = useWordsetsQuery({ params });
+
+  const puzzles = useMemo(() => {
+    const items = (res?.payload?.data?.items ?? []) as WordsetListItemType[];
+    return items.map(adaptWordsetToCard);
+  }, [res]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 space-y-6">
       <WordPuzzleHeader />
       <HowToPlay />
+
       <FiltersBar
         q={q}
         onQ={setQ}
@@ -119,9 +93,11 @@ export default function GameContent() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-        {puzzles.map((p) => (
-          <PuzzleCard key={p.id} data={p} />
-        ))}
+        {isLoading
+          ? Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-56 rounded-lg border animate-pulse" />
+            ))
+          : puzzles.map((p) => <PuzzleCard key={p.id} data={p} />)}
       </div>
     </div>
   );

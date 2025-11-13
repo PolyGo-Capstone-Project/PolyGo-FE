@@ -10,3 +10,4 @@ export { default as languageApiRequest } from "./language";
 export { default as subscriptionApiRequest } from "./subscription";
 export { default as transactionApiRequest } from "./transaction";
 export { default as userApiRequest } from "./user";
+export { default as wordsetApiRequest } from "./wordset";
