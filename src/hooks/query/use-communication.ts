@@ -310,12 +310,29 @@ export const useChatHub = (
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     };
 
+    const handleMessageDeleted = (data: {
+      messageId: string;
+      conversationId: string;
+    }) => {
+      console.log("🗑️ Message deleted:", data);
+
+      // Invalidate messages to refetch and remove deleted message
+      queryClient.invalidateQueries({
+        queryKey: ["messages", data.conversationId],
+      });
+
+      // Invalidate conversations to update last message if needed
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    };
+
     connection.on("ReceiveMessage", handleReceiveMessage);
     connection.on("ConversationReadUpdated", handleConversationReadUpdated);
+    connection.on("MessageDeleted", handleMessageDeleted);
 
     return () => {
       connection.off("ReceiveMessage", handleReceiveMessage);
       connection.off("ConversationReadUpdated", handleConversationReadUpdated);
+      connection.off("MessageDeleted", handleMessageDeleted);
     };
   }, [connection, queryClient, currentUserId]);
 

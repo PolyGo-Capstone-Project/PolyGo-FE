@@ -33,6 +33,7 @@ interface MessageListProps {
   otherUserAvatar?: string;
   onDeleteMessage?: (messageId: string) => void;
   onCopyMessage?: (content: string) => void;
+  scrollToMessageId?: string;
 }
 
 export function MessageList({
@@ -47,6 +48,7 @@ export function MessageList({
   otherUserAvatar,
   onDeleteMessage,
   onCopyMessage,
+  scrollToMessageId,
 }: MessageListProps) {
   const t = useTranslations("chat");
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -58,6 +60,7 @@ export function MessageList({
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [previewIndex, setPreviewIndex] = useState(0);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const messageRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   // Auto-scroll logic when messages change
   useEffect(() => {
@@ -255,6 +258,29 @@ export function MessageList({
     }
   }, [messages.length]); // When messages first load
 
+  // Scroll to specific message when scrollToMessageId changes
+  useEffect(() => {
+    if (scrollToMessageId && messageRefs.current.has(scrollToMessageId)) {
+      const messageElement = messageRefs.current.get(scrollToMessageId);
+      if (messageElement) {
+        messageElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+
+        // Highlight the message temporarily
+        messageElement.classList.add("ring-2", "ring-primary", "ring-offset-2");
+        setTimeout(() => {
+          messageElement.classList.remove(
+            "ring-2",
+            "ring-primary",
+            "ring-offset-2"
+          );
+        }, 2000);
+      }
+    }
+  }, [scrollToMessageId]);
+
   const groupMessagesByDate = () => {
     const groups: { date: Date; messages: ChatMessage[] }[] = [];
     let currentDate: Date | null = null;
@@ -328,8 +354,15 @@ export function MessageList({
               return (
                 <div
                   key={message.id}
+                  ref={(el) => {
+                    if (el) {
+                      messageRefs.current.set(message.id, el);
+                    } else {
+                      messageRefs.current.delete(message.id);
+                    }
+                  }}
                   className={cn(
-                    "group flex items-end gap-1.5 md:gap-2",
+                    "group flex items-end gap-1.5 md:gap-2 transition-all rounded-lg",
                     isOwn ? "justify-end" : "justify-start"
                   )}
                 >

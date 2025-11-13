@@ -137,6 +137,9 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   );
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [scrollToMessageId, setScrollToMessageId] = useState<
+    string | undefined
+  >(undefined);
 
   const [callState, setCallState] = useState<CallState>({
     conversationId: null,
@@ -679,6 +682,9 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
   const handleSelectMessage = (messageId: string) => {
     console.log("Scroll to message:", messageId);
+    setScrollToMessageId(messageId);
+    // Reset after a short delay to allow re-scrolling to the same message
+    setTimeout(() => setScrollToMessageId(undefined), 100);
   };
 
   const handleDeleteMessage = async (messageId: string) => {
@@ -868,6 +874,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                 }
                 onDeleteMessage={handleDeleteMessage}
                 onCopyMessage={handleCopyMessage}
+                scrollToMessageId={scrollToMessageId}
               />
             </div>
 
