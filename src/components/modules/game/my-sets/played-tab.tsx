@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -20,96 +20,28 @@ import {
   Trophy,
 } from "lucide-react";
 
-/* ==================== Types & Mock API (chỉ dùng trong PlayedTab) ==================== */
-type Difficulty = "easy" | "medium" | "hard";
-type Creator = { name: string; avatarUrl?: string; initials: string };
+import { useMyPlayedWordsetsQuery } from "@/hooks/query/use-wordset";
 
-type BaseSet = {
-  id: string;
-  title: string;
-  description: string;
-  language: string;
-  languageLabel: string;
-  category: string;
-  level: Difficulty;
-  wordCount: number;
-  estTimeMin: number;
-  plays: number;
-};
+/* ==================== Helpers ==================== */
+type UiDifficulty = "easy" | "medium" | "hard";
 
-type PlayedItem = BaseSet & {
-  creator: Creator;
-  lastPlayedAgo: string;
-  bestTimeSec?: number;
-  rankStr?: string;
-  completions: number;
-};
-
-async function fetchPlayedHistory(): Promise<{
-  summary: {
-    setsPlayed: number;
-    completions: number;
-    bestRank: string;
-    avgRank: string;
-  };
-  items: PlayedItem[];
-}> {
-  await new Promise((r) => setTimeout(r, 300));
-  return {
-    summary: { setsPlayed: 2, completions: 3, bestRank: "#3", avgRank: "#5.0" },
-    items: [
-      {
-        id: "fr-cinema",
-        title: "French Cinema Vocabulary",
-        description: "Essential terms for discussing French films and cinema",
-        language: "fr",
-        languageLabel: "French",
-        category: "culture",
-        level: "medium",
-        wordCount: 5,
-        estTimeMin: 12,
-        plays: 89,
-        creator: {
-          name: "AnnaFR",
-          initials: "AF",
-          avatarUrl: "https://i.pravatar.cc/150?img=32",
-        },
-        lastPlayedAgo: "2d ago",
-        bestTimeSec: 145,
-        rankStr: "#3 of 15",
-        completions: 2,
-      },
-      {
-        id: "en-business",
-        title: "Business English Essentials",
-        description: "Key vocabulary for professional English communication",
-        language: "en",
-        languageLabel: "English",
-        category: "business",
-        level: "hard",
-        wordCount: 5,
-        estTimeMin: 15,
-        plays: 234,
-        creator: {
-          name: "JohnEN",
-          initials: "JE",
-          avatarUrl: "https://i.pravatar.cc/150?img=53",
-        },
-        lastPlayedAgo: "5d ago",
-        bestTimeSec: 320,
-        rankStr: "#7 of 23",
-        completions: 1,
-      },
-    ],
-  };
-}
-
-const LEVEL_BADGE_STYLE: Record<Difficulty, string> = {
+const LEVEL_BADGE_STYLE: Record<UiDifficulty, string> = {
   easy: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
   medium:
     "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
   hard: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300",
 };
+
+function toUiLevel(d?: string): UiDifficulty {
+  switch ((d || "").toLowerCase()) {
+    case "easy":
+      return "easy";
+    case "hard":
+      return "hard";
+    default:
+      return "medium";
+  }
+}
 
 function secondsToMMSS(s?: number) {
   if (s == null) return "-";
@@ -120,24 +52,51 @@ function secondsToMMSS(s?: number) {
   return `${m}:${sec}`;
 }
 
+function timeAgo(iso?: string): string {
+  if (!iso) return "-";
+  const then = new Date(iso).getTime();
+  const now = Date.now();
+  const diffSec = Math.max(1, Math.floor((now - then) / 1000));
+  const mins = Math.floor(diffSec / 60);
+  const hours = Math.floor(mins / 60);
+  const days = Math.floor(hours / 24);
+  if (days > 0) return `${days}d ago`;
+  if (hours > 0) return `${hours}h ago`;
+  if (mins > 0) return `${mins}m ago`;
+  return `${diffSec}s ago`;
+}
+
 /* ==================== UI ==================== */
 export default function PlayedTab() {
   const t = useTranslations();
   const router = useRouter();
   const locale = useLocale();
 
-  const [loading, setLoading] = useState(true);
-  const [data, setData] =
-    useState<Awaited<ReturnType<typeof fetchPlayedHistory>>>();
+  // Call real API
+  const { data, isLoading, isError, refetch } = useMyPlayedWordsetsQuery({
+    lang: locale,
+    pageNumber: 1,
+    pageSize: 50,
+  });
 
-  useEffect(() => {
-    fetchPlayedHistory().then((res) => {
-      setData(res);
-      setLoading(false);
-    });
-  }, []);
+  const memoItems = useMemo(() => data?.data?.items ?? [], [data?.data?.items]);
+  const totalItems = data?.data?.totalItems ?? memoItems.length;
 
-  const playedCount = data?.items.length ?? 0;
+  // Stats derived from API
+  const totals = useMemo(() => {
+    const plays = memoItems.reduce(
+      (acc, it: any) => acc + (it.playCount ?? 0),
+      0
+    );
+    const bestScores = memoItems.map((it: any) => it.bestScore ?? 0);
+    const bestScore =
+      bestScores.length > 0 ? Math.max(...bestScores) : undefined;
+    const avgBestScore =
+      bestScores.length > 0
+        ? (bestScores.reduce((a, b) => a + b, 0) / bestScores.length).toFixed(1)
+        : undefined;
+    return { plays, bestScore, avgBestScore };
+  }, [memoItems]);
 
   return (
     <>
@@ -145,25 +104,25 @@ export default function PlayedTab() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         <StatCard
           title={t("played.setsPlayed", { default: "Sets Played" })}
-          value={data?.summary.setsPlayed ?? 0}
+          value={totalItems}
           Icon={BookOpen}
           color="text-blue-600"
         />
         <StatCard
           title={t("played.completions", { default: "Completions" })}
-          value={data?.summary.completions ?? 0}
+          value={totals.plays}
           Icon={Trophy}
           color="text-emerald-600"
         />
         <StatCard
-          title={t("played.bestRank", { default: "Best Rank" })}
-          value={data?.summary.bestRank ?? "#-"}
+          title={t("played.bestScore", { default: "Best Score" })}
+          value={totals.bestScore ?? "-"}
           Icon={Star}
           color="text-yellow-600"
         />
         <StatCard
-          title={t("played.avgRank", { default: "Avg Rank" })}
-          value={data?.summary.avgRank ?? "#-"}
+          title={t("played.avgBestScore", { default: "Avg. Best Score" })}
+          value={totals.avgBestScore ?? "-"}
           Icon={BarChart3}
           color="text-purple-600"
         />
@@ -175,20 +134,27 @@ export default function PlayedTab() {
           <CardTitle className="text-base md:text-lg">
             {t("played.section.history", { default: "Game History" })}
           </CardTitle>
-          <Badge variant="secondary">{playedCount} sets</Badge>
+          <Badge variant="secondary">{memoItems.length} sets</Badge>
         </CardHeader>
 
         <CardContent className="space-y-4">
-          {loading ? (
+          {isLoading ? (
             <ListSkeleton />
-          ) : data?.items.length === 0 ? (
+          ) : isError ? (
+            <div className="text-center text-muted-foreground py-8">
+              {t("Error.common", { default: "Something went wrong." })}{" "}
+              <Button variant="link" onClick={() => refetch()}>
+                {t("actions.retry", { default: "Retry" })}
+              </Button>
+            </div>
+          ) : memoItems.length === 0 ? (
             <div className="text-center text-muted-foreground py-8">
               {t("mysets.noPlayedSets", {
                 default: "You haven't played any puzzle sets yet.",
               })}
             </div>
           ) : (
-            data?.items.map((it) => (
+            memoItems.map((it: any) => (
               <div
                 key={it.id}
                 className="rounded-lg border p-4 md:p-5 bg-card hover:bg-accent/40 transition-colors"
@@ -198,20 +164,27 @@ export default function PlayedTab() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8 flex-shrink-0">
-                        {it.creator.avatarUrl ? (
+                        {it.creator?.avatarUrl ? (
                           <AvatarImage
                             src={it.creator.avatarUrl}
-                            alt={it.creator.name}
+                            alt={it.creator?.name ?? "creator"}
                           />
                         ) : (
-                          <AvatarFallback>{it.creator.initials}</AvatarFallback>
+                          <AvatarFallback>
+                            {(it.creator?.name ?? "?")
+                              .split(" ")
+                              .map((w: string) => w[0])
+                              .join("")
+                              .slice(0, 2)
+                              .toUpperCase()}
+                          </AvatarFallback>
                         )}
                       </Avatar>
                       <div className="min-w-0">
                         <div className="font-medium truncate">{it.title}</div>
                         <div className="text-xs text-muted-foreground">
                           {t("played.createdBy", { default: "Created by" })}{" "}
-                          {it.creator.name}
+                          {it.creator?.name ?? "-"}
                         </div>
                       </div>
                     </div>
@@ -221,35 +194,33 @@ export default function PlayedTab() {
                         <CalendarClock className="h-4 w-4" />
                         {t("played.lastPlayed", {
                           default: "Last played",
-                        })}
-                        : {it.lastPlayedAgo}
+                        })}: {timeAgo(it.lastPlayed)}
                       </div>
                       <div className="flex items-center gap-1">
                         <Trophy className="h-4 w-4" />
-                        {t("played.rank", { default: "Rank" })}:{" "}
-                        {it.rankStr ?? "#-"}
+                        {t("played.bestRank", { default: "Best Score" })}:{" "}
+                        {it.bestScore ?? "-"}
                       </div>
                       <div className="flex items-center gap-1">
                         <Clock className="h-4 w-4" />
                         {t("played.best", { default: "Best" })}:{" "}
-                        {secondsToMMSS(it.bestTimeSec)}
+                        {secondsToMMSS(it.bestTime)}
                       </div>
                     </div>
 
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <Badge variant="secondary">{it.languageLabel}</Badge>
                       <Badge variant="outline">{it.category}</Badge>
                       <Badge
-                        className={LEVEL_BADGE_STYLE[it.level]}
+                        className={LEVEL_BADGE_STYLE[toUiLevel(it.difficulty)]}
                         variant="secondary"
                       >
-                        {it.level}
+                        {toUiLevel(it.difficulty)}
                       </Badge>
                       <Badge
                         variant="secondary"
                         className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
                       >
-                        {it.completions}{" "}
+                        {it.playCount}{" "}
                         {t("played.completions2", { default: "completions" })}
                       </Badge>
                     </div>
@@ -287,7 +258,7 @@ export default function PlayedTab() {
   );
 }
 
-/* ==================== Small components (cục bộ) ==================== */
+/* ==================== Small components ==================== */
 function StatCard({
   title,
   value,

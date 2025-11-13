@@ -5,41 +5,32 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useLanguagesQuery } from "@/hooks";
 import { BookOpen, Languages } from "lucide-react";
-import { useTranslations } from "next-intl";
-
-/* ===== types & mock data chỉ dùng ở BasicInfo ===== */
-type LanguageOption = { code: string; label: string; badge?: string };
-
-const LANGUAGES: LanguageOption[] = [
-  { code: "en", label: "US English", badge: "US" },
-  { code: "vi", label: "VN Vietnamese", badge: "VN" },
-  { code: "fr", label: "FR French", badge: "FR" },
-  { code: "es", label: "ES Spanish", badge: "ES" },
-  { code: "de", label: "DE German", badge: "DE" },
-  { code: "jp", label: "JP Japanese", badge: "JP" },
-  { code: "kr", label: "KR Korean", badge: "KR" },
-  { code: "cn", label: "CN Chinese", badge: "CN" },
-  { code: "it", label: "IT Italian", badge: "IT" },
-  { code: "br", label: "BR Portuguese", badge: "BR" },
-];
+import { useLocale, useTranslations } from "next-intl";
 
 export default function BasicInfo({
   title,
   onTitleChange,
   description,
   onDescriptionChange,
-  languageCode,
+  languageId,
   onLanguageChange,
 }: {
   title: string;
   description: string;
-  languageCode: string | null;
+  languageId: string | null;
   onTitleChange: (v: string) => void;
   onDescriptionChange: (v: string) => void;
-  onLanguageChange: (code: string) => void;
+  onLanguageChange: (id: string) => void;
 }) {
   const t = useTranslations();
+  const locale = useLocale();
+
+  const { data: response } = useLanguagesQuery({
+    params: { pageNumber: 1, pageSize: 200, lang: locale },
+  });
+  const languages = response?.payload?.data?.items ?? [];
 
   return (
     <Card>
@@ -73,17 +64,17 @@ export default function BasicInfo({
           </div>
         </div>
 
-        {/* Languages */}
+        {/* Languages from API */}
         <div className="space-y-2">
           <Label>{t("create.language.label")} *</Label>
           <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 gap-2">
-            {LANGUAGES.map((lang) => {
-              const active = languageCode === lang.code;
+            {languages.map((lang: any) => {
+              const active = languageId === lang.id;
               return (
                 <button
-                  key={lang.code}
+                  key={lang.id}
                   type="button"
-                  onClick={() => onLanguageChange(lang.code)}
+                  onClick={() => onLanguageChange(lang.id)}
                   className={[
                     "rounded-md border px-3 py-2 text-left transition-colors",
                     "focus:outline-none focus:ring-2 focus:ring-primary/40",
@@ -95,12 +86,12 @@ export default function BasicInfo({
                   <div className="flex items-center gap-2">
                     <Languages className="h-4 w-4" />
                     <span className="font-medium line-clamp-1">
-                      {lang.label}
+                      {lang.name}
                     </span>
                   </div>
-                  {lang.badge && (
+                  {lang.code && (
                     <Badge variant="secondary" className="mt-1">
-                      {lang.badge}
+                      {lang.code.toUpperCase()}
                     </Badge>
                   )}
                 </button>

@@ -14,19 +14,18 @@ type Summary = {
   level: "easy" | "medium" | "hard";
 };
 
-const DEFAULT_SUMMARY: Summary = {
-  id: "fr-cinema",
-  title: "French Cinema Vocabulary",
-  languageLabel: "French",
-  category: "culture",
-  level: "medium",
-};
-
-export default function LeaderboardHeader({ summary }: { summary?: Summary }) {
-  const data = summary ?? DEFAULT_SUMMARY;
+export default function LeaderboardHeader({
+  summary,
+  loading,
+}: {
+  summary?: Summary;
+  loading?: boolean;
+}) {
   const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
+
+  const data = summary;
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -34,19 +33,31 @@ export default function LeaderboardHeader({ summary }: { summary?: Summary }) {
         <h1 className="text-2xl font-semibold tracking-tight">
           {t("lb.title", { default: "Leaderboard" })}
         </h1>
-        <div className="text-muted-foreground">{data.title}</div>
-        <div className="mt-2 flex flex-wrap gap-2">
-          <Badge variant="secondary">{data.languageLabel}</Badge>
-          <Badge variant="outline">{data.category}</Badge>
-          <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
-            {data.level}
-          </Badge>
-        </div>
+
+        {loading ? (
+          <div className="text-muted-foreground">
+            {t("common.loading", { default: "Loading..." })}
+          </div>
+        ) : data ? (
+          <>
+            <div className="text-muted-foreground">{data.title}</div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <Badge variant="secondary">{data.languageLabel}</Badge>
+              <Badge variant="outline">{data.category}</Badge>
+              <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
+                {data.level}
+              </Badge>
+            </div>
+          </>
+        ) : (
+          <div className="text-muted-foreground">—</div>
+        )}
       </div>
 
       <Button
         className="gap-2 w-full sm:w-auto"
-        onClick={() => router.push(`/${locale}/game/${data.id}/play`)}
+        disabled={!data}
+        onClick={() => data && router.push(`/${locale}/game/${data.id}/play`)}
       >
         <Play className="h-4 w-4" />
         {t("lb.playNow", { default: "Play Now" })}

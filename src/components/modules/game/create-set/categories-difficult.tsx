@@ -2,46 +2,31 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
-import { Tag, Timer } from "lucide-react";
+import { WordsetCategory, WordsetDifficulty } from "@/models";
+import { Tag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 
-/* ===== types & mock data chỉ dùng ở CatDiff ===== */
-type Difficulty = "easy" | "medium" | "hard";
-type CategoryOption = { id: string; label: string; hint?: string };
-
-const CATEGORIES: CategoryOption[] = [
-  { id: "food", label: "Food & Cooking", hint: "Culinary vocabulary" },
-  { id: "travel", label: "Travel & Places", hint: "Tourism and geography" },
-  { id: "business", label: "Business & Work", hint: "Professional vocabulary" },
-  { id: "technology", label: "Technology", hint: "Tech and digital terms" },
-  { id: "culture", label: "Culture & Arts", hint: "Culture and art" },
-  { id: "daily", label: "Daily Life", hint: "Everyday vocabulary" },
-  { id: "education", label: "Education", hint: "Academic terms" },
-  { id: "health", label: "Health & Body", hint: "Medical vocabulary" },
-];
-
-const LEVEL_BADGE_STYLE: Record<Difficulty, string> = {
+/* style cho badge */
+const LEVEL_BADGE_STYLE: Record<"easy" | "medium" | "hard", string> = {
   easy: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
   medium:
     "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
   hard: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300",
 };
 
-// local helper (CatDiff tự tính thời gian)
-const estimateMinutes = (vocabCount: number, difficulty: Difficulty) => {
+// helper estimate
+const estimateMinutes = (vocabCount: number, difficulty: WordsetDifficulty) => {
   const base = 2,
     per = 1,
-    diff = difficulty === "easy" ? 0 : difficulty === "medium" ? 2 : 4;
+    diff = difficulty === "Easy" ? 0 : difficulty === "Medium" ? 2 : 4;
   return base + per * vocabCount + diff;
 };
 
 export default function CatDiff({
-  categoryId,
+  category,
   onCategoryChange,
   difficulty,
   onDifficultyChange,
@@ -51,10 +36,10 @@ export default function CatDiff({
   onEstimatedMinChange,
   vocabCount,
 }: {
-  categoryId: string | null;
-  onCategoryChange: (id: string) => void;
-  difficulty: Difficulty;
-  onDifficultyChange: (d: Difficulty) => void;
+  category: WordsetCategory | null;
+  onCategoryChange: (c: WordsetCategory) => void;
+  difficulty: WordsetDifficulty;
+  onDifficultyChange: (d: WordsetDifficulty) => void;
   autoEstimate: boolean;
   onAutoEstimateChange: (v: boolean) => void;
   estimatedMin: number;
@@ -62,10 +47,14 @@ export default function CatDiff({
   vocabCount: number;
 }) {
   const t = useTranslations();
+
   const computedMin = useMemo(
     () => estimateMinutes(vocabCount, difficulty),
     [vocabCount, difficulty]
   );
+
+  const categories = Object.values(WordsetCategory);
+  const difficulties = Object.values(WordsetDifficulty);
 
   return (
     <Card>
@@ -80,13 +69,13 @@ export default function CatDiff({
         <div className="space-y-2">
           <Label>{t("create.catDiff.category")} *</Label>
           <div className="grid grid-cols-2 xs:grid-cols-3 gap-2">
-            {CATEGORIES.map((c) => {
-              const active = categoryId === c.id;
+            {categories.map((c) => {
+              const active = category === c;
               return (
                 <button
-                  key={c.id}
+                  key={c}
                   type="button"
-                  onClick={() => onCategoryChange(c.id)}
+                  onClick={() => onCategoryChange(c)}
                   className={[
                     "rounded-md border p-3 text-left transition-colors",
                     "focus:outline-none focus:ring-2 focus:ring-primary/40",
@@ -99,13 +88,11 @@ export default function CatDiff({
                     <span>
                       <Tag className="h-4 w-4" />
                     </span>
-                    <span className="font-medium line-clamp-1">{c.label}</span>
+                    <span className="font-medium line-clamp-1">
+                      {t(`filters.wordset.category.${c}`, { default: c })}
+                    </span>
                   </div>
-                  {c.hint && (
-                    <div className="text-xs text-muted-foreground mt-1 line-clamp-1">
-                      {c.hint}
-                    </div>
-                  )}
+                  {/* có thể thêm hint i18n nếu muốn */}
                 </button>
               );
             })}
@@ -117,39 +104,45 @@ export default function CatDiff({
           <Label>{t("create.catDiff.difficulty")} *</Label>
           <RadioGroup
             value={difficulty}
-            onValueChange={(v) => onDifficultyChange(v as Difficulty)}
+            onValueChange={(v) => onDifficultyChange(v as WordsetDifficulty)}
             className="grid grid-cols-1 sm:grid-cols-3 gap-2"
           >
-            {(["easy", "medium", "hard"] as Difficulty[]).map((d) => (
-              <Label
-                key={d}
-                htmlFor={`diff-${d}`}
-                className={[
-                  "rounded-md border p-3 cursor-pointer",
-                  "focus-within:ring-2 focus-within:ring-primary/40",
-                  difficulty === d
-                    ? "bg-primary/10 border-primary"
-                    : "bg-background hover:bg-accent",
-                ].join(" ")}
-              >
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem id={`diff-${d}`} value={d} />
-                  <span className="font-medium">
-                    {t(`create.catDiff.level.${d}`)}
-                  </span>
-                </div>
-                <div>
-                  <Badge variant="secondary" className={LEVEL_BADGE_STYLE[d]}>
-                    {t(`create.catDiff.level.${d}`)}
-                  </Badge>
-                </div>
-              </Label>
-            ))}
+            {difficulties.map((d) => {
+              const key = d.toLowerCase() as "easy" | "medium" | "hard";
+              return (
+                <Label
+                  key={d}
+                  htmlFor={`diff-${d}`}
+                  className={[
+                    "rounded-md border p-3 cursor-pointer",
+                    "focus-within:ring-2 focus-within:ring-primary/40",
+                    difficulty === d
+                      ? "bg-primary/10 border-primary"
+                      : "bg-background hover:bg-accent",
+                  ].join(" ")}
+                >
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem id={`diff-${d}`} value={d} />
+                    <span className="font-medium">
+                      {t(`filters.wordset.difficulty.${d}`, { default: d })}
+                    </span>
+                  </div>
+                  <div>
+                    <Badge
+                      variant="secondary"
+                      className={LEVEL_BADGE_STYLE[key]}
+                    >
+                      {t(`filters.wordset.difficulty.${d}`, { default: d })}
+                    </Badge>
+                  </div>
+                </Label>
+              );
+            })}
           </RadioGroup>
         </div>
 
         {/* Estimated Time */}
-        <div className="grid gap-2">
+        {/* <div className="grid gap-2">
           <Label htmlFor="time">{t("create.catDiff.estimate")}</Label>
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
             <div className="relative sm:w-56">
@@ -177,7 +170,7 @@ export default function CatDiff({
               </Label>
             </div>
           </div>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );

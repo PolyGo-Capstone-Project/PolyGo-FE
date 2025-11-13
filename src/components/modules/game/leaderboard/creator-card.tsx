@@ -9,20 +9,34 @@ import { useTranslations } from "next-intl";
 type Creator = {
   name: string;
   avatar?: string;
-  joinedAt: string;
-  rating: number;
+  createdAt?: string; // lấy từ wordset.createdAt
+  rating?: number; // dùng wordset.averageRating
 };
 
 const DEFAULT_CREATOR: Creator = {
-  name: "AnnaFR",
-  avatar: "https://i.pravatar.cc/150?img=32",
-  joinedAt: "12/10/2025",
-  rating: 4.9,
+  name: "—",
+  avatar: undefined,
+  createdAt: undefined,
+  rating: undefined,
 };
 
-export default function CreatorCard({ creator }: { creator?: Creator }) {
+export default function CreatorCard({
+  creator,
+  loading,
+}: {
+  creator?: Creator;
+  loading?: boolean;
+}) {
   const t = useTranslations();
   const c = creator ?? DEFAULT_CREATOR;
+
+  const createdDate = c.createdAt
+    ? new Date(c.createdAt).toLocaleDateString()
+    : t("lb.na", { default: "N/A" });
+  const ratingText =
+    typeof c.rating === "number"
+      ? c.rating.toFixed(1)
+      : t("lb.na", { default: "N/A" });
 
   return (
     <Card>
@@ -32,25 +46,38 @@ export default function CreatorCard({ creator }: { creator?: Creator }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
-            {c.avatar ? (
-              <AvatarImage src={c.avatar} alt={c.name} />
-            ) : (
-              <AvatarFallback>{c.name.slice(0, 2)}</AvatarFallback>
-            )}
-          </Avatar>
-          <div>
-            <div className="font-medium">{c.name}</div>
-            <div className="text-xs text-muted-foreground">
-              {c.joinedAt} • <Star className="inline h-3 w-3 -mt-0.5" />{" "}
-              {c.rating} {t("lb.rating", { default: "rating" })}
-            </div>
+        {loading ? (
+          <div className="text-sm text-muted-foreground">
+            {t("common.loading", { default: "Loading..." })}
           </div>
-        </div>
-        <Button className="w-full">
-          {t("lb.messageCreator", { default: "Message Creator" })}
-        </Button>
+        ) : (
+          <>
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10">
+                {c.avatar ? (
+                  <AvatarImage src={c.avatar} alt={c.name} />
+                ) : (
+                  <AvatarFallback>
+                    {c.name?.slice(0, 2)?.toUpperCase() || "?"}
+                  </AvatarFallback>
+                )}
+              </Avatar>
+              <div>
+                <div className="font-medium">
+                  {c.name || t("lb.unknown", { default: "Unknown" })}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {t("lb.createdOn", { default: "Created on" })} {createdDate} •{" "}
+                  <Star className="inline h-3 w-3 -mt-0.5" /> {ratingText}{" "}
+                  {t("lb.rating", { default: "rating" })}
+                </div>
+              </div>
+            </div>
+            <Button className="w-full">
+              {t("lb.messageCreator", { default: "Message Creator" })}
+            </Button>
+          </>
+        )}
       </CardContent>
     </Card>
   );

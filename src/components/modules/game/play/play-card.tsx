@@ -26,7 +26,7 @@ type Props = {
   tReshuffle: string;
   answer: string;
   setAnswer: (v: string) => void;
-  onSubmit: () => void;
+  onSubmit: () => boolean | Promise<boolean>;
   onReshuffle: () => void;
 };
 
@@ -43,11 +43,18 @@ export default function PlayCard({
   onSubmit,
   onReshuffle,
 }: Props) {
-  const [flash, setFlash] = useState(false);
+  // flash lưu trạng thái highlight khi submit: "correct" | "wrong" | null
+  const [flash, setFlash] = useState<"correct" | "wrong" | null>(null);
 
   return (
     <Card
-      className={`transition-colors ${flash ? "ring-2 ring-emerald-500" : ""}`}
+      className={`transition-colors ${
+        flash === "correct"
+          ? "ring-2 ring-emerald-500"
+          : flash === "wrong"
+            ? "ring-2 ring-red-500"
+            : ""
+      }`}
     >
       <CardHeader>
         <CardTitle className="text-center">{tUnscramble}</CardTitle>
@@ -99,9 +106,16 @@ export default function PlayCard({
             className="h-11 text-base"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                setFlash(true);
-                setTimeout(() => setFlash(false), 500);
-                onSubmit();
+                const result = onSubmit();
+                if (result instanceof Promise) {
+                  result.then((ok) => {
+                    setFlash(ok ? "correct" : "wrong");
+                    setTimeout(() => setFlash(null), 500);
+                  });
+                } else {
+                  setFlash(result ? "correct" : "wrong");
+                  setTimeout(() => setFlash(null), 500);
+                }
               }
             }}
           />
@@ -109,9 +123,16 @@ export default function PlayCard({
             <Button
               className="gap-2 flex-1"
               onClick={() => {
-                setFlash(true);
-                setTimeout(() => setFlash(false), 500);
-                onSubmit();
+                const result = onSubmit();
+                if (result instanceof Promise) {
+                  result.then((ok) => {
+                    setFlash(ok ? "correct" : "wrong");
+                    setTimeout(() => setFlash(null), 500);
+                  });
+                } else {
+                  setFlash(result ? "correct" : "wrong");
+                  setTimeout(() => setFlash(null), 500);
+                }
               }}
             >
               <CheckCircle2 className="h-4 w-4" />

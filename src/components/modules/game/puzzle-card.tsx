@@ -9,7 +9,6 @@ import { BookOpen, Circle, Clock, Flag, Play, Trophy } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
-/** ====== Kiểu & helper chỉ dùng trong thẻ ====== */
 type Creator = { name: string; avatarUrl?: string; initials: string };
 export type PuzzleCardData = {
   id: string;
@@ -43,7 +42,6 @@ function secondsToMMSS(s?: number) {
   return `${m}:${sec}`;
 }
 
-/** ====== Component ====== */
 export default function PuzzleCard({ data: p }: { data: PuzzleCardData }) {
   const t = useTranslations();
   const router = useRouter();
