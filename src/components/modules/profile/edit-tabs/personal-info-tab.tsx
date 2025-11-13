@@ -30,7 +30,7 @@ import { UpdateMeBodySchema, UpdateMeBodyType } from "@/models";
 
 export function PersonalInfoTab() {
   const t = useTranslations("profile.editDialog.personalInfo");
-  const tCommon = useTranslations("common.gender");
+  const tCommon = useTranslations("profile.gender");
   const tButton = useTranslations("profile.editDialog");
   const errorMessages = useTranslations(
     "profile.editDialog.errors.personalInfo"

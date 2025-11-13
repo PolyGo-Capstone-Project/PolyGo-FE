@@ -356,7 +356,6 @@ export default function MatchingPageContent() {
             new Date(a.createdAt || 0).getTime()
         );
       case "highestRating":
-        // Sort by meritLevel priority
         const meritPriority: Record<string, number> = {
           Admin: 5,
           Reliable: 4,
@@ -366,12 +365,19 @@ export default function MatchingPageContent() {
         };
         return users.sort(
           (a, b) =>
-            (meritPriority[b.meritLevel] || 0) -
-            (meritPriority[a.meritLevel] || 0)
+            (meritPriority[b.merit] || 0) - (meritPriority[a.merit] || 0)
         );
       case "onlineFirst":
-        // Mock: random online first
-        return users.sort(() => Math.random() - 0.5);
+        return users.sort((a, b) => {
+          const ai = a.isOnline ? 1 : 0;
+          const bi = b.isOnline ? 1 : 0;
+          if (ai !== bi) return bi - ai; // online users first
+          // fallback: newest first
+          return (
+            new Date(b.createdAt || 0).getTime() -
+            new Date(a.createdAt || 0).getTime()
+          );
+        });
       case "recommended":
       default:
         return users;

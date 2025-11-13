@@ -11,6 +11,11 @@
     "friends": "Friends",
     "chat": "Chat",
     "share": "Share Profile",
+    "gender": {
+      "Male": "Male",
+      "Female": "Female",
+      "Other": "Other"
+    },
     "tabs": {
       "overview": "Overview",
       "social": "Social"
