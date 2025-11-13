@@ -4,6 +4,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import { useQueryClient } from "@tanstack/react-query";
+
 import { Progress } from "@/components/ui/progress";
 
 // Components
@@ -31,6 +33,8 @@ export default function PlayGamePage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const wordsetId = params?.id;
+  const [hasActiveGame, setHasActiveGame] = useState(false);
+  const qc = useQueryClient();
 
   // ===== Lấy meta (title/desc/lang/category/...) từ detail =====
   const { data: detailRes } = useWordsetDetailQuery({
@@ -40,10 +44,12 @@ export default function PlayGamePage() {
   });
   const detail = detailRes?.data;
 
-  // ===== GAME STATE (polling mỗi 1s để hiển thị đồng hồ, mistakes, tiến độ) =====
+  // ===== GAME STATE (lấy 1 lần làm baseline, KHÔNG polling) =====
   const { data: gameStateRes } = useWordsetGameStateQuery(wordsetId, {
-    enabled: Boolean(wordsetId),
-    refetchInterval: 1000,
+    enabled: Boolean(wordsetId && hasActiveGame),
+    refetchInterval: false, // ⛔ không poll
+    refetchOnWindowFocus: false, // ⛔ không refetch khi focus
+    refetchOnMount: false,
   });
   const gameState = gameStateRes?.data;
 
@@ -54,20 +60,47 @@ export default function PlayGamePage() {
       setCurrentWord(w);
       setLetters(w.scrambledWord.split(""));
       setAnswer("");
+      setHasActiveGame(true);
+      // Đồng bộ counters khởi tạo nếu server có
+      if (typeof res.data.totalWords === "number")
+        setTotalLocal(res.data.totalWords);
+
+      // Khởi tạo mốc bắt đầu cho đồng hồ (schema của bạn là startTime)
+      const serverStartTs = res.data.startTime
+        ? new Date(res.data.startTime).getTime()
+        : Date.now();
+      sessionStorage.setItem("polygo_wordset_startedAt", String(serverStartTs));
+      const initElapsed = Math.max(
+        0,
+        Math.floor((Date.now() - serverStartTs) / 1000)
+      );
+      setElapsedLocal(initElapsed);
+      setRunning(true);
     },
   });
 
   const { mutateAsync: playAnswerAsync } = usePlayWordsetMutation({
     onSuccess: (res) => {
       const d = res.data;
+
+      // ✅ Nếu đã hoàn tất, ngừng đồng hồ và chuyển leaderboard
       if (d.isCompleted) {
+        setRunning(false);
+        setHasActiveGame(false); // nếu bạn dùng flag này
         router.push(`/${locale}/game/${wordsetId}/leaderboard`);
         return;
       }
+
+      // ✅ Chỉ đổi từ mới khi đúng
       if (d.isCorrect && d.nextWord) {
         setCurrentWord(d.nextWord);
         setLetters(d.nextWord.scrambledWord.split(""));
         setAnswer("");
+      }
+      // ❌ Nếu sai thì KHÔNG đổi thứ tự letters
+      else if (!d.isCorrect) {
+        // Có thể chọn giữ nguyên hoặc clear input:
+        // setAnswer("");
       }
     },
   });
@@ -87,17 +120,71 @@ export default function PlayGamePage() {
   const [answer, setAnswer] = useState("");
   const [quitOpen, setQuitOpen] = useState(false);
 
+  // ===== Đồng hồ & counters local =====
+  const [elapsedLocal, setElapsedLocal] = useState(0);
+  const [running, setRunning] = useState(false);
+
+  const [completedLocal, setCompletedLocal] = useState(0);
+  const [totalLocal, setTotalLocal] = useState(0);
+  const [mistakesLocal, setMistakesLocal] = useState(0);
+  const [hintsUsedLocal, setHintsUsedLocal] = useState(0);
+
   // ===== Start game ngay khi vào trang =====
   useEffect(() => {
     if (wordsetId) startGame(wordsetId);
   }, [wordsetId, startGame]);
 
-  // ===== Derived UI values từ game-state =====
-  const completed = gameState?.completedWords ?? 0;
-  const total = gameState?.totalWords ?? 0;
-  const mistakes = gameState?.mistakes ?? 0;
-  const hintsUsed = gameState?.hintsUsed ?? 0;
-  const elapsed = gameState?.elapsedTime ?? 0;
+  // ===== Khôi phục từ gameState (1 lần) & sessionStorage =====
+  useEffect(() => {
+    if (!gameState) return;
+
+    if (typeof gameState.totalWords === "number")
+      setTotalLocal(gameState.totalWords);
+    if (typeof gameState.completedWords === "number")
+      setCompletedLocal(gameState.completedWords);
+    if (typeof gameState.mistakes === "number")
+      setMistakesLocal(gameState.mistakes);
+    if (typeof gameState.hintsUsed === "number")
+      setHintsUsedLocal(gameState.hintsUsed);
+
+    // Ưu tiên mốc startTime từ server; nếu không có, lấy từ sessionStorage
+    const serverStart = gameState.startTime
+      ? new Date(gameState.startTime).getTime()
+      : undefined;
+    if (serverStart) {
+      const initElapsed = Math.max(
+        0,
+        Math.floor((Date.now() - serverStart) / 1000)
+      );
+      setElapsedLocal(initElapsed);
+      sessionStorage.setItem("polygo_wordset_startedAt", String(serverStart));
+      setRunning(true);
+    } else {
+      const ss = sessionStorage.getItem("polygo_wordset_startedAt");
+      if (ss) {
+        const ts = Number(ss);
+        if (!Number.isNaN(ts)) {
+          const initElapsed = Math.max(0, Math.floor((Date.now() - ts) / 1000));
+          setElapsedLocal(initElapsed);
+          setRunning(true);
+        }
+      }
+    }
+  }, [gameState]);
+
+  // ===== Interval cho timer local =====
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setElapsedLocal((e) => e + 1), 1000);
+    return () => clearInterval(id);
+  }, [running]);
+
+  // ===== Derived UI values từ local =====
+  const completed = completedLocal;
+  const total = totalLocal;
+  const mistakes = mistakesLocal;
+  const hintsUsed = hintsUsedLocal;
+  const elapsed = elapsedLocal;
 
   const progressPct = useMemo(() => {
     if (!total) return 0;
@@ -192,7 +279,7 @@ export default function PlayGamePage() {
           onReshuffle={reshuffle}
         />
       ) : (
-        // Trạng thái chưa có currentWord (đang start/poll)
+        // Trạng thái chưa có currentWord (đang start)
         <div className="text-sm text-muted-foreground">
           {t("play.loading", { default: "Preparing your game..." })}
         </div>
@@ -209,7 +296,11 @@ export default function PlayGamePage() {
         wordsLabel={t("meta.words", { default: "words" })}
         continueText={t("play.continue", { default: "Continue Playing" })}
         quitText={t("play.quit", { default: "Quit Game" })}
-        onQuit={() => router.push(`/${locale}/game`)}
+        onQuit={() => {
+          setRunning(false);
+          sessionStorage.removeItem("polygo_wordset_startedAt");
+          router.push(`/${locale}/game`);
+        }}
       />
     </div>
   );

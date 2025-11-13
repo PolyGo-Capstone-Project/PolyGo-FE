@@ -309,10 +309,21 @@ export const usePlayWordsetMutation = (options?: {
   return useMutation({
     mutationFn: (body: PlayWordsetBodyType) => wordsetApiRequest.play(body),
     onSuccess: (res, vars) => {
-      // làm mới game-state để đồng bộ tiến độ, currentWord, mistakes...
-      qc.invalidateQueries({
-        queryKey: ["wordset", vars.wordSetId, "game-state"],
-      });
+      const isCompleted = res.payload?.data?.isCompleted;
+
+      if (isCompleted) {
+        // ✅ KHÔNG invalidate nữa để tránh gọi /game-state -> Error.NoActiveGame
+        // Có thể dọn cache luôn cho sạch
+        qc.removeQueries({
+          queryKey: ["wordset", vars.wordSetId, "game-state"],
+        });
+      } else {
+        // Chỉ khi CHƯA hoàn tất mới cần đồng bộ state
+        qc.invalidateQueries({
+          queryKey: ["wordset", vars.wordSetId, "game-state"],
+        });
+      }
+
       options?.onSuccess?.(res.payload, vars);
     },
     onError: options?.onError,
@@ -320,12 +331,16 @@ export const usePlayWordsetMutation = (options?: {
 };
 
 /* ============ GAMEPLAY: GAME STATE ============ */
-// [ADD] Pollable game-state query
+// Cho phép kiểm soát refetchInterval/focus/mount từ ngoài
 export const useWordsetGameStateQuery = (
   wordsetId?: string,
   options?: {
     enabled?: boolean;
-    refetchInterval?: number | false; // cho phép polling
+    refetchInterval?: number | false; // default: false
+    refetchOnWindowFocus?: boolean; // default: false
+    refetchOnMount?: boolean | "always"; // default: "always"
+    staleTime?: number; // default: 10s
+    gcTime?: number; // default: 5m
   }
 ) =>
   useQuery<WordsetGameStateResType>({
@@ -336,6 +351,9 @@ export const useWordsetGameStateQuery = (
     },
     enabled: (options?.enabled ?? true) && Boolean(wordsetId),
     placeholderData: keepPreviousData,
-    // cho phép truyền polling từ ngoài (ví dụ 1000ms)
-    refetchInterval: options?.refetchInterval,
+    refetchInterval: options?.refetchInterval ?? false, // ⛔ mặc định không poll
+    refetchOnWindowFocus: options?.refetchOnWindowFocus ?? false,
+    refetchOnMount: options?.refetchOnMount ?? "always",
+    staleTime: options?.staleTime ?? 10_000,
+    gcTime: options?.gcTime ?? 5 * 60_000,
   });
