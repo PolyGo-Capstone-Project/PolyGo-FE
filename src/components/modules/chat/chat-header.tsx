@@ -23,14 +23,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useCall } from "@/contexts/call-context";
 import { ChatUser } from "@/types";
 import { MoreVertical, Phone, Search, Trash2, User, Video } from "lucide-react";
 
 interface ChatHeaderProps {
   user: ChatUser;
   isTyping: boolean;
-  onVoiceCall: () => void;
-  onVideoCall: () => void;
   onSearchMessages: () => void;
   onDeleteConversation: () => void;
   locale: string;
@@ -40,8 +39,6 @@ interface ChatHeaderProps {
 export function ChatHeader({
   user,
   isTyping,
-  onVoiceCall,
-  onVideoCall,
   onSearchMessages,
   onDeleteConversation,
   locale,
@@ -50,6 +47,7 @@ export function ChatHeader({
   const t = useTranslations("chat");
   const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const { startVoiceCall, startVideoCall } = useCall();
 
   const getInitials = (name: string) => {
     return name
@@ -99,6 +97,14 @@ export function ChatHeader({
     setShowDeleteDialog(false);
   };
 
+  const handleVoiceCall = () => {
+    startVoiceCall(user.id, user.name);
+  };
+
+  const handleVideoCall = () => {
+    startVideoCall(user.id, user.name);
+  };
+
   return (
     <>
       <div className="flex items-center justify-between border-b p-3 md:p-4">
@@ -136,18 +142,18 @@ export function ChatHeader({
             <Button
               size="icon-sm"
               variant="ghost"
-              onClick={onVoiceCall}
               title={t("voiceCall")}
               className="md:size-9"
+              onClick={handleVoiceCall}
             >
               <Phone className="size-4 md:size-5" />
             </Button>
             <Button
               size="icon-sm"
               variant="ghost"
-              onClick={onVideoCall}
               title={t("videoCall")}
               className="md:size-9"
+              onClick={handleVideoCall}
             >
               <Video className="size-4 md:size-5" />
             </Button>

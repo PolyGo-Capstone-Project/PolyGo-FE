@@ -1,13 +1,13 @@
 import { createGetAll, createGetOne } from "@/lib/apis/factory";
-import http from "@/lib/http";
 import {
   ConversationListResType,
   GetConversationByIdResType,
   GetConversationsByUserIdResType,
   GetConversationsQueryType,
+  GetMessageSearchQueryType,
   GetMessagesQueryType,
+  MediaListResType,
   MessageListResType,
-  MessageResType,
 } from "@/models";
 
 const prefix = "/conversations";
@@ -17,8 +17,15 @@ const communicationApiRequest = {
   getMessages: createGetOne<MessageListResType, GetMessagesQueryType>(
     `${prefix}/messages`
   ),
-  // Delete message by ID
-  deleteMessage: (id: string) => http.delete<MessageResType>(`/messages/${id}`),
+  // Search messages in a conversation
+  searchMessages: createGetOne<MessageListResType, GetMessageSearchQueryType>(
+    `${prefix}/text-messages`
+  ),
+  // Get media and files in a conversation
+  getMedia: createGetOne<MediaListResType, GetMessagesQueryType>(
+    `${prefix}/images`
+  ),
+
   //CONVERSATIONS============================
   // Get conversations
   getConversations: createGetAll<

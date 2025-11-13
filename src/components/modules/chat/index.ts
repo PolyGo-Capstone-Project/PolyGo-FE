@@ -1,4 +1,3 @@
-export { CallModal } from "./call-modal";
 export { ChatHeader } from "./chat-header";
 export { ConversationList } from "./conversation-list";
 export { ImagePreviewModal } from "./image-preview-modal";

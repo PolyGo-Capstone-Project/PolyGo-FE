@@ -9,7 +9,7 @@ type UploadImagePayload = {
   fileName?: string;
 };
 
-const prefix = "media/upload-file";
+const prefix = "media/upload-image";
 
 async function uploadImage({
   file,
