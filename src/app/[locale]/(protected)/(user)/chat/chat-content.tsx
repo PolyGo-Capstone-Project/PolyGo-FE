@@ -85,6 +85,9 @@ const mapConversationToChat = (
       avatarUrl: conversation.user.avatarUrl,
       isOnline: false,
       lastSeen: null,
+      lastActiveAt: conversation.user.lastActiveAt
+        ? new Date(conversation.user.lastActiveAt)
+        : null,
     },
     lastMessage,
     hasSeen: conversation.hasSeen,
@@ -235,6 +238,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                 user: {
                   ...conv.user,
                   isOnline: data.isOnline,
+                  lastActiveAt: new Date(data.lastActiveAt),
                   lastSeen: data.isOnline ? null : new Date(data.lastActiveAt),
                 },
               }
