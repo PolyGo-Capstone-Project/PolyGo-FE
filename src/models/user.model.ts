@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { FriendStatus, Gender, MeritLevel, PlanTypeEnum } from "@/constants";
+import { FriendStatus, Gender, PlanTypeEnum } from "@/constants";
 import { BadgeListItemSchema } from "@/models/badge.model";
 import {
   LangQuerySchema,
@@ -17,17 +17,19 @@ export const UserSchema = z.object({
   name: z.string().min(1).max(100),
   password: z.string().min(6).max(100).nonempty(),
   avatarUrl: z.string().nullable(),
-  meritLevel: z.enum(Object.values(MeritLevel)),
+  merit: z.number().min(0).max(100),
   gender: z.enum(Object.values(Gender)).nullable(),
   planType: z.enum(PlanTypeEnum),
   experiencePoints: z.number().min(0).default(0),
   autoRenewSubscription: z.boolean().default(false),
   totp: z.string().nullable(),
   streakDays: z.number().min(0).default(0),
+  longestStreakDays: z.number().min(0).default(0),
+  bannedStreakDays: z.number().min(0).default(0),
   isNew: z.boolean().default(true),
-  role: z.string(),
   introduction: z.string().max(500).nullable(),
   balance: z.number().min(0).default(0),
+  isOnline: z.boolean().default(false),
   deletedAt: z.iso.datetime().nullable(),
   createdAt: z.iso.datetime(),
   lastLoginAt: z.iso.datetime(),
@@ -65,7 +67,7 @@ export const UpdateProfileBodySchema = SetupProfileBodySchema;
 // PUT /users/set-restriction
 export const SetRestrictionsBodySchema = z.object({
   id: z.string(),
-  meritLevel: z.enum(Object.values(MeritLevel) as [string, ...string[]]),
+  merit: z.number().min(0).max(100),
 });
 
 // Get All Users

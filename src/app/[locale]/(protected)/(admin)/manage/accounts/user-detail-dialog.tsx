@@ -3,6 +3,7 @@
 import type { TranslationValues } from "next-intl";
 import Image from "next/image";
 
+import { MeritBadge } from "@/components";
 import {
   Badge,
   Button,
@@ -71,15 +72,12 @@ export function UserDetailDialog({
     }
   };
 
-  const getMeritLevelColor = (level: string) => {
-    const colors: Record<string, string> = {
-      TRUSTED: "default",
-      NORMAL: "secondary",
-      WARNED: "destructive",
-      RESTRICTED: "destructive",
-      BANNED: "destructive",
-    };
-    return colors[level] || "secondary";
+  const getPlanTypeVariant = (
+    planType: string
+  ): "default" | "secondary" | "outline" => {
+    if (planType === "Plus") return "default";
+    if (planType === "Premium") return "secondary";
+    return "outline";
   };
 
   const getGenderDisplay = (gender: string | null) => {
@@ -128,23 +126,24 @@ export function UserDetailDialog({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-2 p-4 border rounded-lg bg-muted/30">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                      {safeTranslate("detailDialog.role", "Role")}
+                      {safeTranslate("detailDialog.plan", "Plan")}
                     </span>
-                    <Badge variant="outline" className="w-fit text-base py-1">
-                      {user.role}
+                    <Badge
+                      variant={getPlanTypeVariant(user.planType)}
+                      className="w-fit text-base py-1"
+                    >
+                      {user.planType}
                     </Badge>
                   </div>
 
                   <div className="flex flex-col gap-2 p-4 border rounded-lg bg-muted/30">
                     <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                      {safeTranslate("detailDialog.meritLevel", "Merit Level")}
+                      {safeTranslate("detailDialog.merit", "Merit")}
                     </span>
-                    <Badge
-                      variant={getMeritLevelColor(user.meritLevel) as any}
+                    <MeritBadge
+                      merit={user.merit}
                       className="w-fit text-base py-1"
-                    >
-                      {user.meritLevel}
-                    </Badge>
+                    />
                   </div>
 
                   <div className="flex flex-col gap-2 p-4 border rounded-lg bg-muted/30">

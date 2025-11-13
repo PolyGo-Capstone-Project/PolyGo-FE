@@ -15,6 +15,7 @@ export const UserInfoSchema = z.object({
   id: z.string(),
   name: z.string(),
   avatarUrl: z.string().nullable(),
+  lastActiveAt: z.string().optional().nullable(),
 });
 
 export const LastMessageSchema = z.object({

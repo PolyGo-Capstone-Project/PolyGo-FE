@@ -134,25 +134,25 @@ export function IncomingCallDialog({
 
   return (
     <Dialog open={open} onOpenChange={(open) => !open && handleDecline()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="w-[90vw] max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-center">
+          <DialogTitle className="text-center text-base sm:text-lg">
             {isVideoCall ? "Incoming Video Call" : "Incoming Voice Call"}
           </DialogTitle>
-          <DialogDescription className="text-center">
+          <DialogDescription className="text-center text-xs sm:text-sm">
             {timeLeft > 0
               ? `Call will be auto-declined in ${timeLeft}s`
               : "Call timed out"}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col items-center gap-6 py-6">
+        <div className="flex flex-col items-center gap-4 sm:gap-6 py-4 sm:py-6">
           {/* Caller Avatar with pulse animation */}
           <div className="relative">
             <div className="absolute inset-0 animate-ping rounded-full bg-primary/20" />
-            <Avatar className="size-24 relative">
+            <Avatar className="size-20 sm:size-24 relative">
               <AvatarImage src={callerAvatar} alt={callerName} />
-              <AvatarFallback className="text-2xl">
+              <AvatarFallback className="text-xl sm:text-2xl">
                 {getInitials(callerName)}
               </AvatarFallback>
             </Avatar>
@@ -160,16 +160,16 @@ export function IncomingCallDialog({
 
           {/* Caller Name */}
           <div className="text-center">
-            <h3 className="text-xl font-semibold">{callerName}</h3>
-            <p className="text-sm text-muted-foreground mt-1">
+            <h3 className="text-lg sm:text-xl font-semibold">{callerName}</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
               {isVideoCall ? (
                 <span className="flex items-center justify-center gap-1">
-                  <Video className="size-4" />
+                  <Video className="size-3 sm:size-4" />
                   Video Call
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-1">
-                  <Phone className="size-4" />
+                  <Phone className="size-3 sm:size-4" />
                   Voice Call
                 </span>
               )}
@@ -177,23 +177,23 @@ export function IncomingCallDialog({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <Button
               size="lg"
               variant="destructive"
-              className="rounded-full size-16"
+              className="rounded-full size-14 sm:size-16"
               onClick={handleDecline}
             >
-              <PhoneOff className="size-6" />
+              <PhoneOff className="size-5 sm:size-6" />
             </Button>
 
             <Button
               size="lg"
               variant="default"
-              className="rounded-full size-16 bg-green-600 hover:bg-green-700"
+              className="rounded-full size-14 sm:size-16 bg-green-600 hover:bg-green-700"
               onClick={handleAccept}
             >
-              <Phone className="size-6" />
+              <Phone className="size-5 sm:size-6" />
             </Button>
           </div>
         </div>

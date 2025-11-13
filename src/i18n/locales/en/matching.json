@@ -42,7 +42,12 @@
       "interests": "Interests",
       "noIntroduction": "No introduction yet",
       "noLanguages": "No languages added yet",
-      "noInterests": "No interests added yet"
+      "noInterests": "No interests added yet",
+      "gender": {
+        "Male": "Male",
+        "Female": "Female",
+        "Other": "Other"
+      }
     },
     "friends": {
       "title": "Friends list",

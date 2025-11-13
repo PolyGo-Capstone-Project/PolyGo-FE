@@ -255,7 +255,7 @@ export default function UserProfilePage() {
           name={user.name}
           email={user.mail}
           avatarUrl={user.avatarUrl}
-          meritLevel={user.meritLevel}
+          merit={user.merit}
           gender={user.gender}
           introduction={user.introduction}
           isOnline={isUserOnline(userId)}
@@ -345,7 +345,7 @@ export default function UserProfilePage() {
                             <div className="flex items-center gap-2">
                               <p className="font-semibold">{user.name}</p>
                               <Badge variant="secondary" className="text-xs">
-                                {user.meritLevel}
+                                {user.merit}
                               </Badge>
                             </div>
                             <p className="text-xs text-muted-foreground">

@@ -9,7 +9,7 @@ import {
 } from "@tabler/icons-react";
 import type { TranslationValues } from "next-intl";
 
-import { LoadingOverlay } from "@/components";
+import { LoadingOverlay, MeritBadge } from "@/components";
 import {
   Avatar,
   AvatarFallback,
@@ -35,7 +35,6 @@ import {
   SelectValue,
   Spinner,
 } from "@/components/ui";
-import { MeritLevel } from "@/constants";
 import { UserListItemType } from "@/models";
 
 const EMPTY_ICON = "—";
@@ -115,23 +114,16 @@ export function TableAccounts({
     }
   };
 
-  const getMeritLevelColor = (
-    level: string
-  ): "default" | "secondary" | "destructive" | "outline" => {
-    switch (level) {
-      case MeritLevel.Admin:
-        return "default";
-      case MeritLevel.Reliable:
-        return "secondary";
-      case MeritLevel.Monitored:
-        return "outline";
-      case MeritLevel.Restricted:
-        return "destructive";
-      case MeritLevel.Banned:
-        return "destructive";
-      default:
-        return "outline";
+  const getPlanTypeVariant = (
+    planType: string
+  ): "default" | "secondary" | "outline" => {
+    if (planType === "Plus") {
+      return "default";
     }
+    if (planType === "Premium") {
+      return "secondary";
+    }
+    return "outline";
   };
 
   const getGenderDisplay = (gender: string | null) => {
@@ -224,12 +216,12 @@ export function TableAccounts({
             </div>
           </td>
           <td className="px-4 py-3">
-            <Badge variant={getMeritLevelColor(user.meritLevel)}>
-              {user.meritLevel}
-            </Badge>
+            <MeritBadge merit={user.merit} />
           </td>
           <td className="px-4 py-3">
-            <Badge variant="outline">{user.role}</Badge>
+            <Badge variant={getPlanTypeVariant(user.planType)}>
+              {user.planType}
+            </Badge>
           </td>
           <td className="px-4 py-3 text-center">
             {getGenderDisplay(user.gender)}
@@ -333,7 +325,7 @@ export function TableAccounts({
                   {safeTranslate("columns.meritLevel", "Merit level")}
                 </th>
                 <th className="px-4 py-3 font-medium">
-                  {safeTranslate("columns.role", "Role")}
+                  {safeTranslate("columns.plan", "Plan")}
                 </th>
                 <th className="px-4 py-3 text-center font-medium">
                   {safeTranslate("columns.gender", "Gender")}
