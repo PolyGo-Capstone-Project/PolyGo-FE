@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { TranslationValues } from "next-intl";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -17,11 +17,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Input,
   Sheet,
   SheetContent,
   SheetDescription,
@@ -30,7 +26,6 @@ import {
   SheetTitle,
   Spinner,
 } from "@/components/ui";
-import { MeritLevel } from "@/constants";
 import { handleErrorApi } from "@/lib/utils";
 import {
   SetRestrictionsBodySchema,
@@ -58,7 +53,7 @@ type EditAccountsProps = {
 
 const DEFAULT_VALUES: SetRestrictionsBodyType = {
   id: "",
-  meritLevel: "Reliable",
+  merit: 80,
 };
 
 export function EditAccounts({
@@ -77,51 +72,15 @@ export function EditAccounts({
     defaultValues: DEFAULT_VALUES,
   });
 
-  const meritLevelOptions = useMemo(
-    () => [
-      {
-        value: MeritLevel.Banned,
-        label: safeTranslate("meritLevels.banned", "Banned"),
-        description: safeTranslate(
-          "meritLevels.bannedDesc",
-          "User is completely banned from the platform"
-        ),
-      },
-      {
-        value: MeritLevel.Restricted,
-        label: safeTranslate("meritLevels.restricted", "Restricted"),
-        description: safeTranslate(
-          "meritLevels.restrictedDesc",
-          "User has limited access to features"
-        ),
-      },
-      {
-        value: MeritLevel.Monitored,
-        label: safeTranslate("meritLevels.monitored", "Monitored"),
-        description: safeTranslate(
-          "meritLevels.monitoredDesc",
-          "User activities are being monitored"
-        ),
-      },
-      {
-        value: MeritLevel.Reliable,
-        label: safeTranslate("meritLevels.reliable", "Reliable"),
-        description: safeTranslate(
-          "meritLevels.reliableDesc",
-          "Standard user with full access"
-        ),
-      },
-      {
-        value: MeritLevel.Admin,
-        label: safeTranslate("meritLevels.admin", "Admin"),
-        description: safeTranslate(
-          "meritLevels.adminDesc",
-          "Administrator with full privileges"
-        ),
-      },
-    ],
-    [safeTranslate]
-  );
+  const getMeritLabel = (merit: number): string => {
+    if (merit >= 71 && merit <= 100) {
+      return safeTranslate("meritLevels.reliable", "Rất tin cậy");
+    }
+    if (merit >= 41 && merit <= 70) {
+      return safeTranslate("meritLevels.stable", "Ổn định");
+    }
+    return safeTranslate("meritLevels.banned", "Cấm");
+  };
 
   useEffect(() => {
     if (!open) {
@@ -131,8 +90,8 @@ export function EditAccounts({
 
     if (user && userId) {
       form.reset({
-        id: String(user.id), // Convert to string
-        meritLevel: user.meritLevel,
+        id: String(user.id),
+        merit: user.merit,
       });
     }
   }, [form, user, userId, open]);
@@ -198,53 +157,77 @@ export function EditAccounts({
           >
             <FormField
               control={form.control}
-              name="meritLevel"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="mb-2">
-                    {safeTranslate("form.meritLevelLabel", "Merit level")}
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isFormDisabled}
-                  >
-                    <FormControl className="p-6">
-                      <SelectTrigger className="w-full">
-                        <SelectValue
-                          placeholder={safeTranslate(
-                            "form.meritLevelPlaceholder",
-                            "Select a merit level"
-                          )}
+              name="merit"
+              render={({ field }) => {
+                const currentMerit = field.value ?? 80;
+                const meritLabel = getMeritLabel(currentMerit);
+                return (
+                  <FormItem>
+                    <FormLabel className="mb-2">
+                      {safeTranslate("form.meritLabel", "Merit")}
+                    </FormLabel>
+                    <FormControl>
+                      <div className="flex flex-col gap-2">
+                        <Input
+                          type="number"
+                          min={0}
+                          max={100}
+                          disabled={isFormDisabled}
+                          {...field}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            field.onChange(value === "" ? 0 : Number(value));
+                          }}
+                          className="w-full"
                         />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {meritLevelOptions.map((option) => (
-                        <SelectItem
-                          key={option.value}
-                          value={option.value}
-                          className="h-auto py-3"
-                        >
-                          <div className="flex flex-col">
-                            <span className="font-medium">{option.label}</span>
-                            <span className="text-muted-foreground text-xs">
-                              {option.description}
+                        <div className="rounded-md border bg-muted/40 p-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium">
+                              {safeTranslate("form.meritStatus", "Trạng thái")}:
+                            </span>
+                            <span className="text-sm font-semibold">
+                              {meritLabel}
                             </span>
                           </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription className="mt-2 w-full">
-                    {safeTranslate(
-                      "form.meritLevelHint",
-                      "Set the user's access level and restrictions."
-                    )}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
+                          <div className="mt-2 text-xs text-muted-foreground">
+                            {currentMerit >= 71 && currentMerit <= 100 && (
+                              <span>
+                                {safeTranslate(
+                                  "form.meritDesc.reliable",
+                                  "71-100: Người dùng rất tin cậy"
+                                )}
+                              </span>
+                            )}
+                            {currentMerit >= 41 && currentMerit <= 70 && (
+                              <span>
+                                {safeTranslate(
+                                  "form.meritDesc.stable",
+                                  "41-70: Người dùng ổn định"
+                                )}
+                              </span>
+                            )}
+                            {currentMerit >= 0 && currentMerit <= 40 && (
+                              <span>
+                                {safeTranslate(
+                                  "form.meritDesc.banned",
+                                  "0-40: Người dùng bị cấm"
+                                )}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormDescription className="mt-2">
+                      {safeTranslate(
+                        "form.meritHint",
+                        "Nhập điểm merit từ 0-100 để đặt quyền truy cập."
+                      )}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
             />
 
             <SheetFooter className="gap-2 px-4">

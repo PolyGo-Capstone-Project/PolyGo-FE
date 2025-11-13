@@ -11,6 +11,11 @@
     "friends": "Bạn Bè",
     "chat": "Trò chuyện",
     "share": "Chia Sẻ Hồ Sơ",
+    "gender": {
+      "Male": "Nam",
+      "Female": "Nữ",
+      "Other": "Khác"
+    },
     "tabs": {
       "overview": "Tổng Quan",
       "social": "Mạng Xã Hội"

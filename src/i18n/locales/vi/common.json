@@ -103,11 +103,18 @@
     "events": "Sự kiện của tôi",
     "wallet": "Ví cá nhân"
   },
-  "common": {
-    "gender": {
-      "Male": "Nam",
-      "Female": "Nữ",
-      "Other": "Khác"
+  "merit": {
+    "reliable": {
+      "label": "Rất tin cậy",
+      "description": "Merit: {merit} - Người dùng rất tin cậy"
+    },
+    "stable": {
+      "label": "Ổn định",
+      "description": "Merit: {merit} - Người dùng ổn định"
+    },
+    "banned": {
+      "label": "Cấm",
+      "description": "Merit: {merit} - Người dùng bị cấm"
     }
   },
   "languageSwitcher": {

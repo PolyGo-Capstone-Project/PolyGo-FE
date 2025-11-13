@@ -110,6 +110,20 @@
       "Other": "Other"
     }
   },
+  "merit": {
+    "reliable": {
+      "label": "Highly Trusted",
+      "description": "Merit: {merit} - Highly trusted user"
+    },
+    "stable": {
+      "label": "Stable",
+      "description": "Merit: {merit} - Stable user"
+    },
+    "banned": {
+      "label": "Banned",
+      "description": "Merit: {merit} - Banned user"
+    }
+  },
   "languageSwitcher": {
     "label": "Language",
     "description": "Select the language you prefer"

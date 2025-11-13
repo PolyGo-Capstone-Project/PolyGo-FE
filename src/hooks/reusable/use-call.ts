@@ -752,23 +752,37 @@ export const useCall = (options?: UseCallOptions) => {
     if (!localStreamRef.current) return undefined;
 
     try {
+      const pc = peerConnectionRef.current;
+      if (!pc) {
+        console.warn("[Media] ⚠️ No peer connection");
+        return undefined;
+      }
+
       const videoTrack = localStreamRef.current.getVideoTracks()[0];
 
-      // Case 1: Disabling video (stop track completely)
+      // Case 1: Disabling video
       if (videoTrack && callState.localVideoEnabled) {
         console.log("[Media] 🔴 Disabling video...");
 
-        // Stop and remove video track
+        // Stop video track
         videoTrack.stop();
+        localStreamRef.current.removeTrack(videoTrack);
 
-        // Update peer connection - remove video sender
-        const pc = peerConnectionRef.current;
-        if (pc) {
-          const senders = pc.getSenders();
-          const videoSender = senders.find((s) => s.track?.kind === "video");
-          if (videoSender) {
-            await videoSender.replaceTrack(null);
-            console.log("[PC] ✓ Removed video track from peer connection");
+        // Replace track with null (preserve sender/transceiver)
+        const senders = pc.getSenders();
+        const videoSender = senders.find((s) => s.track?.kind === "video");
+        if (videoSender) {
+          await videoSender.replaceTrack(null);
+          console.log("[PC] ✓ Replaced video track with null");
+
+          // Set transceiver direction to inactive
+          const transceivers = pc.getTransceivers();
+          const videoTransceiver = transceivers.find(
+            (t) => t.sender === videoSender
+          );
+          if (videoTransceiver) {
+            videoTransceiver.direction = "inactive";
+            console.log("[PC] ✓ Set video transceiver to inactive");
           }
         }
 
@@ -782,49 +796,48 @@ export const useCall = (options?: UseCallOptions) => {
         return false;
       }
 
-      // Case 2: Enabling video (get fresh track)
+      // Case 2: Enabling video
       if (!callState.localVideoEnabled) {
-        console.log("[Media] � Enabling video...");
+        console.log("[Media] 🟢 Enabling video...");
 
-        // Get new video stream
-        const newStream = await navigator.mediaDevices.getUserMedia({
+        // Get new video track
+        const newVideoStream = await navigator.mediaDevices.getUserMedia({
           video: true,
           audio: false,
         });
 
-        const newVideoTrack = newStream.getVideoTracks()[0];
+        const newVideoTrack = newVideoStream.getVideoTracks()[0];
         if (!newVideoTrack) {
-          throw new Error("Failed to get video track from new stream");
+          throw new Error("Failed to get video track");
         }
 
-        // Get audio tracks from current stream
-        const audioTracks = localStreamRef.current.getAudioTracks();
+        // Add to stream
+        localStreamRef.current.addTrack(newVideoTrack);
+        console.log("[Media] ✓ Added video track to stream");
 
-        // Create new combined stream
-        const combinedStream = new MediaStream();
-        audioTracks.forEach((track) => combinedStream.addTrack(track));
-        combinedStream.addTrack(newVideoTrack);
+        // Replace null track with new video
+        const senders = pc.getSenders();
+        const videoSender = senders.find(
+          (s) => s.track === null || s.track?.kind === "video"
+        );
 
-        // Update peer connection with new video track
-        const pc = peerConnectionRef.current;
-        if (pc) {
-          const senders = pc.getSenders();
-          const videoSender = senders.find((s) => s.track?.kind === "video");
-          if (videoSender) {
-            await videoSender.replaceTrack(newVideoTrack);
-            console.log("[PC] ✓ Replaced video track");
-          } else {
-            // No video sender exists, add one
-            pc.addTrack(newVideoTrack, combinedStream);
-            console.log("[PC] ✓ Added video track");
+        if (videoSender) {
+          await videoSender.replaceTrack(newVideoTrack);
+          console.log("[PC] ✓ Replaced null with video track");
+
+          // Set transceiver direction to sendrecv
+          const transceivers = pc.getTransceivers();
+          const videoTransceiver = transceivers.find(
+            (t) => t.sender === videoSender
+          );
+          if (videoTransceiver) {
+            videoTransceiver.direction = "sendrecv";
+            console.log("[PC] ✓ Set video transceiver to sendrecv");
           }
         }
 
-        // Update refs and state
-        localStreamRef.current = combinedStream;
         setCallState((prev) => ({
           ...prev,
-          localStream: combinedStream,
           localVideoEnabled: true,
         }));
 
@@ -842,7 +855,12 @@ export const useCall = (options?: UseCallOptions) => {
       }));
       return undefined;
     }
-  }, [communicationHub, callState.localAudioEnabled]);
+  }, [
+    communicationHub,
+    callState.localAudioEnabled,
+    callState.peerId,
+    callState.localVideoEnabled,
+  ]);
 
   return {
     // State

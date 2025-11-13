@@ -19,6 +19,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  MeritBadge,
   ScrollArea,
   Tabs,
   TabsContent,
@@ -206,9 +207,7 @@ export function FriendsDialog({
         </Avatar>
         <div className="flex flex-col">
           <span className="font-medium">{user.name}</span>
-          <Badge variant="secondary" className="w-fit text-xs">
-            {user.meritLevel}
-          </Badge>
+          <MeritBadge merit={user.merit} className="w-fit text-xs" />
         </div>
       </div>
 
