@@ -212,6 +212,14 @@ export default function ProfilePage() {
 
             {/* Right Column - Stats & XP */}
             <div className="space-y-6">
+              {/* XP & Level */}
+              <ProfileInfoSection
+                experiencePoints={user.experiencePoints}
+                merit={user.merit}
+                streakDays={user.streakDays}
+                longestStreakDays={user.longestStreakDays}
+                bannedStreakDays={user.bannedStreakDays}
+              />
               {/* Stats */}
               <ProfileStats
                 totalSessions={MOCK_STATS.totalSessions}
@@ -221,12 +229,6 @@ export default function ProfilePage() {
                 streakDays={user.streakDays}
                 eventsHosted={MOCK_STATS.eventsHosted}
                 planType={planType}
-              />
-
-              {/* XP & Level */}
-              <ProfileInfoSection
-                experiencePoints={user.experiencePoints}
-                streakDays={user.streakDays}
               />
             </div>
           </div>
@@ -313,7 +315,10 @@ export default function ProfilePage() {
               />
               <ProfileInfoSection
                 experiencePoints={user.experiencePoints}
+                merit={user.merit}
                 streakDays={user.streakDays}
+                longestStreakDays={user.longestStreakDays}
+                bannedStreakDays={user.bannedStreakDays}
               />
             </div>
           </div>

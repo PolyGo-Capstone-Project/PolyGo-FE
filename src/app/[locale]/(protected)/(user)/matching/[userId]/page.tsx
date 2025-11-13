@@ -300,6 +300,14 @@ export default function UserProfilePage() {
 
               {/* Right Column - Stats & XP */}
               <div className="space-y-6">
+                {/* XP & Level */}
+                <ProfileInfoSection
+                  experiencePoints={user.experiencePoints ?? 0}
+                  merit={user.merit}
+                  streakDays={user.streakDays ?? 0}
+                  longestStreakDays={user.longestStreakDays ?? 0}
+                  bannedStreakDays={user.bannedStreakDays ?? 0}
+                />
                 {/* Stats */}
                 <ProfileStats
                   totalSessions={MOCK_STATS.totalSessions}
@@ -309,12 +317,6 @@ export default function UserProfilePage() {
                   streakDays={user.streakDays ?? 0}
                   eventsHosted={MOCK_STATS.eventsHosted}
                   planType={user.planType}
-                />
-
-                {/* XP & Level */}
-                <ProfileInfoSection
-                  experiencePoints={user.experiencePoints ?? 0}
-                  streakDays={user.streakDays ?? 0}
                 />
               </div>
             </div>
@@ -401,7 +403,10 @@ export default function UserProfilePage() {
                 />
                 <ProfileInfoSection
                   experiencePoints={user.experiencePoints ?? 0}
+                  merit={user.merit ?? 0}
                   streakDays={user.streakDays ?? 0}
+                  longestStreakDays={user.longestStreakDays ?? 0}
+                  bannedStreakDays={user.bannedStreakDays ?? 0}
                 />
               </div>
             </div>
