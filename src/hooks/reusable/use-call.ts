@@ -121,14 +121,20 @@ export const useCall = (options?: UseCallOptions) => {
       // Receiver already initialized WebRTC in acceptCall()
       if (isCallerRef.current) {
         console.log("[Call] 📞 We are caller, initializing WebRTC...");
-        // Use data.userId (the person who accepted our call)
-        setCallState((prev) => {
-          // Initialize WebRTC with the current state
-          if (prev.peerId) {
-            initializeWebRTCConnection(prev.peerId, prev.isVideoCall);
-          }
-          return prev; // Don't change state yet
-        });
+
+        // Get current peer ID and video call state
+        const currentPeerId = callState.peerId;
+        const currentIsVideoCall = callState.isVideoCall;
+
+        if (currentPeerId) {
+          // Initialize WebRTC connection - this will create and send the offer
+          await initializeWebRTCConnection(currentPeerId, currentIsVideoCall);
+          console.log(
+            "[Call] ✅ WebRTC initialized and offer sent to receiver"
+          );
+        } else {
+          console.error("[Call] ❌ No peerId found when accepting call");
+        }
       } else {
         console.log(
           "[Call] 📲 We are receiver, WebRTC already initialized in acceptCall()"
