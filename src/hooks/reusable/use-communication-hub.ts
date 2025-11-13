@@ -220,6 +220,7 @@ export const useUserCommunicationHub = (
           currentState
         );
 
+        // Stop immediately - server will handle disconnect via OnDisconnectedAsync
         connectionRef.current
           .stop()
           .then(() => {
