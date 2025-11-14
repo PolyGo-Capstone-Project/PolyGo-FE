@@ -1,5 +1,6 @@
 "use client";
 
+import { useUserCommunicationHubContext } from "@/components/providers/user-presence-provider";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   CallAcceptedData,
@@ -7,7 +8,6 @@ import {
   CallFailedData,
   IncomingCallData,
   MediaStateUpdate,
-  useUserCommunicationHub,
 } from "./use-communication-hub";
 
 // ==================== ICE SERVERS CONFIG ====================
@@ -87,132 +87,143 @@ export const useCall = (options?: UseCallOptions) => {
   const ignoreOfferRef = useRef<boolean>(false);
   const isCallerRef = useRef<boolean>(false);
 
-  // ==================== COMMUNICATION HUB ====================
-  const communicationHub = useUserCommunicationHub({
-    // Handle incoming call
-    onIncomingCall: (data: IncomingCallData) => {
-      console.log(
-        `📞 [Call] Incoming ${data.isVideoCall ? "video" : "voice"} call from:`,
-        data.callerId,
-        "Name:",
-        data.callerName
-      );
+  // ==================== USE SHARED CONNECTION ====================
+  // Get the shared communication hub from context (prevents multiple connections!)
+  const communicationHub = useUserCommunicationHubContext();
 
-      setCallState((prev) => ({
-        ...prev,
-        status: "ringing",
-        isVideoCall: data.isVideoCall,
-        peerId: data.callerId,
-      }));
-
-      options?.onIncomingCall?.(data);
-    },
-
-    // Handle call accepted
-    onCallAccepted: async (data: CallAcceptedData) => {
-      console.log("✅ [Call] Call accepted by:", data.userId);
-      console.log("[Call] 🔍 isCallerRef.current:", isCallerRef.current);
-
-      // Don't set status to "connected" yet - wait for WebRTC connection
-      // Status will be set to "connected" in onconnectionstatechange handler
-      // Keep status as "calling" while WebRTC connection is being established
-
-      // Only initialize WebRTC if we are the CALLER
-      // Receiver already initialized WebRTC in acceptCall()
-      if (isCallerRef.current) {
-        console.log("[Call] 📞 We are caller, initializing WebRTC...");
-
-        // Get current peer ID and video call state
-        const currentPeerId = callState.peerId;
-        const currentIsVideoCall = callState.isVideoCall;
-
-        if (currentPeerId) {
-          // Initialize WebRTC connection - this will create and send the offer
-          await initializeWebRTCConnection(currentPeerId, currentIsVideoCall);
-          console.log(
-            "[Call] ✅ WebRTC initialized and offer sent to receiver"
-          );
-        } else {
-          console.error("[Call] ❌ No peerId found when accepting call");
-        }
-      } else {
+  // Register callbacks with the shared connection
+  useEffect(() => {
+    communicationHub.registerCallCallbacks({
+      // Handle incoming call
+      onIncomingCall: (data: IncomingCallData) => {
         console.log(
-          "[Call] 📲 We are receiver, WebRTC already initialized in acceptCall()"
+          `📞 [Call] Incoming ${data.isVideoCall ? "video" : "voice"} call from:`,
+          data.callerId,
+          "Name:",
+          data.callerName
         );
-      }
-    },
 
-    // Handle call declined
-    onCallDeclined: (data: CallDeclinedData) => {
-      console.log("❌ [Call] Call declined by:", data.userId);
+        setCallState((prev) => ({
+          ...prev,
+          status: "ringing",
+          isVideoCall: data.isVideoCall,
+          peerId: data.callerId,
+        }));
 
-      cleanupCall();
-      setCallState((prev) => ({
-        ...prev,
-        status: "declined",
-        peerId: null,
-      }));
+        options?.onIncomingCall?.(data);
+      },
 
-      options?.onCallDeclined?.();
-    },
+      // Handle call accepted
+      onCallAccepted: async (data: CallAcceptedData) => {
+        console.log("✅ [Call] Call accepted by:", data.userId);
+        console.log("[Call] 🔍 isCallerRef.current:", isCallerRef.current);
 
-    // Handle call failed
-    onCallFailed: (data: CallFailedData) => {
-      console.log("⚠️ [Call] Call failed:", data.reason);
+        // Don't set status to "connected" yet - wait for WebRTC connection
+        // Status will be set to "connected" in onconnectionstatechange handler
+        // Keep status as "calling" while WebRTC connection is being established
 
-      cleanupCall();
-      setCallState((prev) => ({
-        ...prev,
-        status: "failed",
-        peerId: null,
-      }));
+        // Only initialize WebRTC if we are the CALLER
+        // Receiver already initialized WebRTC in acceptCall()
+        if (isCallerRef.current) {
+          console.log("[Call] 📞 We are caller, initializing WebRTC...");
 
-      options?.onCallFailed?.(data.reason);
-    },
+          // Get current peer ID and video call state
+          const currentPeerId = callState.peerId;
+          const currentIsVideoCall = callState.isVideoCall;
 
-    // Handle call ended
-    onCallEnded: () => {
-      console.log("📴 [Call] Call ended");
+          if (currentPeerId) {
+            // Initialize WebRTC connection - this will create and send the offer
+            await initializeWebRTCConnection(currentPeerId, currentIsVideoCall);
+            console.log(
+              "[Call] ✅ WebRTC initialized and offer sent to receiver"
+            );
+          } else {
+            console.error("[Call] ❌ No peerId found when accepting call");
+          }
+        } else {
+          console.log(
+            "[Call] 📲 We are receiver, WebRTC already initialized in acceptCall()"
+          );
+        }
+      },
 
-      cleanupCall();
-      setCallState((prev) => ({
-        ...prev,
-        status: "ended",
-        peerId: null,
-      }));
+      // Handle call declined
+      onCallDeclined: (data: CallDeclinedData) => {
+        console.log("❌ [Call] Call declined by:", data.userId);
 
-      options?.onCallEnded?.();
-    },
+        cleanupCall();
+        setCallState((prev) => ({
+          ...prev,
+          status: "declined",
+          peerId: null,
+        }));
 
-    // Handle media state update
-    onMediaStateUpdate: (data: MediaStateUpdate) => {
-      console.log(
-        `🎤📹 [Call] Media state update from ${data.userId}: mic=${data.micOn}, cam=${data.camOn}`
-      );
+        options?.onCallDeclined?.();
+      },
 
-      setCallState((prev) => ({
-        ...prev,
-        remoteAudioEnabled: data.micOn,
-        remoteVideoEnabled: data.camOn,
-      }));
-    },
+      // Handle call failed
+      onCallFailed: (data: CallFailedData) => {
+        console.log("⚠️ [Call] Call failed:", data.reason);
 
-    // ==================== WEBRTC SIGNALING ====================
-    onReceiveOffer: async (sdp: string) => {
-      console.log("📨 [WebRTC] Received offer");
-      await handleReceiveOffer(sdp);
-    },
+        cleanupCall();
+        setCallState((prev) => ({
+          ...prev,
+          status: "failed",
+          peerId: null,
+        }));
 
-    onReceiveAnswer: async (sdp: string) => {
-      console.log("📨 [WebRTC] Received answer");
-      await handleReceiveAnswer(sdp);
-    },
+        options?.onCallFailed?.(data.reason);
+      },
 
-    onReceiveIceCandidate: async (candidate: string) => {
-      console.log("📨 [WebRTC] Received ICE candidate");
-      await handleReceiveIceCandidate(candidate);
-    },
-  });
+      // Handle call ended
+      onCallEnded: () => {
+        console.log("📴 [Call] Call ended");
+
+        cleanupCall();
+        setCallState((prev) => ({
+          ...prev,
+          status: "ended",
+          peerId: null,
+        }));
+
+        options?.onCallEnded?.();
+      },
+
+      // Handle media state update
+      onMediaStateUpdate: (data: MediaStateUpdate) => {
+        console.log(
+          `🎤📹 [Call] Media state update from ${data.userId}: mic=${data.micOn}, cam=${data.camOn}`
+        );
+
+        setCallState((prev) => ({
+          ...prev,
+          remoteAudioEnabled: data.micOn,
+          remoteVideoEnabled: data.camOn,
+        }));
+      },
+
+      // ==================== WEBRTC SIGNALING ====================
+      onReceiveOffer: async (sdp: string) => {
+        console.log("📨 [WebRTC] Received offer");
+        await handleReceiveOffer(sdp);
+      },
+
+      onReceiveAnswer: async (sdp: string) => {
+        console.log("📨 [WebRTC] Received answer");
+        await handleReceiveAnswer(sdp);
+      },
+
+      onReceiveIceCandidate: async (candidate: string) => {
+        console.log("📨 [WebRTC] Received ICE candidate");
+        await handleReceiveIceCandidate(candidate);
+      },
+    });
+
+    // Cleanup: unregister callbacks when component unmounts
+    return () => {
+      communicationHub.registerCallCallbacks({});
+    };
+  }, [options]); // Re-register when options change
 
   // ==================== WEBRTC HELPERS ====================
 
@@ -376,7 +387,7 @@ export const useCall = (options?: UseCallOptions) => {
 
       return pc;
     },
-    [communicationHub]
+    [] // No dependencies - communicationHub.sendIceCandidate is stable
   );
 
   // Initialize WebRTC connection
@@ -438,8 +449,21 @@ export const useCall = (options?: UseCallOptions) => {
             }
           } catch (err) {
             console.error("[WebRTC] ✗ Failed to create/send offer:", err);
-            // Clean up and notify user
-            cleanupCall();
+            // Inline cleanup (cleanupCall not yet defined at this point)
+            if (peerConnectionRef.current) {
+              peerConnectionRef.current.close();
+              peerConnectionRef.current = null;
+            }
+            if (localStreamRef.current) {
+              localStreamRef.current
+                .getTracks()
+                .forEach((track) => track.stop());
+              localStreamRef.current = null;
+            }
+            remoteStreamRef.current = null;
+            makingOfferRef.current = false;
+            ignoreOfferRef.current = false;
+
             setCallState((prev) => ({
               ...prev,
               status: "failed",
@@ -453,7 +477,7 @@ export const useCall = (options?: UseCallOptions) => {
         throw error;
       }
     },
-    [getLocalStream, createPeerConnection, communicationHub]
+    [getLocalStream, createPeerConnection] // cleanupCall defined later, inlined in catch
   );
 
   // Handle receive offer
@@ -519,7 +543,7 @@ export const useCall = (options?: UseCallOptions) => {
         console.error("[PC] ✗ Failed to handle offer:", error);
       }
     },
-    [getLocalStream, callState.isVideoCall, callState.peerId, communicationHub]
+    [getLocalStream, callState.isVideoCall, callState.peerId]
   );
 
   // Handle receive answer
@@ -645,7 +669,7 @@ export const useCall = (options?: UseCallOptions) => {
         throw error;
       }
     },
-    [communicationHub, getLocalStream]
+    [getLocalStream] // communicationHub is from context, stable
   );
 
   /**
@@ -682,7 +706,6 @@ export const useCall = (options?: UseCallOptions) => {
   }, [
     callState.peerId,
     callState.isVideoCall,
-    communicationHub,
     getLocalStream,
     initializeWebRTCConnection,
   ]);
@@ -712,7 +735,7 @@ export const useCall = (options?: UseCallOptions) => {
       console.error("[Call] ✗ Failed to decline call:", error);
       throw error;
     }
-  }, [callState.peerId, communicationHub, cleanupCall]);
+  }, [callState.peerId, cleanupCall]);
 
   /**
    * End the current call
@@ -739,7 +762,7 @@ export const useCall = (options?: UseCallOptions) => {
       console.error("[Call] ✗ Failed to end call:", error);
       throw error;
     }
-  }, [communicationHub, cleanupCall]);
+  }, [cleanupCall]);
 
   /**
    * Toggle microphone
@@ -764,7 +787,7 @@ export const useCall = (options?: UseCallOptions) => {
       return newState;
     }
     return undefined;
-  }, [communicationHub, callState.localVideoEnabled]);
+  }, [callState.localVideoEnabled]);
 
   /**
    * Toggle camera
@@ -862,12 +885,7 @@ export const useCall = (options?: UseCallOptions) => {
       }));
       return undefined;
     }
-  }, [
-    communicationHub,
-    callState.localAudioEnabled,
-    callState.peerId,
-    callState.localVideoEnabled,
-  ]);
+  }, [callState.localAudioEnabled, callState.localVideoEnabled]);
 
   return {
     // State

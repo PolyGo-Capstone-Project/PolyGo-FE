@@ -180,10 +180,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
         message.conversationId !== selectedConversationId &&
         message.senderId !== currentUserId
       ) {
-        console.log(
-          "📬 New message from another conversation:",
-          message.conversationId
-        );
         setConversations((prev) =>
           prev.map((conv) =>
             conv.id === message.conversationId
@@ -210,8 +206,12 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   );
 
   // User presence management from context
-  const { isUserOnline, getOnlineStatus, setOnUserStatusChangedCallback } =
-    useUserCommunicationHubContext();
+  const {
+    isUserOnline,
+    getOnlineStatus,
+    setOnUserStatusChangedCallback,
+    isConnected: isPresenceConnected,
+  } = useUserCommunicationHubContext();
 
   // Chat notification management
   const { setUnreadChatCount } = useChatNotification();
@@ -337,8 +337,9 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     });
 
     // Fetch online status for all users in conversations
+    // Only fetch when connection is ready!
     const userIds = items.map((item) => item.user.id);
-    if (userIds.length > 0) {
+    if (userIds.length > 0 && isPresenceConnected) {
       getOnlineStatus(userIds)
         .then((statusMap) => {
           setConversations((prev) =>
@@ -355,7 +356,12 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
           console.error("Failed to fetch online status:", err);
         });
     }
-  }, [conversationsResponse, getOnlineStatus, selectedConversationId]);
+  }, [
+    conversationsResponse,
+    getOnlineStatus,
+    selectedConversationId,
+    isPresenceConnected,
+  ]);
 
   useEffect(() => {
     if (conversationsError) {
@@ -607,7 +613,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
       setHasMoreMessages(moreAvailable);
       setNextPageToLoad(moreAvailable ? updatedLastLoadedPage + 1 : null);
     } catch (error) {
-      console.error("Failed to load more messages", error);
       toast.error(tError("loadMessages"));
     } finally {
       setIsLoadingMoreMessages(false);
@@ -681,7 +686,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   };
 
   const handleSelectMessage = (messageId: string) => {
-    console.log("Scroll to message:", messageId);
     setScrollToMessageId(messageId);
     // Reset after a short delay to allow re-scrolling to the same message
     setTimeout(() => setScrollToMessageId(undefined), 100);
@@ -694,7 +698,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
       setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
       toast.success(tSuccess("Delete"));
     } catch (error) {
-      console.error("Failed to delete message:", error);
       toast.error(tError("deleteMessage"));
     }
   };
@@ -704,7 +707,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
       await navigator.clipboard.writeText(content);
       toast.success(tSuccess("Copy"));
     } catch (error) {
-      console.error("Failed to copy message:", error);
       toast.error(tError("copyMessage"));
     }
   };
