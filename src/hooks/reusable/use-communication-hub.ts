@@ -365,7 +365,7 @@ export const useUserCommunicationHub = (
 
   // Update user online status
   const updateOnlineStatus = async (userId: string) => {
-    if (!connection || !isConnected) {
+    if (!connection || connection.state !== "Connected") {
       throw new Error("Not connected to CommunicationHub");
     }
 
@@ -382,7 +382,7 @@ export const useUserCommunicationHub = (
   const getOnlineStatus = async (
     userIds: string[]
   ): Promise<Record<string, boolean>> => {
-    if (!connection || !isConnected) {
+    if (!connection || connection.state !== "Connected") {
       throw new Error("Not connected to CommunicationHub");
     }
 
@@ -407,7 +407,14 @@ export const useUserCommunicationHub = (
    * @param isVideoCall - true for video call, false for voice call
    */
   const startCall = async (receiverId: string, isVideoCall: boolean) => {
-    if (!connection || !isConnected) {
+    console.log(
+      `[StartCall] Debug - connection:`,
+      !!connection,
+      `state:`,
+      connection?.state
+    );
+
+    if (!connection || connection.state !== "Connected") {
       throw new Error("Not connected to CommunicationHub");
     }
 
@@ -434,7 +441,7 @@ export const useUserCommunicationHub = (
    * @param accepted - true to accept, false to decline
    */
   const respondCall = async (callerId: string, accepted: boolean) => {
-    if (!connection || !isConnected) {
+    if (!connection || connection.state !== "Connected") {
       throw new Error("Not connected to CommunicationHub");
     }
 
@@ -461,7 +468,7 @@ export const useUserCommunicationHub = (
    * @param camOn - Camera state
    */
   const toggleMedia = async (micOn: boolean, camOn: boolean) => {
-    if (!connection || !isConnected) {
+    if (!connection || connection.state !== "Connected") {
       throw new Error("Not connected to CommunicationHub");
     }
 
@@ -483,7 +490,7 @@ export const useUserCommunicationHub = (
    * End the current call
    */
   const endCall = async () => {
-    if (!connection || !isConnected) {
+    if (!connection || connection.state !== "Connected") {
       throw new Error("Not connected to CommunicationHub");
     }
 
@@ -504,7 +511,7 @@ export const useUserCommunicationHub = (
    * @param sdp - Session Description Protocol string
    */
   const sendOffer = async (receiverId: string, sdp: string) => {
-    if (!connection || !isConnected) {
+    if (!connection || connection.state !== "Connected") {
       throw new Error("Not connected to CommunicationHub");
     }
 
@@ -523,7 +530,7 @@ export const useUserCommunicationHub = (
    * @param sdp - Session Description Protocol string
    */
   const sendAnswer = async (receiverId: string, sdp: string) => {
-    if (!connection || !isConnected) {
+    if (!connection || connection.state !== "Connected") {
       throw new Error("Not connected to CommunicationHub");
     }
 
@@ -542,7 +549,7 @@ export const useUserCommunicationHub = (
    * @param candidate - ICE candidate JSON string
    */
   const sendIceCandidate = async (receiverId: string, candidate: string) => {
-    if (!connection || !isConnected) {
+    if (!connection || connection.state !== "Connected") {
       throw new Error("Not connected to CommunicationHub");
     }
 
@@ -554,6 +561,14 @@ export const useUserCommunicationHub = (
       throw err;
     }
   };
+
+  // Debug: Log connection state before returning
+  console.log(
+    "[useCommunicationHub] Returning - connection:",
+    !!connection,
+    "state:",
+    connection?.state
+  );
 
   return {
     // Connection state
