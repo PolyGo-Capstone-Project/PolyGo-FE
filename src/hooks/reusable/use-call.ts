@@ -219,8 +219,23 @@ export const useCall = (options?: UseCallOptions) => {
   // Get local media stream
   const getLocalStream = useCallback(
     async (isVideoCall: boolean): Promise<MediaStream> => {
+      // Check if existing stream matches requirements
       if (localStreamRef.current) {
-        return localStreamRef.current;
+        const hasVideo = localStreamRef.current.getVideoTracks().length > 0;
+        const needsVideo = isVideoCall;
+
+        // If requirements match, reuse existing stream
+        if (hasVideo === needsVideo) {
+          console.log("[Media] ℹ️ Reusing existing stream");
+          return localStreamRef.current;
+        }
+
+        // Otherwise, stop old stream and create new one
+        console.log(
+          "[Media] 🔄 Stream requirements changed, creating new stream"
+        );
+        localStreamRef.current.getTracks().forEach((track) => track.stop());
+        localStreamRef.current = null;
       }
 
       try {
@@ -350,30 +365,13 @@ export const useCall = (options?: UseCallOptions) => {
         }
       };
 
-      // Perfect Negotiation (Only for caller)
+      // Disable automatic renegotiation to prevent m-line ordering issues
+      // We handle renegotiation explicitly (e.g., when toggling video)
       pc.onnegotiationneeded = async () => {
-        // Only caller should create and send offer
-        if (!isCallerRef.current) {
-          console.log("[PC] ⚠️ Skipping negotiation - we are receiver");
-          return;
-        }
-
-        try {
-          console.log(
-            "[PC] 🔄 Negotiation needed - creating offer (as caller)"
-          );
-          makingOfferRef.current = true;
-          await pc.setLocalDescription();
-
-          if (pc.localDescription) {
-            await communicationHub.sendOffer(peerId, pc.localDescription.sdp!);
-            console.log("[PC] ✓ Sent offer via negotiation (as caller)");
-          }
-        } catch (err) {
-          console.error("[PC] ✗ Negotiation error:", err);
-        } finally {
-          makingOfferRef.current = false;
-        }
+        console.log(
+          "[PC] ℹ️ Negotiation needed event fired - ignoring (we use explicit negotiation)"
+        );
+        // Do nothing - we handle renegotiation manually to avoid m-line issues
       };
 
       return pc;
@@ -390,11 +388,17 @@ export const useCall = (options?: UseCallOptions) => {
         // Get local stream
         const stream = await getLocalStream(isVideoCall);
 
-        // Create peer connection if not exists
-        if (!peerConnectionRef.current) {
-          peerConnectionRef.current = createPeerConnection(peerId);
+        // ALWAYS create a fresh peer connection for new calls
+        // This prevents m-line ordering issues from previous negotiations
+        if (peerConnectionRef.current) {
+          console.log(
+            "[WebRTC] ⚠️ Closing existing peer connection before creating new one"
+          );
+          peerConnectionRef.current.close();
+          peerConnectionRef.current = null;
         }
 
+        peerConnectionRef.current = createPeerConnection(peerId);
         const pc = peerConnectionRef.current;
 
         // Check if tracks are already added to avoid duplicate senders
@@ -419,7 +423,10 @@ export const useCall = (options?: UseCallOptions) => {
         if (isCallerRef.current) {
           console.log("[WebRTC] 📞 We are caller - creating offer now");
           try {
-            const offer = await pc.createOffer();
+            const offer = await pc.createOffer({
+              offerToReceiveAudio: true,
+              offerToReceiveVideo: isVideoCall,
+            });
             await pc.setLocalDescription(offer);
 
             if (pc.localDescription) {
@@ -431,6 +438,14 @@ export const useCall = (options?: UseCallOptions) => {
             }
           } catch (err) {
             console.error("[WebRTC] ✗ Failed to create/send offer:", err);
+            // Clean up and notify user
+            cleanupCall();
+            setCallState((prev) => ({
+              ...prev,
+              status: "failed",
+              peerId: null,
+            }));
+            throw err;
           }
         }
       } catch (error) {
@@ -770,27 +785,9 @@ export const useCall = (options?: UseCallOptions) => {
       if (videoTrack && callState.localVideoEnabled) {
         console.log("[Media] 🔴 Disabling video...");
 
-        // Stop video track
-        videoTrack.stop();
-        localStreamRef.current.removeTrack(videoTrack);
-
-        // Replace track with null (preserve sender/transceiver)
-        const senders = pc.getSenders();
-        const videoSender = senders.find((s) => s.track?.kind === "video");
-        if (videoSender) {
-          await videoSender.replaceTrack(null);
-          console.log("[PC] ✓ Replaced video track with null");
-
-          // Set transceiver direction to inactive
-          const transceivers = pc.getTransceivers();
-          const videoTransceiver = transceivers.find(
-            (t) => t.sender === videoSender
-          );
-          if (videoTransceiver) {
-            videoTransceiver.direction = "inactive";
-            console.log("[PC] ✓ Set video transceiver to inactive");
-          }
-        }
+        // Just disable the track without stopping or changing transceiver
+        // This avoids triggering renegotiation
+        videoTrack.enabled = false;
 
         setCallState((prev) => ({
           ...prev,
@@ -798,7 +795,7 @@ export const useCall = (options?: UseCallOptions) => {
         }));
 
         await communicationHub.toggleMedia(callState.localAudioEnabled, false);
-        console.log("[Media] ✓ Video disabled");
+        console.log("[Media] ✓ Video disabled (track disabled)");
         return false;
       }
 
@@ -806,39 +803,43 @@ export const useCall = (options?: UseCallOptions) => {
       if (!callState.localVideoEnabled) {
         console.log("[Media] 🟢 Enabling video...");
 
-        // Get new video track
-        const newVideoStream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: false,
-        });
-
-        const newVideoTrack = newVideoStream.getVideoTracks()[0];
-        if (!newVideoTrack) {
-          throw new Error("Failed to get video track");
-        }
-
-        // Add to stream
-        localStreamRef.current.addTrack(newVideoTrack);
-        console.log("[Media] ✓ Added video track to stream");
-
-        // Replace null track with new video
-        const senders = pc.getSenders();
-        const videoSender = senders.find(
-          (s) => s.track === null || s.track?.kind === "video"
-        );
-
-        if (videoSender) {
-          await videoSender.replaceTrack(newVideoTrack);
-          console.log("[PC] ✓ Replaced null with video track");
-
-          // Set transceiver direction to sendrecv
-          const transceivers = pc.getTransceivers();
-          const videoTransceiver = transceivers.find(
-            (t) => t.sender === videoSender
+        // If video track exists but is disabled, just enable it
+        if (videoTrack) {
+          videoTrack.enabled = true;
+          console.log("[Media] ✓ Video enabled (track enabled)");
+        } else {
+          // No video track exists (audio-only call), need to add video track
+          console.log(
+            "[Media] ℹ️ No video track found, acquiring new track..."
           );
-          if (videoTransceiver) {
-            videoTransceiver.direction = "sendrecv";
-            console.log("[PC] ✓ Set video transceiver to sendrecv");
+
+          const newVideoStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false,
+          });
+
+          const newVideoTrack = newVideoStream.getVideoTracks()[0];
+          if (!newVideoTrack) {
+            throw new Error("Failed to get video track");
+          }
+
+          // Add to stream
+          localStreamRef.current.addTrack(newVideoTrack);
+          console.log("[Media] ✓ Added video track to stream");
+
+          // Find video sender and replace track
+          const senders = pc.getSenders();
+          const videoSender = senders.find(
+            (s) => s.track === null || s.track?.kind === "video"
+          );
+
+          if (videoSender) {
+            await videoSender.replaceTrack(newVideoTrack);
+            console.log("[PC] ✓ Replaced with new video track");
+          } else {
+            // No sender exists, add track (should not happen normally)
+            pc.addTrack(newVideoTrack, localStreamRef.current);
+            console.log("[PC] ✓ Added new video sender");
           }
         }
 
