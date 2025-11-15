@@ -755,6 +755,27 @@ export function useWebRTC({
           );
 
           let pc = peerConnectionsRef.current.get(fromConnId);
+
+          // Perfect Negotiation: Handle collision
+          const isPolite = myConnectionIdRef.current < fromConnId;
+          const offerCollision = pc && pc.signalingState !== "stable";
+
+          if (offerCollision && pc) {
+            console.log(
+              `[PC] 🔄 Offer collision detected with ${fromConnId}, isPolite: ${isPolite}`
+            );
+
+            if (!isPolite) {
+              // Impolite peer ignores the incoming offer
+              console.log("[PC] 😤 I'm impolite, ignoring incoming offer");
+              return;
+            }
+
+            // Polite peer rollbacks
+            console.log("[PC] 👍 I'm polite, performing rollback");
+            await pc.setLocalDescription({ type: "rollback" });
+          }
+
           if (!pc) {
             pc = new RTCPeerConnection({
               iceServers: DEFAULT_ICE_SERVERS,
@@ -798,6 +819,9 @@ export function useWebRTC({
             answer.sdp
           );
           console.log("[SignalR] ✓ Sent Answer to", fromConnId);
+
+          // Mark as initiated to prevent re-offering
+          initiatedPeersRef.current.add(fromConnId);
         } catch (error) {
           console.error("[SignalR] ✗ ReceiveOffer error:", error);
         }
@@ -873,6 +897,16 @@ export function useWebRTC({
         }
       }
     );
+
+    hubConnection.on("ShowEndWarning", (message: string) => {
+      console.log("[SignalR] ⚠️ ShowEndWarning:", message);
+      // Show toast warning to user
+      import("sonner").then(({ toast }) => {
+        toast.warning(message || "The event will end soon!", {
+          duration: 15000,
+        });
+      });
+    });
 
     hubConnection.on("RoomEnded", () => {
       console.log("[SignalR] 🔴 RoomEnded - cleaning up");
@@ -1129,23 +1163,7 @@ export function useWebRTC({
           continue;
         }
 
-        // ✅ FIX: Perfect Negotiation - Only impolite peer creates offer
-        const isPolite = myConnectionId < remoteId;
-
-        if (isPolite) {
-          console.log(
-            "[WebRTC] 👍 I'm polite with",
-            remoteId,
-            "- waiting for their offer"
-          );
-          continue; // Polite peer waits for offer from impolite peer
-        }
-
-        console.log(
-          "[WebRTC] 😤 I'm impolite with",
-          remoteId,
-          "- creating offer"
-        );
+        console.log("[WebRTC] 🔄 Creating offer for", remoteId);
 
         try {
           const pc = await createPeerConnection(remoteId);
