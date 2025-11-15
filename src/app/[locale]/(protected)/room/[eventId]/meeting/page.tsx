@@ -88,6 +88,7 @@ export default function MeetingRoomPage() {
     eventId,
     userName: currentUser?.name || "Guest",
     isHost: isHost || false,
+    userId: currentUser?.id,
     onRoomEnded: () => {
       toast.error(tError("eventEnded"));
       removeSettingMediaFromLocalStorage();
@@ -410,6 +411,7 @@ export default function MeetingRoomPage() {
         onToggleChat={toggleChat}
         onToggleParticipants={toggleParticipants}
         onToggleSettings={toggleSettings}
+        onToggleTranscript={() => toast.info("Coming soon!")}
         onLeave={() => setShowLeaveDialog(true)}
         onStartEvent={handleStartEvent}
         onEndEvent={() => setShowEndEventDialog(true)}

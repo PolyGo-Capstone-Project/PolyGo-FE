@@ -82,7 +82,8 @@
     "copyMessage": "Failed to copy message. Please try again.",
     "KickedFromEvent": "You have been removed from the event.",
     "UserBanned": "You have been banned from the platform.",
-    "OnlyPlusUserCanCreateEvent": "Only Plus users can create events."
+    "OnlyPlusUserCanCreateEvent": "Only Plus users can create events.",
+    "CannotRateIfNotAttendedEvent": "You cannot rate an event you did not attend."
   },
   "header": {
     "products": "Products",

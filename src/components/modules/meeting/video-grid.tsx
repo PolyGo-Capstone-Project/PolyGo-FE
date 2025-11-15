@@ -127,10 +127,11 @@ export function VideoGrid({
       };
     }
 
+    // > 12 users - Need scroll with proper sizing
     return {
       containerClass:
-        "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 p-4",
-      itemClass: "w-full aspect-video min-h-[120px]",
+        "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 p-4 auto-rows-fr",
+      itemClass: "w-full h-full min-h-[140px] max-h-[calc(25vh-1.5rem)]",
     };
   }, [totalCount]);
 
@@ -161,13 +162,13 @@ export function VideoGrid({
           </div>
         </div>
 
-        {/* ATTENDEES SIDEBAR - Right side, scrollable */}
+        {/* ATTENDEES SIDEBAR - Right side, scrollable with max 12 attendees */}
         {attendees.length > 0 && (
-          <div className="w-full sm:w-64 md:w-72 lg:w-80 flex flex-col gap-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent">
-            {attendees.map((participant) => (
+          <div className="w-full sm:w-64 md:w-72 lg:w-80 flex flex-col gap-2 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent max-h-full">
+            {attendees.slice(0, 11).map((participant) => (
               <div
                 key={participant.id}
-                className="w-full aspect-video flex-shrink-0"
+                className="w-full aspect-video flex-shrink-0 min-h-[140px]"
               >
                 <VideoTile
                   name={participant.name}
@@ -182,6 +183,14 @@ export function VideoGrid({
                 />
               </div>
             ))}
+            {attendees.length > 11 && (
+              <div className="w-full aspect-video flex-shrink-0 min-h-[140px] flex items-center justify-center bg-secondary/50 rounded-lg border border-dashed">
+                <p className="text-sm text-muted-foreground text-center px-4">
+                  +{attendees.length - 11} more{" "}
+                  {attendees.length - 11 === 1 ? "participant" : "participants"}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>
