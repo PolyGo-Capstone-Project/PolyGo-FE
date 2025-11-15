@@ -237,6 +237,7 @@ export const KickParticipantBodySchema = z
     eventId: z.string(),
     userId: z.string(),
     reason: z.string(),
+    allowRejoin: z.boolean().default(true),
   })
   .strict();
 

@@ -7,6 +7,7 @@ import {
   EventRatingsQueryType,
   GetEventByIdQueryType,
   GetEventsQueryType,
+  KickParticipantBodyType,
   RegisterEventBodyType,
   SearchEventsQueryType,
   UpdateEventBodyType,
@@ -281,7 +282,7 @@ export const useKickParticipantMutation = (options?: {
 }) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: { eventId: string; userId: string; reason: string }) =>
+    mutationFn: (body: KickParticipantBodyType) =>
       eventApiRequest.kickParticipant(body),
     onSuccess: (data, variables, context) => {
       // kicking a participant affects event details and possibly participant lists

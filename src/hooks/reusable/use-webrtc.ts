@@ -25,6 +25,7 @@ interface UseWebRTCProps {
   eventId: string;
   userName: string;
   isHost: boolean;
+  userId?: string;
   onRoomEnded?: () => void;
 }
 
@@ -37,6 +38,7 @@ export function useWebRTC({
   eventId,
   userName,
   isHost,
+  userId,
   onRoomEnded,
 }: UseWebRTCProps) {
   const [isConnected, setIsConnected] = useState(false);
@@ -78,6 +80,9 @@ export function useWebRTC({
   // Refs cho callbacks to avoid closures
   const eventIdRef = useRef(eventId);
   const onRoomEndedRef = useRef(onRoomEnded);
+  const userNameRef = useRef(userName);
+  const isHostRef = useRef(isHost);
+  const userIdRef = useRef(userId);
 
   useEffect(() => {
     eventIdRef.current = eventId;
@@ -86,6 +91,18 @@ export function useWebRTC({
   useEffect(() => {
     onRoomEndedRef.current = onRoomEnded;
   }, [onRoomEnded]);
+
+  useEffect(() => {
+    userNameRef.current = userName;
+  }, [userName]);
+
+  useEffect(() => {
+    isHostRef.current = isHost;
+  }, [isHost]);
+
+  useEffect(() => {
+    userIdRef.current = userId;
+  }, [userId]);
 
   // ✅ FIX: Cleanup function để stop tất cả tracks
   const stopAllTracks = useCallback(() => {
@@ -647,6 +664,23 @@ export function useWebRTC({
       });
     });
 
+    hubConnection.on("AllHandsLowered", () => {
+      console.log("[SignalR] AllHandsLowered - lowering all hands");
+      setIsHandRaised(false); // Lower my own hand
+      setParticipants((prev) => {
+        const newMap = new Map(prev);
+        newMap.forEach((participant, id) => {
+          if (participant.isHandRaised) {
+            newMap.set(id, {
+              ...participant,
+              isHandRaised: false,
+            });
+          }
+        });
+        return newMap;
+      });
+    });
+
     // ✅ Host control handlers
     hubConnection.on("ToggleMicCommand", (enabled: boolean) => {
       console.log(`[SignalR] ToggleMicCommand: ${enabled}`);
@@ -866,6 +900,45 @@ export function useWebRTC({
       if (onRoomEndedRef.current) onRoomEndedRef.current();
     });
 
+    hubConnection.onreconnected(async (connectionId) => {
+      console.log("[SignalR] ✅ Reconnected with new ID:", connectionId);
+
+      // Re-join room with new connection ID
+      try {
+        await hubConnection.invoke(
+          "JoinRoom",
+          eventIdRef.current,
+          userNameRef.current,
+          isHostRef.current
+        );
+        console.log("[SignalR] ✓ Re-joined room after reconnection");
+
+        // Confirm join again if userId exists
+        if (userIdRef.current) {
+          try {
+            await hubConnection.invoke(
+              "JoinRoomConfirm",
+              eventIdRef.current,
+              userIdRef.current
+            );
+            console.log("[SignalR] ✓ Re-confirmed join after reconnection");
+          } catch (error) {
+            console.warn(
+              "[SignalR] ⚠️ JoinRoomConfirm failed after reconnection:",
+              error
+            );
+          }
+        }
+
+        setIsConnected(true);
+      } catch (error) {
+        console.error(
+          "[SignalR] ✗ Failed to rejoin after reconnection:",
+          error
+        );
+      }
+    });
+
     console.log("[SignalR] ✓ Connection handlers setup complete");
 
     return () => {
@@ -945,6 +1018,16 @@ export function useWebRTC({
         userName
       );
       hasJoinedRef.current = true;
+
+      // Confirm join to update user status to "Attended"
+      if (userId) {
+        try {
+          await conn.invoke("JoinRoomConfirm", eventIdRef.current, userId);
+          console.log("[SignalR] ✓ Join confirmed for user:", userId);
+        } catch (error) {
+          console.warn("[SignalR] ⚠️ JoinRoomConfirm failed:", error);
+        }
+      }
 
       try {
         const participantList = await conn.invoke<Record<string, string>>(
@@ -1343,18 +1426,13 @@ export function useWebRTC({
 
   // ✅ Lower all hands
   const lowerAllHands = useCallback(async () => {
-    // Since backend doesn't have a LowerAllHands method,
-    // we just update local state. Each client manages their own hand state.
-    setParticipants((prev) => {
-      const newMap = new Map(prev);
-      newMap.forEach((participant, id) => {
-        if (participant.isHandRaised) {
-          newMap.set(id, { ...participant, isHandRaised: false });
-        }
-      });
-      return newMap;
-    });
-    console.log("[SignalR] ✓ Lowered all hands (local state)");
+    if (!connectionRef.current) return;
+    try {
+      await connectionRef.current.invoke("LowerAllHands", eventIdRef.current);
+      console.log("[SignalR] ✓ Lowered all hands");
+    } catch (error) {
+      console.error("[SignalR] ✗ Failed to lower all hands:", error);
+    }
   }, []);
 
   // Toggle audio

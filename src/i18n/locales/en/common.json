@@ -79,7 +79,11 @@
     "failRemove": "Failed to remove friend. Please try again.",
     "failCancel": "Failed to cancel friend request. Please try again.",
     "conversationNotFound": "Conversation not found. Please try again.",
-    "copyMessage": "Failed to copy message. Please try again."
+    "copyMessage": "Failed to copy message. Please try again.",
+    "KickedFromEvent": "You have been removed from the event.",
+    "UserBanned": "You have been banned from the platform.",
+    "OnlyPlusUserCanCreateEvent": "Only Plus users can create events.",
+    "CannotRateIfNotAttendedEvent": "You cannot rate an event you did not attend."
   },
   "header": {
     "products": "Products",

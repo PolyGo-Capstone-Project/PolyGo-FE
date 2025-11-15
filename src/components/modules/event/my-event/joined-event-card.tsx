@@ -1,18 +1,6 @@
 "use client";
 
 import {
-  IconCalendar,
-  IconClock,
-  IconEye,
-  IconUserMinus,
-  IconUsers,
-} from "@tabler/icons-react";
-import { format } from "date-fns";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
-import { useState } from "react";
-
-import {
   Badge,
   Button,
   Card,
@@ -31,6 +19,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui";
 import { formatCurrency } from "@/lib";
+import {
+  IconCalendar,
+  IconClock,
+  IconEye,
+  IconUserMinus,
+  IconUsers,
+} from "@tabler/icons-react";
+import { format } from "date-fns";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { useState } from "react";
 
 type JoinedEventCardProps = {
   event: {
