@@ -519,19 +519,8 @@ export function useWebRTC({
                 return;
               }
 
-              // ✅ FIX: Perfect Negotiation - Only impolite peer creates offer
-              const isPolite = myConnectionIdRef.current < connId;
-
-              if (isPolite) {
-                console.log(
-                  "[WebRTC] 👍 I'm polite, waiting for offer from",
-                  connId
-                );
-                return; // Polite peer waits for offer
-              }
-
               console.log(
-                "[WebRTC] 😤 I'm impolite, creating offer for",
+                "[WebRTC] 🔄 Creating offer for late joiner:",
                 connId
               );
               const pc = await createPeerConnection(connId);
