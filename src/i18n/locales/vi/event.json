@@ -397,7 +397,8 @@
             "cancelButton": "Hủy",
             "kicking": "Đang xóa...",
             "success": "Đã xóa người tham gia thành công",
-            "error": "Không thể xóa người tham gia"
+            "error": "Không thể xóa người tham gia",
+            "allowRejoin": "Cho phép tham gia lại"
           },
           "noFeedback": "Chưa có phản hồi nào",
           "close": "Đóng"

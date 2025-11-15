@@ -26,6 +26,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  Checkbox,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -96,6 +97,7 @@ export function EventStatDialog({
   } | null>(null);
   const [showKickDialog, setShowKickDialog] = useState(false);
   const [kickReason, setKickReason] = useState("");
+  const [allowRejoin, setAllowRejoin] = useState(true);
 
   const { data, isLoading, error, refetch } = useGetEventStats(
     eventId || "",
@@ -107,10 +109,14 @@ export function EventStatDialog({
 
   const kickParticipantMutation = useKickParticipantMutation({
     onSuccess: () => {
-      showSuccessToast(t("kickDialog.success"), tSuccess);
+      showSuccessToast(
+        data?.payload.message || "Success.KickedFromEvent",
+        tSuccess
+      );
       setShowKickDialog(false);
       setSelectedParticipant(null);
       setKickReason("");
+      setAllowRejoin(true);
       refetch();
     },
     onError: (error) => {
@@ -129,6 +135,7 @@ export function EventStatDialog({
         eventId,
         userId: selectedParticipant.id,
         reason: kickReason,
+        allowRejoin,
       });
     }
   };
@@ -583,6 +590,21 @@ export function EventStatDialog({
                 className="resize-none"
               />
             </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="allowRejoin"
+                checked={allowRejoin}
+                onCheckedChange={(checked) =>
+                  setAllowRejoin(checked as boolean)
+                }
+              />
+              <Label
+                htmlFor="allowRejoin"
+                className="text-sm font-normal cursor-pointer"
+              >
+                {t("kickDialog.allowRejoin")}
+              </Label>
+            </div>
           </div>
           <DialogFooter>
             <Button
@@ -591,6 +613,7 @@ export function EventStatDialog({
                 setShowKickDialog(false);
                 setSelectedParticipant(null);
                 setKickReason("");
+                setAllowRejoin(true);
               }}
               disabled={kickParticipantMutation.isPending}
             >

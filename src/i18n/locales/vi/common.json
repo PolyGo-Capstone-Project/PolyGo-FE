@@ -79,7 +79,11 @@
     "failRemove": "Xóa bạn bè thất bại. Vui lòng thử lại.",
     "failCancel": "Hủy lời mời kết bạn thất bại. Vui lòng thử lại.",
     "conversationNotFound": "Không tìm thấy cuộc trò chuyện. Vui lòng thử lại.",
-    "copyMessage": "Sao chép tin nhắn thất bại. Vui lòng thử lại."
+    "copyMessage": "Sao chép tin nhắn thất bại. Vui lòng thử lại.",
+    "KickedFromEvent": "Bạn đã bị đuổi khỏi event!",
+    "UserBanned": "Bạn đã bị cấm khỏi nền tảng.",
+    "OnlyPlusUserCanCreateEvent": "Chỉ người dùng Plus mới có thể tạo sự kiện.",
+    "CannotRateIfNotAttendedEvent": "Bạn không thể đánh giá một sự kiện mà bạn không tham dự."
   },
   "header": {
     "products": "Sản phẩm",
