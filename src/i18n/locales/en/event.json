@@ -395,7 +395,8 @@
             "cancelButton": "Cancel",
             "kicking": "Removing...",
             "success": "Participant removed successfully",
-            "error": "Failed to remove participant"
+            "error": "Failed to remove participant",
+            "allowRejoin": "Allow rejoin"
           },
           "noFeedback": "No feedback yet",
           "close": "Close"
