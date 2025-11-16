@@ -10,6 +10,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
 
 import { useInterestsQuery } from "@/hooks";
+import Image from "next/image";
 
 /* style cho badge */
 const LEVEL_BADGE_STYLE: Record<"easy" | "medium" | "hard", string> = {
@@ -96,6 +97,15 @@ export default function CatDiff({
                       <Tag className="h-4 w-4" />
                     </span>
                     <span className="font-medium line-clamp-1">
+                      {c.iconUrl && (
+                        <Image
+                          src={c.iconUrl}
+                          alt={c.name}
+                          width={20}
+                          height={20}
+                          className="rounded object-cover flex-shrink-0"
+                        />
+                      )}
                       {t(`filters.wordset.category.${c.name}`, {
                         default: c.id,
                       })}

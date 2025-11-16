@@ -4,8 +4,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { useQueryClient } from "@tanstack/react-query";
-
 import { Progress } from "@/components/ui/progress";
 
 // Components
@@ -21,6 +19,7 @@ import {
   useStartWordsetGameMutation,
   useWordsetDetailQuery,
   useWordsetGameStateQuery,
+  useWordsetHintMutation, // 🆕 thêm hook hint
 } from "@/hooks";
 
 // --------- Helper shuffle chỉ dùng trong trang ----------
@@ -35,7 +34,7 @@ export default function PlayGamePage() {
   const params = useParams<{ id: string }>();
   const wordsetId = params?.id;
   const [hasActiveGame, setHasActiveGame] = useState(false);
-  const qc = useQueryClient();
+  const [isGameCompleted, setIsGameCompleted] = useState(false);
 
   // ===== Lấy meta (title/desc/lang/category/...) từ detail =====
   const { data: detailRes } = useWordsetDetailQuery({
@@ -49,7 +48,11 @@ export default function PlayGamePage() {
   const { data: interestsData } = useInterestsQuery({
     params: { pageNumber: 1, pageSize: 200, lang: locale },
   });
-  const interests = interestsData?.payload?.data?.items ?? [];
+  // const interests = interestsData?.payload?.data?.items ?? [];
+  const interests = useMemo(
+    () => interestsData?.payload?.data?.items ?? [],
+    [interestsData?.payload?.data?.items]
+  );
 
   const interestMap = useMemo(() => {
     const m = new Map<string, any>();
@@ -71,7 +74,10 @@ export default function PlayGamePage() {
   }, [detail?.interest, interestMap]);
 
   // ===== GAME STATE (lấy 1 lần làm baseline, KHÔNG polling) =====
-  const { data: gameStateRes } = useWordsetGameStateQuery(wordsetId, {
+  const {
+    data: gameStateRes,
+    refetch: refetchGameState, // 🆕 sẽ dùng khi bấm hint
+  } = useWordsetGameStateQuery(wordsetId, {
     enabled: Boolean(wordsetId && hasActiveGame),
     refetchInterval: false, // ⛔ không poll
     refetchOnWindowFocus: false, // ⛔ không refetch khi focus
@@ -87,6 +93,7 @@ export default function PlayGamePage() {
       setLetters(w.scrambledWord.split(""));
       setAnswer("");
       setHasActiveGame(true);
+      setIsGameCompleted(false);
       // Đồng bộ counters khởi tạo nếu server có
       if (typeof res.data.totalWords === "number")
         setTotalLocal(res.data.totalWords);
@@ -111,9 +118,15 @@ export default function PlayGamePage() {
 
       // ✅ Nếu đã hoàn tất, ngừng đồng hồ và chuyển leaderboard
       if (d.isCompleted) {
+        setIsGameCompleted(true);
         setRunning(false);
         setHasActiveGame(false);
         router.push(`/${locale}/game/${wordsetId}/leaderboard`);
+
+        setTimeout(() => {
+          router.push(`/${locale}/game/${wordsetId}/leaderboard`);
+        }, 400);
+
         return;
       }
 
@@ -126,6 +139,9 @@ export default function PlayGamePage() {
       // ❌ Nếu sai thì KHÔNG đổi thứ tự letters
     },
   });
+
+  // 🆕 Mutation cho Hint
+  const { mutate: hintMutation } = useWordsetHintMutation();
 
   // ===== local state hiển thị từ hiện tại + input =====
   const [currentWord, setCurrentWord] = useState<
@@ -238,16 +254,43 @@ export default function PlayGamePage() {
     }
   };
 
-  // Map dữ liệu cho PlayCard
+  // 🆕 handler khi user bấm Hint
+  const handleHint = () => {
+    if (!wordsetId || !currentWord) return;
+    hintMutation(
+      {
+        wordSetId: wordsetId,
+        body: { wordId: currentWord.id },
+      },
+      {
+        // Sau khi POST thành công -> gọi lại game-state để lấy hintsUsed mới
+        onSuccess: () => {
+          refetchGameState();
+        },
+      }
+    );
+  };
+
+  // Map dữ liệu cho PlayCard (lấy hint từ currentWord hoặc gameState.currentWord)
   const wordForUI =
     currentWord &&
-    ({
-      id: currentWord.id,
-      word: "", // không lộ đáp án
-      letters,
-      definition: currentWord.definition,
-      hint: currentWord.hint ?? undefined,
-    } as const);
+    ((): {
+      id: string;
+      word: string;
+      letters: string[];
+      definition: string;
+      hint?: string;
+    } => {
+      const hintFromGameState = gameState?.currentWord?.hint ?? undefined;
+
+      return {
+        id: currentWord.id,
+        word: "", // không lộ đáp án
+        letters,
+        definition: currentWord.definition,
+        hint: currentWord.hint ?? hintFromGameState ?? undefined,
+      };
+    })();
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-6 space-y-6">
@@ -287,7 +330,7 @@ export default function PlayGamePage() {
             default: "Unscramble this word:",
           })}
           tDefinition={t("play.definition", { default: "Definition:" })}
-          tHint={t("play.hint", { default: "Hint:" })}
+          tHint={t("play.hint", { default: "Hint" })} // dùng làm text nút Hint luôn
           tPlaceholder={t("play.typeHere", {
             default: "Type the word here...",
           })}
@@ -297,6 +340,8 @@ export default function PlayGamePage() {
           setAnswer={setAnswer}
           onSubmit={submit}
           onReshuffle={reshuffle}
+          onHint={handleHint} // 🆕 truyền xuống
+          isCompleted={isGameCompleted}
         />
       ) : (
         <div className="text-sm text-muted-foreground">

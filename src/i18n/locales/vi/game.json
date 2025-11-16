@@ -234,10 +234,12 @@
     "hints": "Gợi ý",
     "creator": "Được tạo bởi",
     "rating": "đánh giá",
-    "messageCreator": "Nhắn tin cho Người tạo",
+    "messageCreator": "Xem hồ sơ",
     "createdOn": "Tạo vào",
     "noRank": "Chưa có hạng",
-    "na": "N/A"
+    "na": "N/A",
+    "noBestYet": "Chưa có điểm tốt nhất",
+    "noPlayers": "Chưa có người chơi nào hoàn thành câu đố này."
   },
   "common": {
     "loading": "Đang tải...",

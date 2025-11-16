@@ -77,6 +77,7 @@ export default function LeaderboardPage() {
             creator={
               wd
                 ? {
+                    id: wd.creator?.id,
                     name: wd.creator?.name ?? "",
                     avatar: wd.creator?.avatarUrl ?? undefined,
                     createdAt: wd.createdAt,

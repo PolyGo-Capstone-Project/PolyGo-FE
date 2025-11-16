@@ -16,6 +16,8 @@ import {
   StartWordsetGameResType,
   UpdateWordsetBodyType,
   UpdateWordsetResType,
+  UseHintBodyType,
+  UseHintResType,
   WordsetGameStateResType,
   WordsetLeaderboardResponse,
 } from "@/models";
@@ -43,15 +45,7 @@ type UpdateWordsetStatusResponse = Awaited<
 
 // Admin – list (lọc theo status, languageIds, difficulty, category, lang, page…)
 export const useGetAdminWordsets = (
-  query: {
-    lang?: string;
-    status?: "Draft" | "Pending" | "Approved" | "Rejected";
-    languageIds?: string[];
-    difficulty?: "Easy" | "Medium" | "Hard";
-    category?: string;
-    pageNumber?: number;
-    pageSize?: number;
-  },
+  query: GetAdminWordsetsQueryType,
   options?: { enabled?: boolean }
 ) => {
   return useQuery<GetAdminWordsetsResponse>({
@@ -357,3 +351,33 @@ export const useWordsetGameStateQuery = (
     staleTime: options?.staleTime ?? 10_000,
     gcTime: options?.gcTime ?? 5 * 60_000,
   });
+
+/* ============ GAMEPLAY: HINT USAGE ============ */
+// [ADD] Use hint mutation
+export const useWordsetHintMutation = (options?: {
+  onSuccess?: (
+    data: UseHintResType,
+    vars: { wordSetId: string; body: UseHintBodyType }
+  ) => void;
+  onError?: (err: unknown) => void;
+}) => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      wordSetId,
+      body,
+    }: {
+      wordSetId: string;
+      body: UseHintBodyType;
+    }) => wordsetApiRequest.useHint(wordSetId, body),
+    onSuccess: (res, vars) => {
+      // sau khi bấm hint thì cập nhật lại game-state (vì có field hintsUsed)
+      qc.invalidateQueries({
+        queryKey: ["wordset", vars.wordSetId, "game-state"],
+      });
+
+      options?.onSuccess?.(res.payload, vars);
+    },
+    onError: options?.onError,
+  });
+};

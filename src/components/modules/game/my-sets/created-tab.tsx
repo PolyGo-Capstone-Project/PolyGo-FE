@@ -376,8 +376,13 @@ function EditWordsetDialog({
     params: { pageNumber: 1, pageSize: 200, lang: locale },
   });
 
-  const interests = interestsData?.payload?.data?.items ?? [];
+  // const interests = interestsData?.payload?.data?.items ?? [];
   const languages = languagesData?.payload?.data?.items ?? [];
+
+  const interests = useMemo(
+    () => interestsData?.payload?.data?.items ?? [],
+    [interestsData?.payload?.data?.items]
+  );
 
   // local form state
   const [title, setTitle] = useState("");
@@ -802,7 +807,13 @@ function ItemRow({
               className={LEVEL_BADGE_STYLE[toUiLevel(s.difficulty)]}
               variant="secondary"
             >
-              {toUiLevel(s.difficulty)}
+              {/* Áp dụng dịch cho độ khó */}
+              {t(
+                `filters.wordset.difficulty.${capitalize(toUiLevel(s.difficulty))}`,
+                {
+                  default: capitalize(toUiLevel(s.difficulty)),
+                }
+              )}
             </Badge>
           </div>
         </div>

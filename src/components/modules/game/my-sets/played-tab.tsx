@@ -85,7 +85,12 @@ export default function PlayedTab() {
     params: { pageNumber: 1, pageSize: 200, lang: locale },
   });
 
-  const interests = interestsData?.payload?.data?.items ?? [];
+  // const interests = interestsData?.payload?.data?.items ?? [];
+
+  const interests = useMemo(
+    () => interestsData?.payload?.data?.items ?? [],
+    [interestsData?.payload?.data?.items]
+  );
 
   const interestMap = useMemo(() => {
     const m = new Map<string, any>();
@@ -238,7 +243,13 @@ export default function PlayedTab() {
                         className={LEVEL_BADGE_STYLE[toUiLevel(it.difficulty)]}
                         variant="secondary"
                       >
-                        {toUiLevel(it.difficulty)}
+                        {/* Áp dụng dịch cho độ khó */}
+                        {t(
+                          `filters.wordset.difficulty.${capitalize(toUiLevel(it.difficulty))}`,
+                          {
+                            default: capitalize(toUiLevel(it.difficulty)),
+                          }
+                        )}
                       </Badge>
                       <Badge
                         variant="secondary"
@@ -330,4 +341,9 @@ function ListSkeleton() {
       ))}
     </div>
   );
+}
+
+/* ========== tiny util ========== */
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }

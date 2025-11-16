@@ -105,7 +105,11 @@ export default function ManageWordsets() {
   const { data: interestsData } = useInterestsQuery({
     params: { lang: locale, pageNumber: 1, pageSize: 200 },
   });
-  const interests = interestsData?.payload?.data?.items ?? [];
+  // const interests = interestsData?.payload?.data?.items ?? [];
+  const interests = useMemo(
+    () => interestsData?.payload?.data?.items ?? [],
+    [interestsData?.payload?.data?.items]
+  );
 
   const interestMap = useMemo(() => {
     const m = new Map<string, any>();
@@ -535,6 +539,7 @@ function WordsetDetailSheet({
   const locale = useLocale();
   const t = useTranslations("admin.wordsets.detail");
   const tStatus = useTranslations("admin.wordsets.status");
+  const tFilters = useTranslations("admin.filters");
 
   const { data, isLoading } = useWordsetDetailQuery({
     id,
@@ -559,7 +564,7 @@ function WordsetDetailSheet({
             ))}
           </div>
         ) : (
-          <div className="mt-6 space-y-4">
+          <div className="space-y-4 mx-4">
             <div>
               <div className="text-xl font-semibold">{ws.title}</div>
               <p className="text-sm text-muted-foreground mt-1">
@@ -573,8 +578,8 @@ function WordsetDetailSheet({
               </Badge>
               <Badge variant="secondary">{ws.interest?.name ?? "-"}</Badge>
               <Badge variant="outline">
-                {t(
-                  `filters.wordset.difficulty.${(
+                {tFilters(
+                  `wordset.difficulty.${(
                     ws.difficulty ?? "Medium"
                   ).toLowerCase()}`,
                   { default: ws.difficulty }
@@ -596,6 +601,7 @@ function WordsetDetailSheet({
                       <TableHead className="w-12">#</TableHead>
                       <TableHead>{t("word")}</TableHead>
                       <TableHead>{t("definition")}</TableHead>
+                      <TableHead>{t("pronunciation")}</TableHead>
                       <TableHead className="hidden sm:table-cell">
                         {t("hint")}
                       </TableHead>
@@ -607,6 +613,7 @@ function WordsetDetailSheet({
                         <TableCell>{i + 1}</TableCell>
                         <TableCell className="font-medium">{w.word}</TableCell>
                         <TableCell>{w.definition}</TableCell>
+                        <TableCell>{w.pronunciation}</TableCell>
                         <TableCell className="hidden sm:table-cell">
                           {w.hint ?? "—"}
                         </TableCell>

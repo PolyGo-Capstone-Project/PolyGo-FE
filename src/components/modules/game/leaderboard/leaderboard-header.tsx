@@ -14,6 +14,8 @@ type Summary = {
   level: "easy" | "medium" | "hard";
 };
 
+type UiDifficulty = "easy" | "medium" | "hard";
+
 export default function LeaderboardHeader({
   summary,
   loading,
@@ -24,6 +26,17 @@ export default function LeaderboardHeader({
   const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
+
+  function toUiLevel(d?: string): UiDifficulty {
+    switch ((d || "").toLowerCase()) {
+      case "easy":
+        return "easy";
+      case "hard":
+        return "hard";
+      default:
+        return "medium";
+    }
+  }
 
   const data = summary;
 
@@ -45,7 +58,13 @@ export default function LeaderboardHeader({
               <Badge variant="secondary">{data.languageLabel}</Badge>
               <Badge variant="outline">{data.category}</Badge>
               <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
-                {data.level}
+                {/* Áp dụng dịch cho độ khó */}
+                {t(
+                  `filters.wordset.difficulty.${capitalize(toUiLevel(data.level))}`,
+                  {
+                    default: capitalize(toUiLevel(data.level)),
+                  }
+                )}
               </Badge>
             </div>
           </>
@@ -64,4 +83,9 @@ export default function LeaderboardHeader({
       </Button>
     </div>
   );
+}
+
+/* ========== tiny util ========== */
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }

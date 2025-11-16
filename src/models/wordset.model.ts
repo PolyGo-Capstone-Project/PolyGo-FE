@@ -243,6 +243,7 @@ export const AdminWordsetListItemSchema = z.object({
 // Query: giống user + thêm status
 export const GetAdminWordsetsQuerySchema = PaginationLangQuerySchema.merge(
   z.object({
+    name: z.string().max(200).optional(),
     status: z.enum(WordsetStatus).optional(),
     languageIds: z.array(z.string()).optional(),
     difficulty: z.enum(WordsetDifficulty).optional(),
@@ -414,6 +415,20 @@ export const WordsetGameStateResSchema = z.object({
   message: z.string(),
 });
 
+// [ADD] ==== GAMEPLAY: Hint usage (POST /wordsets/:id/hint) ====
+export const UseHintBodySchema = z.object({
+  wordId: z.string(),
+});
+
+export const UseHintDataSchema = z.object({
+  wordId: z.string(),
+  totalHintsUsed: z.number().int(),
+});
+
+export const UseHintResSchema = z.object({
+  data: UseHintDataSchema,
+  message: z.string(),
+});
 /* ====== Types ====== */
 //List game cho user
 export type WordsetListItemType = z.infer<typeof WordsetListItemSchema>;
@@ -480,3 +495,6 @@ export type StartWordsetGameResType = z.infer<typeof StartWordsetGameResSchema>;
 export type PlayWordsetBodyType = z.infer<typeof PlayWordsetBodySchema>;
 export type PlayWordsetResType = z.infer<typeof PlayWordsetResSchema>;
 export type WordsetGameStateResType = z.infer<typeof WordsetGameStateResSchema>;
+// [ADD] Hint usage
+export type UseHintBodyType = z.infer<typeof UseHintBodySchema>;
+export type UseHintResType = z.infer<typeof UseHintResSchema>;

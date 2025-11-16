@@ -231,10 +231,12 @@
     "hints": "Hints",
     "creator": "Created By",
     "rating": "rating",
-    "messageCreator": "Message Creator",
+    "messageCreator": "View Profile",
     "createdOn": "Created On",
     "noRank": "No Rank",
-    "na": "N/A"
+    "na": "N/A",
+    "noBestYet": "No best score yet",
+    "noPlayers": "No players have completed this puzzle yet."
   },
   "common": {
     "loading": "Loading...",
