@@ -35,10 +35,10 @@ import {
   TransactionEnumType,
   TransactionStatusType,
 } from "@/constants/transaction.constant";
-import { TransactionListItemType } from "@/models";
+import { UserTransactionItemType } from "@/models";
 
 interface TransactionHistoryProps {
-  transactions: TransactionListItemType[];
+  transactions: UserTransactionItemType[];
   currentPage: number;
   totalPages: number;
   totalItems: number;
@@ -89,7 +89,7 @@ export function TransactionHistory({
     if (filter !== "all") {
       const typeMap: Record<string, TransactionEnumType[]> = {
         deposits: ["Deposit"],
-        purchases: ["Purchase", "Gift", "AutoRenew"],
+        purchases: ["Purchase", "AutoRenew"],
         withdrawals: ["Withdraw"],
         refunds: ["Refund"],
         adjustments: ["Adjustment"],
@@ -122,7 +122,7 @@ export function TransactionHistory({
     }
   };
 
-  const exportToCSV = (data: TransactionListItemType[]) => {
+  const exportToCSV = (data: UserTransactionItemType[]) => {
     const headers = ["Date", "Description", "Type", "Amount", "Status"];
     const rows = data.map((t) => [
       formatDate(t.createdAt),
@@ -142,7 +142,7 @@ export function TransactionHistory({
     link.click();
   };
 
-  const exportToExcel = (data: TransactionListItemType[]) => {
+  const exportToExcel = (data: UserTransactionItemType[]) => {
     const headers = ["Date", "Description", "Type", "Amount", "Status"];
     const rows = data.map((t) => [
       formatDate(t.createdAt),
@@ -168,7 +168,7 @@ export function TransactionHistory({
         "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
       Pending:
         "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300",
-      Failed: "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300",
+      Expired: "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300",
       Cancelled:
         "bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300",
     };
@@ -180,7 +180,6 @@ export function TransactionHistory({
       Deposit: "text-green-600",
       Purchase: "text-red-600",
       Withdraw: "text-orange-600",
-      Gift: "text-purple-600",
       Refund: "text-blue-600",
       Adjustment: "text-gray-600",
       AutoRenew: "text-indigo-600",
@@ -190,7 +189,7 @@ export function TransactionHistory({
 
   return (
     <Card className="shadow-sm">
-      <CardHeader className="pb-3 md:pb-6">
+      <CardHeader>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between md:gap-4">
           <CardTitle className="text-lg md:text-xl">{t("title")}</CardTitle>
           <div className="flex flex-wrap gap-2">
