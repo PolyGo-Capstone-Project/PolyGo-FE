@@ -1,6 +1,11 @@
 import z from "zod";
 
-import { FriendStatus, Gender, PlanTypeEnum } from "@/constants";
+import {
+  FriendStatus,
+  Gender,
+  GiftVisibilityEnum,
+  PlanTypeEnum,
+} from "@/constants";
 import { BadgeListItemSchema } from "@/models/badge.model";
 import {
   LangQuerySchema,
@@ -106,6 +111,13 @@ export const GiftItem = GiftListItemSchema.pick({
   name: true,
   quantity: true,
   iconUrl: true,
+}).extend({
+  senderName: z.string().max(100),
+  senderAvatarUrl: z.string().nullable(),
+  message: z.string().max(500).optional(),
+  isAnonymous: z.boolean().default(false),
+  createdAt: z.iso.datetime(),
+  status: z.enum(GiftVisibilityEnum).default(GiftVisibilityEnum.Visible),
 });
 
 // User item with languages and interests (used in matching and profile view)

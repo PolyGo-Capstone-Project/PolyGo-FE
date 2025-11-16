@@ -1,6 +1,6 @@
 import z from "zod";
 
-import { PaymentMethod } from "@/constants";
+import { GiftVisibilityEnum, PaymentMethod } from "@/constants";
 import {
   LangQuerySchema,
   PaginationLangQuerySchema,
@@ -152,6 +152,7 @@ const GetMyReceivedGiftItemSchema = z.object({
   isAnonymous: z.boolean().default(false),
   createdAt: z.iso.datetime(),
   isRead: z.boolean().default(false),
+  status: z.enum(GiftVisibilityEnum).default(GiftVisibilityEnum.Visible),
 });
 
 export const GetMySentGiftsResSchema = z.object({
@@ -169,6 +170,12 @@ export const GetMyReceivedGiftsResSchema = z.object({
   }),
   message: z.string(),
 });
+
+export const GiftVisibilityBodySchema = z
+  .object({
+    status: z.enum(GiftVisibilityEnum).default(GiftVisibilityEnum.Visible),
+  })
+  .strict();
 
 //types
 export type GiftType = z.infer<typeof GiftSchema>;
@@ -206,3 +213,4 @@ export type GetMySentGiftsResType = z.infer<typeof GetMySentGiftsResSchema>;
 export type GetMyReceivedGiftsResType = z.infer<
   typeof GetMyReceivedGiftsResSchema
 >;
+export type GiftVisibilityBodyType = z.infer<typeof GiftVisibilityBodySchema>;

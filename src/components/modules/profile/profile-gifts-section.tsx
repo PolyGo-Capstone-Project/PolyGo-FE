@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GiftVisibilityEnum, GiftVisibilityEnumType } from "@/constants";
 import Image from "next/image";
 
 type Gift = {
@@ -17,8 +18,9 @@ type Gift = {
     avatarUrl: string | null;
   };
   message?: string;
-  receivedAt: string;
+  createdAt: string;
   iconUrl?: string;
+  status: GiftVisibilityEnumType;
 };
 
 type ProfileGiftsSectionProps = {
@@ -30,6 +32,11 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
   const tEmpty = useTranslations("profile");
   const tTime = useTranslations("profile");
   const tGifts = useTranslations("profile");
+
+  // Filter out hidden gifts
+  const visibleGifts = gifts.filter(
+    (gift) => gift.status !== GiftVisibilityEnum.Hidden
+  );
 
   // Calculate time ago
   const getTimeAgo = (dateString: string) => {
@@ -46,7 +53,7 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
     return `${Math.floor(diffInDays / 30)}${tTime("timeAgo.monthsAgo")}`;
   };
 
-  if (gifts.length === 0) {
+  if (visibleGifts.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -72,13 +79,13 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
           <IconGift className="h-5 w-5" />
           {t("sections.gifts")}
           <Badge variant="secondary" className="ml-auto">
-            {gifts.length}
+            {visibleGifts.length}
           </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
-          {gifts.map((gift) => (
+          {visibleGifts.map((gift) => (
             <div
               key={gift.id}
               className="flex items-start gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
@@ -121,7 +128,7 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
                       </Badge>
                     )}
                     <span className="text-xs text-muted-foreground">
-                      {getTimeAgo(gift.receivedAt)}
+                      {getTimeAgo(gift.createdAt)}
                     </span>
                   </div>
                 </div>

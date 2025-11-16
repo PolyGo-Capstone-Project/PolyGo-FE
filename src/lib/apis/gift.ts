@@ -10,6 +10,7 @@ import {
   GetMyPurchasedGiftsResType,
   GetMyReceivedGiftsResType,
   GetMySentGiftsResType,
+  GiftVisibilityBodyType,
   MessageResType,
   PresentGiftBodyType,
   PurchaseGiftBodyType,
@@ -52,11 +53,9 @@ const giftApiRequest = {
   myReceivedGifts: createGetAll<GetMyReceivedGiftsResType, GetGiftsQueryType>(
     `${prefix}/received`
   ),
-  // accept/reject gift
-  acceptGift: (id: string) =>
-    http.put<MessageResType>(`${prefix}/received/${id}/accept`, null),
-  rejectGift: (id: string) =>
-    http.put<MessageResType>(`${prefix}/received/${id}/reject`, null),
+  // visibility
+  updateVisibility: (id: string, body: GiftVisibilityBodyType) =>
+    http.put<MessageResType>(`${prefix}/presentations/${id}/visibility`, body),
 };
 
 export default giftApiRequest;
