@@ -112,7 +112,7 @@
       "status": {
         "Completed": "Completed",
         "Pending": "Pending",
-        "Failed": "Failed",
+        "Expired": "Expired",
         "Cancelled": "Cancelled"
       },
       "empty": "No transactions found",
@@ -121,7 +121,39 @@
     "toast": {
       "exportSuccess": "Exported successfully",
       "exportError": "Failed to export",
-      "comingSoon": "This feature is coming soon"
+      "comingSoon": "This feature is coming soon",
+      "depositError": "Failed to process deposit. Please try again.",
+      "cancelPaymentError": "Failed to cancel payment"
+    },
+    "deposit": {
+      "title": "Deposit Money",
+      "description": "Enter the amount you want to deposit into your wallet",
+      "amountLabel": "Amount",
+      "amountPlaceholder": "Enter amount (VND)",
+      "amountHint": "Minimum: 2,000 VND - Maximum: 5,000,000 VND",
+      "cancel": "Cancel",
+      "confirm": "Confirm Deposit",
+      "processing": "Processing...",
+      "validation": {
+        "required": "Please enter an amount",
+        "min": "Minimum deposit is 2,000 VND",
+        "max": "Maximum deposit is 5,000,000 VND"
+      }
+    },
+    "payment": {
+      "success": {
+        "title": "Payment Successful!",
+        "description": "Your deposit has been processed successfully. The amount will be added to your wallet shortly.",
+        "redirectInfo": "You will be redirected to your wallet in 5 seconds...",
+        "backToWallet": "Back to Wallet"
+      },
+      "fail": {
+        "title": "Payment Failed",
+        "description": "Your payment was cancelled or failed to process.",
+        "reasonInfo": "If you cancelled the payment, you can try again anytime. If there was an error, please contact support.",
+        "tryAgain": "Try Again",
+        "backToWallet": "Back to Wallet"
+      }
     }
   }
 }

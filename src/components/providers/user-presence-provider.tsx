@@ -8,7 +8,7 @@ import {
   IncomingCallData,
   MediaStateUpdate,
 } from "@/hooks/reusable/use-communication-hub";
-import { UserStatusChangedType } from "@/models/presence.model";
+import { UserStatusChangedType } from "@/models";
 import { HubConnection } from "@microsoft/signalr";
 import {
   createContext,
