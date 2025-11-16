@@ -219,7 +219,7 @@ export default function ProfilePage() {
                 merit={user.merit}
                 streakDays={user.streakDays}
                 longestStreakDays={user.longestStreakDays}
-                bannedStreakDays={user.bannedStreakDays}
+                nextUnbannedAt={user.nextUnbannedAt}
               />
               {/* Stats */}
               <ProfileStats
@@ -319,7 +319,7 @@ export default function ProfilePage() {
                 merit={user.merit}
                 streakDays={user.streakDays}
                 longestStreakDays={user.longestStreakDays}
-                bannedStreakDays={user.bannedStreakDays}
+                nextUnbannedAt={user.nextUnbannedAt}
               />
             </div>
           </div>

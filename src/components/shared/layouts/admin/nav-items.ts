@@ -2,6 +2,7 @@ import {
   IconAward,
   IconCalendarEvent,
   IconCreditCard,
+  IconCreditCardPay,
   IconDeviceNintendo,
   IconFlag2Off,
   IconGift,
@@ -91,6 +92,11 @@ const buildNavItems = (locale: string, t: TranslateFn): NavConfig => {
         title: t("events"),
         url: `/${locale}/manage/events`,
         icon: IconCalendarEvent,
+      },
+      {
+        title: t("transactions"),
+        url: `/${locale}/manage/transactions`,
+        icon: IconCreditCardPay,
       },
       {
         title: t("games"),

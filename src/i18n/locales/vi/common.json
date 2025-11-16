@@ -153,7 +153,8 @@
     "subscriptions": "Quản lý đăng ký",
     "events": "Quản lý sự kiện",
     "games": "Quản lý trò chơi",
-    "reports": "Quản lý báo cáo"
+    "reports": "Quản lý báo cáo",
+    "transactions": "Quản lý giao dịch"
   },
   "pagination": {
     "showing": "Hiển thị",

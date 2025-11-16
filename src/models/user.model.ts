@@ -20,6 +20,7 @@ export const UserSchema = z.object({
   id: z.string(),
   mail: z.email().nonempty().max(100),
   name: z.string().min(1).max(100),
+  role: z.enum(["User", "Admin"]).default("User"),
   password: z.string().min(6).max(100).nonempty(),
   avatarUrl: z.string().nullable(),
   merit: z.number().min(0).max(100),
@@ -30,14 +31,15 @@ export const UserSchema = z.object({
   totp: z.string().nullable(),
   streakDays: z.number().min(0).default(0),
   longestStreakDays: z.number().min(0).default(0),
-  bannedStreakDays: z.number().min(0).default(0),
   isNew: z.boolean().default(true),
   introduction: z.string().max(500).nullable(),
   balance: z.number().min(0).default(0),
   isOnline: z.boolean().default(false),
-  deletedAt: z.iso.datetime().nullable(),
+  withdrawTimes: z.number().min(0).default(0),
   createdAt: z.iso.datetime(),
   lastLoginAt: z.iso.datetime(),
+  nextUnbannedAt: z.iso.datetime().nullable(),
+  nextWithdrawResetAt: z.iso.datetime().nullable(),
 });
 
 // =================== for your self

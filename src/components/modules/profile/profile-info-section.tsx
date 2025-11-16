@@ -28,7 +28,7 @@ type ProfileInfoSectionProps = {
   merit: number;
   streakDays: number;
   longestStreakDays: number;
-  bannedStreakDays: number;
+  nextUnbannedAt: string | null;
 };
 
 export function ProfileInfoSection({
@@ -36,15 +36,23 @@ export function ProfileInfoSection({
   merit,
   streakDays,
   longestStreakDays,
-  bannedStreakDays,
+  nextUnbannedAt,
 }: ProfileInfoSectionProps) {
   const t = useTranslations("profile");
   const tXp = useTranslations("profile");
   const tStreak = useTranslations("profile.streak");
   const tMerit = useTranslations("profile.merit");
 
+  // Calculate days until unbanned
+  const daysUntilUnbanned = nextUnbannedAt
+    ? Math.ceil(
+        (new Date(nextUnbannedAt).getTime() - new Date().getTime()) /
+          (1000 * 60 * 60 * 24)
+      )
+    : 0;
+
   // If user is banned, only show banned streak warning
-  if (bannedStreakDays > 0) {
+  if (nextUnbannedAt && daysUntilUnbanned > 0) {
     return (
       <Card>
         <CardHeader>
@@ -94,10 +102,10 @@ export function ProfileInfoSection({
               {/* Number display */}
               <div className="flex items-baseline gap-2">
                 <p className="text-5xl font-black text-red-600 dark:text-red-400">
-                  {bannedStreakDays}
+                  {daysUntilUnbanned}
                 </p>
                 <p className="text-lg font-bold text-red-600/70 dark:text-red-400/70">
-                  {bannedStreakDays > 1 ? tStreak("days") : tStreak("day")}
+                  {daysUntilUnbanned > 1 ? tStreak("days") : tStreak("day")}
                 </p>
               </div>
 
