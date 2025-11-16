@@ -44,12 +44,13 @@ import {
 
 import {
   useDeleteWordsetMutation,
+  useInterestsQuery,
   useLanguagesQuery,
   useMyCreatedWordsetsQuery,
   useUpdateWordsetMutation,
   useWordsetDetailQuery,
 } from "@/hooks";
-import { WordsetCategory, WordsetDifficulty } from "@/models";
+import { WordsetDifficulty } from "@/models";
 
 /* ==================== Local helpers ==================== */
 type UiDifficulty = "easy" | "medium" | "hard";
@@ -87,6 +88,20 @@ export default function CreatedTab() {
     pageNumber: 1,
     pageSize: 50,
   });
+
+  // master interests
+  const { data: interestsData } = useInterestsQuery({
+    params: { pageNumber: 1, pageSize: 200, lang: locale },
+  });
+  const interests = interestsData?.payload?.data?.items ?? [];
+
+  const interestMap = useMemo(() => {
+    const m = new Map<string, any>();
+    interests.forEach((it: any) => {
+      if (it?.id) m.set(it.id, it);
+    });
+    return m;
+  }, [interests]);
 
   // unwrap items
   // const items = data?.data?.items ?? [];
@@ -198,6 +213,7 @@ export default function CreatedTab() {
                 routerPush={router.push}
                 data={s}
                 status="approved"
+                categoryLabel={interestMap.get(s.category)?.name ?? s.category}
                 onEdit={() => openEditDialog(s.id)}
                 onDelete={() => openDeleteDialog(s.id, s.title)} // <-- NEW
               />
@@ -233,6 +249,7 @@ export default function CreatedTab() {
                 routerPush={router.push}
                 data={s}
                 status="pending"
+                categoryLabel={interestMap.get(s.category)?.name ?? s.category}
                 onEdit={() => openEditDialog(s.id)}
                 onDelete={() => openDeleteDialog(s.id, s.title)} // <-- NEW
               />
@@ -354,15 +371,19 @@ function EditWordsetDialog({
   const { data: languagesData } = useLanguagesQuery({
     params: { pageNumber: 1, pageSize: 200, lang: locale },
   });
+
+  const { data: interestsData } = useInterestsQuery({
+    params: { pageNumber: 1, pageSize: 200, lang: locale },
+  });
+
+  const interests = interestsData?.payload?.data?.items ?? [];
   const languages = languagesData?.payload?.data?.items ?? [];
 
   // local form state
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [languageId, setLanguageId] = useState<string>("");
-  const [category, setCategory] = useState<string>(
-    Object.values(WordsetCategory)[0]
-  );
+  const [category, setCategory] = useState<string>("");
   const [difficulty, setDifficulty] =
     useState<keyof typeof WordsetDifficulty>("EASY");
   const [words, setWords] = useState<
@@ -382,7 +403,7 @@ function EditWordsetDialog({
     setTitle(detail.title || "");
     setDesc(detail.description || "");
     setLanguageId(detail.language?.id || detail.language?.code || "");
-    setCategory(detail.category || Object.values(WordsetCategory)[0]);
+    setCategory(detail.interest?.id || "");
 
     const d = (
       detail.difficulty || "Medium"
@@ -449,9 +470,6 @@ function EditWordsetDialog({
     t(`filters.wordset.difficulty.${capitalize(k.toLowerCase())}`, {
       default: capitalize(k.toLowerCase()),
     });
-
-  const catLabel = (c: string) =>
-    t(`filters.wordset.category.${c}`, { default: c });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -521,9 +539,9 @@ function EditWordsetDialog({
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.values(WordsetCategory).map((c) => (
-                    <SelectItem key={c} value={c}>
-                      {catLabel(c)}
+                  {interests.map((i: any) => (
+                    <SelectItem key={i.id} value={i.id}>
+                      {i.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -724,6 +742,7 @@ function ItemRow({
   routerPush,
   onEdit,
   onDelete,
+  categoryLabel,
 }: {
   data: {
     id: string;
@@ -731,11 +750,15 @@ function ItemRow({
     description?: string | null;
     status: string;
     difficulty: string;
-    category: string;
     estimatedTimeInMinutes: number;
     wordCount: number;
     totalPlays?: number;
     playCount?: number;
+    interest?: {
+      id: string;
+      name: string;
+      iconUrl?: string | null;
+    };
   };
   status: "approved" | "pending";
   locale: string;
@@ -743,6 +766,7 @@ function ItemRow({
   routerPush: (href: string) => void;
   onEdit: () => void;
   onDelete: () => void; // <-- NEW
+  categoryLabel: string;
 }) {
   const plays = s.totalPlays ?? s.playCount ?? 0;
 
@@ -771,7 +795,9 @@ function ItemRow({
           </div>
 
           <div className="mt-3 flex flex-wrap gap-2">
-            <Badge variant="outline">{s.category}</Badge>
+            <Badge variant="outline">
+              {categoryLabel ?? s.interest?.name ?? "-"}
+            </Badge>
             <Badge
               className={LEVEL_BADGE_STYLE[toUiLevel(s.difficulty)]}
               variant="secondary"

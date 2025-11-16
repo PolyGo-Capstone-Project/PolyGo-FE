@@ -66,6 +66,19 @@
       "apply": "Áp dụng",
       "reset": "Đặt lại"
     },
+    "wordsets": {
+      "detail": {
+        "filters": {
+          "wordset": {
+            "difficulty": {
+              "easy": "Dễ",
+              "medium": "Trung bình",
+              "hard": "Khó"
+            }
+          }
+        }
+      }
+    },
     "status": {
       "active": "Hoạt động",
       "inactive": "Không hoạt động",

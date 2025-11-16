@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguagesQuery } from "@/hooks";
-import { BookOpen, Languages } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
 
 export default function BasicInfo({
   title,
@@ -83,8 +84,17 @@ export default function BasicInfo({
                       : "bg-background hover:bg-accent",
                   ].join(" ")}
                 >
-                  <div className="flex items-center gap-2">
-                    <Languages className="h-4 w-4" />
+                  <div className="flex items-center gap-2 min-w-0">
+                    {lang.iconUrl && (
+                      <Image
+                        src={lang.iconUrl}
+                        alt={lang.name}
+                        width={20}
+                        height={20}
+                        className="rounded object-cover flex-shrink-0"
+                      />
+                    )}
+
                     <span className="font-medium line-clamp-1">
                       {lang.name}
                     </span>

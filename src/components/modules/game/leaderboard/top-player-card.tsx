@@ -156,7 +156,9 @@ export default function TopPlayersCard({
 
             <div className="flex items-center gap-4">
               <div className="text-sm hidden sm:flex gap-3 text-muted-foreground">
-                <span>☆ {row.score}</span>
+                <span className="font-bold text-1xl text-yellow-500">
+                  ☆ {row.score}
+                </span>
                 <span>Ⓧ {row.mistakes}</span>
                 <span>💡 {row.hints}</span>
               </div>

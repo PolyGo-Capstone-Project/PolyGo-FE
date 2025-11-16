@@ -4,10 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { WordsetCategory, WordsetDifficulty } from "@/models";
+import { WordsetDifficulty } from "@/models";
 import { Tag } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
+
+import { useInterestsQuery } from "@/hooks";
 
 /* style cho badge */
 const LEVEL_BADGE_STYLE: Record<"easy" | "medium" | "hard", string> = {
@@ -26,7 +28,7 @@ const estimateMinutes = (vocabCount: number, difficulty: WordsetDifficulty) => {
 };
 
 export default function CatDiff({
-  category,
+  categoryId,
   onCategoryChange,
   difficulty,
   onDifficultyChange,
@@ -36,8 +38,8 @@ export default function CatDiff({
   onEstimatedMinChange,
   vocabCount,
 }: {
-  category: WordsetCategory | null;
-  onCategoryChange: (c: WordsetCategory) => void;
+  categoryId: string | null;
+  onCategoryChange: (c: string) => void;
   difficulty: WordsetDifficulty;
   onDifficultyChange: (d: WordsetDifficulty) => void;
   autoEstimate: boolean;
@@ -47,13 +49,18 @@ export default function CatDiff({
   vocabCount: number;
 }) {
   const t = useTranslations();
+  const locale = useLocale();
 
   const computedMin = useMemo(
     () => estimateMinutes(vocabCount, difficulty),
     [vocabCount, difficulty]
   );
 
-  const categories = Object.values(WordsetCategory);
+  const { data: response } = useInterestsQuery({
+    params: { pageNumber: 1, pageSize: 200, lang: locale },
+  });
+
+  const interests = response?.payload?.data?.items ?? [];
   const difficulties = Object.values(WordsetDifficulty);
 
   return (
@@ -69,13 +76,13 @@ export default function CatDiff({
         <div className="space-y-2">
           <Label>{t("create.catDiff.category")} *</Label>
           <div className="grid grid-cols-2 xs:grid-cols-3 gap-2">
-            {categories.map((c) => {
-              const active = category === c;
+            {interests.map((c) => {
+              const active = categoryId === c.id;
               return (
                 <button
-                  key={c}
+                  key={c.id}
                   type="button"
-                  onClick={() => onCategoryChange(c)}
+                  onClick={() => onCategoryChange(c.id)}
                   className={[
                     "rounded-md border p-3 text-left transition-colors",
                     "focus:outline-none focus:ring-2 focus:ring-primary/40",
@@ -89,7 +96,9 @@ export default function CatDiff({
                       <Tag className="h-4 w-4" />
                     </span>
                     <span className="font-medium line-clamp-1">
-                      {t(`filters.wordset.category.${c}`, { default: c })}
+                      {t(`filters.wordset.category.${c.name}`, {
+                        default: c.id,
+                      })}
                     </span>
                   </div>
                   {/* có thể thêm hint i18n nếu muốn */}

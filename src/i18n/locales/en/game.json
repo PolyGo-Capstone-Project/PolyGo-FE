@@ -42,11 +42,23 @@
         "Food": "Food",
         "Travel": "Travel",
         "Business": "Business",
-        "Tech": "Technology",
+        "Technology": "Technology",
         "Culture": "Culture",
         "Daily": "Daily",
         "Education": "Education",
-        "Health": "Health"
+        "Health": "Health",
+        "Cooking": "Cooking",
+        "Sports": "Sports",
+        "Relaxing": "Relaxing",
+        "Reading": "Reading",
+        "Gaming": "Gaming",
+        "Art": "Art",
+        "Music": "Music",
+        "Traveling": "Traveling",
+        "Photography": "Photography",
+        "Movies": "Movies",
+        "Fashion": "Fashion",
+        "Dancing": "Dancing"
       }
     }
   },

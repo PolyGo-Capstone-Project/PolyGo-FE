@@ -7,7 +7,6 @@ import WordPuzzleHeader from "@/components/modules/game/word-puzzle-header";
 import { useWordsetsQuery } from "@/hooks";
 import {
   GetWordsetsQueryType,
-  WordsetCategory,
   WordsetDifficulty,
   WordsetListItemType,
 } from "@/models";
@@ -35,7 +34,7 @@ const adaptWordsetToCard = (it: WordsetListItemType) => ({
   language: it.language?.code ?? "",
   languageLabel: it.language?.name ?? "",
   level: toCardLevel(it.difficulty),
-  category: it.category ?? "",
+  category: it.interest?.name ?? "",
   wordCount: it.wordCount ?? 0,
   estTimeMin: it.estimatedTimeInMinutes ?? 0,
   plays: it.playCount ?? 0,
@@ -54,7 +53,7 @@ export default function GameContent() {
   const [levelFilter, setLevelFilter] = useState<"all" | WordsetDifficulty>(
     "all"
   );
-  const [catFilter, setCatFilter] = useState<"all" | WordsetCategory>("all");
+  const [catFilter, setCatFilter] = useState<string>("all");
 
   const params: GetWordsetsQueryType = useMemo(
     () => ({
@@ -62,7 +61,7 @@ export default function GameContent() {
       name: q || undefined,
       languageIds: langFilter !== "all" ? [langFilter] : undefined,
       difficulty: levelFilter === "all" ? undefined : levelFilter,
-      category: catFilter === "all" ? undefined : catFilter,
+      interestIds: catFilter !== "all" ? [catFilter] : undefined,
       pageNumber: 1,
       pageSize: 30,
     }),

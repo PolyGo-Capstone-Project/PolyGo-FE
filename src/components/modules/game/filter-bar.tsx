@@ -8,8 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useLanguagesQuery } from "@/hooks";
-import { WordsetCategory, WordsetDifficulty } from "@/models";
+import { useInterestsQuery, useLanguagesQuery } from "@/hooks";
+import { WordsetDifficulty } from "@/models";
 import { useLocale, useTranslations } from "next-intl";
 
 type FiltersBarProps = {
@@ -19,8 +19,8 @@ type FiltersBarProps = {
   onLang: (v: string) => void;
   level: "all" | WordsetDifficulty;
   onLevel: (v: "all" | WordsetDifficulty) => void;
-  cat: "all" | WordsetCategory;
-  onCat: (v: "all" | WordsetCategory) => void;
+  cat: string; // giống lang
+  onCat: (v: string) => void; // giống onLang
 };
 
 export default function FiltersBar({
@@ -39,10 +39,14 @@ export default function FiltersBar({
   const { data: languagesData } = useLanguagesQuery({
     params: { pageNumber: 1, pageSize: 200, lang: locale },
   });
+  const { data: interestsData } = useInterestsQuery({
+    params: { pageNumber: 1, pageSize: 200, lang: locale },
+  });
+
   const languages = languagesData?.payload?.data?.items ?? [];
+  const interests = interestsData?.payload?.data?.items ?? [];
 
   const difficulties = Object.values(WordsetDifficulty);
-  const categories = Object.values(WordsetCategory);
 
   return (
     <div className="rounded-lg border bg-card p-3 md:p-4 flex flex-col gap-3">
@@ -93,8 +97,8 @@ export default function FiltersBar({
           </SelectContent>
         </Select>
 
-        {/* Category */}
-        <Select value={cat} onValueChange={(v) => onCat(v as any)}>
+        {/* Category -> dùng Interests, giống pattern languages */}
+        <Select value={cat} onValueChange={onCat}>
           <SelectTrigger className="w-full md:w-44 shadow-sm">
             <SelectValue placeholder={t("category", { default: "Category" })} />
           </SelectTrigger>
@@ -102,9 +106,9 @@ export default function FiltersBar({
             <SelectItem value="all">
               {t("allCategories", { default: "All" })}
             </SelectItem>
-            {categories.map((c) => (
-              <SelectItem key={c} value={c}>
-                {t(`wordset.category.${c}`, { default: c })}
+            {interests.map((i: any) => (
+              <SelectItem key={i.id} value={i.id}>
+                {i.name}
               </SelectItem>
             ))}
           </SelectContent>

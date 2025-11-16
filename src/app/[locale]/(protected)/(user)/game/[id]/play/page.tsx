@@ -16,6 +16,7 @@ import StatsRow from "@/components/modules/game/play/stat-row";
 
 // ✅ hooks API
 import {
+  useInterestsQuery,
   usePlayWordsetMutation,
   useStartWordsetGameMutation,
   useWordsetDetailQuery,
@@ -43,6 +44,31 @@ export default function PlayGamePage() {
     enabled: Boolean(wordsetId),
   });
   const detail = detailRes?.data;
+
+  // ===== Master interests để map category (id) -> tên =====
+  const { data: interestsData } = useInterestsQuery({
+    params: { pageNumber: 1, pageSize: 200, lang: locale },
+  });
+  const interests = interestsData?.payload?.data?.items ?? [];
+
+  const interestMap = useMemo(() => {
+    const m = new Map<string, any>();
+    interests.forEach((it: any) => {
+      if (it?.id) m.set(it.id, it);
+    });
+    return m;
+  }, [interests]);
+
+  const interestLabel = useMemo(() => {
+    if (!detail?.interest) return "";
+
+    const id = detail.interest.id;
+    const fallbackName = detail.interest.name ?? "";
+
+    if (!id) return fallbackName;
+
+    return interestMap.get(id)?.name ?? fallbackName;
+  }, [detail?.interest, interestMap]);
 
   // ===== GAME STATE (lấy 1 lần làm baseline, KHÔNG polling) =====
   const { data: gameStateRes } = useWordsetGameStateQuery(wordsetId, {
@@ -86,7 +112,7 @@ export default function PlayGamePage() {
       // ✅ Nếu đã hoàn tất, ngừng đồng hồ và chuyển leaderboard
       if (d.isCompleted) {
         setRunning(false);
-        setHasActiveGame(false); // nếu bạn dùng flag này
+        setHasActiveGame(false);
         router.push(`/${locale}/game/${wordsetId}/leaderboard`);
         return;
       }
@@ -98,10 +124,6 @@ export default function PlayGamePage() {
         setAnswer("");
       }
       // ❌ Nếu sai thì KHÔNG đổi thứ tự letters
-      else if (!d.isCorrect) {
-        // Có thể chọn giữ nguyên hoặc clear input:
-        // setAnswer("");
-      }
     },
   });
 
@@ -210,7 +232,6 @@ export default function PlayGamePage() {
         wordId: currentWord.id,
         answer: answer.trim(),
       });
-      // true => flash xanh, false => flash đỏ
       return Boolean(res.payload?.data?.isCorrect);
     } catch {
       return false;
@@ -237,7 +258,7 @@ export default function PlayGamePage() {
           t("play.description", { default: "Solve the vocabulary puzzle." })
         }
         languageLabel={detail?.language?.name ?? ""}
-        category={detail?.category ?? ""}
+        category={interestLabel}
         onQuit={() => setQuitOpen(true)}
       />
 
@@ -248,7 +269,6 @@ export default function PlayGamePage() {
         progressValue={`${completed}/${total || 0}`}
         mistakesLabel={t("play.mistakes", { default: "Mistakes" })}
         mistakesValue={mistakes}
-        // Hints đã bật mặc định trong component
         hintsLabel={t("play.hintsUsed", { default: "Hints" })}
         hintsValue={hintsUsed}
       />
@@ -279,7 +299,6 @@ export default function PlayGamePage() {
           onReshuffle={reshuffle}
         />
       ) : (
-        // Trạng thái chưa có currentWord (đang start)
         <div className="text-sm text-muted-foreground">
           {t("play.loading", { default: "Preparing your game..." })}
         </div>

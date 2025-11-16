@@ -5,28 +5,13 @@ import CatDiff from "@/components/modules/game/create-set/categories-difficult";
 import CreateHeader from "@/components/modules/game/create-set/create-header";
 import SubmitPanel from "@/components/modules/game/create-set/submit-panel";
 import WordsEditor from "@/components/modules/game/create-set/word-editor";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
-import { CheckCircle2, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import { useCreateWordsetMutation } from "@/hooks"; // tạo như đã hướng dẫn
-import {
-  CreateWordsetBodyType,
-  WordsetCategory,
-  WordsetDifficulty,
-} from "@/models";
+import { useCreateWordsetMutation } from "@/hooks";
+import { CreateWordsetBodyType, WordsetDifficulty } from "@/models";
 
 /* ===== helpers ===== */
 const estimateMinutes = (vocabCount: number, difficulty: WordsetDifficulty) => {
@@ -58,7 +43,7 @@ export default function CreateWordPuzzleSetPage() {
   const [languageId, setLanguageId] = useState<string | null>(null);
 
   // CatDiff -> enum-driven
-  const [category, setCategory] = useState<WordsetCategory | null>(null);
+  const [categoryId, setCategoryId] = useState<string | null>(null);
   const [difficulty, setDifficulty] = useState<WordsetDifficulty>("Easy");
 
   const [autoEstimate, setAutoEstimate] = useState(true);
@@ -86,14 +71,13 @@ export default function CreateWordPuzzleSetPage() {
     title.trim() &&
       description.trim() &&
       languageId &&
-      category &&
+      categoryId &&
       minWordsOk &&
       allWordsValid
   );
 
   // post api
   const createWordsetMutation = useCreateWordsetMutation();
-  const [openDialog, setOpenDialog] = useState(false);
 
   const handleSubmit = async () => {
     if (!canSubmit || createWordsetMutation.isPending) return;
@@ -102,8 +86,8 @@ export default function CreateWordPuzzleSetPage() {
       title: title.trim(),
       description: description.trim(),
       languageId: languageId as string,
-      category: category as WordsetCategory, // enum value: "Food", ...
-      difficulty: difficulty as WordsetDifficulty, // enum value: "Easy" | "Medium" | "Hard"
+      interestId: categoryId as string,
+      difficulty: difficulty as WordsetDifficulty, // "Easy" | "Medium" | "Hard"
       words: vocabs.map((v) => ({
         word: v.word.trim(),
         definition: v.definition.trim(),
@@ -117,7 +101,11 @@ export default function CreateWordPuzzleSetPage() {
       const res = await createWordsetMutation.mutateAsync(payload);
       const msg = res?.payload?.message || t("create.success.toast");
       toast.success(msg);
-      setOpenDialog(true);
+
+      // ✅ Submit xong push về trang game
+      router.push(`/${locale}/game`);
+      // nếu bạn muốn về "My sets" thì đổi thành:
+      // router.push(`/${locale}/game/my-sets`);
     } catch (err: any) {
       const msg =
         err?.payload?.message ||
@@ -141,8 +129,8 @@ export default function CreateWordPuzzleSetPage() {
       />
 
       <CatDiff
-        category={category}
-        onCategoryChange={setCategory}
+        categoryId={categoryId}
+        onCategoryChange={setCategoryId}
         difficulty={difficulty}
         onDifficultyChange={setDifficulty}
         autoEstimate={autoEstimate}
@@ -165,37 +153,6 @@ export default function CreateWordPuzzleSetPage() {
         onBack={() => router.back()}
         onSubmit={handleSubmit}
       />
-
-      {/* Success Dialog */}
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>{t("create.success.title")}</DialogTitle>
-            <DialogDescription>{t("create.success.desc")}</DialogDescription>
-          </DialogHeader>
-          <Separator />
-          <div className="text-sm text-muted-foreground space-y-1">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-              {t("create.success.status")}
-            </div>
-            <div>{t("create.success.eta")}</div>
-          </div>
-          <DialogFooter className="flex gap-2 sm:gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setOpenDialog(false)}
-              className="gap-2"
-            >
-              <X className="h-4 w-4" />
-              {t("create.success.close")}
-            </Button>
-            <Button onClick={() => router.push(`/${locale}/game/my-sets`)}>
-              {t("create.success.goto")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

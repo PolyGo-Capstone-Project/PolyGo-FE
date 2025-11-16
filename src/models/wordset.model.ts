@@ -45,13 +45,19 @@ const CreatorLiteSchema = z.object({
   avatarUrl: z.string().optional().nullable(),
 });
 
+const InterestLiteSchema = z.object({
+  id: z.string(),
+  iconUrl: z.string(),
+  name: z.string(),
+});
+
 export const WordsetListItemSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string().optional().nullable(),
   status: z.enum(WordsetStatus),
   difficulty: z.enum(WordsetDifficulty),
-  category: z.string(),
+  interest: InterestLiteSchema.optional(),
   estimatedTimeInMinutes: z.number().int(),
   playCount: z.number().int(),
   averageTimeInSeconds: z.number().int(),
@@ -73,7 +79,7 @@ export const GetWordsetsQuerySchema = PaginationLangQuerySchema.merge(
     name: z.string().max(200).optional(),
     languageIds: z.array(z.string()).optional(),
     difficulty: z.enum(WordsetDifficulty).optional(),
-    category: z.string().optional(),
+    interestIds: z.array(z.string()).optional(),
   })
 );
 
@@ -101,7 +107,7 @@ export const CreateWordsetBodySchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   languageId: z.string(),
-  category: z.enum(WordsetCategory),
+  interestId: z.string(),
   difficulty: z.enum(WordsetDifficulty),
   words: z.array(WordItemSchema).min(1),
 });
@@ -149,7 +155,7 @@ export const WordsetDetailSchema = z.object({
   description: z.string().optional().nullable(),
   status: z.enum(WordsetStatus),
   difficulty: z.enum(WordsetDifficulty),
-  category: z.string(),
+  interest: InterestLiteSchema.optional(),
   estimatedTimeInMinutes: z.number().int(),
   playCount: z.number().int(),
   averageTimeInSeconds: z.number().int(),

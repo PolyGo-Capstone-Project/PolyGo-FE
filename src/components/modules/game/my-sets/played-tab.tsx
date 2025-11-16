@@ -20,6 +20,7 @@ import {
   Trophy,
 } from "lucide-react";
 
+import { useInterestsQuery } from "@/hooks";
 import { useMyPlayedWordsetsQuery } from "@/hooks/query/use-wordset";
 
 /* ==================== Helpers ==================== */
@@ -78,6 +79,21 @@ export default function PlayedTab() {
     pageNumber: 1,
     pageSize: 50,
   });
+
+  // Lấy master interests
+  const { data: interestsData } = useInterestsQuery({
+    params: { pageNumber: 1, pageSize: 200, lang: locale },
+  });
+
+  const interests = interestsData?.payload?.data?.items ?? [];
+
+  const interestMap = useMemo(() => {
+    const m = new Map<string, any>();
+    interests.forEach((it: any) => {
+      if (it?.id) m.set(it.id, it);
+    });
+    return m;
+  }, [interests]);
 
   const memoItems = useMemo(() => data?.data?.items ?? [], [data?.data?.items]);
   const totalItems = data?.data?.totalItems ?? memoItems.length;
@@ -194,7 +210,8 @@ export default function PlayedTab() {
                         <CalendarClock className="h-4 w-4" />
                         {t("played.lastPlayed", {
                           default: "Last played",
-                        })}: {timeAgo(it.lastPlayed)}
+                        })}
+                        : {timeAgo(it.lastPlayed)}
                       </div>
                       <div className="flex items-center gap-1">
                         <Trophy className="h-4 w-4" />
@@ -209,7 +226,14 @@ export default function PlayedTab() {
                     </div>
 
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <Badge variant="outline">{it.category}</Badge>
+                      <Badge variant="outline">
+                        {(() => {
+                          const interest = interestMap.get(
+                            it.interestId ?? it.interest?.id ?? ""
+                          );
+                          return interest?.name ?? it.category ?? "-";
+                        })()}
+                      </Badge>
                       <Badge
                         className={LEVEL_BADGE_STYLE[toUiLevel(it.difficulty)]}
                         variant="secondary"
