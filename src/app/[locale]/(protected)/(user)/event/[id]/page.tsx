@@ -7,10 +7,8 @@ import {
   IconCheck,
   IconClock,
   IconCoin,
-  IconEdit,
   IconLoader2,
   IconMapPin,
-  IconStar,
   IconUsers,
   IconVideo,
 } from "@tabler/icons-react";
@@ -20,7 +18,11 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { RegistrationSuccessDialog } from "@/components/modules/event/registration-success-dialog";
+import {
+  EventAllRatingsSection,
+  EventYourRatingSection,
+  RegistrationSuccessDialog,
+} from "@/components/modules/event";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,11 +49,6 @@ import {
   DialogTitle,
   Input,
   Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   Separator,
   Textarea,
 } from "@/components/ui";
@@ -61,7 +58,6 @@ import {
   useGetEventById,
   useGetEventRatings,
   useGetMyEventRating,
-  useMyPurchasedGiftsQuery,
   useRegisterEventMutation,
   useTransactionBalanceQuery,
   useUpdateEventRatingMutation,
@@ -82,16 +78,10 @@ export default function EventDetailPage() {
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-
-  // NEW: state form rating
   const [isEditingRating, setIsEditingRating] = useState(false);
   const [ratingValue, setRatingValue] = useState<number>(0);
   const [commentValue, setCommentValue] = useState<string>("");
-
-  // +++ State mới
   const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
-  const [giftId, setGiftId] = useState<string>("");
-  const [giftQuantity, setGiftQuantity] = useState<number>(1);
 
   const { data, isLoading, error } = useGetEventById(eventId, { lang: locale });
   const { data: balanceData } = useTransactionBalanceQuery();
@@ -103,30 +93,21 @@ export default function EventDetailPage() {
     onError: (err) => handleErrorApi({ error: err, tError }),
   });
 
-  // Khởi tạo mutation mới
   const createRatingMutation = useCreateEventRatingMutation({
     onSuccess: () => setIsEditingRating(false),
     onError: (err) => handleErrorApi({ error: err, tError }),
   });
 
-  // +++ Fetch danh sách quà đã mua & derive
-  const { data: purchasedGiftsData } = useMyPurchasedGiftsQuery({
-    params: { lang: locale, pageNumber: 1, pageSize: 100 },
-  });
-  const purchasedGifts = purchasedGiftsData?.payload?.data?.items || [];
-  const selectedGift = purchasedGifts.find((g: any) => g.id === giftId);
-  const maxQuantity = selectedGift?.quantity || 0;
-
   const event = data?.payload?.data;
   const balance = balanceData?.payload?.data?.balance ?? 0;
   const currentUser = userData?.payload?.data;
 
-  const isValidBannerUrl = (url: string | null) => {
+  const isValidBannerUrl = (url: string | null | undefined) => {
     if (!url) return false;
     return url.startsWith("http://") || url.startsWith("https://");
   };
 
-  const isValidAvatarUrl = (url: string | null) => {
+  const isValidAvatarUrl = (url: string | null | undefined) => {
     if (!url) return false;
     return url.startsWith("http://") || url.startsWith("https://");
   };
@@ -202,13 +183,11 @@ export default function EventDetailPage() {
     }
   };
 
-  // NEW: fetch đánh giá của chính người dùng cho sự kiện (chỉ khi Completed & đã từng tham dự/host)
   const { data: myRatingResp, isLoading: isLoadingMyRating } =
     useGetMyEventRating(eventId, {
       enabled: Boolean(eventEnd && isRegistered && !isHost),
     });
 
-  // Chuẩn hoá dữ liệu trả về (theo http wrapper hiện tại .payload?.data)
   const myRating = myRatingResp?.payload?.data;
 
   useEffect(() => {
@@ -221,7 +200,6 @@ export default function EventDetailPage() {
     }
   }, [myRating?.hasRating, myRating?.rating, myRating?.comment]);
 
-  // NEW: danh sách đánh giá của tất cả người dùng cho sự kiện
   const { data: eventRatingsResp, isLoading: isLoadingEventRatings } =
     useGetEventRatings(
       eventId,
@@ -259,22 +237,12 @@ export default function EventDetailPage() {
     </div>
   );
 
-  // !!! Cập nhật handleSubmitRating để gửi kèm giftId/giftQuantity (nếu có)
   const handleSubmitRating = async () => {
     try {
       const basePayload = {
         eventId,
         rating: ratingValue,
         comment: commentValue?.trim() || null,
-        ...(giftId
-          ? {
-              giftId,
-              giftQuantity: Math.max(
-                1,
-                Math.min(giftQuantity || 1, maxQuantity || 1)
-              ),
-            }
-          : {}),
       };
 
       if (myRating?.hasRating) {
@@ -286,9 +254,7 @@ export default function EventDetailPage() {
     } catch {}
   };
 
-  const ratingItems =
-    eventRatingsResp?.payload?.data
-      ?.items /* nếu wrapper là .data thì đổi lại */ ?? [];
+  const allRatingItems = eventRatingsResp?.payload?.data?.items ?? [];
 
   if (isLoading) {
     return (
@@ -628,130 +594,24 @@ export default function EventDetailPage() {
 
         {/* Your Rating */}
         {eventEnd && isRegistered && !isHost && (
-          <Card className="shadow-lg mt-8">
-            <CardHeader className="flex justify-center">
-              <CardTitle className="flex items-center gap-2 font-bold text-3xl">
-                {/* <IconStar className="h-5 w-5 text-yellow-500" /> */}
-                {myRating?.hasRating
-                  ? t("ratings.yourRatingTitle")
-                  : t("ratings.rateThisEvent")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {isLoadingMyRating ? (
-                <div className="flex items-center justify-center gap-2 py-8">
-                  <IconLoader2 className="h-4 w-4 animate-spin text-primary" />
-                </div>
-              ) : myRating?.hasRating ? (
-                <div className="space-y-4">
-                  <div className="bg-muted/30 rounded-lg p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        {renderStars(myRating.rating)}
-                        {/* <span className="text-sm font-medium">
-                          {myRating.rating}/5
-                        </span> */}
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        {myRating.createdAt
-                          ? format(new Date(myRating.createdAt), "PPP")
-                          : ""}
-                      </span>
-                    </div>
-                    {/* <Separator /> */}
-                    {myRating.comment ? (
-                      <p className="text-sm text-foreground leading-relaxed">
-                        {myRating.comment}
-                      </p>
-                    ) : (
-                      <p className="text-sm text-muted-foreground italic">
-                        {t("noComment")}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex justify-end">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setIsRatingDialogOpen(true)}
-                      className="gap-2"
-                    >
-                      <IconEdit className="h-4 w-4" />
-                      {t("ratings.editRatingButton")}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-8 space-y-4">
-                  <div className="flex justify-center">
-                    <IconStar className="h-12 w-12 text-muted-foreground/30" />
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-base font-medium">
-                      {t("ratings.noRatingYet")}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {t("ratings.shareYourThoughts")}
-                    </p>
-                  </div>
-                  <Button
-                    className="w-min"
-                    onClick={() => setIsRatingDialogOpen(true)}
-                  >
-                    {t("ratings.rateButton")}
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <EventYourRatingSection
+            isLoadingMyRating={isLoadingMyRating}
+            myRating={myRating}
+            currentUser={currentUser}
+            onOpenRatingDialog={() => setIsRatingDialogOpen(true)}
+            renderStars={renderStars}
+            isValidAvatarUrl={isValidAvatarUrl}
+          />
         )}
 
         {/* All ratings list */}
         {eventEnd && (
-          <Card className="shadow-lg mt-4">
-            <CardHeader className="flex justify-center">
-              <CardTitle className="text-center font-bold text-3xl">
-                {t("ratings.allRatingsTitle")}
-              </CardTitle>
-            </CardHeader>
-
-            <CardContent className="space-y-4">
-              {isLoadingEventRatings ? (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <IconLoader2 className="h-4 w-4 animate-spin" />
-                </div>
-              ) : ratingItems.length === 0 ? (
-                <p className="text-lg text-muted-foreground flex items-center justify-center gap-2">
-                  <IconStar className="h-5 w-5 text-yellow-500" />
-                  {t("ratings.noRatingsFound")}
-                </p>
-              ) : (
-                <div className="space-y-4">
-                  {ratingItems.map((r: any) => (
-                    <div key={r.id} className="space-y-2">
-                      <div className="flex items-center gap-3">
-                        {renderStars(r.rating)}
-                        <span className="text-xs text-muted-foreground">
-                          {r.createdAt
-                            ? format(new Date(r.createdAt), "PPP")
-                            : ""}
-                        </span>
-                      </div>
-                      {r.comment ? (
-                        <p className="text-sm text-foreground">{r.comment}</p>
-                      ) : (
-                        <p className="text-sm text-muted-foreground italic">
-                          {t("noCommentAll")}
-                        </p>
-                      )}
-                      <Separator />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <EventAllRatingsSection
+            isLoadingEventRatings={isLoadingEventRatings}
+            allRatingItems={allRatingItems}
+            renderStars={renderStars}
+            isValidAvatarUrl={isValidAvatarUrl}
+          />
         )}
       </div>
 
@@ -869,78 +729,6 @@ export default function EventDetailPage() {
                 rows={4}
               />
             </div>
-
-            {/* Gift dropdown / Mua quà */}
-            {purchasedGifts.length > 0 ? (
-              <div className="space-y-1">
-                <div className="space-y-1">
-                  <Label>{t("ratings.giftSelectLabel")}</Label>
-                  <Select
-                    value={giftId}
-                    onValueChange={(v) => {
-                      setGiftId(v);
-                      setGiftQuantity(1);
-                    }}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue
-                        placeholder={t("ratings.giftSelectPlaceholder")}
-                      />
-                    </SelectTrigger>
-                    <SelectContent
-                      position="popper"
-                      className="w-[var(--radix-select-trigger-width)] max-h-80"
-                    >
-                      {purchasedGifts.map((gift: any) => (
-                        <SelectItem
-                          key={gift.id}
-                          value={gift.id}
-                          className="whitespace-normal break-words py-2"
-                        >
-                          {gift.name} ({t("ratings.available")} {gift.quantity})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {giftId && (
-                  <div className="space-y-1">
-                    <Label htmlFor="gift-qty">
-                      {t("ratings.giftQuantityLabel")}
-                    </Label>
-                    <Input
-                      id="gift-qty"
-                      type="number"
-                      min={1}
-                      max={maxQuantity || 1}
-                      value={giftQuantity}
-                      onChange={(e) => setGiftQuantity(Number(e.target.value))}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      {t("ratings.giftQuantityHelper", {
-                        max: maxQuantity || 1,
-                      })}
-                    </p>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  {t("ratings.noGifts")}
-                </p>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    router.push(`/${locale}/gifts`);
-                    setIsRatingDialogOpen(false);
-                  }}
-                >
-                  {t("ratings.buyMore")}
-                </Button>
-              </div>
-            )}
           </div>
 
           <DialogFooter className="mt-4">
@@ -959,8 +747,7 @@ export default function EventDetailPage() {
               disabled={
                 ratingValue < 1 ||
                 updateRatingMutation.isPending ||
-                createRatingMutation.isPending ||
-                (Boolean(giftId) && (!giftQuantity || giftQuantity < 1))
+                createRatingMutation.isPending
               }
             >
               {updateRatingMutation.isPending || createRatingMutation.isPending

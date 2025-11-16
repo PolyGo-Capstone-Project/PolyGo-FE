@@ -270,6 +270,8 @@
         "yourRatingTitle": "Your Rating",
         "allRatingsTitle": "Ratings from Participants",
         "loading": "Loading ratings...",
+        "loadingYourRating": "Loading your rating...",
+        "loadingReviews": "Loading reviews...",
         "noComment": "You have not left a comment yet.",
         "noRatingYet": "No rating yet.",
         "editRatingButton": "Edit Rating",
@@ -288,10 +290,25 @@
         "available": "available",
         "giftQuantityLabel": "Gift quantity",
         "giftQuantityHelper": "Max: {max} available",
-        "noGifts": "You don’t have any gifts.",
+        "noGifts": "You don't have any gifts.",
         "buyMore": "Buy gifts",
         "shareYourThoughts": "Share your thoughts about this event",
-        "rateThisEvent": "Rate this event"
+        "rateThisEvent": "Rate this event",
+        "filter": {
+          "all": "All",
+          "reviewCount": "{count} review",
+          "reviewCount_plural": "{count} reviews",
+          "reviewsTotal": "{count} review total",
+          "reviewsTotal_plural": "{count} reviews total",
+          "reviewsWith": "{count} review with {stars} star",
+          "reviewsWith_plural": "{count} reviews with {stars} stars",
+          "noStarReviews": "No {stars}-star reviews yet",
+          "tryDifferentFilter": "Try selecting a different rating filter",
+          "clearFilter": "Clear filter",
+          "beFirstToShare": "Be the first to share your thoughts about this event!"
+        },
+        "insufficientFunds": "Insufficient Balance",
+        "yourBalance": "Your Balance"
       }
     },
     "myEvent": {
