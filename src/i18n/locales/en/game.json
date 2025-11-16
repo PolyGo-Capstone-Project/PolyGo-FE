@@ -7,6 +7,8 @@
     "areYouNew": "Are you a new player?",
     "howToPlay": "How to Play Word Puzzle",
     "rules": "Rules:",
+    "noResultsTitle": "No Results Found",
+    "noResultsDesc": "Try different search terms",
     "rule": {
       "chooseSet": "Choose a question set by your favorite topic",
       "scramble": "Words will be scrambled randomly (e.g. \"apple\" → \"p/a/l/p/e\")",

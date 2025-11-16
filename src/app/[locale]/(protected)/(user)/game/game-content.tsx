@@ -10,7 +10,8 @@ import {
   WordsetDifficulty,
   WordsetListItemType,
 } from "@/models";
-import { useLocale } from "next-intl";
+import { SearchX } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
 /** ====== Helpers ====== */
@@ -48,6 +49,7 @@ const adaptWordsetToCard = (it: WordsetListItemType) => ({
 
 export default function GameContent() {
   const locale = useLocale();
+  const t = useTranslations();
   const [q, setQ] = useState("");
   const [langFilter, setLangFilter] = useState<string>("all");
   const [levelFilter, setLevelFilter] = useState<"all" | WordsetDifficulty>(
@@ -75,6 +77,8 @@ export default function GameContent() {
     return items.map(adaptWordsetToCard);
   }, [res]);
 
+  const hasNoResult = !isLoading && puzzles.length === 0;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 space-y-6">
       <WordPuzzleHeader />
@@ -91,13 +95,34 @@ export default function GameContent() {
         onCat={setCatFilter}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-        {isLoading
-          ? Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-56 rounded-lg border animate-pulse" />
-            ))
-          : puzzles.map((p) => <PuzzleCard key={p.id} data={p} />)}
-      </div>
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-56 rounded-lg border animate-pulse" />
+          ))}
+        </div>
+      ) : hasNoResult ? (
+        <div className="flex flex-col items-center justify-center py-16 text-center text-muted-foreground gap-3">
+          <SearchX className="h-10 w-10 mb-1" />
+          <p className="text-base font-medium">
+            {t("wordPuzzle.noResultsTitle", {
+              default: "Không tìm thấy bộ từ nào phù hợp.",
+            })}
+          </p>
+          <p className="text-sm max-w-md">
+            {t("wordPuzzle.noResultsDesc", {
+              default:
+                "Thử thay đổi từ khóa tìm kiếm hoặc điều chỉnh bộ lọc để xem thêm các bộ từ khác nhé.",
+            })}
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+          {puzzles.map((p) => (
+            <PuzzleCard key={p.id} data={p} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

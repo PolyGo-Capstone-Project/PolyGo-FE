@@ -7,6 +7,8 @@
     "areYouNew": "Bạn là người chơi mới?",
     "howToPlay": "Cách chơi Ghép Chữ",
     "rules": "Luật chơi:",
+    "noResultsTitle": "Không tìm thấy",
+    "noResultsDesc": "Hãy thử các tìm kiếm khác",
     "rule": {
       "chooseSet": "Chọn một bộ câu hỏi theo chủ đề yêu thích của bạn",
       "scramble": "Các chữ cái sẽ bị xáo trộn ngẫu nhiên (ví dụ: \"apple\" → \"p/a/l/p/e\")",
