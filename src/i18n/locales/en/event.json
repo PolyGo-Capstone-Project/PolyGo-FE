@@ -309,7 +309,17 @@
         },
         "insufficientFunds": "Insufficient Balance",
         "yourBalance": "Your Balance"
-      }
+      },
+      "share": {
+        "button": "Share",
+        "title": "Share Event",
+        "description": "Share this event with your friends and community",
+        "copyLink": "Event Link",
+        "copied": "Link copied to clipboard!",
+        "shareOn": "Share on Social Media",
+        "comingSoon": "Social sharing coming soon"
+      },
+      "hostInfo": "View Host Profile"
     },
     "myEvent": {
       "title": "My Events",

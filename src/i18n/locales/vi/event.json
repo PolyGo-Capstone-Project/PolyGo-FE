@@ -311,7 +311,17 @@
         },
         "insufficientFunds": "Số dư không đủ",
         "yourBalance": "Số dư của bạn"
-      }
+      },
+      "share": {
+        "button": "Chia sẻ",
+        "title": "Chia sẻ sự kiện",
+        "description": "Chia sẻ sự kiện này với bạn bè và cộng đồng của bạn",
+        "copyLink": "Đường dẫn sự kiện",
+        "copied": "Đã sao chép đường dẫn!",
+        "shareOn": "Chia sẻ trên mạng xã hội",
+        "comingSoon": "Tính năng chia sẻ mạng xã hội sắp ra mắt"
+      },
+      "hostInfo": "Xem hồ sơ chủ sự kiện"
     },
     "myEvent": {
       "title": "Sự kiện của tôi",

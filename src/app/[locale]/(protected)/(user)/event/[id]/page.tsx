@@ -7,8 +7,10 @@ import {
   IconCheck,
   IconClock,
   IconCoin,
+  IconEye,
   IconLoader2,
   IconMapPin,
+  IconShare3,
   IconUsers,
   IconVideo,
 } from "@tabler/icons-react";
@@ -22,6 +24,7 @@ import {
   EventAllRatingsSection,
   EventYourRatingSection,
   RegistrationSuccessDialog,
+  ShareEventDialog,
 } from "@/components/modules/event";
 import {
   AlertDialog,
@@ -82,6 +85,7 @@ export default function EventDetailPage() {
   const [ratingValue, setRatingValue] = useState<number>(0);
   const [commentValue, setCommentValue] = useState<string>("");
   const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
 
   const { data, isLoading, error } = useGetEventById(eventId, { lang: locale });
   const { data: balanceData } = useTransactionBalanceQuery();
@@ -147,6 +151,9 @@ export default function EventDetailPage() {
     ((isHost && canHostJoin) || canAttendeeJoin) && !eventEnd;
 
   const hasBanner = event ? isValidBannerUrl(event.bannerUrl) : false;
+
+  // Generate event share URL
+  const eventUrl = typeof window !== "undefined" ? window.location.href : "";
 
   const handleRegisterClick = () => {
     if (!event) return;
@@ -358,52 +365,74 @@ export default function EventDetailPage() {
               </div>
             </div>
 
-            {/* Title and Host */}
+            {/* Title */}
             <div className="space-y-4">
               <h1 className="text-4xl font-bold">{event.title}</h1>
 
-              <div className="flex items-center gap-4 py-3">
-                <Avatar className="h-14 w-14 border-2 border-primary/10 shadow-sm">
-                  <AvatarImage
-                    src={
-                      isValidAvatarUrl(event.host.avatarUrl)
-                        ? event.host.avatarUrl!
-                        : undefined
-                    }
-                    alt={event.host.name}
-                  />
-                  <AvatarFallback className="text-base font-semibold bg-primary/10">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-sm text-muted-foreground">{t("host")}</p>
-                  <p className="text-lg font-semibold">{event.host.name}</p>
-                </div>
-              </div>
+              {/* Host Info Card */}
+              <Card className="border-primary/20 shadow-sm">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 flex-1">
+                      <Avatar className="h-14 w-14 border-2 border-primary/20 shadow-sm">
+                        <AvatarImage
+                          src={
+                            isValidAvatarUrl(event.host.avatarUrl)
+                              ? event.host.avatarUrl!
+                              : undefined
+                          }
+                          alt={event.host.name}
+                        />
+                        <AvatarFallback className="text-base font-semibold bg-primary/10">
+                          {initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <p className="text-sm text-muted-foreground">
+                          {t("host")}
+                        </p>
+                        <p className="text-lg font-semibold">
+                          {event.host.name}
+                        </p>
+                      </div>
+                    </div>
+                    {!isHost && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="gap-2 flex-shrink-0"
+                        onClick={() =>
+                          router.push(`/${locale}/matching/${event.host.id}`)
+                        }
+                      >
+                        <IconEye className="h-4 w-4" />
+                        {t("hostInfo")}
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
-              <Separator />
+            <Separator />
 
-              {/* Description */}
-              <div>
-                <h2 className="text-2xl font-semibold mb-4">
-                  {t("aboutEvent")}
-                </h2>
-                <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                  {event.description}
-                </p>
-              </div>
+            {/* Description */}
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">{t("aboutEvent")}</h2>
+              <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                {event.description}
+              </p>
+            </div>
 
-              {/* Categories */}
-              <div>
-                <h3 className="font-semibold mb-3">{t("categories")}</h3>
-                <div className="flex flex-wrap gap-2">
-                  {event.categories.map((category, index) => (
-                    <Badge key={index} variant="secondary" className="text-sm">
-                      {category.name}
-                    </Badge>
-                  ))}
-                </div>
+            {/* Categories */}
+            <div>
+              <h3 className="font-semibold mb-3">{t("categories")}</h3>
+              <div className="flex flex-wrap gap-2">
+                {event.categories.map((category, index) => (
+                  <Badge key={index} variant="secondary" className="text-sm">
+                    {category.name}
+                  </Badge>
+                ))}
               </div>
             </div>
           </div>
@@ -413,7 +442,18 @@ export default function EventDetailPage() {
             {/* Event Details Card */}
             <Card className="shadow-lg">
               <CardHeader>
-                <CardTitle>{t("eventDetails")}</CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle>{t("eventDetails")}</CardTitle>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2"
+                    onClick={() => setShowShareDialog(true)}
+                  >
+                    <IconShare3 className="h-4 w-4" />
+                    {/* {t("share.button")} */}
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-4 text-sm">
@@ -765,6 +805,16 @@ export default function EventDetailPage() {
         eventTitle={event.title}
         eventId={event.id}
       />
+
+      {/* Share Dialog */}
+      {event && (
+        <ShareEventDialog
+          open={showShareDialog}
+          onOpenChange={setShowShareDialog}
+          eventTitle={event.title}
+          eventUrl={eventUrl}
+        />
+      )}
     </>
   );
 }
