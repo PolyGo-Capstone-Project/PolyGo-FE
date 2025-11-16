@@ -3,19 +3,32 @@
 import {
   IconChevronLeft,
   IconChevronRight,
+  IconDotsVertical,
+  IconEye,
+  IconEyeOff,
   IconGift,
   IconInbox,
+  IconPinFilled,
 } from "@tabler/icons-react";
 import { format } from "date-fns";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
-import { AcceptGiftDialog, RejectGiftDialog } from "@/components/modules/gifts";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useMyReceivedGiftsQuery } from "@/hooks";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { GiftVisibilityEnum } from "@/constants";
+import {
+  useMyReceivedGiftsQuery,
+  useUpdateGiftVisibilityMutation,
+} from "@/hooks";
 import Image from "next/image";
 
 type MyReceivedGiftsTabProps = {
@@ -25,9 +38,7 @@ type MyReceivedGiftsTabProps = {
 export function MyReceivedGiftsTab({ locale }: MyReceivedGiftsTabProps) {
   const t = useTranslations("gift.received");
   const tCommon = useTranslations("gift.common");
-  const [selectedGift, setSelectedGift] = useState<any>(null);
-  const [acceptDialogOpen, setAcceptDialogOpen] = useState(false);
-  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const tVisibility = useTranslations("gift.visibility");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
@@ -39,14 +50,47 @@ export function MyReceivedGiftsTab({ locale }: MyReceivedGiftsTabProps) {
   const gifts = data?.payload.data.items || [];
   const pagination = data?.payload.data;
 
-  const handleAcceptClick = (gift: any) => {
-    setSelectedGift(gift);
-    setAcceptDialogOpen(true);
+  // Update visibility mutation
+  const updateVisibilityMutation = useUpdateGiftVisibilityMutation({
+    lang: locale,
+    pageNumber: currentPage,
+    pageSize,
+  });
+
+  const handleVisibilityChange = (
+    presentationId: string,
+    status: keyof typeof GiftVisibilityEnum
+  ) => {
+    updateVisibilityMutation.mutate({
+      id: presentationId,
+      body: { status: GiftVisibilityEnum[status] },
+    });
   };
 
-  const handleRejectClick = (gift: any) => {
-    setSelectedGift(gift);
-    setRejectDialogOpen(true);
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case GiftVisibilityEnum.Pinned:
+        return (
+          <Badge variant="default" className="gap-1">
+            <IconPinFilled className="h-3 w-3" />
+            {tVisibility("pinned")}
+          </Badge>
+        );
+      case GiftVisibilityEnum.Hidden:
+        return (
+          <Badge variant="secondary" className="gap-1">
+            <IconEyeOff className="h-3 w-3" />
+            {tVisibility("hidden")}
+          </Badge>
+        );
+      default:
+        return (
+          <Badge variant="outline" className="gap-1">
+            <IconEye className="h-3 w-3" />
+            {tVisibility("visible")}
+          </Badge>
+        );
+    }
   };
 
   if (isLoading) {
@@ -139,24 +183,61 @@ export function MyReceivedGiftsTab({ locale }: MyReceivedGiftsTabProps) {
                     {format(new Date(gift.createdAt), "PPp")}
                   </p>
 
-                  {/* Actions */}
-                  {!gift.isRead && (
-                    <div className="flex gap-2">
-                      <Button size="sm" onClick={() => handleAcceptClick(gift)}>
-                        {t("accept")}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleRejectClick(gift)}
-                      >
-                        {t("reject")}
-                      </Button>
-                    </div>
-                  )}
-                  {gift.isRead && (
-                    <Badge variant="secondary">{t("accepted")}</Badge>
-                  )}
+                  {/* Status & Actions */}
+                  <div className="flex items-center justify-between gap-2">
+                    {getStatusBadge(gift.status)}
+
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          disabled={updateVisibilityMutation.isPending}
+                          className="h-7 w-7 p-0"
+                        >
+                          <IconDotsVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuItem
+                          onClick={() =>
+                            handleVisibilityChange(
+                              gift.presentationId,
+                              "Visible"
+                            )
+                          }
+                          className="gap-2"
+                        >
+                          <IconEye className="h-4 w-4" />
+                          {tVisibility("visible")}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            handleVisibilityChange(
+                              gift.presentationId,
+                              "Hidden"
+                            )
+                          }
+                          className="gap-2"
+                        >
+                          <IconEyeOff className="h-4 w-4" />
+                          {tVisibility("hidden")}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() =>
+                            handleVisibilityChange(
+                              gift.presentationId,
+                              "Pinned"
+                            )
+                          }
+                          className="gap-2"
+                        >
+                          <IconPinFilled className="h-4 w-4" />
+                          {tVisibility("pinned")}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
               </div>
             ))}
@@ -199,26 +280,6 @@ export function MyReceivedGiftsTab({ locale }: MyReceivedGiftsTabProps) {
           )}
         </CardContent>
       </Card>
-
-      {/* Accept Dialog */}
-      {selectedGift && (
-        <AcceptGiftDialog
-          open={acceptDialogOpen}
-          onOpenChange={setAcceptDialogOpen}
-          gift={selectedGift}
-          locale={locale}
-        />
-      )}
-
-      {/* Reject Dialog */}
-      {selectedGift && (
-        <RejectGiftDialog
-          open={rejectDialogOpen}
-          onOpenChange={setRejectDialogOpen}
-          gift={selectedGift}
-          locale={locale}
-        />
-      )}
     </>
   );
 }

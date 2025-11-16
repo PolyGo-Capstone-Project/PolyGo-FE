@@ -201,12 +201,13 @@ export default function UserProfilePage() {
     name: gift.name,
     value: 0,
     from: {
-      name: "Anonymous", // We don't have sender info in this context
-      avatarUrl: null,
+      name: gift.isAnonymous ? "Anonymous" : gift.senderName,
+      avatarUrl: gift.isAnonymous ? null : gift.senderAvatarUrl,
     },
-    message: "",
-    receivedAt: new Date().toISOString(),
+    message: gift.message,
+    createdAt: gift.createdAt,
     iconUrl: gift.iconUrl,
+    status: gift.status,
   }));
 
   // Handle share profile

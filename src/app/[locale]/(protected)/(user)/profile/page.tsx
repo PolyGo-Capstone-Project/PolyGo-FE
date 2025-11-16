@@ -156,8 +156,9 @@ export default function ProfilePage() {
       avatarUrl: gift.isAnonymous ? null : gift.senderAvatarUrl,
     },
     message: gift.message,
-    receivedAt: gift.createdAt,
+    createdAt: gift.createdAt,
     iconUrl: gift.giftIconUrl,
+    status: gift.status,
   }));
 
   if (!user) {

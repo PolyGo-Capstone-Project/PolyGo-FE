@@ -37,7 +37,8 @@
       "reject": "Từ chối",
       "accepted": "Đã chấp nhận",
       "rejected": "Đã từ chối",
-      "empty": "Bạn chưa nhận được món quà nào"
+      "empty": "Bạn chưa nhận được món quà nào",
+      "anonymous": "Ẩn danh"
     },
     "purchase": {
       "title": "Mua quà",
@@ -121,6 +122,12 @@
       "date": "Ngày",
       "price": "Giá",
       "name": "Tên"
+    },
+    "visibility": {
+      "changeVisibility": "Thay đổi hiển thị",
+      "visible": "Hiển thị",
+      "hidden": "Ẩn",
+      "pinned": "Ghim"
     }
   }
 }
