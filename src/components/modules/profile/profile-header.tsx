@@ -11,6 +11,7 @@ import {
 } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 
+import { MeritBadge } from "@/components";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,7 @@ type ProfileHeaderProps = {
   name: string;
   email: string;
   avatarUrl: string | null;
-  meritLevel: string;
+  merit: number;
   gender: string | null;
   introduction: string | null;
   isOnline?: boolean;
@@ -41,7 +42,7 @@ export function ProfileHeader({
   name,
   email,
   avatarUrl,
-  meritLevel,
+  merit,
   gender,
   introduction,
   isOnline = true,
@@ -55,7 +56,6 @@ export function ProfileHeader({
   onChat,
 }: ProfileHeaderProps) {
   const t = useTranslations("profile");
-  const tCommon = useTranslations("common.gender");
   const locale = useLocale();
   const router = useRouter();
   const initials = name
@@ -107,9 +107,9 @@ export function ProfileHeader({
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="secondary">{meritLevel}</Badge>
+                <MeritBadge merit={merit} />
                 {gender && (
-                  <Badge variant="outline">{tCommon(gender as any)}</Badge>
+                  <Badge variant="outline">{t(`gender.${gender}`)}</Badge>
                 )}
               </div>
 

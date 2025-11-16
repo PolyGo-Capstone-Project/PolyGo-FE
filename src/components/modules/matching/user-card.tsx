@@ -12,12 +12,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  MeritBadge,
   Separator,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components";
-import { useUserPresenceContext } from "@/components/providers";
 import { FriendStatus, PlanTypeEnum } from "@/constants";
 import { UserMatchingItemType } from "@/models";
 import {
@@ -53,11 +53,7 @@ export function UserCard({
   const learningLanguages = user.learningLanguages || [];
   const interests = user.interests || [];
   const t = useTranslations("matching.card");
-  const tGender = useTranslations("common.gender");
-
-  // Get online status from presence context
-  const { isUserOnline } = useUserPresenceContext();
-  const isOnline = isUserOnline(user.id);
+  const tGender = useTranslations("matching.card.gender");
 
   const initials = useMemo(() => {
     return user.name
@@ -99,7 +95,7 @@ export function UserCard({
                 {initials}
               </AvatarFallback>
             </Avatar>
-            {isOnline && (
+            {user.isOnline && (
               <span className="absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-background bg-green-500" />
             )}
           </div>
@@ -124,18 +120,16 @@ export function UserCard({
             <CardDescription className="flex flex-wrap items-center gap-2">
               {user.gender && (
                 <Badge variant="outline" className="text-xs">
-                  {tGender(user.gender as any)}
+                  {tGender(user.gender)}
                 </Badge>
               )}
-              <Badge variant="secondary" className="text-xs">
-                {user.meritLevel}
-              </Badge>
-              <Badge
+              <MeritBadge merit={user.merit} className="text-xs" />
+              {/* <Badge
                 variant={isOnline ? "default" : "outline"}
                 className="text-xs"
               >
                 {isOnline ? t("online") : t("offline")}
-              </Badge>
+              </Badge> */}
             </CardDescription>
           </div>
         </div>

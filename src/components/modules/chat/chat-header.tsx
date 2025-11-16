@@ -1,9 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,24 +9,26 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components";
+import { useCall } from "@/contexts/call-context";
 import { ChatUser } from "@/types";
 import { MoreVertical, Phone, Search, Trash2, User, Video } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface ChatHeaderProps {
   user: ChatUser;
   isTyping: boolean;
-  onVoiceCall: () => void;
-  onVideoCall: () => void;
   onSearchMessages: () => void;
   onDeleteConversation: () => void;
   locale: string;
@@ -40,8 +38,6 @@ interface ChatHeaderProps {
 export function ChatHeader({
   user,
   isTyping,
-  onVoiceCall,
-  onVideoCall,
   onSearchMessages,
   onDeleteConversation,
   locale,
@@ -50,6 +46,7 @@ export function ChatHeader({
   const t = useTranslations("chat");
   const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const { startVoiceCall, startVideoCall } = useCall();
 
   const getInitials = (name: string) => {
     return name
@@ -69,22 +66,41 @@ export function ChatHeader({
       return t("online");
     }
 
-    if (user.lastSeen) {
+    // Use lastActiveAt first, fallback to lastSeen
+    const lastActivity = user.lastActiveAt || user.lastSeen;
+
+    if (lastActivity) {
       const now = new Date();
+      const lastActivityDate = new Date(lastActivity);
       const diffInMinutes = Math.floor(
-        (now.getTime() - user.lastSeen.getTime()) / (1000 * 60)
+        (now.getTime() - lastActivityDate.getTime()) / (1000 * 60)
       );
 
+      if (diffInMinutes < 1) {
+        return locale === "vi" ? "Vừa hoạt động" : "Just now";
+      }
+
       if (diffInMinutes < 60) {
-        return `${diffInMinutes} ${locale === "vi" ? "phút trước" : "minutes ago"}`;
+        return locale === "vi"
+          ? `Hoạt động ${diffInMinutes} phút trước`
+          : `Active ${diffInMinutes} minute${diffInMinutes > 1 ? "s" : ""} ago`;
       }
 
       const diffInHours = Math.floor(diffInMinutes / 60);
       if (diffInHours < 24) {
-        return `${diffInHours} ${locale === "vi" ? "giờ trước" : "hours ago"}`;
+        return locale === "vi"
+          ? `Hoạt động ${diffInHours} giờ trước`
+          : `Active ${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
       }
 
-      return t("offline");
+      const diffInDays = Math.floor(diffInHours / 24);
+      if (diffInDays < 7) {
+        return locale === "vi"
+          ? `Hoạt động ${diffInDays} ngày trước`
+          : `Active ${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
+      }
+
+      return locale === "vi" ? "Hoạt động lâu rồi" : "Active long ago";
     }
 
     return t("offline");
@@ -97,6 +113,14 @@ export function ChatHeader({
   const handleDeleteConfirm = () => {
     onDeleteConversation();
     setShowDeleteDialog(false);
+  };
+
+  const handleVoiceCall = () => {
+    startVoiceCall(user.id, user.name);
+  };
+
+  const handleVideoCall = () => {
+    startVideoCall(user.id, user.name);
   };
 
   return (
@@ -136,18 +160,18 @@ export function ChatHeader({
             <Button
               size="icon-sm"
               variant="ghost"
-              onClick={onVoiceCall}
               title={t("voiceCall")}
               className="md:size-9"
+              onClick={handleVoiceCall}
             >
               <Phone className="size-4 md:size-5" />
             </Button>
             <Button
               size="icon-sm"
               variant="ghost"
-              onClick={onVideoCall}
               title={t("videoCall")}
               className="md:size-9"
+              onClick={handleVideoCall}
             >
               <Video className="size-4 md:size-5" />
             </Button>

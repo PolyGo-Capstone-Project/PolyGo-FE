@@ -42,7 +42,12 @@
       "interests": "Sở thích",
       "noIntroduction": "Chưa có giới thiệu",
       "noLanguages": "Chưa thêm ngôn ngữ",
-      "noInterests": "Chưa thêm sở thích"
+      "noInterests": "Chưa thêm sở thích",
+      "gender": {
+        "Male": "Nam",
+        "Female": "Nữ",
+        "Other": "Khác"
+      }
     },
     "friends": {
       "title": "Danh sách bạn bè",

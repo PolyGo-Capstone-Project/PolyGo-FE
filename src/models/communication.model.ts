@@ -7,11 +7,15 @@ export const GetMessagesQuerySchema = PaginationQuerySchema;
 export const GetConversationsQuerySchema = PaginationQuerySchema.extend({
   name: z.string().min(1).max(100).optional(),
 });
+export const GetMessageSearchQuerySchema = PaginationQuerySchema.extend({
+  content: z.string().min(1).max(500).optional(),
+});
 
 export const UserInfoSchema = z.object({
   id: z.string(),
   name: z.string(),
   avatarUrl: z.string().nullable(),
+  lastActiveAt: z.string().optional().nullable(),
 });
 
 export const LastMessageSchema = z.object({
@@ -33,6 +37,14 @@ export const MessageSchema = z.object({
 export const MessageListResSchema = z.object({
   data: z.object({
     items: z.array(MessageSchema),
+    ...PaginationMetaSchema.shape,
+  }),
+  message: z.string(),
+});
+
+export const MediaListResSchema = z.object({
+  data: z.object({
+    items: z.array(z.string().url()).default([]),
     ...PaginationMetaSchema.shape,
   }),
   message: z.string(),
@@ -81,9 +93,13 @@ export type UserInfoType = z.infer<typeof UserInfoSchema>;
 export type LastMessageType = z.infer<typeof LastMessageSchema>;
 export type MessageType = z.infer<typeof MessageSchema>;
 export type MessageListResType = z.infer<typeof MessageListResSchema>;
+export type MediaListResType = z.infer<typeof MediaListResSchema>;
 export type ConversationType = z.infer<typeof ConversationSchema>;
 export type ConversationListResType = z.infer<typeof ConversationListResSchema>;
 export type GetMessagesQueryType = z.infer<typeof GetMessagesQuerySchema>;
+export type GetMessageSearchQueryType = z.infer<
+  typeof GetMessageSearchQuerySchema
+>;
 export type GetConversationsQueryType = z.infer<
   typeof GetConversationsQuerySchema
 >;

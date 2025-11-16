@@ -272,10 +272,12 @@
         "yourRatingTitle": "Đánh giá của bạn",
         "allRatingsTitle": "Đánh giá từ người tham gia",
         "loading": "Đang tải đánh giá…",
+        "loadingYourRating": "Đang tải đánh giá của bạn...",
+        "loadingReviews": "Đang tải đánh giá...",
         "noComment": "Bạn chưa để lại nhận xét.",
         "noRatingYet": "Chưa đánh giá.",
         "editRatingButton": "Chỉnh sửa đánh giá",
-        "rateButton": "Đánh giá",
+        "rateButton": "Đánh giá ngay",
         "noRatingsFound": "Chưa có đánh giá nào.",
         "noCommentAll": "(Không có nhận xét)",
         "yourStars": "Đánh giá",
@@ -293,8 +295,33 @@
         "noGifts": "Bạn chưa có quà nào.",
         "buyMore": "Mua quà",
         "shareYourThoughts": "Chia sẻ suy nghĩ của bạn về sự kiện này",
-        "rateThisEvent": "Đánh giá sự kiện này"
-      }
+        "rateThisEvent": "Đánh giá sự kiện này",
+        "filter": {
+          "all": "Tất cả",
+          "reviewCount": "{count} đánh giá",
+          "reviewCount_plural": "{count} đánh giá",
+          "reviewsTotal": "Tổng {count} đánh giá",
+          "reviewsTotal_plural": "Tổng {count} đánh giá",
+          "reviewsWith": "{count} đánh giá với {stars} sao",
+          "reviewsWith_plural": "{count} đánh giá với {stars} sao",
+          "noStarReviews": "Chưa có đánh giá {stars} sao",
+          "tryDifferentFilter": "Thử chọn bộ lọc đánh giá khác",
+          "clearFilter": "Xóa bộ lọc",
+          "beFirstToShare": "Hãy là người đầu tiên chia sẻ suy nghĩ của bạn về sự kiện này!"
+        },
+        "insufficientFunds": "Số dư không đủ",
+        "yourBalance": "Số dư của bạn"
+      },
+      "share": {
+        "button": "Chia sẻ",
+        "title": "Chia sẻ sự kiện",
+        "description": "Chia sẻ sự kiện này với bạn bè và cộng đồng của bạn",
+        "copyLink": "Đường dẫn sự kiện",
+        "copied": "Đã sao chép đường dẫn!",
+        "shareOn": "Chia sẻ trên mạng xã hội",
+        "comingSoon": "Tính năng chia sẻ mạng xã hội sắp ra mắt"
+      },
+      "hostInfo": "Xem hồ sơ chủ sự kiện"
     },
     "myEvent": {
       "title": "Sự kiện của tôi",
@@ -397,7 +424,8 @@
             "cancelButton": "Hủy",
             "kicking": "Đang xóa...",
             "success": "Đã xóa người tham gia thành công",
-            "error": "Không thể xóa người tham gia"
+            "error": "Không thể xóa người tham gia",
+            "allowRejoin": "Cho phép tham gia lại"
           },
           "noFeedback": "Chưa có phản hồi nào",
           "close": "Đóng"

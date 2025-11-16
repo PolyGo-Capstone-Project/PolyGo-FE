@@ -5,21 +5,19 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
-  CallModal,
   ChatHeader,
   ConversationList,
   MessageInput,
   MessageList,
   MessageSearch,
 } from "@/components/modules/chat";
-import { useUserPresenceContext } from "@/components/providers";
+import { useUserCommunicationHubContext } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { MESSAGE_IMAGE_SEPARATOR, MessageEnum } from "@/constants";
 import { useChatNotification } from "@/contexts/chat-notification-context";
 import {
   useAuthMe,
   useChatHub,
-  useDeleteMessage,
   useGetConversations,
   useGetMessages,
 } from "@/hooks";
@@ -33,7 +31,7 @@ import {
   MessageType,
   RealtimeMessageType,
 } from "@/models";
-import { CallState, CallType, ChatConversation, ChatMessage } from "@/types";
+import { CallState, ChatConversation, ChatMessage } from "@/types";
 import { ArrowLeft, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -87,6 +85,9 @@ const mapConversationToChat = (
       avatarUrl: conversation.user.avatarUrl,
       isOnline: false,
       lastSeen: null,
+      lastActiveAt: conversation.user.lastActiveAt
+        ? new Date(conversation.user.lastActiveAt)
+        : null,
     },
     lastMessage,
     hasSeen: conversation.hasSeen,
@@ -136,6 +137,9 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   );
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [scrollToMessageId, setScrollToMessageId] = useState<
+    string | undefined
+  >(undefined);
 
   const [callState, setCallState] = useState<CallState>({
     conversationId: null,
@@ -144,7 +148,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     isMuted: false,
     isVideoOff: false,
   });
-  const [isCallModalOpen, setIsCallModalOpen] = useState(false);
 
   const [messagesQuery, setMessagesQuery] = useState<GetMessagesQueryType>(
     () => ({ ...DEFAULT_MESSAGES_QUERY })
@@ -177,10 +180,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
         message.conversationId !== selectedConversationId &&
         message.senderId !== currentUserId
       ) {
-        console.log(
-          "📬 New message from another conversation:",
-          message.conversationId
-        );
         setConversations((prev) =>
           prev.map((conv) =>
             conv.id === message.conversationId
@@ -198,6 +197,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     sendTextMessage,
     sendImageMessage,
     markAsRead,
+    deleteMessage,
     error: hubError,
   } = useChatHub(
     selectedConversationId ?? undefined,
@@ -205,11 +205,13 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     handleNewMessage
   );
 
-  const deleteMessageMutation = useDeleteMessage();
-
   // User presence management from context
-  const { isUserOnline, getOnlineStatus, setOnUserStatusChangedCallback } =
-    useUserPresenceContext();
+  const {
+    isUserOnline,
+    getOnlineStatus,
+    setOnUserStatusChangedCallback,
+    isConnected: isPresenceConnected,
+  } = useUserCommunicationHubContext();
 
   // Chat notification management
   const { setUnreadChatCount } = useChatNotification();
@@ -239,6 +241,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                 user: {
                   ...conv.user,
                   isOnline: data.isOnline,
+                  lastActiveAt: new Date(data.lastActiveAt),
                   lastSeen: data.isOnline ? null : new Date(data.lastActiveAt),
                 },
               }
@@ -334,8 +337,9 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     });
 
     // Fetch online status for all users in conversations
+    // Only fetch when connection is ready!
     const userIds = items.map((item) => item.user.id);
-    if (userIds.length > 0) {
+    if (userIds.length > 0 && isPresenceConnected) {
       getOnlineStatus(userIds)
         .then((statusMap) => {
           setConversations((prev) =>
@@ -352,7 +356,12 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
           console.error("Failed to fetch online status:", err);
         });
     }
-  }, [conversationsResponse, getOnlineStatus, selectedConversationId]);
+  }, [
+    conversationsResponse,
+    getOnlineStatus,
+    selectedConversationId,
+    isPresenceConnected,
+  ]);
 
   useEffect(() => {
     if (conversationsError) {
@@ -604,68 +613,16 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
       setHasMoreMessages(moreAvailable);
       setNextPageToLoad(moreAvailable ? updatedLastLoadedPage + 1 : null);
     } catch (error) {
-      console.error("Failed to load more messages", error);
       toast.error(tError("loadMessages"));
     } finally {
       setIsLoadingMoreMessages(false);
     }
   };
 
-  const handleStartCall = (type: CallType) => {
-    if (!selectedConversationId) return;
-
-    setCallState({
-      conversationId: selectedConversationId,
-      type,
-      status: "calling",
-      isMuted: false,
-      isVideoOff: false,
-    });
-    setIsCallModalOpen(true);
-
-    setTimeout(() => {
-      setCallState((prev) => ({
-        ...prev,
-        status: "connected",
-        startTime: new Date(),
-      }));
-    }, 3000);
-  };
-
-  const handleEndCall = () => {
-    setCallState({
-      conversationId: null,
-      type: "voice",
-      status: "idle",
-      isMuted: false,
-      isVideoOff: false,
-    });
-    setIsCallModalOpen(false);
-  };
-
-  const handleAcceptCall = () => {
-    setCallState((prev) => ({
-      ...prev,
-      status: "connected",
-      startTime: new Date(),
-    }));
-  };
-
-  const handleDeclineCall = () => {
-    handleEndCall();
-  };
-
   const handleToggleMute = () => {
     setCallState((prev) => ({
       ...prev,
       isMuted: !prev.isMuted,
-    }));
-  };
-
-  const handleToggleVideo = () => {
-    setCallState((prev) => ({
-      ...prev,
-      isVideoOff: !prev.isVideoOff,
     }));
   };
 
@@ -729,17 +686,18 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
   };
 
   const handleSelectMessage = (messageId: string) => {
-    console.log("Scroll to message:", messageId);
+    setScrollToMessageId(messageId);
+    // Reset after a short delay to allow re-scrolling to the same message
+    setTimeout(() => setScrollToMessageId(undefined), 100);
   };
 
   const handleDeleteMessage = async (messageId: string) => {
     try {
-      await deleteMessageMutation.mutateAsync(messageId);
+      await deleteMessage(messageId);
       // Remove the message from local state immediately for better UX
       setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
       toast.success(tSuccess("Delete"));
     } catch (error) {
-      console.error("Failed to delete message:", error);
       toast.error(tError("deleteMessage"));
     }
   };
@@ -749,7 +707,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
       await navigator.clipboard.writeText(content);
       toast.success(tSuccess("Copy"));
     } catch (error) {
-      console.error("Failed to copy message:", error);
       toast.error(tError("copyMessage"));
     }
   };
@@ -818,8 +775,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                 <ChatHeader
                   user={selectedConversation.user}
                   isTyping={Boolean(selectedConversation.isTyping)}
-                  onVoiceCall={() => handleStartCall("voice")}
-                  onVideoCall={() => handleStartCall("video")}
                   onSearchMessages={handleSearchMessages}
                   onDeleteConversation={() => handleDeleteConversation()}
                   locale={locale}
@@ -859,22 +814,10 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
         {selectedConversation && (
           <>
-            <CallModal
-              isOpen={isCallModalOpen}
-              onClose={handleEndCall}
-              user={selectedConversation.user}
-              callState={callState}
-              onEndCall={handleEndCall}
-              onAcceptCall={handleAcceptCall}
-              onDeclineCall={handleDeclineCall}
-              onToggleMute={handleToggleMute}
-              onToggleVideo={handleToggleVideo}
-            />
-
             <MessageSearch
               isOpen={isSearchOpen}
               onClose={() => setIsSearchOpen(false)}
-              messages={messages}
+              conversationId={selectedConversationId}
               currentUserId={currentUserId ?? ""}
               onSelectMessage={handleSelectMessage}
               locale={locale}
@@ -910,8 +853,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
             <ChatHeader
               user={selectedConversation.user}
               isTyping={Boolean(selectedConversation.isTyping)}
-              onVoiceCall={() => handleStartCall("voice")}
-              onVideoCall={() => handleStartCall("video")}
               onSearchMessages={handleSearchMessages}
               onDeleteConversation={() => handleDeleteConversation()}
               locale={locale}
@@ -935,6 +876,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                 }
                 onDeleteMessage={handleDeleteMessage}
                 onCopyMessage={handleCopyMessage}
+                scrollToMessageId={scrollToMessageId}
               />
             </div>
 
@@ -963,22 +905,10 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
       {selectedConversation && (
         <>
-          <CallModal
-            isOpen={isCallModalOpen}
-            onClose={handleEndCall}
-            user={selectedConversation.user}
-            callState={callState}
-            onEndCall={handleEndCall}
-            onAcceptCall={handleAcceptCall}
-            onDeclineCall={handleDeclineCall}
-            onToggleMute={handleToggleMute}
-            onToggleVideo={handleToggleVideo}
-          />
-
           <MessageSearch
             isOpen={isSearchOpen}
             onClose={() => setIsSearchOpen(false)}
-            messages={messages}
+            conversationId={selectedConversationId}
             currentUserId={currentUserId ?? ""}
             onSelectMessage={handleSelectMessage}
             locale={locale}

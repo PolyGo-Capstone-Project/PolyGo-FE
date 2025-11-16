@@ -11,6 +11,11 @@
     "friends": "Friends",
     "chat": "Chat",
     "share": "Share Profile",
+    "gender": {
+      "Male": "Male",
+      "Female": "Female",
+      "Other": "Other"
+    },
     "tabs": {
       "overview": "Overview",
       "social": "Social"
@@ -56,7 +61,25 @@
       "day": "Day",
       "days": "Days",
       "label": "Streak!",
-      "keepItUp": "Keep it up!"
+      "keepItUp": "Keep it up!",
+      "currentStreak": "Current Streak",
+      "longestStreak": "Longest Streak",
+      "bannedStreak": "Banned Streak",
+      "record": "Record",
+      "warning": "Warning",
+      "cold": "Start your streak!",
+      "warm": "Keep going to heat it up!",
+      "hot": "You're on fire!"
+    },
+    "merit": {
+      "title": "Merit Score",
+      "trustScore": "Trust Score",
+      "banned": "Restricted",
+      "stable": "Stable",
+      "veryTrusted": "Very Trusted",
+      "bannedDesc": "Limited access",
+      "stableDesc": "Good standing",
+      "veryTrustedDesc": "Excellent reputation"
     },
     "timeAgo": {
       "today": "Today",

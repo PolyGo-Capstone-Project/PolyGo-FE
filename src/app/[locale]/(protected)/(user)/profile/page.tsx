@@ -28,7 +28,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components";
-import { useUserPresenceContext } from "@/components/providers";
+import { useUserCommunicationHubContext } from "@/components/providers";
 import {
   useAuthMe,
   useCurrentSubscriptionQuery,
@@ -85,7 +85,7 @@ export default function ProfilePage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   // Get presence context for online status
-  const { isUserOnline } = useUserPresenceContext();
+  const { isUserOnline } = useUserCommunicationHubContext();
 
   // Fetch user data
   const { data: authData, isLoading: isLoadingAuth } = useAuthMe();
@@ -156,8 +156,9 @@ export default function ProfilePage() {
       avatarUrl: gift.isAnonymous ? null : gift.senderAvatarUrl,
     },
     message: gift.message,
-    receivedAt: gift.createdAt,
+    createdAt: gift.createdAt,
     iconUrl: gift.giftIconUrl,
+    status: gift.status,
   }));
 
   if (!user) {
@@ -175,7 +176,7 @@ export default function ProfilePage() {
         name={user.name}
         email={user.mail}
         avatarUrl={user.avatarUrl}
-        meritLevel={user.meritLevel}
+        merit={user.merit}
         gender={user.gender}
         introduction={user.introduction}
         isOnline={isUserOnline(user.id)}
@@ -212,6 +213,14 @@ export default function ProfilePage() {
 
             {/* Right Column - Stats & XP */}
             <div className="space-y-6">
+              {/* XP & Level */}
+              <ProfileInfoSection
+                experiencePoints={user.experiencePoints}
+                merit={user.merit}
+                streakDays={user.streakDays}
+                longestStreakDays={user.longestStreakDays}
+                bannedStreakDays={user.bannedStreakDays}
+              />
               {/* Stats */}
               <ProfileStats
                 totalSessions={MOCK_STATS.totalSessions}
@@ -221,12 +230,6 @@ export default function ProfilePage() {
                 streakDays={user.streakDays}
                 eventsHosted={MOCK_STATS.eventsHosted}
                 planType={planType}
-              />
-
-              {/* XP & Level */}
-              <ProfileInfoSection
-                experiencePoints={user.experiencePoints}
-                streakDays={user.streakDays}
               />
             </div>
           </div>
@@ -257,7 +260,7 @@ export default function ProfilePage() {
                           <div className="flex items-center gap-2">
                             <p className="font-semibold">{user.name}</p>
                             <Badge variant="secondary" className="text-xs">
-                              {user.meritLevel}
+                              {user.merit}
                             </Badge>
                           </div>
                           <p className="text-xs text-muted-foreground">
@@ -313,7 +316,10 @@ export default function ProfilePage() {
               />
               <ProfileInfoSection
                 experiencePoints={user.experiencePoints}
+                merit={user.merit}
                 streakDays={user.streakDays}
+                longestStreakDays={user.longestStreakDays}
+                bannedStreakDays={user.bannedStreakDays}
               />
             </div>
           </div>

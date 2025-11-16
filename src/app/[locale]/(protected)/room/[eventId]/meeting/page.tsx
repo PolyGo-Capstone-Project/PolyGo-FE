@@ -33,7 +33,7 @@ import { MeetingChatMessage, Participant } from "@/types";
 import { IconDeviceMobile, IconLoader2 } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function MeetingRoomPage() {
@@ -53,7 +53,6 @@ export default function MeetingRoomPage() {
   const [chatMessages, setChatMessages] = useState<MeetingChatMessage[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  const callInitiatedRef = useRef(false);
   const isMobileDevice = useMobileDevice();
 
   const { event, currentUser, isHost, canJoin, isLoading } =
@@ -88,6 +87,7 @@ export default function MeetingRoomPage() {
     eventId,
     userName: currentUser?.name || "Guest",
     isHost: isHost || false,
+    userId: currentUser?.id,
     onRoomEnded: () => {
       toast.error(tError("eventEnded"));
       removeSettingMediaFromLocalStorage();
@@ -162,9 +162,9 @@ export default function MeetingRoomPage() {
     tError,
   ]);
 
-  // Auto start call when participants join
+  // Auto start call when participants join or when participant list changes
   useEffect(() => {
-    if (!isInitialized || !hasStartedEvent || callInitiatedRef.current) {
+    if (!isInitialized || !hasStartedEvent) {
       return;
     }
 
@@ -177,7 +177,8 @@ export default function MeetingRoomPage() {
         "participants"
       );
 
-      callInitiatedRef.current = true;
+      // ✅ REMOVED callInitiatedRef check - allow startCall to run whenever participants change
+      // This ensures all participants (including late joiners) can establish peer connections
 
       const timer = setTimeout(() => {
         startCall();
@@ -205,7 +206,6 @@ export default function MeetingRoomPage() {
 
   // Handle leave
   const handleLeave = async () => {
-    callInitiatedRef.current = false;
     await leaveRoom();
     router.push(`/${locale}/dashboard`);
   };
@@ -246,7 +246,6 @@ export default function MeetingRoomPage() {
       toast.error("Failed to end event");
     } finally {
       // 3. Cleanup local resources (always run this)
-      callInitiatedRef.current = false;
       removeSettingMediaFromLocalStorage();
 
       // Small delay to ensure cleanup completes
@@ -410,6 +409,7 @@ export default function MeetingRoomPage() {
         onToggleChat={toggleChat}
         onToggleParticipants={toggleParticipants}
         onToggleSettings={toggleSettings}
+        onToggleTranscript={() => toast.info("Coming soon!")}
         onLeave={() => setShowLeaveDialog(true)}
         onStartEvent={handleStartEvent}
         onEndEvent={() => setShowEndEventDialog(true)}

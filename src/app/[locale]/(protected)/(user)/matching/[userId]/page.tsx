@@ -26,7 +26,7 @@ import {
   TabsTrigger,
   UserNotFound,
 } from "@/components";
-import { useUserPresenceContext } from "@/components/providers";
+import { useUserCommunicationHubContext } from "@/components/providers";
 import { FriendStatus } from "@/constants";
 import {
   useAcceptFriendRequestMutation,
@@ -96,7 +96,7 @@ export default function UserProfilePage() {
   const userId = params.userId as string;
 
   // Get presence context for online status
-  const { isUserOnline } = useUserPresenceContext();
+  const { isUserOnline } = useUserCommunicationHubContext();
 
   // Fetch user profile
   const {
@@ -201,12 +201,13 @@ export default function UserProfilePage() {
     name: gift.name,
     value: 0,
     from: {
-      name: "Anonymous", // We don't have sender info in this context
-      avatarUrl: null,
+      name: gift.isAnonymous ? "Anonymous" : gift.senderName,
+      avatarUrl: gift.isAnonymous ? null : gift.senderAvatarUrl,
     },
-    message: "",
-    receivedAt: new Date().toISOString(),
+    message: gift.message,
+    createdAt: gift.createdAt,
     iconUrl: gift.iconUrl,
+    status: gift.status,
   }));
 
   // Handle share profile
@@ -255,7 +256,7 @@ export default function UserProfilePage() {
           name={user.name}
           email={user.mail}
           avatarUrl={user.avatarUrl}
-          meritLevel={user.meritLevel}
+          merit={user.merit}
           gender={user.gender}
           introduction={user.introduction}
           isOnline={isUserOnline(userId)}
@@ -300,6 +301,14 @@ export default function UserProfilePage() {
 
               {/* Right Column - Stats & XP */}
               <div className="space-y-6">
+                {/* XP & Level */}
+                <ProfileInfoSection
+                  experiencePoints={user.experiencePoints ?? 0}
+                  merit={user.merit}
+                  streakDays={user.streakDays ?? 0}
+                  longestStreakDays={user.longestStreakDays ?? 0}
+                  bannedStreakDays={user.bannedStreakDays ?? 0}
+                />
                 {/* Stats */}
                 <ProfileStats
                   totalSessions={MOCK_STATS.totalSessions}
@@ -309,12 +318,6 @@ export default function UserProfilePage() {
                   streakDays={user.streakDays ?? 0}
                   eventsHosted={MOCK_STATS.eventsHosted}
                   planType={user.planType}
-                />
-
-                {/* XP & Level */}
-                <ProfileInfoSection
-                  experiencePoints={user.experiencePoints ?? 0}
-                  streakDays={user.streakDays ?? 0}
                 />
               </div>
             </div>
@@ -345,7 +348,7 @@ export default function UserProfilePage() {
                             <div className="flex items-center gap-2">
                               <p className="font-semibold">{user.name}</p>
                               <Badge variant="secondary" className="text-xs">
-                                {user.meritLevel}
+                                {user.merit}
                               </Badge>
                             </div>
                             <p className="text-xs text-muted-foreground">
@@ -401,7 +404,10 @@ export default function UserProfilePage() {
                 />
                 <ProfileInfoSection
                   experiencePoints={user.experiencePoints ?? 0}
+                  merit={user.merit ?? 0}
                   streakDays={user.streakDays ?? 0}
+                  longestStreakDays={user.longestStreakDays ?? 0}
+                  bannedStreakDays={user.bannedStreakDays ?? 0}
                 />
               </div>
             </div>

@@ -9,6 +9,7 @@ export interface ChatUser {
   avatarUrl?: string | null;
   isOnline?: boolean;
   lastSeen?: Date | null;
+  lastActiveAt?: Date | null;
 }
 
 export interface ChatLastMessage {

@@ -37,7 +37,8 @@
       "reject": "Reject",
       "accepted": "Accepted",
       "rejected": "Rejected",
-      "empty": "You haven't received any gifts yet"
+      "empty": "You haven't received any gifts yet",
+      "anonymous": "Anonymous"
     },
     "purchase": {
       "title": "Purchase Gift",
@@ -121,6 +122,12 @@
       "date": "Date",
       "price": "Price",
       "name": "Name"
+    },
+    "visibility": {
+      "changeVisibility": "Change Visibility",
+      "visible": "Visible",
+      "hidden": "Hidden",
+      "pinned": "Pinned"
     }
   }
 }

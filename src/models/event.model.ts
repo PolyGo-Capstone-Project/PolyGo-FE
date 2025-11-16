@@ -169,13 +169,25 @@ export const GetEventByIdResSchema = z.object({
   message: z.string(),
 });
 
+const EventReview = z.object({
+  id: z.string(),
+  rating: z.number().min(1).max(5),
+  comment: z.string().optional().nullable(),
+  createdAt: z.iso.datetime(),
+  user: z.object({
+    id: z.string(),
+    name: z.string(),
+    avatarUrl: z.string().optional().nullable(),
+  }),
+});
+
 export const GetEventStatResSchema = z.object({
   data: EventListItemSchema.extend({
     participants: z.array(participantInfoSchema).default([]),
     revenue: z.number().min(0).default(0),
     averageRating: z.number().min(0).max(5).nullable(),
     totalReviews: z.number().min(0).default(0),
-    reviews: z.array(z.string()).default([]),
+    reviews: z.array(EventReview).default([]),
   }),
   message: z.string(),
 });
@@ -237,6 +249,7 @@ export const KickParticipantBodySchema = z
     eventId: z.string(),
     userId: z.string(),
     reason: z.string(),
+    allowRejoin: z.boolean().default(true),
   })
   .strict();
 

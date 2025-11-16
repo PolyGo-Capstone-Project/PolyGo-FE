@@ -26,6 +26,7 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  Checkbox,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -47,38 +48,6 @@ type EventStatDialogProps = {
   onOpenChange: (open: boolean) => void;
 };
 
-// Mock feedback data - BE hasn't implemented yet
-const mockFeedbackData = {
-  averageRating: 4.5,
-  totalReviews: 24,
-  recentFeedback: [
-    {
-      id: "1",
-      userName: "John Doe",
-      userAvatar: null,
-      rating: 5,
-      comment: "Amazing event! Great content and wonderful host.",
-      createdAt: "2025-01-15T10:30:00Z",
-    },
-    {
-      id: "2",
-      userName: "Jane Smith",
-      userAvatar: null,
-      rating: 4,
-      comment: "Very informative and well-organized. Would attend again!",
-      createdAt: "2025-01-14T14:20:00Z",
-    },
-    {
-      id: "3",
-      userName: "Mike Johnson",
-      userAvatar: null,
-      rating: 5,
-      comment: "Exceeded my expectations. The host was very knowledgeable.",
-      createdAt: "2025-01-13T09:15:00Z",
-    },
-  ],
-};
-
 export function EventStatDialog({
   eventId,
   open,
@@ -96,6 +65,7 @@ export function EventStatDialog({
   } | null>(null);
   const [showKickDialog, setShowKickDialog] = useState(false);
   const [kickReason, setKickReason] = useState("");
+  const [allowRejoin, setAllowRejoin] = useState(true);
 
   const { data, isLoading, error, refetch } = useGetEventStats(
     eventId || "",
@@ -107,10 +77,14 @@ export function EventStatDialog({
 
   const kickParticipantMutation = useKickParticipantMutation({
     onSuccess: () => {
-      showSuccessToast(t("kickDialog.success"), tSuccess);
+      showSuccessToast(
+        data?.payload.message || "Success.KickedFromEvent",
+        tSuccess
+      );
       setShowKickDialog(false);
       setSelectedParticipant(null);
       setKickReason("");
+      setAllowRejoin(true);
       refetch();
     },
     onError: (error) => {
@@ -129,6 +103,7 @@ export function EventStatDialog({
         eventId,
         userId: selectedParticipant.id,
         reason: kickReason,
+        allowRejoin,
       });
     }
   };
@@ -368,17 +343,14 @@ export function EventStatDialog({
                               </p>
                               <div className="flex items-center gap-2">
                                 <p className="text-2xl font-bold text-yellow-600">
-                                  {mockFeedbackData.averageRating}
+                                  {event.averageRating}
                                 </p>
                                 <div className="flex items-center">
                                   {Array.from({ length: 5 }).map((_, i) => (
                                     <IconStar
                                       key={i}
                                       className={`h-5 w-5 ${
-                                        i <
-                                        Math.floor(
-                                          mockFeedbackData.averageRating
-                                        )
+                                        i < Math.floor(event.averageRating || 0)
                                           ? "fill-yellow-500 text-yellow-500"
                                           : "text-gray-300"
                                       }`}
@@ -394,7 +366,7 @@ export function EventStatDialog({
                                 {t("reviews")}
                               </p>
                               <p className="text-2xl font-bold text-blue-600">
-                                {mockFeedbackData.totalReviews}
+                                {event.totalReviews}
                               </p>
                             </div>
                           </>
@@ -419,7 +391,7 @@ export function EventStatDialog({
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <ScrollArea className="max-h-64">
+                        <ScrollArea className="h-[400px] pr-4">
                           <div className="space-y-2">
                             {event.participants.map((participant) => (
                               <div
@@ -495,46 +467,57 @@ export function EventStatDialog({
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        {mockFeedbackData.recentFeedback.length > 0 ? (
-                          <div className="space-y-4">
-                            {mockFeedbackData.recentFeedback.map((feedback) => (
-                              <div
-                                key={feedback.id}
-                                className="p-4 border rounded-lg space-y-2"
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-2">
-                                    <Avatar className="h-8 w-8">
-                                      <AvatarFallback className="text-xs">
-                                        {getInitials(feedback.userName)}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                    <p className="font-medium text-sm">
-                                      {feedback.userName}
-                                    </p>
+                        {event.reviews.length > 0 ? (
+                          <ScrollArea className="h-[400px] pr-4">
+                            <div className="space-y-4">
+                              {event.reviews.map((feedback) => (
+                                <div
+                                  key={feedback.id}
+                                  className="p-4 border rounded-lg space-y-2"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <Avatar className="h-8 w-8">
+                                        <AvatarImage
+                                          src={
+                                            feedback.user.avatarUrl ?? undefined
+                                          }
+                                          alt={feedback.user.name}
+                                        />
+                                        <AvatarFallback className="text-xs">
+                                          {getInitials(feedback.user.name)}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                      <p className="font-medium text-sm">
+                                        {feedback.user.name}
+                                      </p>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      {Array.from({ length: 5 }).map((_, i) => (
+                                        <IconStar
+                                          key={i}
+                                          className={`h-4 w-4 ${
+                                            i < feedback.rating
+                                              ? "fill-yellow-500 text-yellow-500"
+                                              : "text-gray-300"
+                                          }`}
+                                        />
+                                      ))}
+                                    </div>
                                   </div>
-                                  <div className="flex items-center gap-1">
-                                    {Array.from({ length: 5 }).map((_, i) => (
-                                      <IconStar
-                                        key={i}
-                                        className={`h-4 w-4 ${
-                                          i < feedback.rating
-                                            ? "fill-yellow-500 text-yellow-500"
-                                            : "text-gray-300"
-                                        }`}
-                                      />
-                                    ))}
-                                  </div>
+                                  <p className="text-sm text-muted-foreground">
+                                    {feedback.comment}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {format(
+                                      new Date(feedback.createdAt),
+                                      "PPp"
+                                    )}
+                                  </p>
                                 </div>
-                                <p className="text-sm text-muted-foreground">
-                                  {feedback.comment}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  {format(new Date(feedback.createdAt), "PPp")}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
+                              ))}
+                            </div>
+                          </ScrollArea>
                         ) : (
                           <p className="text-sm text-muted-foreground text-center py-4">
                             {t("noFeedback")}
@@ -583,6 +566,21 @@ export function EventStatDialog({
                 className="resize-none"
               />
             </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="allowRejoin"
+                checked={allowRejoin}
+                onCheckedChange={(checked) =>
+                  setAllowRejoin(checked as boolean)
+                }
+              />
+              <Label
+                htmlFor="allowRejoin"
+                className="text-sm font-normal cursor-pointer"
+              >
+                {t("kickDialog.allowRejoin")}
+              </Label>
+            </div>
           </div>
           <DialogFooter>
             <Button
@@ -591,6 +589,7 @@ export function EventStatDialog({
                 setShowKickDialog(false);
                 setSelectedParticipant(null);
                 setKickReason("");
+                setAllowRejoin(true);
               }}
               disabled={kickParticipantMutation.isPending}
             >

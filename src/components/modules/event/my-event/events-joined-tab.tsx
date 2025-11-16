@@ -70,8 +70,8 @@ export function EventsJoinedTab() {
   );
 
   const unregisterMutation = useUnregisterEventMutation({
-    onSuccess: () => {
-      showSuccessToast(t("unregisterDialog.success"), tSuccess);
+    onSuccess: (data) => {
+      showSuccessToast(data?.payload.message, tSuccess);
       refetchEvents();
     },
     onError: (error) => {

@@ -1,3 +1,4 @@
+export * from "./use-communication-hub";
 export * from "./use-device-settings";
 export * from "./use-event-meeting";
 export * from "./use-logout";

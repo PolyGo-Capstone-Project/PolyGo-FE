@@ -11,6 +11,11 @@
     "friends": "Bạn Bè",
     "chat": "Trò chuyện",
     "share": "Chia Sẻ Hồ Sơ",
+    "gender": {
+      "Male": "Nam",
+      "Female": "Nữ",
+      "Other": "Khác"
+    },
     "tabs": {
       "overview": "Tổng Quan",
       "social": "Mạng Xã Hội"
@@ -56,7 +61,25 @@
       "day": "Ngày",
       "days": "Ngày",
       "label": "Chuỗi!",
-      "keepItUp": "Hãy tiếp tục!"
+      "keepItUp": "Hãy tiếp tục!",
+      "currentStreak": "Chuỗi Hiện Tại",
+      "longestStreak": "Chuỗi Dài Nhất",
+      "bannedStreak": "Chuỗi Cấm",
+      "record": "Kỷ lục",
+      "warning": "Cảnh báo",
+      "cold": "Bắt đầu chuỗi của bạn!",
+      "warm": "Tiếp tục để nóng lên!",
+      "hot": "Bạn đang bùng cháy!"
+    },
+    "merit": {
+      "title": "Điểm Uy Tín",
+      "trustScore": "Điểm Tin Cậy",
+      "banned": "Bị Hạn Chế",
+      "stable": "Ổn Định",
+      "veryTrusted": "Rất Đáng Tin",
+      "bannedDesc": "Quyền truy cập hạn chế",
+      "stableDesc": "Tình trạng tốt",
+      "veryTrustedDesc": "Danh tiếng xuất sắc"
     },
     "timeAgo": {
       "today": "Hôm nay",
