@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import ReportContent from "@/app/[locale]/(protected)/(admin)/manage/reports/report-content";
+import TransactionContent from "./transaction-content";
 
 export const metadata: Metadata = {
   title: "Manage Transactions - PolyGo",
@@ -8,9 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return (
-    <>
-      <ReportContent />
-    </>
-  );
+  return <TransactionContent />;
 }

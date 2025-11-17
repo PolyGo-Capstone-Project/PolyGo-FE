@@ -4,6 +4,7 @@ import {
   CreateAccountBankBodyType,
   CreateInquiryTransactionBodyType,
   GetAdminTransactionsResType,
+  GetTransactionAdminQueryType,
   GetTransactionQueryType,
   GetUserTransactionsResType,
   GetUserWalletResType,
@@ -26,8 +27,8 @@ const transactionApiRequest = {
   // GET admin transactions
   getAdminTransactions: createGetAll<
     GetAdminTransactionsResType,
-    GetTransactionQueryType
-  >(`/admin/${prefix}`),
+    GetTransactionAdminQueryType
+  >(`/admin${prefix}`),
   // GET wallet
   getUserWallet: () => http.get<GetUserWalletResType>(`/wallet`),
   // POST create account bank
@@ -43,11 +44,11 @@ const transactionApiRequest = {
   withdrawalConfirm: (body: WithdrawalConfirmBodyType) =>
     http.post<MessageResType>(`${prefix}/withdrawal-confirm`, body),
   // PUT withdrawal cancel
-  withdrawalCancel: (body: WithdrawalCancelBodyType) =>
-    http.put<MessageResType>(`${prefix}/withdrawal-cancel`, body),
+  withdrawalCancel: (id: string, body: WithdrawalCancelBodyType) =>
+    http.put<MessageResType>(`${prefix}/withdrawal-cancel/${id}`, body),
   // PUT withdrawal approve
-  withdrawalApprove: (body: WithdrawalApproveBodyType) =>
-    http.put<MessageResType>(`${prefix}/withdrawal-approve`, body),
+  withdrawalApprove: (id: string, body: WithdrawalApproveBodyType) =>
+    http.put<MessageResType>(`${prefix}/withdrawal-approve/${id}`, body),
   // POST inquiry transaction
   inquiryTransaction: (id: string, body: CreateInquiryTransactionBodyType) =>
     http.post<MessageResType>(`/inquiry/${prefix}/${id}`, body),
