@@ -32,7 +32,7 @@ import { useUserCommunicationHubContext } from "@/components/providers";
 import {
   useAuthMe,
   useCurrentSubscriptionQuery,
-  useMyReceivedGiftsQuery,
+  useMyPurchasedGiftsQuery,
   useUserBadgesQuery,
   useUserInterestsQuery,
   useUserLanguagesLearningQuery,
@@ -109,7 +109,7 @@ export default function ProfilePage() {
 
   // Fetch received gifts (only accepted ones - isRead: true)
   const { data: receivedGiftsData, isLoading: isLoadingGifts } =
-    useMyReceivedGiftsQuery({
+    useMyPurchasedGiftsQuery({
       params: { lang: locale, pageNumber: 1, pageSize: 20 },
     });
 
@@ -142,24 +142,14 @@ export default function ProfilePage() {
   // Get planType from subscription
   const planType = subscriptionData?.payload.data?.planType;
 
-  // Filter only accepted gifts (isRead: true)
-  const acceptedGifts =
-    receivedGiftsData?.payload.data.items.filter((gift) => gift.isRead) || [];
-
   // Transform gifts to match ProfileGiftsSection format
-  const transformedGifts = acceptedGifts.map((gift) => ({
-    id: gift.presentationId,
-    name: gift.giftName,
-    value: 0, // Price not provided in received gifts
-    from: {
-      name: gift.isAnonymous ? "Anonymous" : gift.senderName,
-      avatarUrl: gift.isAnonymous ? null : gift.senderAvatarUrl,
-    },
-    message: gift.message,
-    createdAt: gift.createdAt,
-    iconUrl: gift.giftIconUrl,
-    status: gift.status,
-  }));
+  const transformedGifts =
+    receivedGiftsData?.payload.data?.items.map((gift) => ({
+      id: gift.id,
+      name: gift.name,
+      iconUrl: gift.iconUrl,
+      quantity: gift.quantity,
+    })) || [];
 
   if (!user) {
     return (
@@ -219,7 +209,7 @@ export default function ProfilePage() {
                 merit={user.merit}
                 streakDays={user.streakDays}
                 longestStreakDays={user.longestStreakDays}
-                bannedStreakDays={user.bannedStreakDays}
+                nextUnbannedAt={user.nextUnbannedAt}
               />
               {/* Stats */}
               <ProfileStats
@@ -319,7 +309,7 @@ export default function ProfilePage() {
                 merit={user.merit}
                 streakDays={user.streakDays}
                 longestStreakDays={user.longestStreakDays}
-                bannedStreakDays={user.bannedStreakDays}
+                nextUnbannedAt={user.nextUnbannedAt}
               />
             </div>
           </div>

@@ -112,7 +112,7 @@
       "status": {
         "Completed": "Hoàn thành",
         "Pending": "Đang xử lý",
-        "Failed": "Thất bại",
+        "Expired": "Hết hạn",
         "Cancelled": "Đã hủy"
       },
       "empty": "Không có giao dịch nào",
@@ -121,7 +121,39 @@
     "toast": {
       "exportSuccess": "Xuất file thành công",
       "exportError": "Xuất file thất bại",
-      "comingSoon": "Tính năng này sẽ sớm ra mắt"
+      "comingSoon": "Tính năng này sẽ sớm ra mắt",
+      "depositError": "Không thể xử lý nạp tiền. Vui lòng thử lại.",
+      "cancelPaymentError": "Không thể hủy thanh toán"
+    },
+    "deposit": {
+      "title": "Nạp tiền",
+      "description": "Nhập số tiền bạn muốn nạp vào ví",
+      "amountLabel": "Số tiền",
+      "amountPlaceholder": "Nhập số tiền (VND)",
+      "amountHint": "Tối thiểu: 2.000 VND - Tối đa: 5.000.000 VND",
+      "cancel": "Hủy",
+      "confirm": "Xác nhận nạp tiền",
+      "processing": "Đang xử lý...",
+      "validation": {
+        "required": "Vui lòng nhập số tiền",
+        "min": "Số tiền nạp tối thiểu là 2.000 VND",
+        "max": "Số tiền nạp tối đa là 5.000.000 VND"
+      }
+    },
+    "payment": {
+      "success": {
+        "title": "Thanh toán thành công!",
+        "description": "Giao dịch nạp tiền đã được xử lý thành công. Số tiền sẽ được cộng vào ví của bạn trong giây lát.",
+        "redirectInfo": "Bạn sẽ được chuyển về trang ví trong 5 giây...",
+        "backToWallet": "Quay lại ví"
+      },
+      "fail": {
+        "title": "Thanh toán thất bại",
+        "description": "Thanh toán của bạn đã bị hủy hoặc không thể xử lý.",
+        "reasonInfo": "Nếu bạn đã hủy thanh toán, bạn có thể thử lại bất cứ lúc nào. Nếu có lỗi xảy ra, vui lòng liên hệ hỗ trợ.",
+        "tryAgain": "Thử lại",
+        "backToWallet": "Quay lại ví"
+      }
     }
   }
 }

@@ -62,8 +62,8 @@ import {
   useGetEventRatings,
   useGetMyEventRating,
   useRegisterEventMutation,
-  useTransactionBalanceQuery,
   useUpdateEventRatingMutation,
+  useUserWallet,
 } from "@/hooks";
 import { useAuthMe } from "@/hooks/query/use-auth";
 import { formatCurrency, handleErrorApi } from "@/lib/utils";
@@ -76,7 +76,6 @@ export default function EventDetailPage() {
   const tError = useTranslations("Error");
 
   const eventId = params.id as string;
-
   const [password, setPassword] = useState("");
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -88,7 +87,7 @@ export default function EventDetailPage() {
   const [showShareDialog, setShowShareDialog] = useState(false);
 
   const { data, isLoading, error } = useGetEventById(eventId, { lang: locale });
-  const { data: balanceData } = useTransactionBalanceQuery();
+  const { data: balanceData } = useUserWallet();
   const { data: userData } = useAuthMe();
   const registerMutation = useRegisterEventMutation();
 

@@ -39,7 +39,8 @@
     "friendRemoved": "Friend removed successfully!",
     "friendRequestCancelled": "Friend request cancelled successfully!",
     "profileLinkCopied": "Profile link copied!",
-    "copy": "Copy message successful!"
+    "copy": "Copy message successful!",
+    "DepositUrl": "Deposit URL generated successfully!"
   },
   "Error": {
     "default": "An error occurred.",
@@ -83,7 +84,8 @@
     "KickedFromEvent": "You have been removed from the event.",
     "UserBanned": "You have been banned from the platform.",
     "OnlyPlusUserCanCreateEvent": "Only Plus users can create events.",
-    "CannotRateIfNotAttendedEvent": "You cannot rate an event you did not attend."
+    "CannotRateIfNotAttendedEvent": "You cannot rate an event you did not attend.",
+    "depositError": "Failed to initiate deposit. Please try again."
   },
   "header": {
     "products": "Products",
@@ -160,7 +162,8 @@
     "subscriptions": "Subscriptions Management",
     "events": "Events Management",
     "games": "Games Management",
-    "reports": "Reports Management"
+    "reports": "Reports Management",
+    "transactions": "Transactions Management"
   },
   "pagination": {
     "showing": "Showing",

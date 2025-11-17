@@ -39,7 +39,8 @@
     "friendRemoved": "Xóa bạn bè thành công!",
     "friendRequestCancelled": "Hủy lời mời kết bạn thành công!",
     "profileLinkCopied": "Đã sao chép liên kết hồ sơ!",
-    "copy": "Đã sao chép tin nhắn"
+    "copy": "Đã sao chép tin nhắn",
+    "DepositUrl": "Đã tạo URL nạp tiền thành công!"
   },
   "Error": {
     "default": "Đã xảy ra lỗi.",
@@ -83,7 +84,8 @@
     "KickedFromEvent": "Bạn đã bị đuổi khỏi event!",
     "UserBanned": "Bạn đã bị cấm khỏi nền tảng.",
     "OnlyPlusUserCanCreateEvent": "Chỉ người dùng Plus mới có thể tạo sự kiện.",
-    "CannotRateIfNotAttendedEvent": "Bạn không thể đánh giá một sự kiện mà bạn không tham dự."
+    "CannotRateIfNotAttendedEvent": "Bạn không thể đánh giá một sự kiện mà bạn không tham dự.",
+    "depositError": "Khởi tạo nạp tiền thất bại. Vui lòng thử lại."
   },
   "header": {
     "products": "Sản phẩm",
@@ -153,7 +155,8 @@
     "subscriptions": "Quản lý đăng ký",
     "events": "Quản lý sự kiện",
     "games": "Quản lý trò chơi",
-    "reports": "Quản lý báo cáo"
+    "reports": "Quản lý báo cáo",
+    "transactions": "Quản lý giao dịch"
   },
   "pagination": {
     "showing": "Hiển thị",

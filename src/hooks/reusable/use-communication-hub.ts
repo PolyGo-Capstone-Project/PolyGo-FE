@@ -2,7 +2,7 @@
 
 import envConfig from "@/config";
 import { getSessionTokenFromLocalStorage } from "@/lib/utils";
-import { UserStatusChangedType } from "@/models/presence.model";
+import { UserStatusChangedType } from "@/models";
 import {
   HubConnection,
   HubConnectionBuilder,

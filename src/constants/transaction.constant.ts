@@ -3,7 +3,6 @@ export const TransactionTypeEnum = {
   Purchase: "Purchase",
   Refund: "Refund",
   Withdraw: "Withdraw",
-  Gift: "Gift",
   Adjustment: "Adjustment",
   AutoRenew: "AutoRenew",
 } as const;
@@ -14,7 +13,7 @@ export type TransactionEnumType =
 export const TransactionStatus = {
   Pending: "Pending",
   Completed: "Completed",
-  Failed: "Failed",
+  Expired: "Expired",
   Cancelled: "Cancelled",
 } as const;
 
@@ -23,7 +22,8 @@ export type TransactionStatusType =
 
 export const TransactionMethod = {
   System: "System",
-  CreditCard: "CreditCard",
+  Wallet: "Wallet",
+  QRPayment: "QRPayment",
 } as const;
 
 export type TransactionMethodType =
