@@ -1,8 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
-
 import { LoadingSpinner } from "@/components";
 import CreatePostCard from "@/components/modules/social/create-post-card";
 import FriendSidebar from "@/components/modules/social/friend-side-bar";
@@ -10,6 +7,8 @@ import PostCard from "@/components/modules/social/post-card";
 import SuggestedGamesCard from "@/components/modules/social/suggested-games-card";
 import { useUserCommunicationHubContext } from "@/components/providers";
 import { useGetFriends } from "@/hooks";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useState } from "react";
 
 // ---------------------- Types (GIỮ TRONG PAGE) ----------------------
 type Author = {
