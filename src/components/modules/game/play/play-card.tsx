@@ -163,57 +163,76 @@ export default function PlayCard({
           </Alert>
         )}
 
-        {/* Hint (nút + nội dung) */}
-        {word.hint && (
-          <div className="space-y-2">
-            {!showHint && (
-              <div className="flex justify-center">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  onClick={handleShowHint}
-                >
-                  <Info className="h-4 w-4" />
-                  {tHint}
-                </Button>
-              </div>
-            )}
+        <Input
+          value={answer}
+          onChange={(e) => setAnswer(e.target.value)}
+          placeholder={tPlaceholder}
+          className="h-11 text-base"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSubmit();
+            }
+          }}
+        />
 
-            {showHint && (
-              <div className="rounded-md border bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 p-3 text-sm">
-                <div className="flex items-center gap-2 font-medium">
-                  <Info className="h-4 w-4" />
-                  {tHint}
-                </div>
-                <div className="mt-1">{word.hint}</div>
-              </div>
-            )}
-          </div>
-        )}
+        {/* Hint + Actions in one row */}
+        <div className="flex flex-col gap-3">
+          {/* Hint collapsed button (only when hidden) */}
+          {word.hint && !showHint && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-2 self-start sm:self-auto hidden"
+              // ⛔ hidden vì hint button đã được chuyển xuống hàng nút chung
+              onClick={handleShowHint}
+            >
+              <Info className="h-4 w-4" />
+              {tHint}
+            </Button>
+          )}
 
-        {/* Answer */}
-        <div className="max-w-xl mx-auto">
-          <Input
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            placeholder={tPlaceholder}
-            className="h-11 text-base"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSubmit();
-              }
-            }}
-          />
-          <div className="mt-3 flex flex-col sm:flex-row gap-2">
-            <Button className="gap-2 flex-1" onClick={handleSubmit}>
+          {/* Khi bấm Hint → hiện thẻ Hint */}
+          {word.hint && showHint && (
+            <div
+              className="rounded-md border bg-amber-50 dark:bg-amber-950/30 
+                    text-amber-800 dark:text-amber-300 p-3 text-sm"
+            >
+              <div className="flex items-center gap-2 font-medium">
+                <Info className="h-4 w-4" />
+                {tHint}
+              </div>
+              <div className="mt-1">{word.hint}</div>
+            </div>
+          )}
+
+          <div className="flex items-center gap-2 mt-2">
+            {/* Submit – lớn nhất */}
+            <Button className="flex-[2] gap-2 h-11" onClick={handleSubmit}>
               <CheckCircle2 className="h-4 w-4" />
               {tSubmit}
             </Button>
+
+            {/* Hint – nhỏ & bằng Shuffle */}
+            {word.hint && (
+              <Button
+                variant="default"
+                size="sm"
+                className="flex-1 gap-2 h-11 
+             bg-amber-500 hover:bg-amber-600 
+             text-white font-semibold 
+             shadow-md"
+                onClick={handleShowHint}
+              >
+                <Info className="h-4 w-4" />
+                {tHint}
+              </Button>
+            )}
+
+            {/* Shuffle – nhỏ & bằng Hint */}
             <Button
               variant="outline"
-              className="gap-2 flex-1"
+              className="flex-1 gap-2 h-11"
               onClick={onReshuffle}
             >
               <RefreshCcw className="h-4 w-4" />
