@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { useInterestsQuery, useLanguagesQuery } from "@/hooks";
 import { WordsetDifficulty } from "@/models";
+import { IconX } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 
 type FiltersBarProps = {
@@ -21,6 +23,7 @@ type FiltersBarProps = {
   onLevel: (v: "all" | WordsetDifficulty) => void;
   cat: string; // giống lang
   onCat: (v: string) => void; // giống onLang
+  onClear: () => void;
 };
 
 export default function FiltersBar({
@@ -32,6 +35,7 @@ export default function FiltersBar({
   onLevel,
   cat,
   onCat,
+  onClear,
 }: FiltersBarProps) {
   const t = useTranslations("filters");
   const locale = useLocale();
@@ -113,6 +117,17 @@ export default function FiltersBar({
             ))}
           </SelectContent>
         </Select>
+
+        {/* Clear Filters */}
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full md:w-auto md:ml-auto"
+          onClick={onClear}
+        >
+          <IconX className="h-4 w-4" />
+          {t("clearFilters", { default: "Clear filters" })}
+        </Button>
       </div>
     </div>
   );

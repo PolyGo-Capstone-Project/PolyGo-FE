@@ -33,6 +33,7 @@
     "allDifficulties": "All Difficulties",
     "category": "Category",
     "allCategories": "All Categories",
+    "clearFilters": "Clear Filters",
     "searchPlaceholder": "Search vocabulary sets...",
     "wordset": {
       "difficulty": {
