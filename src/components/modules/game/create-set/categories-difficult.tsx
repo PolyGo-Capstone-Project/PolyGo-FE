@@ -76,7 +76,7 @@ export default function CatDiff({
         {/* Category */}
         <div className="space-y-2">
           <Label>{t("create.catDiff.category")} *</Label>
-          <div className="grid grid-cols-2 xs:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {interests.map((c) => {
               const active = categoryId === c.id;
               return (
@@ -93,10 +93,10 @@ export default function CatDiff({
                   ].join(" ")}
                 >
                   <div className="flex items-center gap-2">
-                    <span>
+                    {/* <span>
                       <Tag className="h-4 w-4" />
-                    </span>
-                    <span className="font-medium line-clamp-1">
+                    </span> */}
+                    <span className="font-medium line-clamp-1 flex items-center gap-1">
                       {c.iconUrl && (
                         <Image
                           src={c.iconUrl}
@@ -111,7 +111,6 @@ export default function CatDiff({
                       })}
                     </span>
                   </div>
-                  {/* có thể thêm hint i18n nếu muốn */}
                 </button>
               );
             })}
