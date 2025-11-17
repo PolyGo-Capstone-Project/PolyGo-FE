@@ -59,7 +59,14 @@ export const GetPostItemsSchema = PostSchema.extend({
       })
     )
     .default([]),
-  reactions: z.array(ReactionSchema.extend({ user: creatorInfor })).default([]),
+  reactions: z
+    .array(
+      ReactionSchema.pick({ reactionType: true }).extend({
+        count: z.number().nonnegative().default(0),
+        user: creatorInfor,
+      })
+    )
+    .default([]),
 });
 
 export const GetPostResSchema = z.object({
@@ -121,6 +128,7 @@ export const UpdateCommentBodySchema = CreateCommentBodySchema.partial();
 export type PostType = z.infer<typeof PostSchema>;
 export type CommentType = z.infer<typeof CommentSchema>;
 export type ReactionType = z.infer<typeof ReactionSchema>;
+export type CreatorInforType = z.infer<typeof creatorInfor>;
 export type GetPostQueryType = z.infer<typeof GetPostQuerySchema>;
 export type SearchPostQueryType = z.infer<typeof SearchPostQuerySchema>;
 
