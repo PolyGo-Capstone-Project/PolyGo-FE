@@ -7,7 +7,8 @@
       "hide": "Ẩn số dư",
       "totalEarned": "Tổng thu nhập",
       "totalSpent": "Tổng chi tiêu",
-      "totalWithdrawn": "Tổng đã rút"
+      "totalWithdrawn": "Tổng đã rút",
+      "pending": "Số dư đang chờ xử lý"
     },
     "quickActions": {
       "title": "Thao tác nhanh",
@@ -154,6 +155,32 @@
         "tryAgain": "Thử lại",
         "backToWallet": "Quay lại ví"
       }
+    },
+    "bankAccount": {
+      "title": "Quản lý tài khoản ngân hàng",
+      "description": "Thêm hoặc xóa tài khoản ngân hàng để rút tiền. Bạn có thể thêm tối đa 2 tài khoản.",
+      "manage": "Quản lý TK ngân hàng",
+      "currentAccounts": "Tài khoản ngân hàng hiện tại",
+      "noAccounts": "Bạn chưa thêm tài khoản ngân hàng nào",
+      "addNew": "Thêm tài khoản mới",
+      "searchPlaceholder": "Tìm theo tên hoặc mã ngân hàng...",
+      "noBanksFound": "Không tìm thấy ngân hàng",
+      "bankName": "Tên ngân hàng",
+      "selectBank": "Chọn ngân hàng",
+      "loadingBanks": "Đang tải danh sách ngân hàng...",
+      "accountName": "Tên chủ tài khoản",
+      "accountNamePlaceholder": "Nhập tên chủ tài khoản",
+      "bankNumber": "Số tài khoản",
+      "bankNumberPlaceholder": "Nhập số tài khoản ngân hàng",
+      "add": "Thêm tài khoản",
+      "adding": "Đang thêm...",
+      "reset": "Làm mới",
+      "maxAccountsReached": "Bạn đã đạt giới hạn tối đa 2 tài khoản ngân hàng",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa tài khoản ngân hàng này?",
+      "addSuccess": "Thêm tài khoản ngân hàng thành công",
+      "addError": "Thêm tài khoản ngân hàng thất bại",
+      "deleteSuccess": "Xóa tài khoản ngân hàng thành công",
+      "deleteError": "Xóa tài khoản ngân hàng thất bại"
     }
   }
 }

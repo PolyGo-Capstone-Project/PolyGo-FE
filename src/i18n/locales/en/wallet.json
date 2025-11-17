@@ -7,7 +7,8 @@
       "hide": "Hide Balance",
       "totalEarned": "Total Earned",
       "totalSpent": "Total Spent",
-      "totalWithdrawn": "Total Withdrawn"
+      "totalWithdrawn": "Total Withdrawn",
+      "pending": "Pending Balance"
     },
     "quickActions": {
       "title": "Quick Actions",
@@ -154,6 +155,32 @@
         "tryAgain": "Try Again",
         "backToWallet": "Back to Wallet"
       }
+    },
+    "bankAccount": {
+      "title": "Manage Bank Accounts",
+      "description": "Add or remove your bank accounts for withdrawals. You can add up to 2 bank accounts.",
+      "manage": "Manage Banks",
+      "currentAccounts": "Current Bank Accounts",
+      "noAccounts": "You haven't added any bank accounts yet",
+      "addNew": "Add New Bank Account",
+      "searchPlaceholder": "Search by bank name or code...",
+      "noBanksFound": "No banks found",
+      "bankName": "Bank Name",
+      "selectBank": "Select a bank",
+      "loadingBanks": "Loading banks...",
+      "accountName": "Account Holder Name",
+      "accountNamePlaceholder": "Enter account holder name",
+      "bankNumber": "Bank Account Number",
+      "bankNumberPlaceholder": "Enter bank account number",
+      "add": "Add Bank Account",
+      "adding": "Adding...",
+      "reset": "Reset",
+      "maxAccountsReached": "You have reached the maximum of 2 bank accounts",
+      "deleteConfirm": "Are you sure you want to delete this bank account?",
+      "addSuccess": "Bank account added successfully",
+      "addError": "Failed to add bank account",
+      "deleteSuccess": "Bank account deleted successfully",
+      "deleteError": "Failed to delete bank account"
     }
   }
 }

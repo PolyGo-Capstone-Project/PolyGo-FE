@@ -29,7 +29,7 @@ const transactionApiRequest = {
     GetTransactionQueryType
   >(`/admin/${prefix}`),
   // GET wallet
-  getUserWallet: () => http.get<GetUserWalletResType>(`${prefix}/wallet`),
+  getUserWallet: () => http.get<GetUserWalletResType>(`/wallet`),
   // POST create account bank
   createAccountBank: (body: CreateAccountBankBodyType) =>
     http.post<MessageResType>(`/wallet/accounts`, body),

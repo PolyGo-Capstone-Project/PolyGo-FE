@@ -49,6 +49,7 @@ export default function WalletPage() {
   const totalEarned = balanceData?.payload.data.totalEarned ?? 0;
   const totalSpent = balanceData?.payload.data.totalSpent ?? 0;
   const totalWithdrawn = balanceData?.payload.data.totalWithdrawn ?? 0;
+  const pendingBalance = balanceData?.payload.data.pendingBalance ?? 0;
 
   const transactions = transactionsData?.payload.data.items ?? [];
   const meta = transactionsData?.payload.data;
@@ -72,6 +73,7 @@ export default function WalletPage() {
             totalEarned={totalEarned}
             totalSpent={totalSpent}
             totalWithdrawn={totalWithdrawn}
+            pendingBalance={pendingBalance}
           />
 
           {/* Transaction History */}
