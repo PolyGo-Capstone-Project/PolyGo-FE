@@ -195,19 +195,11 @@ export default function UserProfilePage() {
     iconUrl: badge.iconUrl ?? null,
   }));
 
-  // Transform gifts from user data
   const transformedGifts = (user.gifts || []).map((gift) => ({
     id: gift.id,
     name: gift.name,
-    value: 0,
-    from: {
-      name: gift.isAnonymous ? "Anonymous" : gift.senderName,
-      avatarUrl: gift.isAnonymous ? null : gift.senderAvatarUrl,
-    },
-    message: gift.message,
-    createdAt: gift.createdAt,
+    quantity: gift.quantity,
     iconUrl: gift.iconUrl,
-    status: gift.status,
   }));
 
   // Handle share profile
