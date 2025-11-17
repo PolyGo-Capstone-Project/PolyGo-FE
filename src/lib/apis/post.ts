@@ -10,6 +10,7 @@ import {
   GetPostResType,
   GetUserPostResType,
   MessageResType,
+  SearchPostQueryType,
   UpdateCommentBodyType,
   UpdatePostBodyType,
 } from "@/models";
@@ -18,7 +19,7 @@ const prefix = "/posts";
 
 const postApiRequest = {
   // GET posts
-  getPosts: createGetAll<GetPostResType, GetPostQueryType>(prefix),
+  getPosts: createGetAll<GetPostResType, SearchPostQueryType>(prefix),
   // POST post
   createPost: (body: CreatePostBodyType) =>
     http.post<CreatePostResType>(`${prefix}`, body),

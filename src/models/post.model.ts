@@ -43,6 +43,9 @@ const CommentResSchema = CommentSchema.extend({
 
 // query:
 export const GetPostQuerySchema = PaginationQuerySchema;
+export const SearchPostQuerySchema = PaginationQuerySchema.extend({
+  content: z.string().min(1).max(100).optional(),
+});
 
 // GET POSTS
 export const GetPostItemsSchema = PostSchema.extend({
@@ -119,6 +122,7 @@ export type PostType = z.infer<typeof PostSchema>;
 export type CommentType = z.infer<typeof CommentSchema>;
 export type ReactionType = z.infer<typeof ReactionSchema>;
 export type GetPostQueryType = z.infer<typeof GetPostQuerySchema>;
+export type SearchPostQueryType = z.infer<typeof SearchPostQuerySchema>;
 
 export type GetPostItemsType = z.infer<typeof GetPostItemsSchema>;
 export type GetPostResType = z.infer<typeof GetPostResSchema>;
