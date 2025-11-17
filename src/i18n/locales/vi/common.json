@@ -70,7 +70,7 @@
     "InvalidFormat": "Định dạng không hợp lệ.",
     "InvalidMailOrPassword": "Email hoặc mật khẩu không đúng.",
     "invalidFileType": "Loại file không hợp lệ. Vui lòng chọn file ảnh.",
-    "fileTooLarge": "Kích thước file quá lớn. Kích thước tối đa là 5MB.",
+    "fileTooLarge": "Kích thước file quá lớn. Kích thước tối đa là 10MB.",
     "EventCannotBeCancelledWithin24Hours": "Sự kiện không thể hủy trong vòng 24 giờ trước thời gian bắt đầu.",
     "FriendRequestAlreadySent": "Lời mời kết bạn đã được gửi đến người dùng này.",
     "CannotSendFriendRequestToYourself": "Bạn không thể gửi lời mời kết bạn cho chính mình.",

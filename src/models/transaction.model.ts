@@ -11,6 +11,17 @@ export const WalletSchema = z.object({
   balance: z.number().min(0),
   userId: z.string(),
   pendingBalance: z.number().min(0),
+  totalEarned: z.number().min(0),
+  totalSpent: z.number().min(0),
+  totalWithdrawn: z.number().min(0),
+});
+
+export const WalletBankAccountSchema = z.object({
+  id: z.string(),
+  bankName: z.string(),
+  encryptedBankName: z.string(),
+  encryptedBankNumber: z.string(),
+  walletId: z.string(),
 });
 
 export const TransactionSchema = z.object({
@@ -38,11 +49,15 @@ export const GetTransactionQuerySchema = PaginationQuerySchema;
 
 // GET
 // GET USER WALLET
+const accountBank = z.object({
+  bankName: z.string(),
+  bankNumber: z.string(),
+  accountName: z.string(),
+});
 export const GetUserWalletResSchema = z.object({
-  data: WalletSchema.pick({ balance: true, pendingBalance: true }).extend({
-    totalEarned: z.number().min(0),
-    totalSpent: z.number().min(0),
-    totalWithdrawn: z.number().min(0),
+  data: WalletSchema.extend({
+    accounts: z.array(accountBank),
+    numberOfAccounts: z.number().min(0).max(2).optional(),
   }),
   message: z.string(),
 });
@@ -53,10 +68,13 @@ export const UserTransactionItemSchema = TransactionSchema.pick({
   amount: true,
   remainingBalance: true,
   description: true,
+  userNotes: true,
+  isInquiry: true,
   transactionType: true,
   transactionMethod: true,
   transactionStatus: true,
   createdAt: true,
+  lastUpdatedAt: true,
 });
 
 export const GetUserTransactionsResSchema = z.object({
@@ -79,22 +97,90 @@ export const GetAdminTransactionsResSchema = z.object({
 });
 
 // POST
+// Create account bank
+export const CreateAccountBankBodySchema = z
+  .object({
+    bankName: z.string(),
+    bankNumber: z.string(),
+    accountName: z.string(),
+  })
+  .strict();
+
 // WITHDRAWAL REQUEST
+export const WithdrawalRequestBodySchema = z
+  .object({
+    amount: z.number().min(10000).max(10000000),
+    bankNumber: z.string(),
+    bankName: z.string(),
+    accountName: z.string(),
+  })
+  .strict();
 
 // WITHDRAWAL CONFIRM
+export const WithdrawalConfirmBodySchema = z
+  .object({
+    otp: z.string().length(6),
+  })
+  .strict();
+
+// inquiry transaction
+export const CreateInquiryTransactionBodySchema = z
+  .object({
+    userNotes: z.string().optional(),
+  })
+  .strict();
+
+// PUT
+// Withdrawal cancel
+export const WithdrawalCancelBodySchema = z
+  .object({
+    systemNotes: z.string().optional(),
+  })
+  .strict();
+
+// Withdrawal approve
+export const WithdrawalApproveBodySchema = z
+  .object({
+    withdrawalApprovedImageUrl: z.string().optional(),
+  })
+  .strict();
+
+// inquiry
+export const UpdateInquiryTransactionBodySchema =
+  CreateInquiryTransactionBodySchema;
 
 //types:
 export type WalletType = z.infer<typeof WalletSchema>;
+export type WalletBankAccountType = z.infer<typeof WalletBankAccountSchema>;
 export type TransactionType = z.infer<typeof TransactionSchema>;
 export type GetTransactionQueryType = z.infer<typeof GetTransactionQuerySchema>;
+
 export type GetUserWalletResType = z.infer<typeof GetUserWalletResSchema>;
 export type UserTransactionItemType = z.infer<typeof UserTransactionItemSchema>;
 export type GetUserTransactionsResType = z.infer<
   typeof GetUserTransactionsResSchema
 >;
-export type AdminTransactionItemType = z.infer<
-  typeof AdminTransactionItemSchema
->;
 export type GetAdminTransactionsResType = z.infer<
   typeof GetAdminTransactionsResSchema
+>;
+export type CreateAccountBankBodyType = z.infer<
+  typeof CreateAccountBankBodySchema
+>;
+export type WithdrawalRequestBodyType = z.infer<
+  typeof WithdrawalRequestBodySchema
+>;
+export type WithdrawalConfirmBodyType = z.infer<
+  typeof WithdrawalConfirmBodySchema
+>;
+export type WithdrawalCancelBodyType = z.infer<
+  typeof WithdrawalCancelBodySchema
+>;
+export type WithdrawalApproveBodyType = z.infer<
+  typeof WithdrawalApproveBodySchema
+>;
+export type CreateInquiryTransactionBodyType = z.infer<
+  typeof CreateInquiryTransactionBodySchema
+>;
+export type UpdateInquiryTransactionBodyType = z.infer<
+  typeof UpdateInquiryTransactionBodySchema
 >;

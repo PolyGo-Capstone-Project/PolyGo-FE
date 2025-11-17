@@ -17,21 +17,25 @@
       "report": "Báo cáo",
       "reply": "Trả lời",
       "commentPlaceholder": "Viết bình luận...",
-      "justNow": "Vừa xong"
+      "justNow": "Vừa xong",
+      "viewAllComments": "Xem tất cả {count} bình luận"
     },
     "leftSidebar": {
       "games": {
         "title": "Trò chơi rèn luyện",
-        "play": "Chơi"
+        "play": "Chơi",
+        "empty": "Không có trò chơi"
       }
     },
     "rightSidebar": {
       "suggestions": {
         "title": "Gợi ý kết bạn",
-        "add": "Thêm"
+        "add": "Thêm",
+        "empty": "Không có gợi ý"
       },
       "online": {
-        "title": "Bạn bè đang Online"
+        "title": "Bạn bè đang Online",
+        "empty": "Không có bạn bè online"
       }
     }
   }

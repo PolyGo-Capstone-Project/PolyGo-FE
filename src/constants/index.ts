@@ -4,6 +4,7 @@ export * from "./communication.constant";
 export * from "./event.constant";
 export * from "./friend.constant";
 export * from "./gift.constant";
+export * from "./post.constant";
 export * from "./role.constant";
 export * from "./subscription";
 export * from "./token.constant";
