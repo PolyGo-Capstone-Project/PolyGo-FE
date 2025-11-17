@@ -71,8 +71,8 @@ export function PersonalInfoStep({
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
       toast.error(t("avatarTooLarge"));
       return;
     }

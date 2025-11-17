@@ -29,7 +29,7 @@ export const ReactionSchema = z.object({
 
 export const creatorInfor = z.object({
   id: z.string(),
-  username: z.string(),
+  name: z.string(),
   avatarUrl: z.string().optional(),
 });
 
@@ -59,7 +59,15 @@ export const GetPostItemsSchema = PostSchema.extend({
       })
     )
     .default([]),
-  reactions: z.array(ReactionSchema.extend({ user: creatorInfor })).default([]),
+  reactions: z
+    .array(
+      ReactionSchema.pick({ reactionType: true }).extend({
+        count: z.number().nonnegative().default(0),
+        user: creatorInfor,
+      })
+    )
+    .default([]),
+  myReaction: z.enum(ReactionEnum).optional(),
 });
 
 export const GetPostResSchema = z.object({
@@ -72,9 +80,7 @@ export const GetPostResSchema = z.object({
 
 // GET POST BY ID
 export const GetPostByIdResSchema = z.object({
-  data: GetPostItemsSchema.extend({
-    myReaction: z.enum(ReactionEnum).optional(),
-  }),
+  data: GetPostItemsSchema,
   message: z.string(),
 });
 
@@ -121,6 +127,7 @@ export const UpdateCommentBodySchema = CreateCommentBodySchema.partial();
 export type PostType = z.infer<typeof PostSchema>;
 export type CommentType = z.infer<typeof CommentSchema>;
 export type ReactionType = z.infer<typeof ReactionSchema>;
+export type CreatorInforType = z.infer<typeof creatorInfor>;
 export type GetPostQueryType = z.infer<typeof GetPostQuerySchema>;
 export type SearchPostQueryType = z.infer<typeof SearchPostQuerySchema>;
 

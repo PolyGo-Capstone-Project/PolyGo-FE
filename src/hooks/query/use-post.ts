@@ -250,9 +250,9 @@ export const useDeleteReaction = () => {
 
   return useMutation<DeleteReactionMutationResponse, Error, string>({
     mutationFn: (postId) => postApiRequest.deleteReaction(postId),
-    onSuccess: (data, postId) => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
-      queryClient.invalidateQueries({ queryKey: ["posts", postId] });
+      queryClient.invalidateQueries({ queryKey: ["posts", variables] });
     },
   });
 };

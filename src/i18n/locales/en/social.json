@@ -17,21 +17,25 @@
       "report": "Report",
       "reply": "Reply",
       "commentPlaceholder": "Write a comment...",
-      "justNow": "Just now"
+      "justNow": "Just now",
+      "viewAllComments": "View all {count} comments"
     },
     "leftSidebar": {
       "games": {
         "title": "Practice Games",
-        "play": "Play"
+        "play": "Play",
+        "empty": "No games available"
       }
     },
     "rightSidebar": {
       "suggestions": {
         "title": "Friend Suggestions",
-        "add": "Add"
+        "add": "Add",
+        "empty": "No suggestions"
       },
       "online": {
-        "title": "Friends Online"
+        "title": "Friends Online",
+        "empty": "No friends online"
       }
     }
   }

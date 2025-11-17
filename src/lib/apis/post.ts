@@ -6,6 +6,7 @@ import {
   CreatePostBodyType,
   CreatePostResType,
   CreateReactionBodyType,
+  GetPostByIdResType,
   GetPostQueryType,
   GetPostResType,
   GetUserPostResType,
@@ -32,7 +33,7 @@ const postApiRequest = {
     `${prefix}/user`
   ),
   // GET post by ID
-  getPostById: createGetOne<GetPostResType>(prefix),
+  getPostById: createGetOne<GetPostByIdResType>(prefix),
   // PUT post by ID
   updatePost: (id: string, body: UpdatePostBodyType) =>
     http.put<CreatePostResType>(`${prefix}/${id}`, body),

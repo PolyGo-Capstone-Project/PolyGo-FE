@@ -70,7 +70,7 @@
     "MailNotFound": "Email address not found.",
     "InvalidMailOrPassword": "Invalid email or password.",
     "invalidFileType": "Invalid file type. Please select an image file.",
-    "fileTooLarge": "File size too large. Maximum size is 5MB.",
+    "fileTooLarge": "File size too large. Maximum size is 10MB.",
     "EventCannotBeCancelledWithin24Hours": "Event cannot be cancelled within 24 hours of start time.",
     "FriendRequestAlreadySent": "Friend request has already been sent to this user.",
     "CannotSendFriendRequestToYourself": "You cannot send a friend request to yourself.",
