@@ -7,12 +7,10 @@ import { ArrowDownToLine, ArrowUpFromLine, Gift, Sparkles } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
 import { DepositDialog } from "./deposit-dialog";
 
 export function QuickActionsCard() {
   const t = useTranslations("wallet.quickActions");
-  const tToast = useTranslations("wallet.toast");
   const locale = useLocale();
   const router = useRouter();
   const [depositDialogOpen, setDepositDialogOpen] = useState(false);
@@ -37,6 +35,10 @@ export function QuickActionsCard() {
     setDepositDialogOpen(true);
   };
 
+  const handleWithdraw = () => {
+    router.push(`/${locale}/wallet/withdraw`);
+  };
+
   return (
     <>
       <Card className="shadow-sm">
@@ -57,7 +59,7 @@ export function QuickActionsCard() {
             </Button>
 
             <Button
-              onClick={() => toast.info(tToast("comingSoon"))}
+              onClick={handleWithdraw}
               className="flex h-auto  gap-1.5 py-3 md:gap-2 md:py-4"
               variant="outline"
             >

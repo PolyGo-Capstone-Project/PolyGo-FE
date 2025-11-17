@@ -181,6 +181,80 @@
       "addError": "Failed to add bank account",
       "deleteSuccess": "Bank account deleted successfully",
       "deleteError": "Failed to delete bank account"
+    },
+    "withdraw": {
+      "title": "Withdraw Money",
+      "subtitle": "Request to withdraw funds from your wallet",
+      "form": {
+        "title": "Withdrawal Information",
+        "availableBalance": "Available Balance",
+        "limitReached": "You have reached the maximum withdrawals for this month. Next available: {date}",
+        "noAccounts": "Please add a bank account before withdrawing",
+        "selectAccount": "Bank Account",
+        "selectAccountPlaceholder": "Select a bank account",
+        "selectAccountHint": "Choose the account to receive the withdrawal",
+        "amount": "Withdrawal Amount",
+        "amountHint": "Min: {min} - Max: {max}",
+        "submit": "Request Withdrawal",
+        "submitting": "Processing...",
+        "sendingOTP": "Sending OTP..."
+      },
+      "errors": {
+        "amount": {
+          "required": "Please enter withdrawal amount",
+          "min": "Minimum withdrawal is 10,000 VND",
+          "max": "Maximum withdrawal is 10,000,000 VND"
+        },
+        "bankNumber": {
+          "required": "Please select a bank account"
+        },
+        "bankName": {
+          "required": "Please select a bank account"
+        },
+        "accountName": {
+          "required": "Please select a bank account"
+        },
+        "default": "Invalid input"
+      },
+      "otp": {
+        "title": "Verify OTP",
+        "description": "Enter the 6-digit OTP code sent to your email",
+        "otpLabel": "OTP Code",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "confirming": "Confirming...",
+        "success": "Withdrawal request created successfully",
+        "error": "Failed to confirm withdrawal",
+        "timeout": "OTP verification timeout. Please try again."
+      },
+      "success": {
+        "title": "Withdrawal Request Submitted!",
+        "description": "Your withdrawal request has been created successfully and is being processed.",
+        "whatNext": {
+          "title": "What happens next?",
+          "processing": "Processing time: 30 minutes - 24 hours (business hours only)",
+          "notification": "You'll receive email & in-app notifications when completed",
+          "checkHistory": "Track your request in transaction history"
+        },
+        "backToWallet": "Back to Wallet",
+        "viewHistory": "View History"
+      },
+      "terms": {
+        "title": "Terms & Conditions",
+        "processingTime": {
+          "title": "Processing Time",
+          "duration": "Processing takes 30 minutes - 24 hours",
+          "weekdays": "Mon-Fri: 9:00 AM - 12:00 PM & 1:00 PM - 6:00 PM",
+          "saturday": "Saturday: 9:00 AM - 12:00 PM only",
+          "notification": "Email & in-app notifications when completed"
+        },
+        "limits": {
+          "title": "Withdrawal Limits",
+          "monthly": "Maximum 2 withdrawals per month",
+          "min": "Minimum: 10,000 VND",
+          "max": "Maximum: 10,000,000 VND"
+        }
+      }
     }
   }
 }

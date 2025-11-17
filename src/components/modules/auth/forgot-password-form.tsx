@@ -77,7 +77,7 @@ export default function ForgotPasswordForm() {
     try {
       const otpData: SendOTPBodyType = {
         mail: watchedMail,
-        verificationType: TypeOfVerificationCode.FORGOT_PASSWORD,
+        verificationType: TypeOfVerificationCode.Forgot_password,
       };
 
       await sendOTPMutation.mutateAsync(otpData);
