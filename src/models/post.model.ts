@@ -29,7 +29,7 @@ export const ReactionSchema = z.object({
 
 export const creatorInfor = z.object({
   id: z.string(),
-  username: z.string(),
+  name: z.string(),
   avatarUrl: z.string().optional(),
 });
 
@@ -67,6 +67,7 @@ export const GetPostItemsSchema = PostSchema.extend({
       })
     )
     .default([]),
+  myReaction: z.enum(ReactionEnum).optional(),
 });
 
 export const GetPostResSchema = z.object({
@@ -79,9 +80,7 @@ export const GetPostResSchema = z.object({
 
 // GET POST BY ID
 export const GetPostByIdResSchema = z.object({
-  data: GetPostItemsSchema.extend({
-    myReaction: z.enum(ReactionEnum).optional(),
-  }),
+  data: GetPostItemsSchema,
   message: z.string(),
 });
 

@@ -17,9 +17,11 @@ export default function FriendSidebar({
   onlineFriends,
 }: Props) {
   const onlineScrollNeeded = onlineFriends.length > 5;
+  const hasSuggestions = suggestedFriends.length > 0;
+  const hasOnlineFriends = onlineFriends.length > 0;
 
   return (
-    <div className="hidden lg:flex flex-col h-full gap-6 overflow-hidden">
+    <div className="hidden lg:flex flex-col gap-6 overflow-hidden">
       {/* Suggested Friends */}
       <Card className="flex-shrink-0">
         <CardHeader className="border-b sticky top-0 bg-background z-10">
@@ -31,32 +33,47 @@ export default function FriendSidebar({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          {suggestedFriends.map((friend) => (
-            <div
-              key={friend.initials}
-              className="flex items-center justify-between gap-3"
-            >
-              <div className="flex items-center gap-3">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={friend.avatar || "/placeholder.svg"} />
-                  <AvatarFallback>{friend.initials}</AvatarFallback>
-                </Avatar>
-                <span className="text-sm font-medium">{friend.name}</span>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="text-xs py-1 h-auto bg-transparent"
+          {hasSuggestions ? (
+            suggestedFriends.map((friend) => (
+              <div
+                key={friend.initials}
+                className="flex items-center justify-between gap-3"
               >
-                {t("rightSidebar.suggestions.add", { defaultValue: "Thêm" })}
-              </Button>
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={friend.avatar || "/placeholder.svg"} />
+                    <AvatarFallback>{friend.initials}</AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-medium">{friend.name}</span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-xs py-1 h-auto bg-transparent"
+                >
+                  {t("rightSidebar.suggestions.add", { defaultValue: "Thêm" })}
+                </Button>
+              </div>
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <UserPlus className="h-12 w-12 text-muted-foreground/50 mb-3" />
+              <p className="text-sm text-muted-foreground">
+                {t("rightSidebar.suggestions.empty", {
+                  defaultValue: "Không có gợi ý",
+                })}
+              </p>
             </div>
-          ))}
+          )}
         </CardContent>
       </Card>
 
       {/* Online Friends */}
-      <Card className="flex-1 flex flex-col min-h-0">
+      <Card
+        className={
+          hasOnlineFriends ? "flex-1 flex flex-col min-h-0" : "flex-shrink-0"
+        }
+      >
         <CardHeader className="pb-4 border-b flex-shrink-0">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
             <Users className="h-4 w-4" />
@@ -66,25 +83,37 @@ export default function FriendSidebar({
           </CardTitle>
         </CardHeader>
         <CardContent
-          className={`space-y-3 flex-1 ${onlineScrollNeeded ? "overflow-y-auto" : "overflow-visible"}`}
+          className={`space-y-3 ${hasOnlineFriends && onlineScrollNeeded ? "overflow-y-auto flex-1" : ""}`}
+          style={onlineScrollNeeded ? { maxHeight: "calc(100vh - 400px)" } : {}}
         >
-          {onlineFriends.map((friend, idx) => (
-            <div
-              key={`${friend.initials}-${idx}`}
-              className="flex items-center justify-between gap-3 cursor-pointer hover:bg-muted/50 p-2 rounded-lg transition-colors flex-shrink-0"
-            >
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={friend.avatar || "/placeholder.svg"} />
-                    <AvatarFallback>{friend.initials}</AvatarFallback>
-                  </Avatar>
-                  <Circle className="absolute bottom-0 right-0 h-2.5 w-2.5 fill-green-500 text-green-500 border-2 border-background rounded-full" />
+          {hasOnlineFriends ? (
+            onlineFriends.map((friend, idx) => (
+              <div
+                key={`${friend.initials}-${idx}`}
+                className="flex items-center justify-between gap-3 cursor-pointer hover:bg-muted/50 p-2 rounded-lg transition-colors flex-shrink-0"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={friend.avatar || "/placeholder.svg"} />
+                      <AvatarFallback>{friend.initials}</AvatarFallback>
+                    </Avatar>
+                    <Circle className="absolute bottom-0 right-0 h-2.5 w-2.5 fill-green-500 text-green-500 border-2 border-background rounded-full" />
+                  </div>
+                  <span className="text-sm font-medium">{friend.name}</span>
                 </div>
-                <span className="text-sm font-medium">{friend.name}</span>
               </div>
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Users className="h-12 w-12 text-muted-foreground/50 mb-3" />
+              <p className="text-sm text-muted-foreground">
+                {t("rightSidebar.online.empty", {
+                  defaultValue: "Không có bạn bè online",
+                })}
+              </p>
             </div>
-          ))}
+          )}
         </CardContent>
       </Card>
     </div>

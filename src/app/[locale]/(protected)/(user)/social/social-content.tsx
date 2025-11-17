@@ -6,268 +6,93 @@ import FriendSidebar from "@/components/modules/social/friend-side-bar";
 import PostCard from "@/components/modules/social/post-card";
 import SuggestedGamesCard from "@/components/modules/social/suggested-games-card";
 import { useUserCommunicationHubContext } from "@/components/providers";
-import { useGetFriends } from "@/hooks";
+import type { ReactionEnumType } from "@/constants";
+import { FriendStatus } from "@/constants";
+import {
+  useCreateComment,
+  useCreateReaction,
+  useDeleteComment,
+  useDeleteReaction,
+  useGetFriends,
+  useGetUsersMatching,
+  usePosts,
+  useUpdateComment,
+  useWordsetsQuery,
+} from "@/hooks";
+import authApiRequest from "@/lib/apis/auth";
+import type { GetPostItemsType } from "@/models";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-// ---------------------- Types (GIỮ TRONG PAGE) ----------------------
-type Author = {
-  name: string;
-  avatar: string;
-  initials: string;
-  userId?: string; // Add optional userId for presence checking
-};
-type Comment = { id: string; author: Author; content: string; timeAgo: string };
-type ReactionType = "heart" | "laugh" | "angry";
-type Post = {
-  id: string;
-  author: Author;
-  timeAgo: string;
-  content: string;
-  image: string | null;
-  reactions: { heart: number; laugh: number; angry: number };
-  commentCount: number;
-  comments: Comment[];
-};
-
-// ---------------------- Mock (GIỮ TRONG PAGE) ----------------------
-const mockSuggestedGames = [
-  {
-    id: "g1-1",
-    title: "Flashcard Vocabulary",
-    subtitle: "Ôn tập 100 từ vựng French",
-    iconColor: "text-indigo-500",
-  },
-  {
-    id: "g2-1",
-    title: "Matching Pairs",
-    subtitle: "Nối từ tiếng Anh: Chủ đề Food",
-    iconColor: "text-green-500",
-  },
-  {
-    id: "g3-1",
-    title: "Fill-in-the-Blanks",
-    subtitle: "Hoàn thành câu tiếng Tây Ban Nha",
-    iconColor: "text-red-500",
-  },
-  {
-    id: "g4-1",
-    title: "Listen & Type",
-    subtitle: "Luyện nghe tiếng Nhật cơ bản",
-    iconColor: "text-yellow-500",
-  },
-  {
-    id: "g1-2",
-    title: "Flashcard Vocabulary",
-    subtitle: "Ôn tập 100 từ vựng French",
-    iconColor: "text-indigo-500",
-  },
-  {
-    id: "g2-2",
-    title: "Matching Pairs",
-    subtitle: "Nối từ tiếng Anh: Chủ đề Food",
-    iconColor: "text-green-500",
-  },
-  {
-    id: "g3-2",
-    title: "Fill-in-the-Blanks",
-    subtitle: "Hoàn thành câu tiếng Tây Ban Nha",
-    iconColor: "text-red-500",
-  },
-  {
-    id: "g4-2",
-    title: "Listen & Type",
-    subtitle: "Luyện nghe tiếng Nhật cơ bản",
-    iconColor: "text-yellow-500",
-  },
-  {
-    id: "g1-3",
-    title: "Flashcard Vocabulary",
-    subtitle: "Ôn tập 100 từ vựng French",
-    iconColor: "text-indigo-500",
-  },
-  {
-    id: "g2-3",
-    title: "Matching Pairs",
-    subtitle: "Nối từ tiếng Anh: Chủ đề Food",
-    iconColor: "text-green-500",
-  },
-  {
-    id: "g3-3",
-    title: "Fill-in-the-Blanks",
-    subtitle: "Hoàn thành câu tiếng Tây Ban Nha",
-    iconColor: "text-red-500",
-  },
-  {
-    id: "g4-3",
-    title: "Listen & Type",
-    subtitle: "Luyện nghe tiếng Nhật cơ bản",
-    iconColor: "text-yellow-500",
-  },
-];
-
-const mockSuggestedFriends: Author[] = [
-  {
-    name: "Jessica T.",
-    avatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&auto=format&fit=crop&q=60",
-    initials: "JT",
-  },
-  {
-    name: "Marco P.",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a816d507db4?w=800&auto=format&fit=crop&q=60",
-    initials: "MP",
-  },
-];
-
-const mockOnlineFriends: Author[] = [
-  {
-    name: "Carlos M.",
-    avatar:
-      "https://static.vecteezy.com/system/resources/previews/026/408/660/non_2x/hipster-man-lifestyle-fashion-portrait-background-caucasian-isolated-modern-standing-t-shirt-white-model-student-smile-photo.jpg",
-    initials: "CM",
-  },
-  {
-    name: "Amar R.",
-    avatar:
-      "https://img.freepik.com/free-photo/young-handsome-man-wearing-casual-tshirt-blue-background-happy-face-smiling-with-crossed-arms-looking-camera-positive-person_839833-12963.jpg?semt=ais_hybrid&w=740&q=80",
-    initials: "AR",
-  },
-  {
-    name: "Sophia L.",
-    avatar:
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzDDYq0vs0ZhUUYf0JYVzT96VaoHtfNDxrew&s",
-    initials: "SL",
-  },
-  {
-    name: "Jane D.",
-    avatar:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=640&auto=format&fit=crop&q=60",
-    initials: "JD",
-  },
-  {
-    name: "John S.",
-    avatar:
-      "https://images.unsplash.com/photo-1502767089025-6572583495b0?w=640&auto=format&fit=crop&q=60",
-    initials: "JS",
-  },
-  {
-    name: "Aiko K.",
-    avatar:
-      "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=640&auto=format&fit=crop&q=60",
-    initials: "AK",
-  },
-];
-
-const CURRENT_USER_AUTHOR: Author = {
-  name: "You",
-  avatar:
-    "https://cdn.pixabay.com/photo/2022/03/11/06/14/indian-man-7061278_640.jpg",
-  initials: "YO",
-};
-
-async function getSocialPosts(): Promise<Post[]> {
-  await new Promise((r) => setTimeout(r, 500));
-  return [
-    {
-      id: "1",
-      author: {
-        name: "NguyenMinh",
-        avatar:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJdjXMNs33JT-tl_JKSqpVmwOLSikdjQiNNykHlj6OyIK4XqPGNb9XC9NJnhhRXZg6Dfc&usqp=CAU",
-        initials: "NM",
-      },
-      timeAgo: "1",
-      content:
-        "I just had an amazing French conversation practice session! The AI corrections really helped me improve my pronunciation.",
-      image: null,
-      reactions: { heart: 12, laugh: 5, angry: 0 },
-      commentCount: 1,
-      comments: [
-        {
-          id: "c1",
-          author: {
-            name: "AmarR",
-            avatar:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJdjXMNs33JT-tl_JKSqpVmwOLSikdjQiNNykHlj6OyIK4XqPGNb9XC9NJnhhRXZg6Dfc&usqp=CAU",
-            initials: "AR",
-          },
-          content: "That's wonderful! Keep practicing!",
-          timeAgo: "30",
-        },
-      ],
-    },
-    {
-      id: "2",
-      author: {
-        name: "AmarR",
-        avatar:
-          "https://img.freepik.com/free-photo/young-handsome-man-wearing-casual-tshirt-blue-background-happy-face-smiling-with-crossed-arms-looking-camera-positive-person_839833-12963.jpg?semt=ais_hybrid&w=740&q=80",
-        initials: "AR",
-      },
-      timeAgo: "3",
-      content:
-        "Hosting a virtual French cooking class this weekend! Who wants to join? 🎉🍰",
-      image:
-        "https://www.hrcacademy.com/wp-content/uploads/2024/04/chef-preparing-food.jpg",
-      reactions: { heart: 24, laugh: 8, angry: 0 },
-      commentCount: 0,
-      comments: [],
-    },
-    {
-      id: "3",
-      author: {
-        name: "SophiaL",
-        avatar:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzDDYq0vs0ZhUUYf0JYVzT96VaoHtfNDxrew&s",
-        initials: "SL",
-      },
-      timeAgo: "5",
-      content:
-        "Finally reached a 30-day streak in Spanish! 🔥 The gamification features really keep me motivated.",
-      image: null,
-      reactions: { heart: 45, laugh: 12, angry: 0 },
-      commentCount: 3,
-      comments: [
-        {
-          id: "c2",
-          author: {
-            name: "CarlosM",
-            avatar:
-              "https://static.vecteezy.com/system/resources/previews/026/408/660/non_2x/hipster-man-lifestyle-fashion-portrait-background-caucasian-isolated-modern-standing-t-shirt-white-model-student-smile-photo.jpg",
-            initials: "CM",
-          },
-          content: "Felicidades! Keep it up! 🎊",
-          timeAgo: "4",
-        },
-        {
-          id: "c3",
-          author: {
-            name: "NguyenMinh",
-            avatar:
-              "https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvcm0zMjgtMzY2LXRvbmctMDhfMS5qcGc.jpg",
-            initials: "NM",
-          },
-          content: "Amazing achievement! 👏",
-          timeAgo: "3",
-        },
-      ],
-    },
-  ];
-}
-
-// ---------------------- Page ----------------------
 interface ContentProps {
   locale: string;
 }
+
 export default function SocialContent({ locale }: ContentProps) {
   const t = useTranslations("social");
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>(
     {}
   );
+  const [page, setPage] = useState(1);
+  const [allPosts, setAllPosts] = useState<GetPostItemsType[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  // Get current user info
+  const { data: currentUserData, isLoading: userLoading } = useQuery({
+    queryKey: ["auth", "me"],
+    queryFn: () => authApiRequest.me(),
+  });
+
+  // Get posts with pagination
+  const {
+    data: postsData,
+    isLoading: postsLoading,
+    isFetching,
+  } = usePosts({
+    params: { pageNumber: page, pageSize: 10 },
+  });
+
+  // Update posts when new data arrives
+  useEffect(() => {
+    if (postsData?.payload?.data?.items) {
+      const newPosts = postsData.payload.data.items;
+
+      if (page === 1) {
+        setAllPosts(newPosts);
+      } else {
+        setAllPosts((prev) => {
+          // Avoid duplicates
+          const existingIds = new Set(prev.map((p) => p.id));
+          const uniqueNewPosts = newPosts.filter((p) => !existingIds.has(p.id));
+          return [...prev, ...uniqueNewPosts];
+        });
+      }
+
+      // Check if there are more pages
+      const meta = postsData.payload.data;
+      setHasMore(meta.currentPage < meta.totalPages);
+    }
+  }, [postsData, page]);
+
+  // Intersection Observer for infinite scroll
+  useEffect(() => {
+    if (!loadMoreRef.current || postsLoading || isFetching || !hasMore) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isFetching) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(loadMoreRef.current);
+
+    return () => observer.disconnect();
+  }, [hasMore, isFetching, postsLoading]);
 
   // Get real friends from API
   const lang = useMemo(() => locale.split("-")[0], [locale]);
@@ -276,12 +101,63 @@ export default function SocialContent({ locale }: ContentProps) {
     { enabled: true }
   );
 
+  // Get practice games (12 wordsets)
+  const { data: wordsetsData } = useWordsetsQuery({
+    params: { lang, pageNumber: 1, pageSize: 12 },
+    enabled: true,
+  });
+
+  // Get friend suggestions (users with friendStatus=None)
+  const { data: suggestedUsersData } = useGetUsersMatching(
+    { lang, pageNumber: 1, pageSize: 5 },
+    { enabled: true }
+  );
+
   // Get presence context for online status
   const { isUserOnline } = useUserCommunicationHubContext();
 
+  // Mutations
+  const createCommentMutation = useCreateComment();
+  const createReactionMutation = useCreateReaction();
+  const deleteReactionMutation = useDeleteReaction();
+  const updateCommentMutation = useUpdateComment();
+  const deleteCommentMutation = useDeleteComment();
+
+  // Transform practice games data
+  const practiceGames = useMemo(() => {
+    if (!wordsetsData?.payload?.data?.items) return [];
+
+    return wordsetsData.payload.data.items.slice(0, 12).map((wordset: any) => ({
+      id: wordset.id,
+      title: wordset.title || "Untitled Game",
+      subtitle: `${wordset.difficulty || "Medium"} • ${wordset.category || "General"}`,
+      iconColor: "border-blue-500 text-blue-500",
+    }));
+  }, [wordsetsData]);
+
+  // Transform friend suggestions (filter friendStatus=None)
+  const suggestedFriends = useMemo(() => {
+    if (!suggestedUsersData?.payload?.data?.items) return [];
+
+    return suggestedUsersData.payload.data.items
+      .filter((user: any) => user.friendStatus === FriendStatus.None)
+      .slice(0, 5)
+      .map((user: any) => ({
+        id: user.id,
+        name: user.name || "Unknown",
+        avatar: user.avatarUrl || "",
+        initials: (user.name || "")
+          .split(" ")
+          .map((n: string) => n[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 2),
+      }));
+  }, [suggestedUsersData]);
+
   // Convert friends to Author format and filter online ones
-  const allFriends: Author[] = useMemo(() => {
-    if (!friendsData?.payload?.data?.items) return mockOnlineFriends;
+  const allFriends = useMemo(() => {
+    if (!friendsData?.payload?.data?.items) return [];
 
     return friendsData.payload.data.items.map((friend: any) => ({
       name: friend.name,
@@ -292,73 +168,111 @@ export default function SocialContent({ locale }: ContentProps) {
         .join("")
         .toUpperCase()
         .slice(0, 2),
-      userId: friend.id, // Add userId for presence check
+      userId: friend.id,
     }));
   }, [friendsData]);
 
-  const onlineFriends: Author[] = useMemo(() => {
+  const onlineFriends = useMemo(() => {
     return allFriends.filter((friend) =>
       friend.userId ? isUserOnline(friend.userId) : false
     );
   }, [allFriends, isUserOnline]);
 
-  useEffect(() => {
-    getSocialPosts().then((data) => {
-      setPosts(data);
-      setLoading(false);
-    });
-  }, []);
+  // Current user author
+  const currentUserAuthor = useMemo(() => {
+    if (!currentUserData?.payload?.data) return null;
+    const user = currentUserData.payload.data;
+    return {
+      id: user.id,
+      name: user.name || "",
+      avatar: user.avatarUrl || "",
+      initials: (user.name || "")
+        .split(" ")
+        .map((n: string) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2),
+    };
+  }, [currentUserData]);
 
-  const handlePostCreated = (newPost: Post) => setPosts((p) => [newPost, ...p]);
+  // Use allPosts for rendering
+  const posts = allPosts;
 
-  const handleReaction = (postId: string, reactionType: ReactionType) => {
-    setPosts((prev) =>
-      prev.map((p) =>
-        p.id === postId
-          ? {
-              ...p,
-              reactions: {
-                ...p.reactions,
-                [reactionType]: p.reactions[reactionType] + 1,
-              },
-            }
-          : p
-      )
-    );
+  // Handlers
+  const handleCommentChange = (postId: string, value: string) => {
+    setCommentInputs((prev) => ({ ...prev, [postId]: value }));
   };
 
-  const handleCommentChange = (postId: string, value: string) =>
-    setCommentInputs((prev) => ({ ...prev, [postId]: value }));
-
-  const handleCommentSubmit = (postId: string) => {
+  const handleCommentSubmit = async (postId: string) => {
     const text = commentInputs[postId]?.trim();
     if (!text) return;
-    setPosts((prev) =>
-      prev.map((p) =>
-        p.id === postId
-          ? {
-              ...p,
-              comments: [
-                ...p.comments,
-                {
-                  id: `c${Date.now()}`,
-                  author: CURRENT_USER_AUTHOR,
-                  content: text,
-                  timeAgo: t("post.justNow"),
-                },
-              ],
-              commentCount: p.commentCount + 1,
-            }
-          : p
-      )
-    );
-    setCommentInputs((prev) => ({ ...prev, [postId]: "" }));
+
+    try {
+      await createCommentMutation.mutateAsync({
+        postId,
+        body: { content: text },
+      });
+      setCommentInputs((prev) => ({ ...prev, [postId]: "" }));
+    } catch (error) {
+      console.error("Failed to create comment:", error);
+    }
   };
 
-  if (loading) {
+  const handleReaction = async (
+    postId: string,
+    reactionType: ReactionEnumType
+  ) => {
+    try {
+      // Find current user's reaction using myReaction field
+      const post = posts.find((p) => p.id === postId);
+      const currentReaction = post?.myReaction;
+
+      if (currentReaction === reactionType) {
+        // Remove reaction if clicking the same one
+        await deleteReactionMutation.mutateAsync(postId);
+      } else {
+        // Add or change reaction
+        await createReactionMutation.mutateAsync({
+          postId,
+          body: { reactionType },
+        });
+      }
+    } catch (error) {
+      console.error("Failed to handle reaction:", error);
+    }
+  };
+
+  const handleCommentUpdate = async (commentId: string, content: string) => {
+    try {
+      await updateCommentMutation.mutateAsync({
+        commentId,
+        body: { content },
+      });
+    } catch (error) {
+      console.error("Failed to update comment:", error);
+    }
+  };
+
+  const handleCommentDelete = async (commentId: string) => {
+    try {
+      await deleteCommentMutation.mutateAsync(commentId);
+    } catch (error) {
+      console.error("Failed to delete comment:", error);
+    }
+  };
+
+  if (userLoading || postsLoading) {
     return (
       <div className="flex h-screen items-center justify-center text-muted-foreground">
         <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (!currentUserAuthor) {
+    return (
+      <div className="flex h-screen items-center justify-center text-muted-foreground">
+        <p>Failed to load user data</p>
       </div>
     );
   }
@@ -370,30 +284,49 @@ export default function SocialContent({ locale }: ContentProps) {
         <div className="grid h-full grid-cols-1 lg:grid-cols-[1fr_4fr_1fr] xl:grid-cols-[1fr_2.5fr_1fr] gap-6 min-h-0">
           {/* Left */}
           <div className="min-h-0 overflow-y-auto">
-            <SuggestedGamesCard t={t} games={mockSuggestedGames} />
+            <SuggestedGamesCard t={t} games={practiceGames} />
           </div>
 
           {/* Middle */}
           <div className="min-h-0 overflow-y-auto">
             <div className="max-w-xl mx-auto w-full lg:max-w-full">
-              <CreatePostCard
-                t={t}
-                currentUserAuthor={CURRENT_USER_AUTHOR}
-                onPostCreated={handlePostCreated}
-              />
+              <CreatePostCard t={t} currentUserAuthor={currentUserAuthor} />
               <div className="space-y-4 md:space-y-6">
                 {posts.map((post) => (
                   <PostCard
                     key={post.id}
                     post={post}
                     t={t}
-                    currentUserAuthor={CURRENT_USER_AUTHOR}
+                    currentUserAuthor={currentUserAuthor}
                     onReact={handleReaction}
                     commentValue={commentInputs[post.id] || ""}
                     onCommentChange={handleCommentChange}
                     onCommentSubmit={handleCommentSubmit}
+                    onCommentUpdate={handleCommentUpdate}
+                    onCommentDelete={handleCommentDelete}
                   />
                 ))}
+
+                {/* Load more trigger */}
+                {hasMore && (
+                  <div ref={loadMoreRef} className="flex justify-center py-4">
+                    {isFetching ? (
+                      <LoadingSpinner />
+                    ) : (
+                      <p className="text-muted-foreground text-sm">
+                        Scroll to load more
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {!hasMore && posts.length > 0 && (
+                  <div className="flex justify-center py-4">
+                    <p className="text-muted-foreground text-sm">
+                      No more posts
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -402,10 +335,8 @@ export default function SocialContent({ locale }: ContentProps) {
           <div className="min-h-0 overflow-y-auto">
             <FriendSidebar
               t={t}
-              suggestedFriends={mockSuggestedFriends}
-              onlineFriends={
-                onlineFriends.length > 0 ? onlineFriends : mockOnlineFriends
-              }
+              suggestedFriends={suggestedFriends}
+              onlineFriends={onlineFriends}
             />
           </div>
         </div>
