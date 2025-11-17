@@ -6,3 +6,12 @@ export const UploadMediaResSchema = z.object({
 });
 
 export type UploadMediaResType = z.infer<typeof UploadMediaResSchema>;
+
+export const UploadMultipleMediaResSchema = z.object({
+  data: z.array(z.string()),
+  message: z.string(),
+});
+
+export type UploadMultipleMediaResType = z.infer<
+  typeof UploadMultipleMediaResSchema
+>;
