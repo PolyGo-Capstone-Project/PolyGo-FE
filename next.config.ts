@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "vietqr.net",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "loopcraft.tech",
         pathname: "/**",
       },

@@ -1,20 +1,27 @@
 import { createGetAll } from "@/lib/apis/factory";
 import http from "@/lib/http";
 import {
-  GetMyBalanceResType,
-  GetTransactionsQueryType,
-  GetTransactionsResType,
+  GetAdminTransactionsResType,
+  GetTransactionQueryType,
+  GetUserTransactionsResType,
+  GetUserWalletResType,
 } from "@/models";
 
-const prefix = "/transaction/wallet";
-export type GetTransactionsParams = GetTransactionsQueryType;
+const prefix = "/transactions";
 
 const transactionApiRequest = {
-  //Admin
-  getAll: createGetAll<GetTransactionsResType, GetTransactionsParams>(
-    `${prefix}/transactions`
-  ),
-  getMyBalance: () => http.get<GetMyBalanceResType>(`${prefix}/balance`),
+  // GET wallet
+  getUserWallet: () => http.get<GetUserWalletResType>(`${prefix}/wallet`),
+  // GET user transactions
+  getUserTransactions: createGetAll<
+    GetUserTransactionsResType,
+    GetTransactionQueryType
+  >(`${prefix}`),
+  // GET admin transactions
+  getAdminTransactions: createGetAll<
+    GetAdminTransactionsResType,
+    GetTransactionQueryType
+  >(`/admin/${prefix}`),
 };
 
 export default transactionApiRequest;

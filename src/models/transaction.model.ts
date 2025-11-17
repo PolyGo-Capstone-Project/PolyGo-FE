@@ -3,61 +3,98 @@ import {
   TransactionStatus,
   TransactionTypeEnum,
 } from "@/constants";
-import {
-  PaginationLangQuerySchema,
-  PaginationMetaSchema,
-} from "@/models/common.model";
 import z from "zod";
+import { PaginationMetaSchema, PaginationQuerySchema } from "./common.model";
 
 export const WalletSchema = z.object({
   id: z.string(),
-  balance: z.number().min(0).default(0),
+  balance: z.number().min(0),
   userId: z.string(),
+  pendingBalance: z.number().min(0),
 });
 
-export const WalletTransactionsSchema = z.object({
+export const TransactionSchema = z.object({
   id: z.string(),
   amount: z.number(),
-  remainingBalance: z.number().min(0),
+  remainingBalance: z.number(),
+  description: z.string().nullable(),
   transactionType: z.enum(TransactionTypeEnum),
   transactionMethod: z.enum(TransactionMethod),
   transactionStatus: z.enum(TransactionStatus),
-  walletId: z.string(),
-  createdAt: z.iso.datetime(),
+  walledId: z.string(),
+  orderCode: z.string().nullable(),
+  encryptedAccountName: z.string().nullable(),
+  encryptedBankName: z.string().nullable(),
+  encryptedBankNumber: z.string().nullable(),
+  userNotes: z.string().nullable(),
+  isInquiry: z.boolean().default(false),
+  withdrawalApprovalImageUrl: z.string().nullable(),
+  lastUpdatedAt: z.string(),
+  createdAt: z.string(),
 });
 
-export const TransactionListItemSchema = WalletTransactionsSchema.omit({
-  walletId: true,
+//QUERIES
+export const GetTransactionQuerySchema = PaginationQuerySchema;
+
+// GET
+// GET USER WALLET
+export const GetUserWalletResSchema = z.object({
+  data: WalletSchema.pick({ balance: true, pendingBalance: true }).extend({
+    totalEarned: z.number().min(0),
+    totalSpent: z.number().min(0),
+    totalWithdrawn: z.number().min(0),
+  }),
+  message: z.string(),
 });
 
-//GET History
-export const GetTransactionsQuerySchema = PaginationLangQuerySchema;
+// GET USER TRANSACTIONS
+export const UserTransactionItemSchema = TransactionSchema.pick({
+  id: true,
+  amount: true,
+  remainingBalance: true,
+  description: true,
+  transactionType: true,
+  transactionMethod: true,
+  transactionStatus: true,
+  createdAt: true,
+});
 
-export const GetTransactionsResSchema = z.object({
+export const GetUserTransactionsResSchema = z.object({
   data: z.object({
-    items: z.array(TransactionListItemSchema),
+    items: z.array(UserTransactionItemSchema),
     ...PaginationMetaSchema.shape,
   }),
   message: z.string(),
 });
 
-//GET MY BALANCE
-export const GetMyBalanceResSchema = z.object({
+// GET ADMIN TRANSACTIONS
+export const AdminTransactionItemSchema = UserTransactionItemSchema;
+
+export const GetAdminTransactionsResSchema = z.object({
   data: z.object({
-    balance: z.number().min(0).default(0),
-    totalEarned: z.number().min(0).default(0),
-    totalSpent: z.number().min(0).default(0),
-    totalWithdrawn: z.number().min(0).default(0),
+    items: z.array(AdminTransactionItemSchema),
+    ...PaginationMetaSchema.shape,
   }),
   message: z.string(),
 });
 
-//types
+// POST
+// WITHDRAWAL REQUEST
+
+// WITHDRAWAL CONFIRM
+
+//types:
 export type WalletType = z.infer<typeof WalletSchema>;
-export type WalletTransactionsType = z.infer<typeof WalletTransactionsSchema>;
-export type TransactionListItemType = z.infer<typeof TransactionListItemSchema>;
-export type GetTransactionsQueryType = z.infer<
-  typeof GetTransactionsQuerySchema
+export type TransactionType = z.infer<typeof TransactionSchema>;
+export type GetTransactionQueryType = z.infer<typeof GetTransactionQuerySchema>;
+export type GetUserWalletResType = z.infer<typeof GetUserWalletResSchema>;
+export type UserTransactionItemType = z.infer<typeof UserTransactionItemSchema>;
+export type GetUserTransactionsResType = z.infer<
+  typeof GetUserTransactionsResSchema
 >;
-export type GetTransactionsResType = z.infer<typeof GetTransactionsResSchema>;
-export type GetMyBalanceResType = z.infer<typeof GetMyBalanceResSchema>;
+export type AdminTransactionItemType = z.infer<
+  typeof AdminTransactionItemSchema
+>;
+export type GetAdminTransactionsResType = z.infer<
+  typeof GetAdminTransactionsResSchema
+>;

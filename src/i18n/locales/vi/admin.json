@@ -1,7 +1,9 @@
 {
   "admin": {
-    "title": "Trang quản trị",
-    "description": "Quản lý người dùng, nội dung và cài đặt hệ thống",
+    "dashboard": {
+      "title": "Bảng điều khiển quản trị",
+      "description": "Tổng quan về thống kê nền tảng và các hoạt động gần đây."
+    },
     "nav": {
       "dashboard": "Bảng điều khiển",
       "users": "Người dùng",
@@ -831,6 +833,10 @@
         "definition": "Định nghĩa",
         "hint": "Gợi ý"
       }
+    },
+    "transactions": {
+      "title": "Quản lý giao dịch",
+      "description": "Xem và quản lý các giao dịch của người dùng trên nền tảng PolyGo."
     }
   }
 }

@@ -9,7 +9,7 @@ import {
   SubscriptionCard,
   TransactionHistory,
 } from "@/components";
-import { useTransactionBalanceQuery, useTransactionQuery } from "@/hooks";
+import { useUserTransactions, useUserWallet } from "@/hooks";
 
 export default function WalletPage() {
   const t = useTranslations("wallet");
@@ -17,12 +17,11 @@ export default function WalletPage() {
   const [pageSize, setPageSize] = useState(10);
 
   // Fetch balance data
-  const { data: balanceData, isLoading: isBalanceLoading } =
-    useTransactionBalanceQuery();
+  const { data: balanceData, isLoading: isBalanceLoading } = useUserWallet();
 
   // Fetch transactions with pagination
   const { data: transactionsData, isLoading: isTransactionsLoading } =
-    useTransactionQuery({
+    useUserTransactions({
       params: {
         pageNumber: currentPage,
         pageSize: pageSize,

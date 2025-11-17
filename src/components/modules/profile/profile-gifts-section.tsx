@@ -1,26 +1,16 @@
 "use client";
 
-import { IconGift } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GiftVisibilityEnum, GiftVisibilityEnumType } from "@/constants";
+import { IconGift, IconPackage } from "@tabler/icons-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 type Gift = {
   id: string;
   name: string;
-  value?: number;
-  from: {
-    name: string;
-    avatarUrl: string | null;
-  };
-  message?: string;
-  createdAt: string;
+  quantity: number;
   iconUrl?: string;
-  status: GiftVisibilityEnumType;
 };
 
 type ProfileGiftsSectionProps = {
@@ -29,31 +19,22 @@ type ProfileGiftsSectionProps = {
 
 export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
   const t = useTranslations("profile");
-  const tEmpty = useTranslations("profile");
-  const tTime = useTranslations("profile");
-  const tGifts = useTranslations("profile");
 
-  // Filter out hidden gifts
-  const visibleGifts = gifts.filter(
-    (gift) => gift.status !== GiftVisibilityEnum.Hidden
-  );
+  // Calculate total number of gifts
+  const totalGifts = gifts.reduce((sum, gift) => sum + gift.quantity, 0);
 
-  // Calculate time ago
-  const getTimeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMs = now.getTime() - date.getTime();
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-    if (diffInDays === 0) return tTime("timeAgo.today");
-    if (diffInDays === 1) return tTime("timeAgo.yesterday");
-    if (diffInDays < 7) return `${diffInDays}${tTime("timeAgo.daysAgo")}`;
-    if (diffInDays < 30)
-      return `${Math.floor(diffInDays / 7)}${tTime("timeAgo.weeksAgo")}`;
-    return `${Math.floor(diffInDays / 30)}${tTime("timeAgo.monthsAgo")}`;
+  // Validate if URL is valid
+  const isValidUrl = (url: string | undefined): boolean => {
+    if (!url) return false;
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
   };
 
-  if (visibleGifts.length === 0) {
+  if (gifts.length === 0) {
     return (
       <Card>
         <CardHeader>
@@ -63,10 +44,14 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground text-center py-8">
-            <IconGift className="mb-2 h-12 w-12 text-muted-foreground" />
-            {tEmpty("empty.noGifts")}
-          </p>
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="rounded-full bg-muted p-4 mb-4">
+              <IconGift className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {t("empty.noGifts")}
+            </p>
+          </div>
         </CardContent>
       </Card>
     );
@@ -79,66 +64,47 @@ export function ProfileGiftsSection({ gifts }: ProfileGiftsSectionProps) {
           <IconGift className="h-5 w-5" />
           {t("sections.gifts")}
           <Badge variant="secondary" className="ml-auto">
-            {visibleGifts.length}
+            {totalGifts}
           </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="space-y-3">
-          {visibleGifts.map((gift) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {gifts.map((gift) => (
             <div
               key={gift.id}
-              className="flex items-start gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
+              className="group relative flex flex-col items-center gap-3 rounded-lg border p-4 transition-all hover:border-primary/50 hover:bg-muted/50 hover:shadow-md"
             >
+              {/* Quantity Badge */}
+              {gift.quantity > 1 && (
+                <Badge
+                  variant="secondary"
+                  className="absolute -top-2 -right-2 h-6 min-w-6 rounded-full px-2 shadow-sm"
+                >
+                  ×{gift.quantity}
+                </Badge>
+              )}
+
               {/* Gift Icon/Image */}
-              <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 overflow-hidden">
-                {gift.iconUrl ? (
+              <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 overflow-hidden transition-transform group-hover:scale-110">
+                {isValidUrl(gift.iconUrl) ? (
                   <Image
-                    src={gift.iconUrl}
+                    src={gift.iconUrl!}
                     alt={gift.name}
-                    fill
-                    className="h-8 w-8 object-contain"
+                    width={48}
+                    height={48}
+                    className="object-contain"
                   />
                 ) : (
-                  <span className="text-2xl">{gift.name}</span>
+                  <IconPackage className="h-8 w-8 text-primary/70" />
                 )}
               </div>
 
-              {/* Gift Details */}
-              <div className="flex-1 space-y-1">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="font-medium">{gift.name}</p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Avatar className="h-4 w-4">
-                        <AvatarImage src={gift.from.avatarUrl || undefined} />
-                        <AvatarFallback className="text-[8px]">
-                          {gift.from.name[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span>
-                        {tGifts("gifts.from")} {gift.from.name}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-1">
-                    {gift.value !== undefined && gift.value > 0 && (
-                      <Badge variant="secondary" className="text-xs">
-                        {gift.value} PC
-                      </Badge>
-                    )}
-                    <span className="text-xs text-muted-foreground">
-                      {getTimeAgo(gift.createdAt)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Gift Message */}
-                {gift.message && (
-                  <p className="text-xs text-muted-foreground italic">
-                    &quot;{gift.message}&quot;
-                  </p>
-                )}
+              {/* Gift Name */}
+              <div className="w-full text-center">
+                <p className="font-medium text-sm line-clamp-2 leading-tight">
+                  {gift.name}
+                </p>
               </div>
             </div>
           ))}
