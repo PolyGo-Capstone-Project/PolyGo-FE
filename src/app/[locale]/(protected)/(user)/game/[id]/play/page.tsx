@@ -150,6 +150,7 @@ export default function PlayGamePage() {
         scrambledWord: string;
         definition: string;
         hint?: string | null;
+        pronunciation?: string | null;
       }
     | undefined
   >(undefined);
@@ -280,8 +281,11 @@ export default function PlayGamePage() {
       letters: string[];
       definition: string;
       hint?: string;
+      pronunciation?: string;
     } => {
       const hintFromGameState = gameState?.currentWord?.hint ?? undefined;
+      const pronunciationFromGameState =
+        gameState?.currentWord?.pronunciation ?? undefined;
 
       return {
         id: currentWord.id,
@@ -289,6 +293,8 @@ export default function PlayGamePage() {
         letters,
         definition: currentWord.definition,
         hint: currentWord.hint ?? hintFromGameState ?? undefined,
+        pronunciation:
+          currentWord.pronunciation ?? pronunciationFromGameState ?? undefined,
       };
     })();
 
@@ -331,6 +337,7 @@ export default function PlayGamePage() {
           })}
           tDefinition={t("play.definition", { default: "Definition:" })}
           tHint={t("play.hint", { default: "Hint" })} // dùng làm text nút Hint luôn
+          tPronuciation={t("play.pronuciation", { default: "Pronuciation" })}
           tPlaceholder={t("play.typeHere", {
             default: "Type the word here...",
           })}

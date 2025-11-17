@@ -357,6 +357,7 @@ export const GameWordSchema = z.object({
   scrambledWord: z.string(),
   definition: z.string(),
   hint: z.string().optional().nullable(),
+  pronunciation: z.string().optional().nullable(),
 });
 
 // [ADD] ==== GAMEPLAY: Start game (POST /wordsets/:id/start) ====

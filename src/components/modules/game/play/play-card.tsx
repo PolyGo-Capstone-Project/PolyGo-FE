@@ -4,7 +4,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { BookOpen, CheckCircle2, Info, RefreshCcw } from "lucide-react";
+import {
+  AudioLines,
+  BookOpen,
+  CheckCircle2,
+  Info,
+  RefreshCcw,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 type WordUI = {
@@ -21,6 +27,7 @@ type Props = {
   tUnscramble: string;
   tDefinition: string;
   tHint: string; // dùng làm label cho nút Hint
+  tPronuciation: string;
   tPlaceholder: string;
   tSubmit: string;
   tReshuffle: string;
@@ -47,6 +54,7 @@ export default function PlayCard({
   word,
   tUnscramble,
   tDefinition,
+  tPronuciation,
   tHint,
   tPlaceholder,
   tSubmit,
@@ -131,16 +139,29 @@ export default function PlayCard({
         {/* Definition */}
         <Alert>
           <BookOpen className="h-4 w-4" />
-          <AlertTitle>{tDefinition}</AlertTitle>
+          <AlertTitle className="font-bold">{tDefinition}</AlertTitle>
           <AlertDescription className="space-y-1">
             <div>{word.definition}</div>
-            {word.pronunciation && (
+            {/* {word.pronunciation && (
               <div className="text-xs text-muted-foreground">
                 {word.pronunciation}
               </div>
-            )}
+            )} */}
           </AlertDescription>
         </Alert>
+
+        {/* Pronunciation – giống hint: chỉ có khi có data */}
+        {word.pronunciation && (
+          <Alert>
+            <AudioLines className="h-4 w-4" />
+            <AlertTitle className="font-semibold">{tPronuciation}</AlertTitle>
+            <AlertDescription className="space-y-1">
+              <div className="text-xs text-muted-foreground">
+                {word.pronunciation}
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Hint (nút + nội dung) */}
         {word.hint && (
