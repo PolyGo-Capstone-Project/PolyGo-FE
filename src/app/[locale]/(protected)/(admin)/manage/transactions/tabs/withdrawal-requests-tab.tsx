@@ -4,6 +4,7 @@ import {
   IconArrowLeft,
   IconArrowRight,
   IconCheck,
+  IconFilter,
   IconRefresh,
   IconSearch,
   IconUpload,
@@ -71,9 +72,7 @@ export function WithdrawalRequestsTab() {
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [description, setDescription] = useState("");
-  const [transactionStatus, setTransactionStatus] = useState<
-    string | undefined
-  >(undefined);
+  const [transactionStatus, setTransactionStatus] = useState<string>("all");
   const [selectedTransaction, setSelectedTransaction] =
     useState<AdminTransactionItemType | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -132,7 +131,7 @@ export function WithdrawalRequestsTab() {
 
   const handleReset = () => {
     setDescription("");
-    setTransactionStatus(undefined);
+    setTransactionStatus("all");
     setPageNumber(1);
   };
 
@@ -255,8 +254,8 @@ export function WithdrawalRequestsTab() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="relative">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="relative flex-1 min-w-[200px]">
                 <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search by description..."
@@ -270,7 +269,7 @@ export function WithdrawalRequestsTab() {
                 value={transactionStatus}
                 onValueChange={setTransactionStatus}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-[160px]">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -283,18 +282,13 @@ export function WithdrawalRequestsTab() {
                 </SelectContent>
               </Select>
 
-              <div className="flex gap-2 lg:col-span-2">
-                <Button
-                  onClick={handleReset}
-                  variant="outline"
-                  className="flex-1"
-                >
-                  Reset
-                </Button>
-                <Button onClick={() => refetch()} variant="outline" size="icon">
-                  <IconRefresh className="h-4 w-4" />
-                </Button>
-              </div>
+              <Button onClick={handleReset} variant="outline">
+                <IconFilter className="mr-2 h-4 w-4" />
+                Reset
+              </Button>
+              <Button onClick={() => refetch()} variant="outline" size="icon">
+                <IconRefresh className="h-4 w-4" />
+              </Button>
             </div>
           </CardContent>
         </Card>

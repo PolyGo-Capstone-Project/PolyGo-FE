@@ -1,6 +1,50 @@
 "use client";
 
 import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  Input,
+  Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  Textarea,
+} from "@/components";
+import { Pagination } from "@/components/shared";
+import {
+  TransactionMethod,
+  TransactionStatus,
+  TransactionTypeEnum,
+} from "@/constants/transaction.constant";
+import { useInquiryTransaction, useUserTransactions } from "@/hooks";
+import { showErrorToast, showSuccessToast } from "@/lib";
+import {
+  GetTransactionAdminQueryType,
+  UserTransactionItemType,
+} from "@/models";
+import { IconFilter } from "@tabler/icons-react";
+import {
   FileImage,
   FileSpreadsheet,
   FileText,
@@ -9,58 +53,11 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
-
-import { Pagination } from "@/components/shared";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  TransactionMethod,
-  TransactionStatus,
-  TransactionTypeEnum,
-} from "@/constants/transaction.constant";
-import { useInquiryTransaction, useUserTransactions } from "@/hooks";
-import {
-  GetTransactionAdminQueryType,
-  UserTransactionItemType,
-} from "@/models";
 
 export function TransactionHistory() {
   const t = useTranslations("wallet.transactions");
-  const tToast = useTranslations("wallet.toast");
-
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
   // Pagination & filter states
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -149,9 +146,9 @@ export function TransactionHistory() {
       } else {
         exportToExcel(transactions);
       }
-      toast.success(tToast("exportSuccess"));
+      showSuccessToast("export", tSuccess);
     } catch (error) {
-      toast.error(tToast("exportError"));
+      showErrorToast("export", tError);
     }
   };
 
@@ -259,18 +256,18 @@ export function TransactionHistory() {
     if (!selectedTransaction) return;
 
     try {
-      await inquiryMutation.mutateAsync({
+      const response = await inquiryMutation.mutateAsync({
         id: selectedTransaction.id,
         body: {
           userNotes: inquiryNotes,
         },
       });
-      toast.success("Inquiry submitted successfully");
+      showSuccessToast(response.payload.message, tSuccess);
       setIsInquiryDialogOpen(false);
       setInquiryNotes("");
       setSelectedTransaction(null);
     } catch (error) {
-      toast.error("Failed to submit inquiry");
+      showErrorToast("SendTransactionInquiry", tError);
     }
   };
 
@@ -324,19 +321,19 @@ export function TransactionHistory() {
         </CardHeader>
         <CardContent className="space-y-3 md:space-y-4">
           {/* Filters */}
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-5">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground md:h-4 md:w-4" />
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative flex-1 min-w-[200px]">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder={t("search")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-9 pl-9 text-sm md:h-10 md:text-base"
+                className="pl-9"
               />
             </div>
 
             <Select value={transactionType} onValueChange={setTransactionType}>
-              <SelectTrigger className="h-9 text-xs md:h-10 md:text-sm">
+              <SelectTrigger className=" w-[160px]">
                 <SelectValue placeholder="Transaction Type" />
               </SelectTrigger>
               <SelectContent>
@@ -353,7 +350,7 @@ export function TransactionHistory() {
               value={transactionMethod}
               onValueChange={setTransactionMethod}
             >
-              <SelectTrigger className="h-9 text-xs md:h-10 md:text-sm">
+              <SelectTrigger className=" w-[160px]">
                 <SelectValue placeholder="Payment Method" />
               </SelectTrigger>
               <SelectContent>
@@ -370,7 +367,7 @@ export function TransactionHistory() {
               value={transactionStatus}
               onValueChange={setTransactionStatus}
             >
-              <SelectTrigger className="h-9 text-xs md:h-10 md:text-sm">
+              <SelectTrigger className="w-[160px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -383,11 +380,8 @@ export function TransactionHistory() {
               </SelectContent>
             </Select>
 
-            <Button
-              onClick={handleReset}
-              variant="outline"
-              className="h-9 md:h-10"
-            >
+            <Button onClick={handleReset} variant="outline">
+              <IconFilter className="mr-2 h-4 w-4" />
               Reset
             </Button>
           </div>
