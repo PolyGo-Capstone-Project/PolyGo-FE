@@ -3,13 +3,7 @@
 import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components";
 import { PlanTypeEnum } from "@/constants";
 import { useCurrentSubscriptionQuery } from "@/hooks";
-import {
-  ArrowDownToLine,
-  ArrowUpFromLine,
-  Gift,
-  History,
-  Sparkles,
-} from "lucide-react";
+import { ArrowDownToLine, ArrowUpFromLine, Gift, Sparkles } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -45,10 +39,6 @@ export function QuickActionsCard() {
     router.push(`/${locale}/wallet/withdraw`);
   };
 
-  const handleViewTransactions = () => {
-    router.push(`/${locale}/wallet/transactions`);
-  };
-
   return (
     <>
       <Card className="shadow-sm">
@@ -79,15 +69,6 @@ export function QuickActionsCard() {
               </span>
             </Button>
           </div>
-
-          <Button
-            onClick={handleViewTransactions}
-            className="h-9 w-full gap-2 text-sm md:h-10"
-            variant="secondary"
-          >
-            <History className="h-3.5 w-3.5 md:h-4 md:w-4" />
-            {t("viewTransactions")}
-          </Button>
 
           <Button
             onClick={handleBuyGift}

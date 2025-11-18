@@ -45,7 +45,8 @@
     "ConfirmWithdrawal": "Withdrawal confirmed successfully!",
     "ApproveWithdrawal": "Withdrawal approved successfully!",
     "SendTransactionInquiry": "Transaction inquiry sent successfully!",
-    "ReplyTransactionInquiry": "Transaction inquiry replied successfully!"
+    "ReplyTransactionInquiry": "Transaction inquiry replied successfully!",
+    "export": "Data exported successfully!"
   },
   "Error": {
     "default": "An error occurred.",
@@ -95,7 +96,9 @@
     "fetchBanksError": "Failed to fetch bank list. Please try again.",
     "requestError": "Failed to create withdrawal request. Please try again.",
     "Timeout": "OTP timeout. Please request a new OTP.",
-    "InvalidOTP": "Invalid OTP. Please try again."
+    "InvalidOTP": "Invalid OTP. Please try again.",
+    "export": "Failed to export data. Please try again.",
+    "SendTransactionInquiry": "Failed to send transaction inquiry. Please try again."
   },
   "header": {
     "products": "Products",

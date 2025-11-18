@@ -15,17 +15,19 @@ export default function SuggestedGamesCard({ t, games }: Props) {
 
   return (
     <div className="hidden lg:block overflow-hidden">
-      <Card className={isEmpty ? "" : "h-full"}>
-        <CardHeader className="pb-4 border-b sticky top-0 bg-background z-10">
-          <CardTitle className="text-base font-semibold flex items-center gap-2">
-            <Gamepad className="h-4 w-4" />
+      <Card
+        className={`hover:shadow-md transition-shadow ${isEmpty ? "" : "h-full"}`}
+      >
+        <CardHeader className="pb-3 border-b sticky top-0 bg-background z-10">
+          <CardTitle className="text-base font-semibold flex items-center gap-2 text-primary">
+            <Gamepad className="h-5 w-5" />
             {t("leftSidebar.games.title", {
               defaultValue: "Trò chơi rèn luyện",
             })}
           </CardTitle>
         </CardHeader>
         <CardContent
-          className={`space-y-2 ${scrollNeeded ? "overflow-y-auto" : "overflow-visible"}`}
+          className={`space-y-3 ${scrollNeeded ? "overflow-y-auto" : "overflow-visible"}`}
           style={scrollNeeded ? { maxHeight: "calc(100vh - 200px)" } : {}}
         >
           {isEmpty ? (
@@ -41,15 +43,15 @@ export default function SuggestedGamesCard({ t, games }: Props) {
             games.map((game) => (
               <div
                 key={game.id}
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition-all cursor-pointer group border border-transparent hover:border-primary/20"
               >
                 <div
-                  className={`flex-shrink-0 flex items-center justify-center h-8 w-10 text-xs font-bold rounded-md border ${game.iconColor} bg-background/50`}
+                  className={`flex-shrink-0 flex items-center justify-center h-10 w-12 text-xs font-bold rounded-lg border-2 ${game.iconColor} bg-gradient-to-br from-primary/10 to-primary/5 group-hover:scale-110 transition-transform`}
                 >
-                  NEW
+                  <Gamepad className="h-5 w-5" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="text-sm font-semibold truncate">
+                  <div className="text-sm font-semibold truncate group-hover:text-primary transition-colors">
                     {game.title}
                   </div>
                   <div className="text-xs text-muted-foreground truncate">
@@ -59,7 +61,7 @@ export default function SuggestedGamesCard({ t, games }: Props) {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-shrink-0 text-xs py-1 h-auto"
+                  className="flex-shrink-0 text-xs py-1 h-auto hover:bg-primary hover:text-primary-foreground transition-all hover:scale-105"
                 >
                   {t("leftSidebar.games.play", { defaultValue: "Chơi" })}
                 </Button>

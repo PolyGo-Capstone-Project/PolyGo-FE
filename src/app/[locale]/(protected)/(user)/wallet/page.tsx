@@ -1,28 +1,27 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
-
-import { BalanceCard, QuickActionsCard, SubscriptionCard } from "@/components";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
+  Badge,
+  BalanceCard,
+  Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import {
+  QuickActionsCard,
+  SubscriptionCard,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components";
 import { useUserTransactions, useUserWallet } from "@/hooks";
+import { ArrowRight } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 
 export default function WalletPage() {
   const t = useTranslations("wallet");
