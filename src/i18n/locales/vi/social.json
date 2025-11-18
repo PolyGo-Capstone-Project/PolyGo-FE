@@ -7,7 +7,10 @@
       "placeholder": "Chia sẻ điều gì đó hôm nay...",
       "photoButton": "Ảnh",
       "emojiButton": "Biểu tượng",
-      "postButton": "Đăng bài"
+      "postButton": "Đăng bài",
+      "posting": "Đang đăng...",
+      "title": "Tạo bài viết",
+      "description": "Chia sẻ suy nghĩ của bạn với cộng đồng"
     },
     "post": {
       "reactions": "lượt thích",
@@ -18,7 +21,9 @@
       "reply": "Trả lời",
       "commentPlaceholder": "Viết bình luận...",
       "justNow": "Vừa xong",
-      "viewAllComments": "Xem tất cả {count} bình luận"
+      "viewAllComments": "Xem tất cả {count} bình luận",
+      "delete": "Xóa bài viết",
+      "noPosts": "Chưa có bài viết"
     },
     "leftSidebar": {
       "games": {
