@@ -1,40 +1,35 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
 import {
+  Button,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+  Input,
+} from "@/components";
 import { useWithdrawalConfirm } from "@/hooks";
+import { showErrorToast, showSuccessToast } from "@/lib";
 import {
   WithdrawalConfirmBodySchema,
   WithdrawalConfirmBodyType,
-  WithdrawalRequestBodyType,
 } from "@/models";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface WithdrawOTPDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  withdrawData: WithdrawalRequestBodyType;
   onSuccess: () => void;
 }
 
@@ -45,8 +40,9 @@ export function WithdrawOTPDialog({
 }: WithdrawOTPDialogProps) {
   const t = useTranslations("wallet.withdraw.otp");
   const confirmMutation = useWithdrawalConfirm();
-  const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
-
+  const [timeLeft, setTimeLeft] = useState(180); // 3 minutes in seconds
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
   const form = useForm<WithdrawalConfirmBodyType>({
     resolver: zodResolver(WithdrawalConfirmBodySchema),
     defaultValues: {
@@ -57,7 +53,7 @@ export function WithdrawOTPDialog({
   // Reset timer when dialog opens
   useEffect(() => {
     if (open) {
-      setTimeLeft(120);
+      setTimeLeft(180);
     }
   }, [open]);
 
@@ -69,7 +65,7 @@ export function WithdrawOTPDialog({
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          toast.error(t("timeout"));
+          showErrorToast("Timeout", tError);
           onOpenChange(false);
           return 0;
         }
@@ -89,18 +85,21 @@ export function WithdrawOTPDialog({
 
   const handleSubmit = async (data: WithdrawalConfirmBodyType) => {
     try {
-      await confirmMutation.mutateAsync(data);
-      toast.success(t("success"));
+      const response = await confirmMutation.mutateAsync(data);
+      showSuccessToast(response.payload?.message, tSuccess);
       onSuccess();
     } catch (error) {
-      toast.error(t("error"));
-      console.error("Failed to confirm withdrawal:", error);
+      showErrorToast("InvalidOTP", tError);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        onInteractOutside={(e) => e.preventDefault()}
+        onEscapeKeyDown={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle>{t("title")}</DialogTitle>
           <DialogDescription>{t("description")}</DialogDescription>

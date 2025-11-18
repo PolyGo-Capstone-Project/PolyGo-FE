@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle2 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function WithdrawSuccessPage() {
   const t = useTranslations("wallet.withdraw.success");
+  const locale = useLocale();
 
   return (
     <div className="container mx-auto flex min-h-[60vh] max-w-2xl items-center justify-center p-3 md:p-6">
@@ -33,10 +34,10 @@ export default function WithdrawSuccessPage() {
 
           <div className="flex flex-col gap-2 sm:flex-row">
             <Button asChild variant="outline" className="flex-1">
-              <Link href="/wallet">{t("backToWallet")}</Link>
+              <Link href={`/${locale}/wallet`}>{t("backToWallet")}</Link>
             </Button>
             <Button asChild className="flex-1">
-              <Link href="/wallet">{t("viewHistory")}</Link>
+              <Link href={`/${locale}/wallet`}>{t("viewHistory")}</Link>
             </Button>
           </div>
         </CardContent>

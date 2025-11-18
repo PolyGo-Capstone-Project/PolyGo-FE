@@ -1,50 +1,32 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-
+import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components";
 import { WithdrawForm } from "@/components/modules/wallet/withdraw-form";
 import { WithdrawOTPDialog } from "@/components/modules/wallet/withdraw-otp-dialog";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TypeOfVerificationCode } from "@/constants";
-import { useAuthMe, useSendOTPMutation, useUserWallet } from "@/hooks";
-import { WithdrawalRequestBodyType } from "@/models";
-import { toast } from "sonner";
+import { useAuthMe, useUserWallet } from "@/hooks";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function WithdrawPage() {
   const t = useTranslations("wallet.withdraw");
   const router = useRouter();
-  const [withdrawData, setWithdrawData] =
-    useState<WithdrawalRequestBodyType | null>(null);
   const [otpDialogOpen, setOtpDialogOpen] = useState(false);
-
+  const locale = useLocale();
   const { data: authData } = useAuthMe();
   const { data: walletData } = useUserWallet();
-  const sendOTPMutation = useSendOTPMutation();
 
   const user = authData?.payload.data;
   const wallet = walletData?.payload.data;
 
-  const handleWithdrawSubmit = async (data: WithdrawalRequestBodyType) => {
-    try {
-      // Send OTP first
-      await sendOTPMutation.mutateAsync({
-        mail: user?.mail ?? "",
-        verificationType: TypeOfVerificationCode.Withdraw_money,
-      });
-      setWithdrawData(data);
-      setOtpDialogOpen(true);
-    } catch (error) {
-      toast.error("Failed to send OTP");
-      console.error("Failed to send OTP:", error);
-    }
+  // Open OTP dialog after withdrawal request is created (BE already sent OTP)
+  const handleWithdrawRequestSuccess = () => {
+    setOtpDialogOpen(true);
   };
 
   const handleOtpSuccess = () => {
     setOtpDialogOpen(false);
-    router.push("/wallet/withdraw/success");
+    router.push(`${locale}/wallet/withdraw/success`);
   };
 
   return (
@@ -68,12 +50,11 @@ export default function WithdrawPage() {
 
       {/* Withdraw Form */}
       <WithdrawForm
-        onSubmit={handleWithdrawSubmit}
+        onSuccess={handleWithdrawRequestSuccess}
         balance={wallet?.balance ?? 0}
         withdrawTimes={user?.withdrawTimes ?? 0}
         nextWithdrawResetAt={user?.nextWithdrawResetAt ?? null}
         accounts={wallet?.accounts ?? []}
-        isSubmitting={sendOTPMutation.isPending}
       />
 
       {/* Terms and Conditions */}
@@ -105,14 +86,11 @@ export default function WithdrawPage() {
       </Card>
 
       {/* OTP Dialog */}
-      {withdrawData && (
-        <WithdrawOTPDialog
-          open={otpDialogOpen}
-          onOpenChange={setOtpDialogOpen}
-          withdrawData={withdrawData}
-          onSuccess={handleOtpSuccess}
-        />
-      )}
+      <WithdrawOTPDialog
+        open={otpDialogOpen}
+        onOpenChange={setOtpDialogOpen}
+        onSuccess={handleOtpSuccess}
+      />
     </div>
   );
 }

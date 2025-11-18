@@ -1,5 +1,32 @@
 "use client";
 
+import {
+  Alert,
+  AlertDescription,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  ScrollArea,
+} from "@/components";
+import { useWithdrawalRequest } from "@/hooks";
+import { cn, showErrorToast, showSuccessToast } from "@/lib/utils";
+import {
+  WithdrawalRequestBodySchema,
+  WithdrawalRequestBodyType,
+} from "@/models";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   AlertCircle,
@@ -13,34 +40,10 @@ import {
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
-import {
-  WithdrawalRequestBodySchema,
-  WithdrawalRequestBodyType,
-} from "@/models";
+import { ManageBankAccountDialog } from "./manage-bank-account-dialog";
 
 interface WithdrawFormProps {
-  onSubmit: (data: WithdrawalRequestBodyType) => void;
+  onSuccess: () => void;
   balance: number;
   withdrawTimes: number;
   nextWithdrawResetAt: string | null;
@@ -49,7 +52,6 @@ interface WithdrawFormProps {
     bankNumber: string;
     accountName: string;
   }>;
-  isSubmitting?: boolean;
 }
 
 type Translator = (key: string, values?: Record<string, any>) => string;
@@ -110,18 +112,20 @@ const translateWithdrawError = (
 };
 
 export function WithdrawForm({
-  onSubmit,
+  onSuccess,
   balance,
   withdrawTimes,
   nextWithdrawResetAt,
   accounts,
-  isSubmitting = false,
 }: WithdrawFormProps) {
   const t = useTranslations("wallet.withdraw");
   const errorMessages = useTranslations("wallet.withdraw.errors");
   const [comboboxOpen, setComboboxOpen] = useState(false);
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
+  const withdrawalRequestMutation = useWithdrawalRequest();
 
-  const canWithdraw = withdrawTimes < 2;
+  const canWithdraw = withdrawTimes > 0;
   const hasAccounts = accounts.length > 0;
 
   const resolver = useMemo(
@@ -158,8 +162,15 @@ export function WithdrawForm({
     });
   };
 
-  const handleSubmit = (data: WithdrawalRequestBodyType) => {
-    onSubmit(data);
+  const handleSubmit = async (data: WithdrawalRequestBodyType) => {
+    try {
+      const result = await withdrawalRequestMutation.mutateAsync(data);
+      showSuccessToast(result?.payload?.message, tSuccess);
+      // Call onSuccess to open OTP dialog
+      onSuccess();
+    } catch (error) {
+      showErrorToast("requestError", tError);
+    }
   };
 
   const handleSelectAccount = (account: (typeof accounts)[0]) => {
@@ -200,11 +211,19 @@ export function WithdrawForm({
           </Alert>
         )}
 
-        {/* No Bank Account Warning */}
+        {/* No Bank Account Warning - Show Add Account Dialog */}
         {!hasAccounts && (
           <Alert>
             <Info className="h-4 w-4" />
-            <AlertDescription>{t("form.noAccounts")}</AlertDescription>
+            <AlertDescription className="flex items-center justify-between">
+              <span>{t("form.noAccounts")}</span>
+              <ManageBankAccountDialog>
+                <Button size="sm" variant="default">
+                  <Building2 className="mr-2 h-4 w-4" />
+                  {t("form.addAccount")}
+                </Button>
+              </ManageBankAccountDialog>
+            </AlertDescription>
           </Alert>
         )}
 
@@ -326,9 +345,13 @@ export function WithdrawForm({
             <Button
               type="submit"
               className="w-full"
-              disabled={!canWithdraw || !hasAccounts || isSubmitting}
+              disabled={
+                !canWithdraw ||
+                !hasAccounts ||
+                withdrawalRequestMutation.isPending
+              }
             >
-              {isSubmitting ? (
+              {withdrawalRequestMutation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   {t("form.submitting")}

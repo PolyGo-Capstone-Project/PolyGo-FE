@@ -1,5 +1,37 @@
 "use client";
 
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  ScrollArea,
+  Separator,
+} from "@/components";
+import {
+  useCreateAccountBank,
+  useDeleteAccountBank,
+  useUserWallet,
+} from "@/hooks";
+import { fetchVietQRBanks, VietQRBankType } from "@/lib/apis/vietqr";
+import { cn, showErrorToast, showSuccessToast } from "@/lib/utils";
+import {
+  CreateAccountBankBodySchema,
+  CreateAccountBankBodyType,
+} from "@/models";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Building2,
@@ -13,44 +45,6 @@ import {
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import {
-  useCreateAccountBank,
-  useDeleteAccountBank,
-  useUserWallet,
-} from "@/hooks";
-import { fetchVietQRBanks, VietQRBankType } from "@/lib/apis/vietqr";
-import { cn } from "@/lib/utils";
-import {
-  CreateAccountBankBodySchema,
-  CreateAccountBankBodyType,
-} from "@/models";
 
 interface ManageBankAccountDialogProps {
   children?: React.ReactNode;
@@ -60,6 +54,8 @@ export function ManageBankAccountDialog({
   children,
 }: ManageBankAccountDialogProps) {
   const t = useTranslations("wallet.bankAccount");
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
   const [open, setOpen] = useState(false);
   const [banks, setBanks] = useState<VietQRBankType[]>([]);
   const [isLoadingBanks, setIsLoadingBanks] = useState(true);
@@ -101,7 +97,7 @@ export function ManageBankAccountDialog({
         const banksData = await fetchVietQRBanks();
         setBanks(banksData);
       } catch (error) {
-        toast.error("Failed to load bank list");
+        showErrorToast("fetchBanksError", tError);
       } finally {
         setIsLoadingBanks(false);
       }
@@ -112,10 +108,10 @@ export function ManageBankAccountDialog({
   const onSubmit = async (values: CreateAccountBankBodyType) => {
     try {
       await createMutation.mutateAsync(values);
-      toast.success(t("addSuccess"));
+      showSuccessToast("Create", tSuccess);
       form.reset();
     } catch (error) {
-      toast.error(t("addError"));
+      showErrorToast("Create", tError);
     }
   };
 
@@ -124,9 +120,9 @@ export function ManageBankAccountDialog({
 
     try {
       await deleteMutation.mutateAsync(bankNumber);
-      toast.success(t("deleteSuccess"));
+      showSuccessToast("Delete", tSuccess);
     } catch (error) {
-      toast.error(t("deleteError"));
+      showErrorToast("Delete", tError);
     }
   };
 
