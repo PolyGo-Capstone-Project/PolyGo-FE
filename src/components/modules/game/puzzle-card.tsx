@@ -102,7 +102,7 @@ export default function PuzzleCard({ data: p }: { data: PuzzleCardData }) {
           </Avatar>
           <div className="text-sm">
             <div className="font-medium leading-none">{p.creator.name}</div>
-            {p.bestTimeSec !== undefined && (
+            {p.bestTimeSec !== undefined && p.bestTimeSec > 0 && (
               <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                 <Flag className="h-3 w-3" />
                 <span>

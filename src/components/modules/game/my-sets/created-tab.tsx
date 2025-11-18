@@ -31,7 +31,6 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   BookOpen,
   Clock,
-  LineChart,
   Pencil,
   Plus,
   Star,
@@ -50,6 +49,7 @@ import {
   useUpdateWordsetMutation,
   useWordsetDetailQuery,
 } from "@/hooks";
+import { showErrorToast, showSuccessToast } from "@/lib/utils";
 import { WordsetDifficulty } from "@/models";
 
 /* ==================== Local helpers ==================== */
@@ -104,7 +104,6 @@ export default function CreatedTab() {
   }, [interests]);
 
   // unwrap items
-  // const items = data?.data?.items ?? [];
   const memoItems = useMemo(() => data?.data?.items ?? [], [data?.data?.items]);
 
   // Split groups
@@ -215,7 +214,7 @@ export default function CreatedTab() {
                 status="approved"
                 categoryLabel={interestMap.get(s.category)?.name ?? s.category}
                 onEdit={() => openEditDialog(s.id)}
-                onDelete={() => openDeleteDialog(s.id, s.title)} // <-- NEW
+                onDelete={() => openDeleteDialog(s.id, s.title)}
               />
             ))
           )}
@@ -251,7 +250,7 @@ export default function CreatedTab() {
                 status="pending"
                 categoryLabel={interestMap.get(s.category)?.name ?? s.category}
                 onEdit={() => openEditDialog(s.id)}
-                onDelete={() => openDeleteDialog(s.id, s.title)} // <-- NEW
+                onDelete={() => openDeleteDialog(s.id, s.title)}
               />
             ))
           )}
@@ -308,10 +307,10 @@ function ConfirmDeleteDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {t("common.deleteTitle", { default: "Xoá bộ câu đố?" })}
+            {t("wordPuzzle.deleteTitle", { default: "Xoá bộ câu đố?" })}
           </DialogTitle>
           <DialogDescription>
-            {t("common.deleteDesc", {
+            {t("wordPuzzle.deleteDesc", {
               default:
                 "Hành động này không thể hoàn tác. Bạn chắc chắn muốn xoá bộ câu đố này?",
             })}
@@ -320,7 +319,8 @@ function ConfirmDeleteDialog({
         <div className="text-sm text-muted-foreground">
           {title ? (
             <span>
-              {t("common.deleting", { default: "Đang xoá:" })} <b>{title}</b>
+              {t("wordPuzzle.deleting", { default: "Đang xoá:" })}{" "}
+              <b>{title}</b>
             </span>
           ) : null}
         </div>
@@ -338,8 +338,8 @@ function ConfirmDeleteDialog({
             disabled={del.isPending}
           >
             {del.isPending
-              ? t("common.deleting", { default: "Đang xoá..." })
-              : t("common.delete", { default: "Xoá" })}
+              ? t("wordPuzzle.deleting", { default: "Đang xoá..." })
+              : t("wordPuzzle.delete", { default: "Xoá" })}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -347,7 +347,7 @@ function ConfirmDeleteDialog({
   );
 }
 
-/* ==================== Edit Dialog (giữ nguyên logic cập nhật) ==================== */
+/* ==================== Edit Dialog (có toast) ==================== */
 function EditWordsetDialog({
   id,
   open,
@@ -358,6 +358,8 @@ function EditWordsetDialog({
   onOpenChange: (v: boolean) => void;
 }) {
   const t = useTranslations();
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
   const locale = useLocale();
 
   // get detail
@@ -376,7 +378,6 @@ function EditWordsetDialog({
     params: { pageNumber: 1, pageSize: 200, lang: locale },
   });
 
-  // const interests = interestsData?.payload?.data?.items ?? [];
   const languages = languagesData?.payload?.data?.items ?? [];
 
   const interests = useMemo(
@@ -388,7 +389,7 @@ function EditWordsetDialog({
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [languageId, setLanguageId] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
+  const [interestId, setInterestId] = useState<string>("");
   const [difficulty, setDifficulty] =
     useState<keyof typeof WordsetDifficulty>("EASY");
   const [words, setWords] = useState<
@@ -408,7 +409,7 @@ function EditWordsetDialog({
     setTitle(detail.title || "");
     setDesc(detail.description || "");
     setLanguageId(detail.language?.id || detail.language?.code || "");
-    setCategory(detail.interest?.id || "");
+    setInterestId(detail.interest?.id || "");
 
     const d = (
       detail.difficulty || "Medium"
@@ -444,31 +445,48 @@ function EditWordsetDialog({
   const min5 =
     words.filter((w) => w.word.trim() && w.definition.trim()).length >= 5;
   const canSave =
-    title.trim() && desc.trim() && languageId && category && min5 && !isLoading;
+    title.trim() &&
+    desc.trim() &&
+    languageId &&
+    interestId &&
+    min5 &&
+    !isLoading;
 
-  const updateMutation = useUpdateWordsetMutation();
+  // mutation có toast success
+  const updateMutation = useUpdateWordsetMutation({
+    onSuccess: (data) => {
+      // giống create: truyền message + namespace "Success"
+      showSuccessToast(data?.message, tSuccess);
+    },
+  });
 
   const onSave = async () => {
     if (!canSave || updateMutation.isPending) return;
-    await updateMutation.mutateAsync({
-      id,
-      body: {
-        title,
-        description: desc,
-        languageId,
-        category,
-        difficulty: difficulty as any,
-        words: words.map((w) => ({
-          id: w.id,
-          word: w.word,
-          definition: w.definition,
-          hint: w.hint || undefined,
-          pronunciation: w.pronunciation || undefined,
-          imageUrl: w.imageUrl || undefined,
-        })),
-      },
-    });
-    onOpenChange(false);
+    try {
+      await updateMutation.mutateAsync({
+        id,
+        body: {
+          title,
+          description: desc,
+          languageId,
+          interestId,
+          difficulty: difficulty as any,
+          words: words.map((w) => ({
+            id: w.id,
+            word: w.word,
+            definition: w.definition,
+            hint: w.hint || undefined,
+            pronunciation: w.pronunciation || undefined,
+            imageUrl: w.imageUrl || undefined,
+          })),
+        },
+      });
+      // thành công -> đóng dialog
+      onOpenChange(false);
+    } catch (error) {
+      // lỗi -> toast error giống create (dùng key "Update")
+      showErrorToast("Update", tError);
+    }
   };
 
   const diffLabel = (k: keyof typeof WordsetDifficulty) =>
@@ -478,8 +496,9 @@ function EditWordsetDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
-        <DialogHeader>
+      {/* ✅ Rộng hơn & thấp hơn, nội dung bên trong scroll */}
+      <DialogContent className="sm:max-w-4xl lg:max-w-5xl max-h-[85vh] flex flex-col">
+        <DialogHeader className="pb-3">
           <DialogTitle>
             {t("create.title", { default: "Edit Wordset" })}
           </DialogTitle>
@@ -490,7 +509,8 @@ function EditWordsetDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-5">
+        {/* ✅ Phần form scroll, footer cố định */}
+        <div className="space-y-5 flex-1 overflow-y-auto pr-1">
           {/* Basic */}
           <div className="grid grid-cols-1 gap-3">
             <div className="grid gap-2">
@@ -506,7 +526,7 @@ function EditWordsetDialog({
               <Textarea
                 value={desc}
                 onChange={(e) => setDesc(e.target.value)}
-                className="min-h-[84px]"
+                className="min-h-[72px]" // thấp hơn chút
               />
             </div>
           </div>
@@ -520,7 +540,8 @@ function EditWordsetDialog({
                 {t("create.language.label", { default: "Language" })}
               </Label>
               <Select value={languageId} onValueChange={setLanguageId}>
-                <SelectTrigger>
+                {/* 👇 thêm w-full */}
+                <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={t("filters.language", { default: "Language" })}
                   />
@@ -537,8 +558,9 @@ function EditWordsetDialog({
 
             <div className="grid gap-2">
               <Label>{t("filters.category", { default: "Category" })}</Label>
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger>
+              <Select value={interestId} onValueChange={setInterestId}>
+                {/* 👇 thêm w-full */}
+                <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={t("filters.category", { default: "Category" })}
                   />
@@ -563,7 +585,8 @@ function EditWordsetDialog({
                   setDifficulty(v as keyof typeof WordsetDifficulty)
                 }
               >
-                <SelectTrigger>
+                {/* 👇 thêm w-full */}
+                <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={t("filters.difficulty", {
                       default: "Difficulty",
@@ -589,7 +612,7 @@ function EditWordsetDialog({
 
           <Separator />
 
-          {/* Words Editor (inline) */}
+          {/* Words Editor */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <Label className="text-base">
@@ -612,7 +635,9 @@ function EditWordsetDialog({
                 {t("create.words.empty", { default: "No words yet." })}
               </div>
             ) : (
-              <div className="space-y-3 max-h-[48vh] overflow-y-auto pr-1">
+              // ✅ Thanh cuộn riêng cho danh sách từ,
+              // không tràn khỏi form edit
+              <div className="space-y-3 max-h-[40vh] md:max-h-[45vh] overflow-y-auto pr-1">
                 {words.map((w, idx) => (
                   <div key={idx} className="rounded-lg border p-3 space-y-3">
                     <div className="text-sm font-medium">
@@ -638,7 +663,9 @@ function EditWordsetDialog({
                       </div>
                       <div className="grid gap-2">
                         <Label>
-                          {t("create.words.pron", { default: "Pronunciation" })}{" "}
+                          {t("create.words.pron", {
+                            default: "Pronunciation",
+                          })}{" "}
                           <span className="text-muted-foreground">
                             (
                             {t("create.common.optional", {
@@ -668,7 +695,7 @@ function EditWordsetDialog({
                             default:
                               "A round fruit that grows on trees, typically red, green, or yellow.",
                           })}
-                          className="min-h-[72px]"
+                          className="min-h-[64px]"
                         />
                       </div>
                       <div className="sm:col-span-2 grid gap-2">
@@ -719,7 +746,8 @@ function EditWordsetDialog({
           </div>
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-3">
+        {/* Footer cố định, không scroll */}
+        <DialogFooter className="gap-2 sm:gap-3 pt-3">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             {t("create.success.close", { default: "Close" })}
           </Button>
@@ -770,7 +798,7 @@ function ItemRow({
   t: ReturnType<typeof useTranslations>;
   routerPush: (href: string) => void;
   onEdit: () => void;
-  onDelete: () => void; // <-- NEW
+  onDelete: () => void;
   categoryLabel: string;
 }) {
   const plays = s.totalPlays ?? s.playCount ?? 0;
@@ -807,9 +835,10 @@ function ItemRow({
               className={LEVEL_BADGE_STYLE[toUiLevel(s.difficulty)]}
               variant="secondary"
             >
-              {/* Áp dụng dịch cho độ khó */}
               {t(
-                `filters.wordset.difficulty.${capitalize(toUiLevel(s.difficulty))}`,
+                `filters.wordset.difficulty.${capitalize(
+                  toUiLevel(s.difficulty)
+                )}`,
                 {
                   default: capitalize(toUiLevel(s.difficulty)),
                 }
@@ -821,14 +850,14 @@ function ItemRow({
         {/* actions */}
         <div className="flex flex-wrap items-center gap-2 md:pt-1 md:flex-col md:items-end">
           <div className="flex gap-2">
-            <Button
+            {/* <Button
               variant="ghost"
               className="gap-2 h-9 px-3"
               onClick={() => routerPush(`/${locale}/game/${s.id}/stats`)}
             >
               <LineChart className="h-4 w-4" />
               {t("actions.stats", { default: "Stats" })}
-            </Button>
+            </Button> */}
             <Button
               variant="ghost"
               className="gap-2 h-9 px-3"
@@ -849,14 +878,6 @@ function ItemRow({
                 <Pencil className="h-4 w-4" />
               </Button>
             )}
-            {/* <Button
-              variant="ghost"
-              size="icon"
-              onClick={onEdit}
-              aria-label="Edit"
-            >
-              <Pencil className="h-4 w-4" />
-            </Button> */}
             <Button
               variant="ghost"
               size="icon"

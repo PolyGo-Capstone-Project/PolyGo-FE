@@ -106,9 +106,10 @@ export default function CatDiff({
                           className="rounded object-cover flex-shrink-0"
                         />
                       )}
-                      {t(`filters.wordset.category.${c.name}`, {
+                      {/* {t(`filters.wordset.category.${c.name}`, {
                         default: c.id,
-                      })}
+                      })} */}
+                      {c.name}
                     </span>
                   </div>
                 </button>

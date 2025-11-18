@@ -9,6 +9,13 @@
     "rules": "Luật chơi:",
     "noResultsTitle": "Không tìm thấy",
     "noResultsDesc": "Hãy thử các tìm kiếm khác",
+    "loading": "Đang tải",
+    "loadMore": "Xem thêm",
+    "allLoaded": "Đã tải hết tất cả bộ từ",
+    "deleteTitle": "Xoá bộ câu đố?",
+    "deleteDesc": "Hành động này không thể hoàn tác. Bạn chắc chắn muốn xoá bộ câu đố này?",
+    "deleting": "Đang xóa",
+    "delete": "Xóa",
     "rule": {
       "chooseSet": "Chọn một bộ câu hỏi theo chủ đề yêu thích của bạn",
       "scramble": "Các chữ cái sẽ bị xáo trộn ngẫu nhiên (ví dụ: \"apple\" → \"p/a/l/p/e\")",

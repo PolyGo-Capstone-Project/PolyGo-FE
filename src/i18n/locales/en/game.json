@@ -9,6 +9,13 @@
     "rules": "Rules:",
     "noResultsTitle": "No Results Found",
     "noResultsDesc": "Try different search terms",
+    "loading": "Loading",
+    "loadMore": "View more",
+    "allLoaded": "All wordsets loaded",
+    "deleteTitle": "Delete puzzle set?",
+    "deleteDesc": "This action cannot be undone. Are you sure you want to delete this puzzle set?",
+    "deleting": "Deleting",
+    "delete": "Delete",
     "rule": {
       "chooseSet": "Choose a question set by your favorite topic",
       "scramble": "Words will be scrambled randomly (e.g. \"apple\" → \"p/a/l/p/e\")",

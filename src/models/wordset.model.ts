@@ -83,6 +83,9 @@ export const GetWordsetsQuerySchema = PaginationLangQuerySchema.merge(
   })
 );
 
+//search for admin
+export const SearchWordsetsQuerySchema = GetWordsetsQuerySchema;
+
 /* ====== Response ====== */
 export const GetWordsetsResSchema = z.object({
   data: z.object({
@@ -194,7 +197,7 @@ export const UpdateWordsetBodySchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   languageId: z.string().min(1),
-  category: z.string().min(1),
+  interestId: z.string().min(1),
   difficulty: z.enum(WordsetDifficulty),
   words: z
     .array(
@@ -232,6 +235,7 @@ export const AdminWordsetListItemSchema = z.object({
   averageTimeInSeconds: z.number().int(),
   averageRating: z.number(),
   wordCount: z.number().int(),
+  interest: InterestLiteSchema.optional(),
   creator: z.object({
     id: z.string(),
     name: z.string(),
@@ -248,6 +252,7 @@ export const GetAdminWordsetsQuerySchema = PaginationLangQuerySchema.merge(
     languageIds: z.array(z.string()).optional(),
     difficulty: z.enum(WordsetDifficulty).optional(),
     category: z.string().optional(),
+    interestIds: z.array(z.string()).optional(),
   })
 );
 
@@ -499,3 +504,5 @@ export type WordsetGameStateResType = z.infer<typeof WordsetGameStateResSchema>;
 // [ADD] Hint usage
 export type UseHintBodyType = z.infer<typeof UseHintBodySchema>;
 export type UseHintResType = z.infer<typeof UseHintResSchema>;
+// NEW: search type (giống SearchEventsQueryType)
+export type SearchWordsetsQueryType = z.infer<typeof SearchWordsetsQuerySchema>;

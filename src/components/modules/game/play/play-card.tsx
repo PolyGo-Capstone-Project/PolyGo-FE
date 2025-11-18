@@ -11,7 +11,7 @@ import {
   Info,
   RefreshCcw,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type WordUI = {
   id: string;
@@ -43,10 +43,9 @@ const playSound = (src: string) => {
   if (typeof window === "undefined") return;
   try {
     const audio = new Audio(src);
-    // không cần await để tránh block UI
     void audio.play();
   } catch {
-    // ignore lỗi play (user tắt sound, tab background,...)
+    // ignore
   }
 };
 
@@ -66,14 +65,22 @@ export default function PlayCard({
   onHint,
   isCompleted,
 }: Props) {
-  // flash lưu trạng thái highlight khi submit: "correct" | "wrong" | null
   const [flash, setFlash] = useState<"correct" | "wrong" | null>(null);
   const [showHint, setShowHint] = useState(false);
 
-  // Mỗi lần đổi sang từ mới -> ẩn hint đi
+  // 🔹 ref cho input để auto-focus
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // Mỗi lần đổi sang từ mới -> ẩn hint đi + reset flash + focus input
   useEffect(() => {
     setShowHint(false);
     setFlash(null);
+
+    // tự focus & select để user gõ luôn
+    if (inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
   }, [word.id]);
 
   // 🔊 phát âm thanh theo trạng thái flash (đúng / sai)
@@ -107,7 +114,7 @@ export default function PlayCard({
 
   const handleShowHint = () => {
     setShowHint(true);
-    onHint?.(); // báo cho parent để gọi API
+    onHint?.();
   };
 
   return (
@@ -142,15 +149,10 @@ export default function PlayCard({
           <AlertTitle className="font-bold">{tDefinition}</AlertTitle>
           <AlertDescription className="space-y-1">
             <div>{word.definition}</div>
-            {/* {word.pronunciation && (
-              <div className="text-xs text-muted-foreground">
-                {word.pronunciation}
-              </div>
-            )} */}
           </AlertDescription>
         </Alert>
 
-        {/* Pronunciation – giống hint: chỉ có khi có data */}
+        {/* Pronunciation */}
         {word.pronunciation && (
           <Alert>
             <AudioLines className="h-4 w-4" />
@@ -164,6 +166,7 @@ export default function PlayCard({
         )}
 
         <Input
+          ref={inputRef} // 🔹 quan trọng: gắn ref để auto-focus
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
           placeholder={tPlaceholder}
@@ -175,24 +178,8 @@ export default function PlayCard({
           }}
         />
 
-        {/* Hint + Actions in one row */}
         <div className="flex flex-col gap-3">
-          {/* Hint collapsed button (only when hidden) */}
-          {word.hint && !showHint && (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="gap-2 self-start sm:self-auto hidden"
-              // ⛔ hidden vì hint button đã được chuyển xuống hàng nút chung
-              onClick={handleShowHint}
-            >
-              <Info className="h-4 w-4" />
-              {tHint}
-            </Button>
-          )}
-
-          {/* Khi bấm Hint → hiện thẻ Hint */}
+          {/* Hint inline block */}
           {word.hint && showHint && (
             <div
               className="rounded-md border bg-amber-50 dark:bg-amber-950/30 
@@ -207,13 +194,11 @@ export default function PlayCard({
           )}
 
           <div className="flex items-center gap-2 mt-2">
-            {/* Submit – lớn nhất */}
             <Button className="flex-[2] gap-2 h-11" onClick={handleSubmit}>
               <CheckCircle2 className="h-4 w-4" />
               {tSubmit}
             </Button>
 
-            {/* Hint – nhỏ & bằng Shuffle */}
             {word.hint && (
               <Button
                 variant="default"
@@ -229,7 +214,6 @@ export default function PlayCard({
               </Button>
             )}
 
-            {/* Shuffle – nhỏ & bằng Hint */}
             <Button
               variant="outline"
               className="flex-1 gap-2 h-11"

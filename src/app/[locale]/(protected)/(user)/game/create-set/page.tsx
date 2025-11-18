@@ -8,9 +8,9 @@ import WordsEditor from "@/components/modules/game/create-set/word-editor";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
 
 import { useCreateWordsetMutation } from "@/hooks";
+import { showErrorToast, showSuccessToast } from "@/lib/utils";
 import { CreateWordsetBodyType, WordsetDifficulty } from "@/models";
 
 /* ===== helpers ===== */
@@ -32,6 +32,8 @@ type Vocab = {
 
 export default function CreateWordPuzzleSetPage() {
   const t = useTranslations();
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
   const router = useRouter();
   const locale = useLocale();
 
@@ -99,19 +101,17 @@ export default function CreateWordPuzzleSetPage() {
 
     try {
       const res = await createWordsetMutation.mutateAsync(payload);
-      const msg = res?.payload?.message || t("create.success.toast");
-      toast.success(msg);
+      // ✅ dùng helper success giống ManageBadges
+      showSuccessToast(res?.payload?.message, tSuccess);
 
       // ✅ Submit xong push về trang game
       router.push(`/${locale}/game`);
       // nếu bạn muốn về "My sets" thì đổi thành:
       // router.push(`/${locale}/game/my-sets`);
-    } catch (err: any) {
-      const msg =
-        err?.payload?.message ||
-        err?.message ||
-        t("Error.default", { default: "Something went wrong" });
-      toast.error(msg);
+    } catch (error) {
+      // ❌ dùng helper handleErrorApi + tError
+      // handleErrorApi({ error, tError });
+      showErrorToast("Create", tError);
     }
   };
 

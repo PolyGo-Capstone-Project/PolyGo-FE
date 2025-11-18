@@ -149,7 +149,7 @@ export default function ManageWordsets() {
       ...(difficulty !== "all"
         ? { difficulty: toApiDifficulty(difficulty) }
         : {}),
-      ...(category !== "all" ? { category } : {}),
+      ...(category !== "all" ? { interestIds: [category] as string[] } : {}),
       ...(languageId !== "all"
         ? { languageIds: [languageId] as string[] }
         : {}),

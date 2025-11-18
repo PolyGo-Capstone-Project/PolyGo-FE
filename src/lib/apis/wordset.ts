@@ -12,11 +12,11 @@ import {
   GetMyPlayedWordsetsResType,
   GetWordsetByIdQueryType,
   GetWordsetByIdResType,
-  GetWordsetsQueryType,
   GetWordsetsResType,
   MyBestWordsetScoreResponse,
   PlayWordsetBodyType,
   PlayWordsetResType,
+  SearchWordsetsQueryType,
   StartWordsetGameResType,
   UpdateWordsetBodyType,
   UpdateWordsetResType,
@@ -30,7 +30,7 @@ import {
 
 const prefix = "/wordsets";
 
-export type GetWordsetsParams = GetWordsetsQueryType;
+export type GetWordsetsParams = SearchWordsetsQueryType;
 export type GetWordsetByIdParams = GetWordsetByIdQueryType;
 
 export const wordsetApiRequest = {
