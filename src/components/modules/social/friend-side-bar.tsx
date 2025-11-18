@@ -3,7 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Circle, UserPlus, Users } from "lucide-react";
+import { UserPlus, Users } from "lucide-react";
 
 type Props = {
   t: ReturnType<typeof import("next-intl").useTranslations>;
@@ -23,33 +23,37 @@ export default function FriendSidebar({
   return (
     <div className="hidden lg:flex flex-col gap-6 overflow-hidden">
       {/* Suggested Friends */}
-      <Card className="flex-shrink-0">
-        <CardHeader className="border-b sticky top-0 bg-background z-10">
-          <CardTitle className="text-base font-semibold flex items-center gap-2">
-            <UserPlus className="h-4 w-4" />
+      <Card className="flex-shrink-0 hover:shadow-md transition-shadow">
+        <CardHeader className="border-b sticky top-0 bg-background z-10 pb-3">
+          <CardTitle className="text-base font-semibold flex items-center gap-2 text-primary">
+            <UserPlus className="h-5 w-5" />
             {t("rightSidebar.suggestions.title", {
               defaultValue: "Gợi ý kết bạn",
             })}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="space-y-3">
           {hasSuggestions ? (
             suggestedFriends.map((friend) => (
               <div
                 key={friend.initials}
-                className="flex items-center justify-between gap-3"
+                className="flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-accent/50 transition-all group"
               >
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-8 w-8">
+                <div className="flex items-center gap-3 min-w-0">
+                  <Avatar className="h-9 w-9 ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all">
                     <AvatarImage src={friend.avatar || "/placeholder.svg"} />
-                    <AvatarFallback>{friend.initials}</AvatarFallback>
+                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-xs">
+                      {friend.initials}
+                    </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm font-medium">{friend.name}</span>
+                  <span className="text-sm font-medium truncate group-hover:text-primary transition-colors">
+                    {friend.name}
+                  </span>
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-xs py-1 h-auto bg-transparent"
+                  className="text-xs py-1 h-auto shrink-0 hover:bg-primary hover:text-primary-foreground transition-all"
                 >
                   {t("rightSidebar.suggestions.add", { defaultValue: "Thêm" })}
                 </Button>
@@ -70,37 +74,41 @@ export default function FriendSidebar({
 
       {/* Online Friends */}
       <Card
-        className={
+        className={`hover:shadow-md transition-shadow ${
           hasOnlineFriends ? "flex-1 flex flex-col min-h-0" : "flex-shrink-0"
-        }
+        }`}
       >
-        <CardHeader className="pb-4 border-b flex-shrink-0">
-          <CardTitle className="text-base font-semibold flex items-center gap-2">
-            <Users className="h-4 w-4" />
+        <CardHeader className="pb-3 border-b flex-shrink-0">
+          <CardTitle className="text-base font-semibold flex items-center gap-2 text-primary">
+            <Users className="h-5 w-5" />
             {t("rightSidebar.online.title", {
               defaultValue: "Bạn bè đang Online",
             })}
           </CardTitle>
         </CardHeader>
         <CardContent
-          className={`space-y-3 ${hasOnlineFriends && onlineScrollNeeded ? "overflow-y-auto flex-1" : ""}`}
+          className={`space-y-2 ${hasOnlineFriends && onlineScrollNeeded ? "overflow-y-auto flex-1" : ""}`}
           style={onlineScrollNeeded ? { maxHeight: "calc(100vh - 400px)" } : {}}
         >
           {hasOnlineFriends ? (
             onlineFriends.map((friend, idx) => (
               <div
                 key={`${friend.initials}-${idx}`}
-                className="flex items-center justify-between gap-3 cursor-pointer hover:bg-muted/50 p-2 rounded-lg transition-colors flex-shrink-0"
+                className="flex items-center justify-between gap-3 cursor-pointer hover:bg-accent/50 p-2 rounded-lg transition-all flex-shrink-0 group"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 min-w-0">
                   <div className="relative">
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-9 w-9 ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all">
                       <AvatarImage src={friend.avatar || "/placeholder.svg"} />
-                      <AvatarFallback>{friend.initials}</AvatarFallback>
+                      <AvatarFallback className="bg-gradient-to-br from-green-100 to-green-50 dark:from-green-900/30 dark:to-green-800/20 text-xs">
+                        {friend.initials}
+                      </AvatarFallback>
                     </Avatar>
-                    <Circle className="absolute bottom-0 right-0 h-2.5 w-2.5 fill-green-500 text-green-500 border-2 border-background rounded-full" />
+                    <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-background rounded-full animate-pulse" />
                   </div>
-                  <span className="text-sm font-medium">{friend.name}</span>
+                  <span className="text-sm font-medium truncate group-hover:text-primary transition-colors">
+                    {friend.name}
+                  </span>
                 </div>
               </div>
             ))

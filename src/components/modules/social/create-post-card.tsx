@@ -3,9 +3,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreatePost, useUploadMultipleMediaMutation } from "@/hooks";
-import { Camera, X } from "lucide-react";
+import { Camera, Image as ImageIcon, X } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -18,6 +25,7 @@ type Props = {
 };
 
 export default function CreatePostCard({ t, currentUserAuthor }: Props) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [postContent, setPostContent] = useState("");
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
@@ -90,7 +98,7 @@ export default function CreatePostCard({ t, currentUserAuthor }: Props) {
         imageUrls,
       });
 
-      // Reset form
+      // Reset form and close modal
       setPostContent("");
       setSelectedImages([]);
       previewUrls.forEach((url) => URL.revokeObjectURL(url));
@@ -98,6 +106,7 @@ export default function CreatePostCard({ t, currentUserAuthor }: Props) {
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
+      setIsModalOpen(false);
 
       toast.success("Post created successfully");
     } catch (error: any) {
@@ -109,89 +118,152 @@ export default function CreatePostCard({ t, currentUserAuthor }: Props) {
   };
 
   return (
-    <Card className="mb-4 sm:mb-6">
-      <CardContent className="p-3 sm:p-4">
-        <div className="flex gap-2 sm:gap-3">
-          <Avatar className="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0">
-            <AvatarImage src={currentUserAuthor.avatar} />
-            <AvatarFallback>{currentUserAuthor.initials}</AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
+    <>
+      <Card className="mb-4 sm:mb-6 hover:shadow-md transition-shadow">
+        <CardContent className="p-3 sm:p-4">
+          <div className="flex gap-2 sm:gap-3 items-center">
+            <Avatar className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 ring-2 ring-primary/10">
+              <AvatarImage src={currentUserAuthor.avatar} />
+              <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
+                {currentUserAuthor.initials}
+              </AvatarFallback>
+            </Avatar>
+            <Button
+              variant="outline"
+              className="flex-1 justify-start text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-all h-10 sm:h-11"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <span className="text-sm sm:text-base">
+                {t("createPost.placeholder")}
+              </span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="shrink-0 text-primary hover:bg-primary/10 hover:text-primary"
+              onClick={() => {
+                setIsModalOpen(true);
+                setTimeout(() => fileInputRef.current?.click(), 100);
+              }}
+            >
+              <ImageIcon className="h-5 w-5" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-xl sm:text-2xl">
+              {t("createPost.title")}
+            </DialogTitle>
+            <DialogDescription>{t("createPost.description")}</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="flex gap-3 items-start">
+              <Avatar className="h-10 w-10 flex-shrink-0 ring-2 ring-primary/10">
+                <AvatarImage src={currentUserAuthor.avatar} />
+                <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
+                  {currentUserAuthor.initials}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-semibold text-sm sm:text-base">
+                  {currentUserAuthor.name}
+                </p>
+                <p className="text-xs text-muted-foreground">Public</p>
+              </div>
+            </div>
+
             <Textarea
               placeholder={t("createPost.placeholder")}
               value={postContent}
               onChange={(e) => setPostContent(e.target.value)}
-              className="mb-2 border-none bg-muted text-sm sm:mb-3 sm:text-base min-h-[60px] resize-none"
-              rows={3}
+              className="min-h-[120px] text-base border-none focus-visible:ring-0 resize-none"
+              rows={5}
             />
 
             {/* Image Previews */}
             {previewUrls.length > 0 && (
-              <div className="mb-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                {previewUrls.map((url, index) => (
-                  <div key={index} className="relative aspect-square group">
-                    <Image
-                      src={url}
-                      alt={`Preview ${index + 1}`}
-                      fill
-                      style={{ objectFit: "cover" }}
-                      className="rounded-lg"
-                    />
-                    <button
-                      onClick={() => handleRemoveImage(index)}
-                      className="absolute top-1 right-1 p-1 bg-black/60 hover:bg-black/80 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                      type="button"
+              <div className="border-2 border-dashed border-border rounded-lg p-4 bg-accent/30">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {previewUrls.map((url, index) => (
+                    <div
+                      key={index}
+                      className="relative aspect-square group rounded-lg overflow-hidden"
                     >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
+                      <Image
+                        src={url}
+                        alt={`Preview ${index + 1}`}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        className="transition-transform group-hover:scale-105"
+                      />
+                      <button
+                        onClick={() => handleRemoveImage(index)}
+                        className="absolute top-2 right-2 p-1.5 bg-black/70 hover:bg-black/90 rounded-full text-white opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+                        type="button"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex gap-0.5 sm:gap-2">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageSelect}
-                  className="hidden"
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={isUploading || selectedImages.length >= 10}
-                  type="button"
-                >
-                  <Camera className="h-4 w-4 mr-1 sm:mr-2" />
-                  <span className="hidden sm:inline">
-                    {t("createPost.photoButton")}
-                  </span>
-                  {selectedImages.length > 0 && (
-                    <span className="ml-1">({selectedImages.length})</span>
-                  )}
-                </Button>
-              </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageSelect}
+              className="hidden"
+            />
+
+            <div className="flex items-center justify-between border rounded-lg p-3 bg-accent/20">
+              <p className="text-sm font-medium">Add to your post</p>
               <Button
+                variant="ghost"
                 size="sm"
-                onClick={handlePostSubmit}
-                disabled={
-                  (!postContent.trim() && selectedImages.length === 0) ||
-                  isUploading
-                }
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading || selectedImages.length >= 10}
                 type="button"
+                className="hover:bg-primary/10 hover:text-primary"
               >
-                {isUploading
-                  ? t("createPost.posting")
-                  : t("createPost.postButton")}
+                <Camera className="h-5 w-5 mr-2" />
+                Photo
+                {selectedImages.length > 0 && (
+                  <span className="ml-2 px-2 py-0.5 bg-primary text-primary-foreground rounded-full text-xs">
+                    {selectedImages.length}
+                  </span>
+                )}
               </Button>
             </div>
+
+            <Button
+              className="w-full h-11 text-base font-semibold"
+              onClick={handlePostSubmit}
+              disabled={
+                (!postContent.trim() && selectedImages.length === 0) ||
+                isUploading
+              }
+              type="button"
+            >
+              {isUploading ? (
+                <>
+                  <span className="mr-2">Posting...</span>
+                  <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                </>
+              ) : (
+                t("createPost.postButton")
+              )}
+            </Button>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

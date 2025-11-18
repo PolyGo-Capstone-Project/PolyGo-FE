@@ -12,6 +12,7 @@ import {
   useCreateComment,
   useCreateReaction,
   useDeleteComment,
+  useDeletePost,
   useDeleteReaction,
   useGetFriends,
   useGetUsersMatching,
@@ -19,6 +20,7 @@ import {
   useUpdateComment,
   useWordsetsQuery,
 } from "@/hooks";
+import { showSuccessToast } from "@/lib";
 import authApiRequest from "@/lib/apis/auth";
 import type { GetPostItemsType } from "@/models";
 import { useQuery } from "@tanstack/react-query";
@@ -31,6 +33,7 @@ interface ContentProps {
 
 export default function SocialContent({ locale }: ContentProps) {
   const t = useTranslations("social");
+  const tSuccess = useTranslations("Success");
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>(
     {}
   );
@@ -122,6 +125,7 @@ export default function SocialContent({ locale }: ContentProps) {
   const deleteReactionMutation = useDeleteReaction();
   const updateCommentMutation = useUpdateComment();
   const deleteCommentMutation = useDeleteComment();
+  const deletePostMutation = useDeletePost();
 
   // Transform practice games data
   const practiceGames = useMemo(() => {
@@ -261,6 +265,15 @@ export default function SocialContent({ locale }: ContentProps) {
     }
   };
 
+  const handlePostDelete = async (postId: string) => {
+    try {
+      await deletePostMutation.mutateAsync(postId);
+      showSuccessToast("Delete", tSuccess);
+    } catch (error) {
+      console.error("Failed to delete post:", error);
+    }
+  };
+
   if (userLoading || postsLoading) {
     return (
       <div className="flex h-screen items-center justify-center text-muted-foreground">
@@ -304,6 +317,7 @@ export default function SocialContent({ locale }: ContentProps) {
                     onCommentSubmit={handleCommentSubmit}
                     onCommentUpdate={handleCommentUpdate}
                     onCommentDelete={handleCommentDelete}
+                    onPostDelete={handlePostDelete}
                   />
                 ))}
 

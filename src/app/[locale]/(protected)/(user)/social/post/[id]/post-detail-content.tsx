@@ -32,13 +32,7 @@ import {
   IconArrowLeft,
   IconCheck,
   IconEdit,
-  IconHeart,
-  IconMoodAngry,
-  IconMoodHappy,
-  IconMoodSad,
-  IconMoodSmile,
   IconSend2,
-  IconSparkles,
   IconTrash,
   IconX,
 } from "@tabler/icons-react";
@@ -54,24 +48,26 @@ interface PostDetailContentProps {
   postId: string;
 }
 
-// Helper to get reaction icon
-const getReactionIcon = (type: ReactionEnumType, size = 18) => {
-  switch (type) {
-    case ReactionEnum.Like:
-      return <IconMoodSmile size={size} className="text-blue-500" />;
-    case ReactionEnum.Love:
-      return <IconHeart size={size} className="text-red-500" />;
-    case ReactionEnum.Haha:
-      return <IconMoodHappy size={size} className="text-yellow-500" />;
-    case ReactionEnum.Wow:
-      return <IconSparkles size={size} className="text-purple-500" />;
-    case ReactionEnum.Sad:
-      return <IconMoodSad size={size} className="text-gray-500" />;
-    case ReactionEnum.Angry:
-      return <IconMoodAngry size={size} className="text-orange-500" />;
-    default:
-      return null;
-  }
+// Helper to get reaction emoji image
+const getReactionEmoji = (type: ReactionEnumType, size = 24) => {
+  const emojiMap: Record<ReactionEnumType, string> = {
+    Like: "/assets/social_emoji/like.png",
+    Love: "/assets/social_emoji/heart.png",
+    Haha: "/assets/social_emoji/haha.png",
+    Wow: "/assets/social_emoji/surprised.png",
+    Sad: "/assets/social_emoji/sad.png",
+    Angry: "/assets/social_emoji/angry.png",
+  };
+
+  return (
+    <Image
+      src={emojiMap[type]}
+      alt={type}
+      width={size}
+      height={size}
+      className="inline-block"
+    />
+  );
 };
 
 export default function PostDetailContent({ postId }: PostDetailContentProps) {
@@ -183,8 +179,16 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
       );
   }, [post?.reactions]);
 
-  // Handle reaction
+  // Play pop sound
+  const playPopSound = () => {
+    const audio = new Audio("/sounds/pop.mp3");
+    audio.volume = 0.5;
+    audio.play().catch((err) => console.log("Sound play failed:", err));
+  };
+
+  // Handle reaction with sound
   const handleReaction = async (reactionType: ReactionEnumType) => {
+    playPopSound();
     try {
       if (userReaction === reactionType) {
         await deleteReactionMutation.mutateAsync(postId);
@@ -274,7 +278,7 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
       <div className="h-[calc(100vh-64px)] flex flex-col lg:flex-row">
         {/* Left Side - Image (only if has images) */}
         {hasImages && (
-          <div className="lg:flex-1 bg-black flex items-center justify-center relative">
+          <div className="lg:flex-1 bg-white flex items-center justify-center relative dark:bg-black">
             <Image
               src={images[selectedImageIndex]}
               alt="Post image"
@@ -328,16 +332,16 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
           <div className="flex-1 overflow-y-auto">
             {/* Post Header */}
             <div className="p-4 border-b">
-              <div className="flex items-start justify-between mb-3">
+              <div className="flex items-start justify-between mb-4">
                 <div className="flex gap-3">
                   <Avatar
-                    className="h-10 w-10 cursor-pointer"
+                    className="h-11 w-11 cursor-pointer ring-2 ring-primary/10 hover:ring-primary/30 transition-all"
                     onClick={() =>
                       router.push(`/${locale}/matching/${post.creator.id}`)
                     }
                   >
                     <AvatarImage src={post.creator.avatarUrl} />
-                    <AvatarFallback>
+                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
                       {(post.creator.name || "")
                         .split(" ")
                         .map((n: string) => n[0])
@@ -348,41 +352,48 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
                   </Avatar>
                   <div>
                     <button
-                      className="font-semibold hover:underline text-left"
+                      className="font-semibold hover:underline text-left hover:text-primary transition-colors"
                       onClick={() =>
                         router.push(`/${locale}/matching/${post.creator.id}`)
                       }
                     >
                       {post.creator.name || "Unknown"}
                     </button>
-                    <p className="text-xs text-muted-foreground">{timeAgo}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {timeAgo}
+                    </p>
                   </div>
                 </div>
               </div>
 
               {/* Post Content */}
-              <p className="text-sm whitespace-pre-wrap mb-3">{post.content}</p>
+              <p className="text-sm whitespace-pre-wrap mb-4 leading-relaxed">
+                {post.content}
+              </p>
 
               {/* Stats */}
-              <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+              <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
                 <div
-                  className="flex items-center gap-1 cursor-pointer hover:underline"
+                  className="flex items-center gap-2 cursor-pointer hover:underline"
                   onClick={() =>
                     totalReactions > 0 && setShowReactionsDialog(true)
                   }
                 >
                   {post.reactions && post.reactions.length > 0 && (
                     <>
-                      <div className="flex -space-x-1">
+                      <div className="flex -space-x-2 items-center">
                         {post.reactions
                           .slice(0, 3)
                           .map((reaction: any, idx: number) => (
-                            <div key={idx} className="inline-block">
-                              {getReactionIcon(reaction.reactionType, 14)}
+                            <div
+                              key={idx}
+                              className="inline-block ring-2 ring-background rounded-full"
+                            >
+                              {getReactionEmoji(reaction.reactionType, 20)}
                             </div>
                           ))}
                       </div>
-                      <span>{totalReactions}</span>
+                      <span className="font-medium">{totalReactions}</span>
                     </>
                   )}
                 </div>
@@ -395,16 +406,16 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
               <Separator className="mb-3" />
 
               {/* Reaction Buttons */}
-              <div className="flex gap-1 mb-2">
+              <div className="flex gap-1 flex-wrap mb-3">
                 {Object.values(ReactionEnum).map((reaction) => (
                   <Button
                     key={reaction}
                     variant={userReaction === reaction ? "secondary" : "ghost"}
                     size="sm"
                     onClick={() => handleReaction(reaction)}
-                    className="px-2"
+                    className="px-2 h-9 hover:scale-110 active:scale-95 transition-all"
                   >
-                    {getReactionIcon(reaction, 18)}
+                    {getReactionEmoji(reaction, 20)}
                   </Button>
                 ))}
               </div>
@@ -412,18 +423,21 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
 
             {/* Comments Section */}
             <div className="p-4 space-y-4">
-              <h3 className="font-semibold">Comments</h3>
+              <h3 className="font-semibold text-lg">Comments</h3>
               {post.comments && post.comments.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {post.comments.map((c: any) => {
                     const isOwnComment = c.user.id === currentUserAuthor.id;
                     const isEditing = editingCommentId === c.id;
 
                     return (
-                      <div key={c.id} className="flex gap-2">
-                        <Avatar className="h-8 w-8 flex-shrink-0">
+                      <div
+                        key={c.id}
+                        className="flex gap-2 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                      >
+                        <Avatar className="h-8 w-8 flex-shrink-0 ring-1 ring-border">
                           <AvatarImage src={c.user.avatarUrl} />
-                          <AvatarFallback>
+                          <AvatarFallback className="text-xs bg-gradient-to-br from-muted to-accent">
                             {(c.user.name || "")
                               .split(" ")
                               .map((n: string) => n[0])
@@ -432,7 +446,7 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
                               .slice(0, 2) || "??"}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           {isEditing ? (
                             <div className="flex gap-1">
                               <Input
@@ -440,68 +454,68 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
                                 onChange={(e) =>
                                   setEditingContent(e.target.value)
                                 }
-                                className="text-sm"
+                                className="text-sm h-9"
                               />
                               <Button
                                 size="icon"
                                 variant="ghost"
-                                className="h-9 w-9"
+                                className="h-9 w-9 hover:bg-green-100 hover:text-green-600 dark:hover:bg-green-900/20"
                                 onClick={() => {
                                   if (editingContent.trim()) {
                                     handleCommentUpdate(c.id, editingContent);
                                   }
                                 }}
                               >
-                                <IconCheck size={18} />
+                                <IconCheck size={16} />
                               </Button>
                               <Button
                                 size="icon"
                                 variant="ghost"
-                                className="h-9 w-9"
+                                className="h-9 w-9 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/20"
                                 onClick={() => {
                                   setEditingCommentId(null);
                                   setEditingContent("");
                                 }}
                               >
-                                <IconX size={18} />
+                                <IconX size={16} />
                               </Button>
                             </div>
                           ) : (
                             <>
-                              <div className="bg-muted rounded-lg p-3 group relative">
-                                <p className="text-sm font-semibold">
+                              <div className="bg-accent/50 rounded-2xl px-3 py-2 group relative hover:bg-accent/70 transition-colors">
+                                <p className="text-sm font-semibold mb-0.5">
                                   {c.user.name || "Unknown"}
                                 </p>
-                                <p className="text-sm break-words">
+                                <p className="text-sm break-words leading-relaxed">
                                   {c.content}
                                 </p>
                                 {isOwnComment && (
-                                  <div className="absolute top-2 right-2 hidden group-hover:flex gap-1">
+                                  <div className="absolute top-2 right-2 hidden group-hover:flex gap-1 bg-background/80 backdrop-blur-sm rounded-lg p-0.5 shadow-sm">
                                     <Button
                                       size="icon"
                                       variant="ghost"
-                                      className="h-7 w-7"
+                                      className="h-7 w-7 hover:bg-blue-100 hover:text-blue-600 dark:hover:bg-blue-900/20"
                                       onClick={() => {
                                         setEditingCommentId(c.id);
                                         setEditingContent(c.content);
                                       }}
                                     >
-                                      <IconEdit size={16} />
+                                      <IconEdit size={14} />
                                     </Button>
                                     <Button
                                       size="icon"
                                       variant="ghost"
-                                      className="h-7 w-7"
+                                      className="h-7 w-7 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/20"
                                       onClick={() => {
                                         handleCommentDelete(c.id);
                                       }}
                                     >
-                                      <IconTrash size={16} />
+                                      <IconTrash size={14} />
                                     </Button>
                                   </div>
                                 )}
                               </div>
-                              <div className="text-xs text-muted-foreground mt-1">
+                              <div className="text-xs text-muted-foreground mt-1.5 px-3">
                                 {formatDistanceToNow(new Date(c.createdAt), {
                                   addSuffix: true,
                                   locale: vi,
@@ -515,7 +529,7 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
                   })}
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground text-center py-8">
                   No comments yet. Be the first to comment!
                 </p>
               )}
@@ -524,29 +538,33 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
 
           {/* Comment Input - Sticky at bottom */}
           <div className="p-4 border-t bg-background">
-            <div className="flex gap-2">
-              <Avatar className="h-8 w-8 flex-shrink-0">
+            <div className="flex gap-2 items-start">
+              <Avatar className="h-9 w-9 flex-shrink-0 ring-1 ring-border">
                 <AvatarImage src={currentUserAuthor.avatar} />
-                <AvatarFallback>{currentUserAuthor.initials}</AvatarFallback>
+                <AvatarFallback className="text-xs bg-gradient-to-br from-primary/20 to-primary/10">
+                  {currentUserAuthor.initials}
+                </AvatarFallback>
               </Avatar>
-              <div className="flex flex-1 gap-2">
+              <div className="flex flex-1 gap-2 items-center bg-accent/30 rounded-full px-4 py-2 focus-within:bg-accent/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
                 <Input
                   placeholder="Write a comment..."
                   value={commentInput}
                   onChange={(e) => setCommentInput(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter") {
+                    if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
                       handleCommentSubmit();
                     }
                   }}
+                  className="border-none bg-transparent focus-visible:ring-0 text-sm h-auto py-0"
                 />
                 <Button
                   size="icon"
                   onClick={handleCommentSubmit}
                   disabled={!commentInput.trim()}
+                  className="h-8 w-8 rounded-full disabled:opacity-50 hover:scale-110 active:scale-95 transition-all"
                 >
-                  <IconSend2 size={18} />
+                  <IconSend2 size={16} />
                 </Button>
               </div>
             </div>
@@ -571,7 +589,7 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
               {Object.entries(reactionsByType).map(([type, reactions]) => (
                 <TabsTrigger key={type} value={type} className="text-xs p-1">
                   <div className="flex items-center gap-1">
-                    {getReactionIcon(type as ReactionEnumType, 16)}
+                    {getReactionEmoji(type as ReactionEnumType, 18)}
                     <span>
                       {reactions.reduce((sum, r) => sum + (r.count || 0), 0)}
                     </span>
@@ -593,9 +611,9 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
                       }}
                     >
                       <div className="flex items-center gap-3">
-                        <Avatar className="h-10 w-10">
+                        <Avatar className="h-10 w-10 ring-2 ring-primary/10">
                           <AvatarImage src={user.avatarUrl} />
-                          <AvatarFallback>
+                          <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
                             {(user.name || "")
                               .split(" ")
                               .map((n: string) => n[0])
@@ -608,7 +626,7 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
                           {user.name || "Unknown"}
                         </span>
                       </div>
-                      {getReactionIcon(user.reactionType, 20)}
+                      {getReactionEmoji(user.reactionType, 24)}
                     </div>
                   ))
                 ) : (
@@ -641,9 +659,9 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
                             }}
                           >
                             <div className="flex items-center gap-3">
-                              <Avatar className="h-10 w-10">
+                              <Avatar className="h-10 w-10 ring-2 ring-primary/10">
                                 <AvatarImage src={r.user.avatarUrl} />
-                                <AvatarFallback>
+                                <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
                                   {(r.user.name || "")
                                     .split(" ")
                                     .map((n: string) => n[0])
@@ -656,7 +674,7 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
                                 {r.user.name || "Unknown"}
                               </span>
                             </div>
-                            {getReactionIcon(type as ReactionEnumType, 20)}
+                            {getReactionEmoji(type as ReactionEnumType, 24)}
                           </div>
                         ))
                     )}

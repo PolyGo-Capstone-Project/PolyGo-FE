@@ -47,7 +47,8 @@
     "SendTransactionInquiry": "Đã gửi yêu cầu giao dịch thành công!",
     "ReplyTransactionInquiry": "Đã trả lời yêu cầu giao dịch thành công!",
     "Timeout": "OTP hết hạn. Vui lòng yêu cầu OTP mới.",
-    "InvalidOTP": "OTP không hợp lệ. Vui lòng thử lại."
+    "InvalidOTP": "OTP không hợp lệ. Vui lòng thử lại.",
+    "export": "Xuất dữ liệu thành công!"
   },
   "Error": {
     "default": "Đã xảy ra lỗi.",
@@ -95,7 +96,9 @@
     "depositError": "Khởi tạo nạp tiền thất bại. Vui lòng thử lại.",
     "OutOfWithdrawTimes": "Bạn đã đạt đến số lần rút tiền tối đa trong tháng này.",
     "fetchBanksError": "Lấy danh sách ngân hàng thất bại. Vui lòng thử lại.",
-    "requestError": "Tạo yêu cầu rút tiền thất bại. Vui lòng thử lại."
+    "requestError": "Tạo yêu cầu rút tiền thất bại. Vui lòng thử lại.",
+    "export": "Xuất dữ liệu thất bại. Vui lòng thử lại.",
+    "SendTransactionInquiry": "Gửi yêu cầu giao dịch thất bại. Vui lòng thử lại."
   },
   "header": {
     "products": "Sản phẩm",
