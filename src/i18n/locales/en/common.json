@@ -40,7 +40,12 @@
     "friendRequestCancelled": "Friend request cancelled successfully!",
     "profileLinkCopied": "Profile link copied!",
     "copy": "Copy message successful!",
-    "DepositUrl": "Deposit URL generated successfully!"
+    "DepositUrl": "Deposit URL generated successfully!",
+    "RequestWithdrawal": "Withdrawal request created successfully!",
+    "ConfirmWithdrawal": "Withdrawal confirmed successfully!",
+    "ApproveWithdrawal": "Withdrawal approved successfully!",
+    "SendTransactionInquiry": "Transaction inquiry sent successfully!",
+    "ReplyTransactionInquiry": "Transaction inquiry replied successfully!"
   },
   "Error": {
     "default": "An error occurred.",
@@ -85,7 +90,12 @@
     "UserBanned": "You have been banned from the platform.",
     "OnlyPlusUserCanCreateEvent": "Only Plus users can create events.",
     "CannotRateIfNotAttendedEvent": "You cannot rate an event you did not attend.",
-    "depositError": "Failed to initiate deposit. Please try again."
+    "depositError": "Failed to initiate deposit. Please try again.",
+    "OutOfWithdrawTimes": "You have reached the maximum number of withdrawals for this month.",
+    "fetchBanksError": "Failed to fetch bank list. Please try again.",
+    "requestError": "Failed to create withdrawal request. Please try again.",
+    "Timeout": "OTP timeout. Please request a new OTP.",
+    "InvalidOTP": "Invalid OTP. Please try again."
   },
   "header": {
     "products": "Products",

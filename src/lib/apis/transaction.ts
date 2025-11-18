@@ -4,7 +4,7 @@ import {
   CreateAccountBankBodyType,
   CreateInquiryTransactionBodyType,
   GetAdminTransactionsResType,
-  GetTransactionQueryType,
+  GetTransactionAdminQueryType,
   GetUserTransactionsResType,
   GetUserWalletResType,
   MessageResType,
@@ -21,15 +21,15 @@ const transactionApiRequest = {
   // GET user transactions
   getUserTransactions: createGetAll<
     GetUserTransactionsResType,
-    GetTransactionQueryType
+    GetTransactionAdminQueryType
   >(`${prefix}`),
   // GET admin transactions
   getAdminTransactions: createGetAll<
     GetAdminTransactionsResType,
-    GetTransactionQueryType
-  >(`/admin/${prefix}`),
+    GetTransactionAdminQueryType
+  >(`/admin${prefix}`),
   // GET wallet
-  getUserWallet: () => http.get<GetUserWalletResType>(`${prefix}/wallet`),
+  getUserWallet: () => http.get<GetUserWalletResType>(`/wallet`),
   // POST create account bank
   createAccountBank: (body: CreateAccountBankBodyType) =>
     http.post<MessageResType>(`/wallet/accounts`, body),
@@ -43,19 +43,19 @@ const transactionApiRequest = {
   withdrawalConfirm: (body: WithdrawalConfirmBodyType) =>
     http.post<MessageResType>(`${prefix}/withdrawal-confirm`, body),
   // PUT withdrawal cancel
-  withdrawalCancel: (body: WithdrawalCancelBodyType) =>
-    http.put<MessageResType>(`${prefix}/withdrawal-cancel`, body),
+  withdrawalCancel: (id: string, body: WithdrawalCancelBodyType) =>
+    http.put<MessageResType>(`${prefix}/withdrawal-cancel/${id}`, body),
   // PUT withdrawal approve
-  withdrawalApprove: (body: WithdrawalApproveBodyType) =>
-    http.put<MessageResType>(`${prefix}/withdrawal-approve`, body),
+  withdrawalApprove: (id: string, body: WithdrawalApproveBodyType) =>
+    http.put<MessageResType>(`${prefix}/withdrawal-approve/${id}`, body),
   // POST inquiry transaction
   inquiryTransaction: (id: string, body: CreateInquiryTransactionBodyType) =>
-    http.post<MessageResType>(`/inquiry/${prefix}/${id}`, body),
+    http.post<MessageResType>(`/inquiry${prefix}/${id}`, body),
   // PUT inquiry transaction
   updateInquiryTransaction: (
     id: string,
     body: UpdateInquiryTransactionBodyType
-  ) => http.put<MessageResType>(`/inquiry/${prefix}/${id}`, body),
+  ) => http.put<MessageResType>(`/inquiry${prefix}/${id}`, body),
 };
 
 export default transactionApiRequest;

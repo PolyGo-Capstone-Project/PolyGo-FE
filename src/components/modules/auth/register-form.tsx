@@ -84,7 +84,7 @@ export default function RegisterForm() {
     try {
       const otpData: SendOTPBodyType = {
         mail: watchedMail,
-        verificationType: TypeOfVerificationCode.REGISTER,
+        verificationType: TypeOfVerificationCode.Register,
       };
       await sendOTPMutation.mutateAsync(otpData);
       toast.success(t("otpSentSuccess"));

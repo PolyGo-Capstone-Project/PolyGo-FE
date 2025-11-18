@@ -158,6 +158,11 @@ export const useWithdrawalConfirm = () => {
 };
 
 // ===== WITHDRAWAL CANCEL =====
+type WithdrawalCancelParams = {
+  id: string;
+  body: WithdrawalCancelBodyType;
+};
+
 type WithdrawalCancelResponse = Awaited<
   ReturnType<typeof transactionApiRequest.withdrawalCancel>
 >;
@@ -165,19 +170,22 @@ type WithdrawalCancelResponse = Awaited<
 export const useWithdrawalCancel = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<WithdrawalCancelResponse, Error, WithdrawalCancelBodyType>(
-    {
-      mutationFn: (body: WithdrawalCancelBodyType) =>
-        transactionApiRequest.withdrawalCancel(body),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["user-transactions"] });
-        queryClient.invalidateQueries({ queryKey: ["admin-transactions"] });
-      },
-    }
-  );
+  return useMutation<WithdrawalCancelResponse, Error, WithdrawalCancelParams>({
+    mutationFn: ({ id, body }: WithdrawalCancelParams) =>
+      transactionApiRequest.withdrawalCancel(id, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["admin-transactions"] });
+    },
+  });
 };
 
 // ===== WITHDRAWAL APPROVE =====
+type WithdrawalApproveParams = {
+  id: string;
+  body: WithdrawalApproveBodyType;
+};
+
 type WithdrawalApproveResponse = Awaited<
   ReturnType<typeof transactionApiRequest.withdrawalApprove>
 >;
@@ -185,17 +193,15 @@ type WithdrawalApproveResponse = Awaited<
 export const useWithdrawalApprove = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<
-    WithdrawalApproveResponse,
-    Error,
-    WithdrawalApproveBodyType
-  >({
-    mutationFn: (body: WithdrawalApproveBodyType) =>
-      transactionApiRequest.withdrawalApprove(body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-transactions"] });
-    },
-  });
+  return useMutation<WithdrawalApproveResponse, Error, WithdrawalApproveParams>(
+    {
+      mutationFn: ({ id, body }: WithdrawalApproveParams) =>
+        transactionApiRequest.withdrawalApprove(id, body),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["admin-transactions"] });
+      },
+    }
+  );
 };
 
 // ===== INQUIRY TRANSACTION =====
