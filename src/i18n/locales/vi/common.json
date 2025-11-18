@@ -40,7 +40,14 @@
     "friendRequestCancelled": "Hủy lời mời kết bạn thành công!",
     "profileLinkCopied": "Đã sao chép liên kết hồ sơ!",
     "copy": "Đã sao chép tin nhắn",
-    "DepositUrl": "Đã tạo URL nạp tiền thành công!"
+    "DepositUrl": "Đã tạo URL nạp tiền thành công!",
+    "RequestWithdrawal": "Yêu cầu rút tiền đã được tạo thành công!",
+    "ConfirmWithdrawal": "Xác nhận rút tiền thành công!",
+    "ApproveWithdrawal": "Phê duyệt rút tiền thành công!",
+    "SendTransactionInquiry": "Đã gửi yêu cầu giao dịch thành công!",
+    "ReplyTransactionInquiry": "Đã trả lời yêu cầu giao dịch thành công!",
+    "Timeout": "OTP hết hạn. Vui lòng yêu cầu OTP mới.",
+    "InvalidOTP": "OTP không hợp lệ. Vui lòng thử lại."
   },
   "Error": {
     "default": "Đã xảy ra lỗi.",
@@ -85,7 +92,10 @@
     "UserBanned": "Bạn đã bị cấm khỏi nền tảng.",
     "OnlyPlusUserCanCreateEvent": "Chỉ người dùng Plus mới có thể tạo sự kiện.",
     "CannotRateIfNotAttendedEvent": "Bạn không thể đánh giá một sự kiện mà bạn không tham dự.",
-    "depositError": "Khởi tạo nạp tiền thất bại. Vui lòng thử lại."
+    "depositError": "Khởi tạo nạp tiền thất bại. Vui lòng thử lại.",
+    "OutOfWithdrawTimes": "Bạn đã đạt đến số lần rút tiền tối đa trong tháng này.",
+    "fetchBanksError": "Lấy danh sách ngân hàng thất bại. Vui lòng thử lại.",
+    "requestError": "Tạo yêu cầu rút tiền thất bại. Vui lòng thử lại."
   },
   "header": {
     "products": "Sản phẩm",

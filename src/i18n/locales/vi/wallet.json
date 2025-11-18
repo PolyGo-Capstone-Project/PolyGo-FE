@@ -7,12 +7,14 @@
       "hide": "Ẩn số dư",
       "totalEarned": "Tổng thu nhập",
       "totalSpent": "Tổng chi tiêu",
-      "totalWithdrawn": "Tổng đã rút"
+      "totalWithdrawn": "Tổng đã rút",
+      "pending": "Số dư đang chờ xử lý"
     },
     "quickActions": {
       "title": "Thao tác nhanh",
       "deposit": "Nạp tiền",
       "withdraw": "Rút tiền",
+      "viewTransactions": "Lịch sử giao dịch",
       "buyGift": "Mua quà",
       "upgradeSubscription": "Nâng cấp gói"
     },
@@ -153,6 +155,106 @@
         "reasonInfo": "Nếu bạn đã hủy thanh toán, bạn có thể thử lại bất cứ lúc nào. Nếu có lỗi xảy ra, vui lòng liên hệ hỗ trợ.",
         "tryAgain": "Thử lại",
         "backToWallet": "Quay lại ví"
+      }
+    },
+    "bankAccount": {
+      "title": "Quản lý tài khoản ngân hàng",
+      "description": "Thêm hoặc xóa tài khoản ngân hàng để rút tiền. Bạn có thể thêm tối đa 2 tài khoản.",
+      "manage": "Quản lý TK ngân hàng",
+      "currentAccounts": "Tài khoản ngân hàng hiện tại",
+      "noAccounts": "Bạn chưa thêm tài khoản ngân hàng nào",
+      "addNew": "Thêm tài khoản mới",
+      "searchPlaceholder": "Tìm theo tên hoặc mã ngân hàng...",
+      "noBanksFound": "Không tìm thấy ngân hàng",
+      "bankName": "Tên ngân hàng",
+      "selectBank": "Chọn ngân hàng",
+      "loadingBanks": "Đang tải danh sách ngân hàng...",
+      "accountName": "Tên chủ tài khoản",
+      "accountNamePlaceholder": "Nhập tên chủ tài khoản",
+      "bankNumber": "Số tài khoản",
+      "bankNumberPlaceholder": "Nhập số tài khoản ngân hàng",
+      "add": "Thêm tài khoản",
+      "adding": "Đang thêm...",
+      "reset": "Làm mới",
+      "maxAccountsReached": "Bạn đã đạt giới hạn tối đa 2 tài khoản ngân hàng",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa tài khoản ngân hàng này?",
+      "addSuccess": "Thêm tài khoản ngân hàng thành công",
+      "addError": "Thêm tài khoản ngân hàng thất bại",
+      "deleteSuccess": "Xóa tài khoản ngân hàng thành công",
+      "deleteError": "Xóa tài khoản ngân hàng thất bại"
+    },
+    "withdraw": {
+      "title": "Rút tiền",
+      "subtitle": "Yêu cầu rút tiền từ ví của bạn",
+      "form": {
+        "title": "Thông tin rút tiền",
+        "availableBalance": "Số dư khả dụng",
+        "limitReached": "Bạn đã đạt giới hạn rút tiền trong tháng. Lần rút tiếp theo: {date}",
+        "noAccounts": "Vui lòng thêm tài khoản ngân hàng trước khi rút tiền",
+        "selectAccount": "Tài khoản ngân hàng",
+        "selectAccountPlaceholder": "Chọn tài khoản ngân hàng",
+        "selectAccountHint": "Chọn tài khoản để nhận tiền rút",
+        "amount": "Số tiền rút",
+        "amountHint": "Tối thiểu: {min} - Tối đa: {max}",
+        "submit": "Yêu cầu rút tiền",
+        "submitting": "Đang xử lý...",
+        "sendingOTP": "Đang gửi OTP..."
+      },
+      "errors": {
+        "amount": {
+          "required": "Vui lòng nhập số tiền rút",
+          "min": "Số tiền rút tối thiểu là 10.000 VND",
+          "max": "Số tiền rút tối đa là 10.000.000 VND"
+        },
+        "bankNumber": {
+          "required": "Vui lòng chọn tài khoản ngân hàng"
+        },
+        "bankName": {
+          "required": "Vui lòng chọn tài khoản ngân hàng"
+        },
+        "accountName": {
+          "required": "Vui lòng chọn tài khoản ngân hàng"
+        },
+        "default": "Dữ liệu không hợp lệ"
+      },
+      "otp": {
+        "title": "Xác thực OTP",
+        "description": "Nhập mã OTP 6 số đã được gửi đến email của bạn",
+        "otpLabel": "Mã OTP",
+        "cancel": "Hủy",
+        "confirm": "Xác nhận",
+        "confirming": "Đang xác nhận...",
+        "success": "Tạo yêu cầu rút tiền thành công",
+        "error": "Xác nhận rút tiền thất bại",
+        "timeout": "Hết thời gian xác thực OTP. Vui lòng thử lại."
+      },
+      "success": {
+        "title": "Yêu cầu rút tiền đã được gửi!",
+        "description": "Yêu cầu rút tiền của bạn đã được tạo thành công và đang được xử lý.",
+        "whatNext": {
+          "title": "Điều gì sẽ xảy ra tiếp theo?",
+          "processing": "Thời gian xử lý: 30 phút - 24 giờ (chỉ trong giờ hành chính)",
+          "notification": "Bạn sẽ nhận được thông báo qua email & trong ứng dụng khi hoàn tất",
+          "checkHistory": "Theo dõi yêu cầu trong lịch sử giao dịch"
+        },
+        "backToWallet": "Quay lại ví",
+        "viewHistory": "Xem lịch sử"
+      },
+      "terms": {
+        "title": "Điều khoản & Điều kiện",
+        "processingTime": {
+          "title": "Thời gian xử lý",
+          "duration": "Thời gian xử lý từ 30 phút - 24 giờ",
+          "weekdays": "T2-T6: 9:00 AM - 12:00 PM & 1:00 PM - 6:00 PM",
+          "saturday": "Thứ 7: chỉ buổi sáng 9:00 AM - 12:00 PM",
+          "notification": "Thông báo qua email & trong app khi hoàn tất"
+        },
+        "limits": {
+          "title": "Giới hạn rút tiền",
+          "monthly": "Tối đa 2 lần rút mỗi tháng",
+          "min": "Tối thiểu: 10.000 VND",
+          "max": "Tối đa: 10.000.000 VND"
+        }
       }
     }
   }

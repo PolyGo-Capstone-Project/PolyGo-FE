@@ -39,13 +39,20 @@ export const TransactionSchema = z.object({
   encryptedBankNumber: z.string().nullable(),
   userNotes: z.string().nullable(),
   isInquiry: z.boolean().default(false),
-  withdrawalApprovalImageUrl: z.string().nullable(),
+  withdrawalApprovedImageUrl: z.string().nullable().optional(),
   lastUpdatedAt: z.string(),
   createdAt: z.string(),
 });
 
 //QUERIES
 export const GetTransactionQuerySchema = PaginationQuerySchema;
+export const GetTransactionAdminQuerySchema = PaginationQuerySchema.extend({
+  description: z.string().min(1).max(100).optional(),
+  isInquiry: z.boolean().optional(),
+  transactionType: z.enum(TransactionTypeEnum).optional(),
+  transactionMethod: z.enum(TransactionMethod).optional(),
+  transactionStatus: z.enum(TransactionStatus).optional(),
+});
 
 // GET
 // GET USER WALLET
@@ -73,8 +80,14 @@ export const UserTransactionItemSchema = TransactionSchema.pick({
   transactionType: true,
   transactionMethod: true,
   transactionStatus: true,
+
+  withdrawalApprovedImageUrl: true,
   createdAt: true,
   lastUpdatedAt: true,
+}).extend({
+  bankName: z.string().nullable().optional(),
+  bankNumber: z.string().nullable().optional(),
+  accountName: z.string().nullable().optional(),
 });
 
 export const GetUserTransactionsResSchema = z.object({
@@ -154,11 +167,17 @@ export type WalletType = z.infer<typeof WalletSchema>;
 export type WalletBankAccountType = z.infer<typeof WalletBankAccountSchema>;
 export type TransactionType = z.infer<typeof TransactionSchema>;
 export type GetTransactionQueryType = z.infer<typeof GetTransactionQuerySchema>;
+export type GetTransactionAdminQueryType = z.infer<
+  typeof GetTransactionAdminQuerySchema
+>;
 
 export type GetUserWalletResType = z.infer<typeof GetUserWalletResSchema>;
 export type UserTransactionItemType = z.infer<typeof UserTransactionItemSchema>;
 export type GetUserTransactionsResType = z.infer<
   typeof GetUserTransactionsResSchema
+>;
+export type AdminTransactionItemType = z.infer<
+  typeof AdminTransactionItemSchema
 >;
 export type GetAdminTransactionsResType = z.infer<
   typeof GetAdminTransactionsResSchema
