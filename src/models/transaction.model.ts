@@ -39,7 +39,7 @@ export const TransactionSchema = z.object({
   encryptedBankNumber: z.string().nullable(),
   userNotes: z.string().nullable(),
   isInquiry: z.boolean().default(false),
-  withdrawalApprovalImageUrl: z.string().nullable(),
+  withdrawalApprovedImageUrl: z.string().nullable().optional(),
   lastUpdatedAt: z.string(),
   createdAt: z.string(),
 });
@@ -80,6 +80,8 @@ export const UserTransactionItemSchema = TransactionSchema.pick({
   transactionType: true,
   transactionMethod: true,
   transactionStatus: true,
+
+  withdrawalApprovedImageUrl: true,
   createdAt: true,
   lastUpdatedAt: true,
 }).extend({

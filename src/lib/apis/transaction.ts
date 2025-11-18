@@ -5,7 +5,6 @@ import {
   CreateInquiryTransactionBodyType,
   GetAdminTransactionsResType,
   GetTransactionAdminQueryType,
-  GetTransactionQueryType,
   GetUserTransactionsResType,
   GetUserWalletResType,
   MessageResType,
@@ -22,7 +21,7 @@ const transactionApiRequest = {
   // GET user transactions
   getUserTransactions: createGetAll<
     GetUserTransactionsResType,
-    GetTransactionQueryType
+    GetTransactionAdminQueryType
   >(`${prefix}`),
   // GET admin transactions
   getAdminTransactions: createGetAll<
@@ -51,12 +50,12 @@ const transactionApiRequest = {
     http.put<MessageResType>(`${prefix}/withdrawal-approve/${id}`, body),
   // POST inquiry transaction
   inquiryTransaction: (id: string, body: CreateInquiryTransactionBodyType) =>
-    http.post<MessageResType>(`/inquiry/${prefix}/${id}`, body),
+    http.post<MessageResType>(`/inquiry${prefix}/${id}`, body),
   // PUT inquiry transaction
   updateInquiryTransaction: (
     id: string,
     body: UpdateInquiryTransactionBodyType
-  ) => http.put<MessageResType>(`/inquiry/${prefix}/${id}`, body),
+  ) => http.put<MessageResType>(`/inquiry${prefix}/${id}`, body),
 };
 
 export default transactionApiRequest;
