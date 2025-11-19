@@ -14,6 +14,7 @@ export const WalletSchema = z.object({
   totalEarned: z.number().min(0),
   totalSpent: z.number().min(0),
   totalWithdrawn: z.number().min(0),
+  totalDeposit: z.number().min(0),
 });
 
 export const WalletBankAccountSchema = z.object({
@@ -37,11 +38,10 @@ export const TransactionSchema = z.object({
   encryptedAccountName: z.string().nullable(),
   encryptedBankName: z.string().nullable(),
   encryptedBankNumber: z.string().nullable(),
-  userNotes: z.string().nullable(),
   isInquiry: z.boolean().default(false),
   withdrawalApprovedImageUrl: z.string().nullable().optional(),
   lastUpdatedAt: z.string(),
-  createdAt: z.string(),
+  createdAt: z.iso.datetime(),
 });
 
 //QUERIES
@@ -75,12 +75,10 @@ export const UserTransactionItemSchema = TransactionSchema.pick({
   amount: true,
   remainingBalance: true,
   description: true,
-  userNotes: true,
   isInquiry: true,
   transactionType: true,
   transactionMethod: true,
   transactionStatus: true,
-
   withdrawalApprovedImageUrl: true,
   createdAt: true,
   lastUpdatedAt: true,
@@ -106,6 +104,24 @@ export const GetAdminTransactionsResSchema = z.object({
     items: z.array(AdminTransactionItemSchema),
     ...PaginationMetaSchema.shape,
   }),
+  message: z.string(),
+});
+
+// GET TRANSACTION DETAIL
+export const GetTransactionDetailItem = UserTransactionItemSchema.extend({
+  userNotes: z
+    .array(
+      z.object({
+        id: z.string(),
+        notes: z.string(),
+        createdAt: z.iso.datetime(),
+      })
+    )
+    .default([]),
+});
+
+export const GetTransactionDetailResSchema = z.object({
+  data: GetTransactionDetailItem,
   message: z.string(),
 });
 
@@ -159,8 +175,12 @@ export const WithdrawalApproveBodySchema = z
   .strict();
 
 // inquiry
-export const UpdateInquiryTransactionBodySchema =
-  CreateInquiryTransactionBodySchema;
+export const UpdateInquiryTransactionBodySchema = z
+  .object({
+    userNotesId: z.string(),
+    systemNotes: z.string(),
+  })
+  .strict();
 
 //types:
 export type WalletType = z.infer<typeof WalletSchema>;
@@ -181,6 +201,12 @@ export type AdminTransactionItemType = z.infer<
 >;
 export type GetAdminTransactionsResType = z.infer<
   typeof GetAdminTransactionsResSchema
+>;
+export type GetTransactionDetailItemType = z.infer<
+  typeof GetTransactionDetailItem
+>;
+export type GetTransactionDetailResType = z.infer<
+  typeof GetTransactionDetailResSchema
 >;
 export type CreateAccountBankBodyType = z.infer<
   typeof CreateAccountBankBodySchema

@@ -26,7 +26,7 @@ export default function WithdrawPage() {
 
   const handleOtpSuccess = () => {
     setOtpDialogOpen(false);
-    router.push(`${locale}/wallet/withdraw/success`);
+    router.push("/wallet/withdraw/success");
   };
 
   return (

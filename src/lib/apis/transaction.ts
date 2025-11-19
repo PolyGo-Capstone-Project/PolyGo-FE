@@ -5,6 +5,7 @@ import {
   CreateInquiryTransactionBodyType,
   GetAdminTransactionsResType,
   GetTransactionAdminQueryType,
+  GetTransactionDetailResType,
   GetUserTransactionsResType,
   GetUserWalletResType,
   MessageResType,
@@ -28,6 +29,9 @@ const transactionApiRequest = {
     GetAdminTransactionsResType,
     GetTransactionAdminQueryType
   >(`/admin${prefix}`),
+  // GET transaction detail
+  getTransactionDetail: (id: string) =>
+    http.get<GetTransactionDetailResType>(`${prefix}/${id}`),
   // GET wallet
   getUserWallet: () => http.get<GetUserWalletResType>(`/wallet`),
   // POST create account bank

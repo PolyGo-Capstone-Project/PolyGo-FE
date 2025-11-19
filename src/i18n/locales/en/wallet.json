@@ -8,6 +8,7 @@
       "totalEarned": "Total Earned",
       "totalSpent": "Total Spent",
       "totalWithdrawn": "Total Withdrawn",
+      "totalDeposit": "Total Deposited",
       "pending": "Pending Balance"
     },
     "quickActions": {
@@ -106,6 +107,7 @@
         "Deposit": "Deposit",
         "Purchase": "Purchase",
         "Refund": "Refund",
+        "Earn": "Earn",
         "Withdraw": "Withdrawal",
         "Gift": "Gift",
         "Adjustment": "Adjustment",
