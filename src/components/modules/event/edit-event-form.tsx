@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 
+import { MDXEditorWrapper } from "@/components/shared";
 import {
   Button,
   Card,
@@ -25,7 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
   Skeleton,
-  Textarea,
 } from "@/components/ui";
 import { DateTimePicker } from "@/components/ui/date-time";
 import { EventStatus, PlanTypeEnum } from "@/constants";
@@ -291,11 +291,17 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
             <Label htmlFor="description">
               {tCreate("fields.description.label")}
             </Label>
-            <Textarea
-              id="description"
-              placeholder={tCreate("fields.description.placeholder")}
-              rows={4}
-              {...form.register("description")}
+            <Controller
+              name="description"
+              control={form.control}
+              render={({ field }) => (
+                <MDXEditorWrapper
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  placeholder={tCreate("fields.description.placeholder")}
+                  minHeight="300px"
+                />
+              )}
             />
             {form.formState.errors.description && (
               <p className="text-sm text-destructive">

@@ -1,32 +1,6 @@
 "use client";
 
 import {
-  IconAlertTriangle,
-  IconArrowLeft,
-  IconCalendar,
-  IconCheck,
-  IconClock,
-  IconCoin,
-  IconEye,
-  IconLoader2,
-  IconMapPin,
-  IconShare3,
-  IconUsers,
-  IconVideo,
-} from "@tabler/icons-react";
-import { format } from "date-fns";
-import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-
-import {
-  EventAllRatingsSection,
-  EventYourRatingSection,
-  RegistrationSuccessDialog,
-  ShareEventDialog,
-} from "@/components/modules/event";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -52,9 +26,16 @@ import {
   DialogTitle,
   Input,
   Label,
+  MarkdownRenderer,
   Separator,
   Textarea,
-} from "@/components/ui";
+} from "@/components";
+import {
+  EventAllRatingsSection,
+  EventYourRatingSection,
+  RegistrationSuccessDialog,
+  ShareEventDialog,
+} from "@/components/modules/event";
 import { EventStatus } from "@/constants";
 import {
   useCreateEventRatingMutation,
@@ -67,6 +48,25 @@ import {
 } from "@/hooks";
 import { useAuthMe } from "@/hooks/query/use-auth";
 import { formatCurrency, handleErrorApi } from "@/lib/utils";
+import {
+  IconAlertTriangle,
+  IconArrowLeft,
+  IconCalendar,
+  IconCheck,
+  IconClock,
+  IconCoin,
+  IconEye,
+  IconLoader2,
+  IconMapPin,
+  IconShare3,
+  IconUsers,
+  IconVideo,
+} from "@tabler/icons-react";
+import { format } from "date-fns";
+import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 export default function EventDetailPage() {
   const params = useParams();
@@ -412,28 +412,6 @@ export default function EventDetailPage() {
                 </CardContent>
               </Card>
             </div>
-
-            <Separator />
-
-            {/* Description */}
-            <div>
-              <h2 className="text-2xl font-semibold mb-4">{t("aboutEvent")}</h2>
-              <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                {event.description}
-              </p>
-            </div>
-
-            {/* Categories */}
-            <div>
-              <h3 className="font-semibold mb-3">{t("categories")}</h3>
-              <div className="flex flex-wrap gap-2">
-                {event.categories.map((category, index) => (
-                  <Badge key={index} variant="secondary" className="text-sm">
-                    {category.name}
-                  </Badge>
-                ))}
-              </div>
-            </div>
           </div>
 
           {/* Sidebar */}
@@ -628,6 +606,26 @@ export default function EventDetailPage() {
                 )}
               </CardContent>
             </Card>
+          </div>
+        </div>
+        <Separator />
+        {/* Description */}
+        <div>
+          <h2 className="text-2xl font-semibold mb-4">{t("aboutEvent")}</h2>
+          <div className="leading-relaxed">
+            <MarkdownRenderer content={event.description} />
+          </div>
+        </div>
+
+        {/* Categories */}
+        <div>
+          <h3 className="font-semibold mb-3">{t("categories")}</h3>
+          <div className="flex flex-wrap gap-2">
+            {event.categories.map((category, index) => (
+              <Badge key={index} variant="secondary" className="text-sm">
+                {category.name}
+              </Badge>
+            ))}
           </div>
         </div>
 

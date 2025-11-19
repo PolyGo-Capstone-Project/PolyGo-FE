@@ -8,6 +8,7 @@ import {
 } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 
+import { MarkdownRenderer } from "@/components";
 import {
   Badge,
   Button,
@@ -106,7 +107,9 @@ export function EventStats({ eventId }: EventStatsProps) {
                     {tStatus(event.status)}
                   </Badge>
                 </div>
-                <p className="text-muted-foreground">{event.description}</p>
+                <div className="text-muted-foreground">
+                  <MarkdownRenderer content={event.description} />
+                </div>
               </div>
 
               <Separator />

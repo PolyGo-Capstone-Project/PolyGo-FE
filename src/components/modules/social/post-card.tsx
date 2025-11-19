@@ -20,6 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Input,
+  MarkdownRenderer,
   Separator,
 } from "@/components";
 import type { ReactionEnumType } from "@/constants";
@@ -330,9 +331,9 @@ export default function PostCard({
         </div>
 
         {/* Content */}
-        <p className="mb-4 text-sm md:text-base whitespace-pre-wrap leading-relaxed">
-          {post.content}
-        </p>
+        <div className="mb-4 text-sm md:text-base whitespace-pre-wrap leading-relaxed">
+          <MarkdownRenderer content={post.content} />
+        </div>
 
         {/* Images Grid */}
         <ImageGrid images={post.imageUrls || []} onClick={handleImageClick} />
