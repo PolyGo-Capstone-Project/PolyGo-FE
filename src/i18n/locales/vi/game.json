@@ -90,7 +90,7 @@
     "section": {
       "mySets": "Bộ Câu Đố Của Tôi",
       "approved": "Đã duyệt",
-      "pending": "Đang chờ duyệt"
+      "pending": "Đang chờ duyệt - Đã bị từ chối"
     },
     "noCreatedSets": "Bạn chưa tạo bất kỳ bộ câu đố nào.",
     "noPlayedSets": "Bạn chưa chơi bất kỳ bộ câu đố nào."

@@ -75,6 +75,7 @@ const toUiLevel = (d?: string): UiDifficulty => {
 
 const isApproved = (s?: string) => (s || "").toLowerCase() === "approved";
 const isPending = (s?: string) => (s || "").toLowerCase() === "pending";
+const isRejected = (s?: string) => (s || "").toLowerCase() === "rejected";
 
 /* ==================== UI ==================== */
 export default function CreatedTab() {
@@ -111,8 +112,9 @@ export default function CreatedTab() {
     () => memoItems.filter((s) => isApproved(s.status)),
     [memoItems]
   );
-  const pendingItems = useMemo(
-    () => memoItems.filter((s) => isPending(s.status)),
+
+  const reviewItems = useMemo(
+    () => memoItems.filter((s) => isPending(s.status) || isRejected(s.status)),
     [memoItems]
   );
 
@@ -221,33 +223,34 @@ export default function CreatedTab() {
         </CardContent>
       </Card>
 
-      {/* Pending list */}
+      {/* Pending + Rejected list */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base md:text-lg">
-            {t("mysets.section.pending", { default: "Pending Review" })}
+            {t("mysets.section.pending", { default: "Pending / Rejected" })}
           </CardTitle>
-          <Badge variant="secondary">{pendingItems.length} sets</Badge>
+          <Badge variant="secondary">{reviewItems.length} sets</Badge>
         </CardHeader>
 
         <CardContent className="space-y-4">
           {isLoading ? (
             <ListSkeleton />
-          ) : pendingItems.length === 0 ? (
+          ) : reviewItems.length === 0 ? (
             <div className="text-center text-muted-foreground py-8">
               {t("mysets.noCreatedSets", {
-                default: "You have no pending puzzle sets.",
+                default: "You have no pending or rejected puzzle sets.",
               })}
             </div>
           ) : (
-            pendingItems.map((s) => (
+            reviewItems.map((s) => (
               <ItemRow
                 key={s.id}
                 locale={locale}
                 t={t}
                 routerPush={router.push}
                 data={s}
-                status="pending"
+                // ✅ phân biệt pending vs rejected để style & action
+                status={isRejected(s.status) ? "rejected" : "pending"}
                 categoryLabel={interestMap.get(s.category)?.name ?? s.category}
                 onEdit={() => openEditDialog(s.id)}
                 onDelete={() => openDeleteDialog(s.id, s.title)}
@@ -292,9 +295,16 @@ function ConfirmDeleteDialog({
   onOpenChange: (v: boolean) => void;
 }) {
   const t = useTranslations();
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
+
   const del = useDeleteWordsetMutation({
-    onSuccess: () => {
+    onSuccess: (res) => {
+      showSuccessToast(res?.message, tSuccess);
       onOpenChange(false);
+    },
+    onError: () => {
+      showErrorToast("Delete", tError);
     },
   });
 
@@ -496,8 +506,7 @@ function EditWordsetDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {/* ✅ Rộng hơn & thấp hơn, nội dung bên trong scroll */}
-      <DialogContent className="sm:max-w-4xl lg:max-w-5xl max-h-[85vh] flex flex-col">
+      <DialogContent className="sm:max-w-4xl lg:max-w-5xl max-h-[85vh] overflow-y-auto">
         <DialogHeader className="pb-3">
           <DialogTitle>
             {t("create.title", { default: "Edit Wordset" })}
@@ -509,8 +518,7 @@ function EditWordsetDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {/* ✅ Phần form scroll, footer cố định */}
-        <div className="space-y-5 flex-1 overflow-y-auto pr-1">
+        <div className="space-y-5 pr-1">
           {/* Basic */}
           <div className="grid grid-cols-1 gap-3">
             <div className="grid gap-2">
@@ -526,7 +534,7 @@ function EditWordsetDialog({
               <Textarea
                 value={desc}
                 onChange={(e) => setDesc(e.target.value)}
-                className="min-h-[72px]" // thấp hơn chút
+                className="min-h-[72px]"
               />
             </div>
           </div>
@@ -540,7 +548,6 @@ function EditWordsetDialog({
                 {t("create.language.label", { default: "Language" })}
               </Label>
               <Select value={languageId} onValueChange={setLanguageId}>
-                {/* 👇 thêm w-full */}
                 <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={t("filters.language", { default: "Language" })}
@@ -559,7 +566,6 @@ function EditWordsetDialog({
             <div className="grid gap-2">
               <Label>{t("filters.category", { default: "Category" })}</Label>
               <Select value={interestId} onValueChange={setInterestId}>
-                {/* 👇 thêm w-full */}
                 <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={t("filters.category", { default: "Category" })}
@@ -585,7 +591,6 @@ function EditWordsetDialog({
                   setDifficulty(v as keyof typeof WordsetDifficulty)
                 }
               >
-                {/* 👇 thêm w-full */}
                 <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={t("filters.difficulty", {
@@ -614,20 +619,11 @@ function EditWordsetDialog({
 
           {/* Words Editor */}
           <div className="space-y-3">
+            {/* chỉ còn label ở trên */}
             <div className="flex items-center justify-between">
               <Label className="text-base">
                 {t("create.words.title", { default: "Vocabulary" })}
               </Label>
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                onClick={addWord}
-                className="gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                {t("create.words.add", { default: "Add word" })}
-              </Button>
             </div>
 
             {words.length === 0 ? (
@@ -635,9 +631,7 @@ function EditWordsetDialog({
                 {t("create.words.empty", { default: "No words yet." })}
               </div>
             ) : (
-              // ✅ Thanh cuộn riêng cho danh sách từ,
-              // không tràn khỏi form edit
-              <div className="space-y-3 max-h-[40vh] md:max-h-[45vh] overflow-y-auto pr-1">
+              <div className="space-y-3">
                 {words.map((w, idx) => (
                   <div key={idx} className="rounded-lg border p-3 space-y-3">
                     <div className="text-sm font-medium">
@@ -736,6 +730,20 @@ function EditWordsetDialog({
               </div>
             )}
 
+            {/* ✅ nút Add word đưa xuống dưới cùng */}
+            <div className="flex justify-end">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={addWord}
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                {t("create.words.add", { default: "Add word" })}
+              </Button>
+            </div>
+
             {!min5 && (
               <div className="text-sm text-destructive">
                 {t("create.minRequired", {
@@ -746,7 +754,6 @@ function EditWordsetDialog({
           </div>
         </div>
 
-        {/* Footer cố định, không scroll */}
         <DialogFooter className="gap-2 sm:gap-3 pt-3">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             {t("create.success.close", { default: "Close" })}
@@ -793,7 +800,7 @@ function ItemRow({
       iconUrl?: string | null;
     };
   };
-  status: "approved" | "pending";
+  status: "approved" | "pending" | "rejected";
   locale: string;
   t: ReturnType<typeof useTranslations>;
   routerPush: (href: string) => void;
@@ -803,8 +810,13 @@ function ItemRow({
 }) {
   const plays = s.totalPlays ?? s.playCount ?? 0;
 
+  // ✅ rejected thì mờ hơn
+  const cardClass =
+    "rounded-lg border p-4 md:p-5 bg-card hover:bg-accent/40 transition-colors " +
+    (status === "rejected" ? "opacity-60" : "");
+
   return (
-    <div className="rounded-lg border p-4 md:p-5 bg-card hover:bg-accent/40 transition-colors">
+    <div className={cardClass}>
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="font-medium truncate">{s.title}</div>
@@ -919,7 +931,11 @@ function StatCard({
   );
 }
 
-function StatusBadge({ status }: { status: "approved" | "pending" }) {
+function StatusBadge({
+  status,
+}: {
+  status: "approved" | "pending" | "rejected";
+}) {
   if (status === "approved") {
     return (
       <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
@@ -927,9 +943,17 @@ function StatusBadge({ status }: { status: "approved" | "pending" }) {
       </Badge>
     );
   }
+  if (status === "pending") {
+    return (
+      <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
+        Pending Review
+      </Badge>
+    );
+  }
+
   return (
-    <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
-      Pending Review
+    <Badge className="bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300">
+      Rejected
     </Badge>
   );
 }

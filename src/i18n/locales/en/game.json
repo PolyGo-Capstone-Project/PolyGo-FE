@@ -87,7 +87,7 @@
     "section": {
       "mySets": "My Puzzle Sets",
       "approved": "Approved",
-      "pending": "Pending"
+      "pending": "Pending - Rejected"
     },
     "noCreatedSets": "You haven't created any puzzle sets yet.",
     "noPlayedSets": "You haven't played any puzzle sets yet."
