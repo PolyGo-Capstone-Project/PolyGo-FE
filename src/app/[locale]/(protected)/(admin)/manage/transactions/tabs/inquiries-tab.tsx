@@ -3,6 +3,7 @@
 import {
   IconArrowLeft,
   IconArrowRight,
+  IconEye,
   IconFilter,
   IconMessageCircle,
   IconRefresh,
@@ -11,6 +12,7 @@ import {
 import { format } from "date-fns";
 import { useMemo, useState } from "react";
 
+import { TransactionDetailDialog } from "@/components/modules/wallet";
 import {
   Badge,
   Button,
@@ -46,7 +48,11 @@ import {
   Textarea,
 } from "@/components/ui";
 import { TransactionStatus, TransactionTypeEnum } from "@/constants";
-import { useAdminTransactions, useUpdateInquiryTransaction } from "@/hooks";
+import {
+  useAdminTransactions,
+  useTransactionDetail,
+  useUpdateInquiryTransaction,
+} from "@/hooks";
 import { handleErrorApi, showSuccessToast } from "@/lib/utils";
 import {
   AdminTransactionItemType,
@@ -70,6 +76,10 @@ export function InquiriesTab() {
     useState<AdminTransactionItemType | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [responseNotes, setResponseNotes] = useState("");
+  const [selectedTransactionId, setSelectedTransactionId] = useState<
+    string | null
+  >(null);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
   const queryParams = useMemo<GetTransactionAdminQueryType>(() => {
     const params: GetTransactionAdminQueryType = {
@@ -96,6 +106,14 @@ export function InquiriesTab() {
   });
 
   const updateInquiryMutation = useUpdateInquiryTransaction();
+
+  // Fetch transaction detail for the response dialog
+  const { data: transactionDetailData } = useTransactionDetail({
+    id: selectedTransaction?.id ?? "",
+    enabled: dialogOpen && !!selectedTransaction?.id,
+  });
+
+  const transactionDetail = transactionDetailData?.payload?.data;
 
   const transactions = data?.payload?.data?.items ?? [];
   const totalItems = data?.payload?.data?.totalItems ?? 0;
@@ -137,14 +155,20 @@ export function InquiriesTab() {
     setResponseNotes("");
   };
 
+  const handleViewDetails = (transactionId: string) => {
+    setSelectedTransactionId(transactionId);
+    setIsDetailDialogOpen(true);
+  };
+
   const handleSubmit = async () => {
-    if (!selectedTransaction) return;
+    if (!selectedTransaction || !transactionDetail?.userNotes?.[0]?.id) return;
 
     try {
       await updateInquiryMutation.mutateAsync({
         id: selectedTransaction.id,
         body: {
-          userNotes: responseNotes.trim() || undefined,
+          userNotesId: transactionDetail.userNotes[0].id,
+          systemNotes: responseNotes.trim(),
         },
       });
       showSuccessToast("Inquiry updated successfully", tSuccess);
@@ -306,7 +330,6 @@ export function InquiriesTab() {
                       <TableHead>Amount</TableHead>
                       <TableHead>Type</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>User Notes</TableHead>
                       <TableHead>Created</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
@@ -341,23 +364,27 @@ export function InquiriesTab() {
                             {transaction.transactionStatus}
                           </Badge>
                         </TableCell>
-                        <TableCell className="max-w-xs">
-                          <p className="text-xs truncate">
-                            {transaction.userNotes || "—"}
-                          </p>
-                        </TableCell>
                         <TableCell className="text-xs text-muted-foreground">
                           {formatDateTime(transaction.createdAt)}
                         </TableCell>
                         <TableCell>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleOpenDialog(transaction)}
-                          >
-                            <IconMessageCircle className="h-4 w-4 mr-1" />
-                            Respond
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleViewDetails(transaction.id)}
+                            >
+                              <IconEye className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleOpenDialog(transaction)}
+                            >
+                              <IconMessageCircle className="h-4 w-4 mr-1" />
+                              Respond
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -482,9 +509,26 @@ export function InquiriesTab() {
                   <Label className="text-xs text-muted-foreground">
                     User Inquiry
                   </Label>
-                  <p className="text-sm bg-background p-3 rounded border">
-                    {selectedTransaction.userNotes || "No notes provided"}
-                  </p>
+                  {transactionDetail?.userNotes &&
+                  transactionDetail.userNotes.length > 0 ? (
+                    <div className="space-y-2">
+                      {transactionDetail.userNotes.map((note) => (
+                        <div
+                          key={note.id}
+                          className="text-sm bg-background p-3 rounded border"
+                        >
+                          <p className="whitespace-pre-wrap">{note.notes}</p>
+                          <p className="text-xs text-muted-foreground mt-2">
+                            {formatDateTime(note.createdAt)}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm bg-background p-3 rounded border">
+                      No notes provided
+                    </p>
+                  )}
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">
@@ -543,6 +587,15 @@ export function InquiriesTab() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Transaction Detail Dialog */}
+      {selectedTransactionId && (
+        <TransactionDetailDialog
+          transactionId={selectedTransactionId}
+          open={isDetailDialogOpen}
+          onOpenChange={setIsDetailDialogOpen}
+        />
+      )}
     </>
   );
 }

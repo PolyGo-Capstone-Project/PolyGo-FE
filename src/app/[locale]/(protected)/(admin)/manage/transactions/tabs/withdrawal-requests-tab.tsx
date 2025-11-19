@@ -4,6 +4,7 @@ import {
   IconArrowLeft,
   IconArrowRight,
   IconCheck,
+  IconEye,
   IconFilter,
   IconRefresh,
   IconSearch,
@@ -14,6 +15,7 @@ import { format } from "date-fns";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 
+import { TransactionDetailDialog } from "@/components/modules/wallet";
 import {
   Badge,
   Button,
@@ -82,6 +84,10 @@ export function WithdrawalRequestsTab() {
   const [systemNotes, setSystemNotes] = useState("");
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
   const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
+  const [selectedTransactionId, setSelectedTransactionId] = useState<
+    string | null
+  >(null);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
   const queryParams = useMemo<GetTransactionAdminQueryType>(() => {
     const params: GetTransactionAdminQueryType = {
@@ -133,6 +139,11 @@ export function WithdrawalRequestsTab() {
     setDescription("");
     setTransactionStatus("all");
     setPageNumber(1);
+  };
+
+  const handleViewDetails = (transactionId: string) => {
+    setSelectedTransactionId(transactionId);
+    setIsDetailDialogOpen(true);
   };
 
   const handleOpenDialog = (
@@ -370,30 +381,39 @@ export function WithdrawalRequestsTab() {
                           {formatDateTime(transaction.createdAt)}
                         </TableCell>
                         <TableCell>
-                          {transaction.transactionStatus === "Pending" && (
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="default"
-                                onClick={() =>
-                                  handleOpenDialog(transaction, "approve")
-                                }
-                              >
-                                <IconCheck className="h-4 w-4 mr-1" />
-                                Approve
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() =>
-                                  handleOpenDialog(transaction, "cancel")
-                                }
-                              >
-                                <IconX className="h-4 w-4 mr-1" />
-                                Cancel
-                              </Button>
-                            </div>
-                          )}
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleViewDetails(transaction.id)}
+                            >
+                              <IconEye className="h-4 w-4" />
+                            </Button>
+                            {transaction.transactionStatus === "Pending" && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="default"
+                                  onClick={() =>
+                                    handleOpenDialog(transaction, "approve")
+                                  }
+                                >
+                                  <IconCheck className="h-4 w-4 mr-1" />
+                                  Approve
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() =>
+                                    handleOpenDialog(transaction, "cancel")
+                                  }
+                                >
+                                  <IconX className="h-4 w-4 mr-1" />
+                                  Cancel
+                                </Button>
+                              </>
+                            )}
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -516,14 +536,6 @@ export function WithdrawalRequestsTab() {
                     <p>{selectedTransaction.description}</p>
                   </div>
                 )}
-                {selectedTransaction.userNotes && (
-                  <div className="col-span-2">
-                    <Label className="text-xs text-muted-foreground">
-                      User Notes
-                    </Label>
-                    <p className="text-sm">{selectedTransaction.userNotes}</p>
-                  </div>
-                )}
               </div>
 
               {actionType === "approve" && (
@@ -613,6 +625,15 @@ export function WithdrawalRequestsTab() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Transaction Detail Dialog */}
+      {selectedTransactionId && (
+        <TransactionDetailDialog
+          transactionId={selectedTransactionId}
+          open={isDetailDialogOpen}
+          onOpenChange={setIsDetailDialogOpen}
+        />
+      )}
     </>
   );
 }

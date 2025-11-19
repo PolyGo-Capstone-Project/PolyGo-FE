@@ -45,14 +45,16 @@ import {
 } from "@/models";
 import { IconFilter } from "@tabler/icons-react";
 import {
+  Eye,
   FileImage,
   FileSpreadsheet,
   FileText,
-  MessageSquare,
+  MessageCircleWarning,
   Search,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
+import { TransactionDetailDialog } from "./transaction-detail-dialog";
 
 export function TransactionHistory() {
   const t = useTranslations("wallet.transactions");
@@ -78,6 +80,10 @@ export function TransactionHistory() {
   const [isReceiptDialogOpen, setIsReceiptDialogOpen] = useState(false);
   const [isInquiryDialogOpen, setIsInquiryDialogOpen] = useState(false);
   const [inquiryNotes, setInquiryNotes] = useState("");
+  const [selectedTransactionId, setSelectedTransactionId] = useState<
+    string | null
+  >(null);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
 
   // Build query params
   const queryParams = useMemo<GetTransactionAdminQueryType>(() => {
@@ -250,6 +256,11 @@ export function TransactionHistory() {
     setSelectedTransaction(transaction);
     setInquiryNotes("");
     setIsInquiryDialogOpen(true);
+  };
+
+  const handleViewDetails = (transactionId: string) => {
+    setSelectedTransactionId(transactionId);
+    setIsDetailDialogOpen(true);
   };
 
   const handleSubmitInquiry = async () => {
@@ -435,6 +446,14 @@ export function TransactionHistory() {
                         </span>
                       </div>
                       <div className="mt-2 flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleViewDetails(transaction.id)}
+                        >
+                          <Eye className="mr-1 h-3 w-3" />
+                          Details
+                        </Button>
                         {canViewReceipt(transaction) && (
                           <Button
                             size="sm"
@@ -451,7 +470,7 @@ export function TransactionHistory() {
                             variant="outline"
                             onClick={() => handleOpenInquiry(transaction)}
                           >
-                            <MessageSquare className="mr-1 h-3 w-3" />
+                            <MessageCircleWarning className="mr-1 h-3 w-3" />
                             Inquiry
                           </Button>
                         )}
@@ -523,6 +542,15 @@ export function TransactionHistory() {
                           </TableCell>
                           <TableCell>
                             <div className="flex justify-center gap-2">
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() =>
+                                  handleViewDetails(transaction.id)
+                                }
+                              >
+                                <Eye className="h-3.5 w-3.5" />
+                              </Button>
                               {canViewReceipt(transaction) && (
                                 <Button
                                   size="sm"
@@ -539,7 +567,7 @@ export function TransactionHistory() {
                                   variant="outline"
                                   onClick={() => handleOpenInquiry(transaction)}
                                 >
-                                  <MessageSquare className="mr-1 h-3.5 w-3.5" />
+                                  <MessageCircleWarning className="mr-1 h-3.5 w-3.5" />
                                   Inquiry
                                 </Button>
                               )}
@@ -684,6 +712,15 @@ export function TransactionHistory() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Transaction Detail Dialog */}
+      {selectedTransactionId && (
+        <TransactionDetailDialog
+          transactionId={selectedTransactionId}
+          open={isDetailDialogOpen}
+          onOpenChange={setIsDetailDialogOpen}
+        />
+      )}
     </>
   );
 }
