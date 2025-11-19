@@ -88,13 +88,12 @@ export function CreateEventForm() {
       status: EventStatus.Pending,
       isPublic: true,
       allowLateRegister: false,
-      capacity: 10,
+      capacity: 5,
       fee: 0,
       hostId: "", // Will be set from auth
       startAt: "",
-      endAt: null,
       registerDeadline: "",
-      expectedDurationInMinutes: 60,
+      expectedDurationInMinutes: 120,
       password: null,
       interestIds: [],
       requiredPlanType: PlanTypeEnum.FREE,
@@ -110,10 +109,6 @@ export function CreateEventForm() {
 
     // Convert to ISO string and set startAt
     form.setValue("startAt", date.toISOString());
-
-    // Set endAt = startAt + 2 hours
-    const endDate = new Date(date.getTime() + 2 * 60 * 60 * 1000);
-    form.setValue("endAt", endDate.toISOString());
 
     // Set registerDeadline = startAt - 12 hours
     const deadlineDate = new Date(date.getTime() - 12 * 60 * 60 * 1000);
@@ -419,29 +414,6 @@ export function CreateEventForm() {
             {form.formState.errors.startAt && (
               <p className="text-sm text-destructive">
                 {form.formState.errors.startAt.message}
-              </p>
-            )}
-          </div>
-
-          {/* End Date (Optional) */}
-          <div className="space-y-2">
-            <Label htmlFor="endAt">{t("fields.endDate.label")}</Label>
-            <Controller
-              name="endAt"
-              control={form.control}
-              render={({ field }) => (
-                <DateTimePicker
-                  value={field.value || undefined}
-                  onChange={(date) => {
-                    field.onChange(date ? date.toISOString() : null);
-                  }}
-                  placeholder={t("fields.endDate.placeholder")}
-                />
-              )}
-            />
-            {form.formState.errors.endAt && (
-              <p className="text-sm text-destructive">
-                {form.formState.errors.endAt.message}
               </p>
             )}
           </div>

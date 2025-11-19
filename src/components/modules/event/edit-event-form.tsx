@@ -100,13 +100,12 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
       status: EventStatus.Pending,
       isPublic: true,
       allowLateRegister: false,
-      capacity: 10,
+      capacity: 5,
       fee: 0,
       hostId: "",
       startAt: "",
-      endAt: null,
       registerDeadline: "",
-      expectedDurationInMinutes: 60,
+      expectedDurationInMinutes: 120,
       password: null,
       interestIds: [],
       requiredPlanType: PlanTypeEnum.FREE,
@@ -139,9 +138,8 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
         fee: event.fee || 0,
         hostId: event.host?.id || userId || "",
         startAt: event.startAt || "",
-        endAt: null,
         registerDeadline: event.registerDeadline || "",
-        expectedDurationInMinutes: event.expectedDurationInMinutes || 60,
+        expectedDurationInMinutes: event.expectedDurationInMinutes || 120,
         password: null,
         interestIds: categoryIds,
         requiredPlanType: event.planType || PlanTypeEnum.FREE,
@@ -154,10 +152,6 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
   const handleStartAtChange = (date: Date | undefined) => {
     if (!date) return;
     form.setValue("startAt", date.toISOString());
-
-    // Set endAt = startAt + 2 hours
-    const endDate = new Date(date.getTime() + 2 * 60 * 60 * 1000);
-    form.setValue("endAt", endDate.toISOString());
 
     // Set registerDeadline = startAt - 12 hours
     const deadlineDate = new Date(date.getTime() - 12 * 60 * 60 * 1000);
@@ -478,32 +472,6 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
             {form.formState.errors.startAt && (
               <p className="text-sm text-destructive">
                 {form.formState.errors.startAt.message}
-              </p>
-            )}
-          </div>
-
-          {/* End Date & Time */}
-          <div className="space-y-2">
-            <Label>{tCreate("fields.endDate.label")}</Label>
-            <Controller
-              name="endAt"
-              control={form.control}
-              render={({ field }) => (
-                <DateTimePicker
-                  value={
-                    field.value && field.value !== "null"
-                      ? new Date(field.value)
-                      : undefined
-                  }
-                  onChange={(date) => {
-                    field.onChange(date ? date.toISOString() : null);
-                  }}
-                />
-              )}
-            />
-            {form.formState.errors.endAt && (
-              <p className="text-sm text-destructive">
-                {form.formState.errors.endAt.message}
               </p>
             )}
           </div>

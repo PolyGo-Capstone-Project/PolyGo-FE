@@ -211,7 +211,6 @@ export const CreateEventBodySchema = EventSchema.pick({
     description: z.string().min(10).max(2000),
     languageId: z.string().min(1),
     startAt: z.string().datetime(),
-    endAt: z.string().datetime().nullable(),
     registerDeadline: z.string().datetime(),
     password: z.string().min(6).max(100).optional().nullable(),
     interestIds: z.array(z.string()).min(1),
