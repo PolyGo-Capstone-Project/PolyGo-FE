@@ -3,7 +3,11 @@
 import "@mdxeditor/editor/style.css";
 
 import {
+  codeBlockPlugin,
+  diffSourcePlugin,
   headingsPlugin,
+  imagePlugin,
+  linkDialogPlugin,
   linkPlugin,
   listsPlugin,
   markdownShortcutPlugin,
@@ -38,14 +42,18 @@ export function MarkdownRenderer({
       <MDXEditor
         markdown={content}
         readOnly
-        contentEditableClassName="prose prose-sm max-w-none dark:prose-invert"
+        contentEditableClassName="prose max-w-none"
         plugins={[
           headingsPlugin(),
           listsPlugin(),
           linkPlugin(),
+          linkDialogPlugin(),
           quotePlugin(),
           thematicBreakPlugin(),
           tablePlugin(),
+          imagePlugin(),
+          codeBlockPlugin({ defaultCodeBlockLanguage: "" }),
+          diffSourcePlugin({ viewMode: "rich-text", diffMarkdown: "" }),
           markdownShortcutPlugin(),
         ]}
       />

@@ -23,7 +23,13 @@
       "justNow": "Vừa xong",
       "viewAllComments": "Xem tất cả {count} bình luận",
       "delete": "Xóa bài viết",
-      "noPosts": "Chưa có bài viết"
+      "update": "Cập nhật bài viết",
+      "noPosts": "Chưa có bài viết",
+      "updatePost": "Cập nhật bài viết",
+      "updatePostDescription": "Chỉnh sửa nội dung bài viết của bạn",
+      "contentPlaceholder": "Viết gì đó...",
+      "cancel": "Hủy",
+      "updating": "Đang cập nhật..."
     },
     "leftSidebar": {
       "games": {

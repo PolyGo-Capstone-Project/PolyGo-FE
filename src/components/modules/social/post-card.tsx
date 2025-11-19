@@ -21,11 +21,16 @@ import {
   DropdownMenuTrigger,
   Input,
   MarkdownRenderer,
+  MDXEditorWrapper,
   Separator,
 } from "@/components";
 import type { ReactionEnumType } from "@/constants";
 import { ReactionEnum } from "@/constants";
-import { useAuthMe } from "@/hooks";
+import {
+  useAuthMe,
+  useUpdatePost,
+  useUploadMultipleMediaMutation,
+} from "@/hooks";
 import type { GetPostItemsType } from "@/models";
 import {
   IconCheck,
@@ -39,11 +44,12 @@ import {
 } from "@tabler/icons-react";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
-import { Trash2 } from "lucide-react";
+import { Camera, Pencil, Trash2, X } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 
 type Author = { id: string; name: string; avatar: string; initials: string };
 
@@ -228,7 +234,129 @@ export default function PostCard({
   const locale = useLocale();
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingContent, setEditingContent] = useState("");
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editPostContent, setEditPostContent] = useState(post.content);
+
+  // Image handling states
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [existingImageUrls, setExistingImageUrls] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Update post mutation
+  const updatePostMutation = useUpdatePost();
+  const uploadMediaMutation = useUploadMultipleMediaMutation();
+
+  // Handle image select
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    // Validate file types
+    const validFiles = files.filter((file) => file.type.startsWith("image/"));
+    if (validFiles.length !== files.length) {
+      toast.error("Some files were not images and were skipped");
+    }
+
+    // Limit to 10 images total
+    const remainingSlots =
+      10 - (selectedImages.length + existingImageUrls.length);
+    const filesToAdd = validFiles.slice(0, remainingSlots);
+
+    if (filesToAdd.length < validFiles.length) {
+      toast.error("Maximum 10 images allowed per post");
+    }
+
+    // Create preview URLs
+    const newPreviewUrls = filesToAdd.map((file) => URL.createObjectURL(file));
+
+    setSelectedImages((prev) => [...prev, ...filesToAdd]);
+    setPreviewUrls((prev) => [...prev, ...newPreviewUrls]);
+  };
+
+  // Handle remove new image
+  const handleRemoveNewImage = (index: number) => {
+    // Revoke object URL to prevent memory leak
+    URL.revokeObjectURL(previewUrls[index]);
+
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // Handle remove existing image
+  const handleRemoveExistingImage = (index: number) => {
+    setExistingImageUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // Handle update post
+  const handleUpdatePost = async () => {
+    const text = editPostContent.trim();
+    if (
+      !text &&
+      selectedImages.length === 0 &&
+      existingImageUrls.length === 0
+    ) {
+      toast.error("Post must have content or images");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      let newImageUrls: string[] = [];
+
+      // Upload new images if any
+      if (selectedImages.length > 0) {
+        const uploadResult = await uploadMediaMutation.mutateAsync({
+          files: selectedImages,
+          addUniqueName: true,
+        });
+
+        if (uploadResult.payload?.data) {
+          newImageUrls = uploadResult.payload.data;
+        }
+      }
+
+      // Combine existing and new image URLs
+      const allImageUrls = [...existingImageUrls, ...newImageUrls];
+
+      // Update post
+      await updatePostMutation.mutateAsync({
+        id: post.id,
+        body: {
+          content: text,
+          imageUrls: allImageUrls,
+        },
+      });
+
+      // Reset form and close modal
+      setSelectedImages([]);
+      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+      setPreviewUrls([]);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      setUpdateDialogOpen(false);
+
+      toast.success("Post updated successfully");
+    } catch (error: any) {
+      console.error("Failed to update post:", error);
+      toast.error(error?.message || "Failed to update post");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Handle open update dialog
+  const handleOpenUpdateDialog = () => {
+    setEditPostContent(post.content);
+    setExistingImageUrls(post.imageUrls || []);
+    setSelectedImages([]);
+    setPreviewUrls([]);
+    setUpdateDialogOpen(true);
+  };
 
   // Play pop sound
   const playPopSound = () => {
@@ -318,6 +446,10 @@ export default function PostCard({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleOpenUpdateDialog}>
+                  <Pencil />
+                  {t("post.update")}
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   className="text-red-500"
                   onClick={() => setDeleteDialogOpen(true)}
@@ -546,6 +678,164 @@ export default function PostCard({
           </div>
         </div>
       </CardContent>
+
+      {/* Update Post Dialog */}
+      <AlertDialog open={updateDialogOpen} onOpenChange={setUpdateDialogOpen}>
+        <AlertDialogContent className="sm:max-w-7xl max-h-[95vh] overflow-y-auto">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl sm:text-2xl">
+              {t("post.updatePost")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("post.updatePostDescription")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="space-y-4">
+            <div className="flex gap-3 items-start">
+              <Avatar className="h-10 w-10 flex-shrink-0 ring-2 ring-primary/10">
+                <AvatarImage src={currentUserAuthor.avatar} />
+                <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
+                  {currentUserAuthor.initials}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-semibold text-sm sm:text-base">
+                  {currentUserAuthor.name}
+                </p>
+                <p className="text-xs text-muted-foreground">Public</p>
+              </div>
+            </div>
+
+            <MDXEditorWrapper
+              value={editPostContent}
+              onChange={(value) => setEditPostContent(value)}
+              placeholder={t("post.contentPlaceholder")}
+              minHeight="250px"
+              className="border-0"
+            />
+
+            {/* Existing Image Previews */}
+            {existingImageUrls.length > 0 && (
+              <div className="border-2 border-dashed border-border rounded-lg p-4 bg-accent/30">
+                <p className="text-sm font-medium mb-3">Current Images</p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {existingImageUrls.map((url, index) => (
+                    <div
+                      key={`existing-${index}`}
+                      className="relative aspect-square group rounded-lg overflow-hidden"
+                    >
+                      <Image
+                        src={url}
+                        alt={`Existing ${index + 1}`}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        className="transition-transform group-hover:scale-105"
+                      />
+                      <button
+                        onClick={() => handleRemoveExistingImage(index)}
+                        className="absolute top-2 right-2 p-1.5 bg-black/70 hover:bg-black/90 rounded-full text-white opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+                        type="button"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* New Image Previews */}
+            {previewUrls.length > 0 && (
+              <div className="border-2 border-dashed border-border rounded-lg p-4 bg-green-50 dark:bg-green-950/20">
+                <p className="text-sm font-medium mb-3 text-green-700 dark:text-green-400">
+                  New Images to Upload
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {previewUrls.map((url, index) => (
+                    <div
+                      key={`new-${index}`}
+                      className="relative aspect-square group rounded-lg overflow-hidden"
+                    >
+                      <Image
+                        src={url}
+                        alt={`New ${index + 1}`}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        className="transition-transform group-hover:scale-105"
+                      />
+                      <button
+                        onClick={() => handleRemoveNewImage(index)}
+                        className="absolute top-2 right-2 p-1.5 bg-black/70 hover:bg-black/90 rounded-full text-white opacity-0 group-hover:opacity-100 transition-all hover:scale-110"
+                        type="button"
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageSelect}
+              className="hidden"
+            />
+
+            <div className="flex items-center justify-between border rounded-lg p-3 bg-accent/20">
+              <p className="text-sm font-medium">Add to your post</p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={
+                  isUploading ||
+                  selectedImages.length + existingImageUrls.length >= 10
+                }
+                type="button"
+                className="hover:bg-primary/10 hover:text-primary"
+              >
+                <Camera className="h-5 w-5 mr-2" />
+                Photo
+                {(selectedImages.length > 0 ||
+                  existingImageUrls.length > 0) && (
+                  <span className="ml-2 px-2 py-0.5 bg-primary text-primary-foreground rounded-full text-xs">
+                    {selectedImages.length + existingImageUrls.length}
+                  </span>
+                )}
+              </Button>
+            </div>
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isUploading}>
+              {t("post.cancel")}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleUpdatePost}
+              disabled={
+                isUploading ||
+                (!editPostContent.trim() &&
+                  selectedImages.length === 0 &&
+                  existingImageUrls.length === 0)
+              }
+            >
+              {isUploading ? (
+                <>
+                  <span className="mr-2">{t("post.updating")}</span>
+                  <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                </>
+              ) : (
+                t("post.update")
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
