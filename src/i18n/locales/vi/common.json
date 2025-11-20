@@ -93,7 +93,7 @@
     "UserBanned": "Bạn đã bị cấm khỏi nền tảng.",
     "OnlyPlusUserCanCreateEvent": "Chỉ người dùng Plus mới có thể tạo sự kiện.",
     "CannotRateIfNotAttendedEvent": "Bạn không thể đánh giá một sự kiện mà bạn không tham dự.",
-    "DuplicateWords": "Lặp từ"
+    "DuplicateWords": "Lặp từ",
     "depositError": "Khởi tạo nạp tiền thất bại. Vui lòng thử lại.",
     "OutOfWithdrawTimes": "Bạn đã đạt đến số lần rút tiền tối đa trong tháng này.",
     "fetchBanksError": "Lấy danh sách ngân hàng thất bại. Vui lòng thử lại.",
