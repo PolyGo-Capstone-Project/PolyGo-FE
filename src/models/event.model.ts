@@ -188,6 +188,9 @@ export const GetEventStatResSchema = z.object({
     averageRating: z.number().min(0).max(5).nullable(),
     totalReviews: z.number().min(0).default(0),
     reviews: z.array(EventReview).default([]),
+    hostPayoutClaimed: z.boolean().default(false).optional(),
+    hostPayoutAmount: z.number().min(0).default(0),
+    hostPayoutClaimedAt: z.iso.datetime().nullable(),
   }),
   message: z.string(),
 });
@@ -211,7 +214,6 @@ export const CreateEventBodySchema = EventSchema.pick({
     description: z.string().min(10).max(2000),
     languageId: z.string().min(1),
     startAt: z.string().datetime(),
-    endAt: z.string().datetime().nullable(),
     registerDeadline: z.string().datetime(),
     password: z.string().min(6).max(100).optional().nullable(),
     interestIds: z.array(z.string()).min(1),

@@ -1,5 +1,6 @@
 "use client";
 
+import { MDXEditorWrapper } from "@/components";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { useCreatePost, useUploadMultipleMediaMutation } from "@/hooks";
 import { Camera, Image as ImageIcon, X } from "lucide-react";
 import Image from "next/image";
@@ -153,7 +153,7 @@ export default function CreatePostCard({ t, currentUserAuthor }: Props) {
       </Card>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-7xl max-h-[95vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl sm:text-2xl">
               {t("createPost.title")}
@@ -177,12 +177,12 @@ export default function CreatePostCard({ t, currentUserAuthor }: Props) {
               </div>
             </div>
 
-            <Textarea
-              placeholder={t("createPost.placeholder")}
+            <MDXEditorWrapper
               value={postContent}
-              onChange={(e) => setPostContent(e.target.value)}
-              className="min-h-[120px] text-base border-none focus-visible:ring-0 resize-none"
-              rows={5}
+              onChange={(value) => setPostContent(value)}
+              placeholder={t("createPost.placeholder")}
+              minHeight="250px"
+              className="border-0"
             />
 
             {/* Image Previews */}

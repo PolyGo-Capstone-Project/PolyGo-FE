@@ -11,6 +11,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
+import { MarkdownRenderer } from "@/components";
 import {
   Avatar,
   AvatarFallback,
@@ -132,9 +133,12 @@ export function EventCard({ event }: EventCardProps) {
           <h3 className="font-bold text-xl line-clamp-2 group-hover:text-primary transition-colors min-h-[3.5rem]">
             {event.title}
           </h3>
-          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed min-h-[2.5rem]">
-            {event.description}
-          </p>
+          <div className="text-sm text-muted-foreground line-clamp-2 leading-relaxed min-h-[2.5rem]">
+            <MarkdownRenderer
+              content={event.description}
+              className="prose-sm"
+            />
+          </div>
         </div>
 
         {/* Host Info */}

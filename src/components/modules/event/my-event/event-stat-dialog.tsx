@@ -2,6 +2,8 @@
 
 import {
   IconCalendar,
+  IconCash,
+  IconCheck,
   IconClock,
   IconLoader2,
   IconMapPin,
@@ -39,7 +41,11 @@ import {
   Textarea,
 } from "@/components/ui";
 import { EventStatus, EventStatusType } from "@/constants";
-import { useGetEventStats, useKickParticipantMutation } from "@/hooks";
+import {
+  useGetEventStats,
+  useKickParticipantMutation,
+  usePayoutEventMutation,
+} from "@/hooks";
 import { formatCurrency, handleErrorApi, showSuccessToast } from "@/lib";
 
 type EventStatDialogProps = {
@@ -66,6 +72,7 @@ export function EventStatDialog({
   const [showKickDialog, setShowKickDialog] = useState(false);
   const [kickReason, setKickReason] = useState("");
   const [allowRejoin, setAllowRejoin] = useState(true);
+  const [showPayoutSuccessDialog, setShowPayoutSuccessDialog] = useState(false);
 
   const { data, isLoading, error, refetch } = useGetEventStats(
     eventId || "",
@@ -92,6 +99,16 @@ export function EventStatDialog({
     },
   });
 
+  const payoutMutation = usePayoutEventMutation({
+    onSuccess: () => {
+      setShowPayoutSuccessDialog(true);
+      refetch();
+    },
+    onError: (error) => {
+      handleErrorApi({ error, tError });
+    },
+  });
+
   const handleKickClick = (participant: { id: string; name: string }) => {
     setSelectedParticipant(participant);
     setShowKickDialog(true);
@@ -110,6 +127,16 @@ export function EventStatDialog({
 
   const handleViewProfile = (userId: string) => {
     window.open(`/${locale}/matching/${userId}`, "_blank");
+  };
+
+  const handleClaimPayout = () => {
+    if (eventId) {
+      payoutMutation.mutate(eventId);
+    }
+  };
+
+  const handleGoToWallet = () => {
+    window.location.href = `/${locale}/wallet`;
   };
 
   const isValidUrl = (url: string | null) => {
@@ -324,14 +351,76 @@ export function EventStatDialog({
                       <CardContent className="space-y-4">
                         {/* Revenue */}
                         <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
-                          <p className="text-xs text-muted-foreground mb-1">
-                            {t("revenue")}
-                          </p>
-                          <p className="text-2xl font-bold text-green-600">
+                          <div className="flex items-center justify-between mb-1">
+                            <p className="text-xs text-muted-foreground">
+                              {t("revenue")}
+                            </p>
+                            {event.fee > 0 && (
+                              <div className="flex items-center gap-1">
+                                <div
+                                  className={`h-2 w-2 rounded-full ${event.hostPayoutClaimed ? "bg-green-500" : "bg-orange-500"}`}
+                                />
+                                <span className="text-xs text-muted-foreground">
+                                  {event.hostPayoutClaimed
+                                    ? t("payout.claimed")
+                                    : t("payout.pending")}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-2xl font-bold text-green-600 mb-2">
                             {formatCurrency(
                               event.fee * event.numberOfParticipants
                             )}
                           </p>
+
+                          {/* Payout Section - Only show if event has fee */}
+                          {event.fee > 0 && showPerformanceMetrics && (
+                            <div className="mt-3 pt-3 border-t border-green-500/20">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-medium text-muted-foreground">
+                                  {t("payout.amount")}
+                                </span>
+                                <span className="text-sm font-bold text-green-700">
+                                  {formatCurrency(event.hostPayoutAmount || 0)}
+                                </span>
+                              </div>
+
+                              {event.hostPayoutClaimed ? (
+                                <div className="space-y-2">
+                                  <Button
+                                    disabled
+                                    className="w-full"
+                                    variant="outline"
+                                  >
+                                    <IconCheck className="h-4 w-4 mr-2" />
+                                    {t("payout.claimed")}
+                                  </Button>
+                                  {event.hostPayoutClaimedAt && (
+                                    <p className="text-xs text-center text-muted-foreground">
+                                      {t("payout.claimedAt")}:{" "}
+                                      {format(
+                                        new Date(event.hostPayoutClaimedAt),
+                                        "PPp"
+                                      )}
+                                    </p>
+                                  )}
+                                </div>
+                              ) : (
+                                <Button
+                                  className="w-full"
+                                  variant="default"
+                                  onClick={handleClaimPayout}
+                                  disabled={payoutMutation.isPending}
+                                >
+                                  <IconCash className="h-4 w-4 mr-2" />
+                                  {payoutMutation.isPending
+                                    ? t("payout.claiming")
+                                    : t("payout.claim")}
+                                </Button>
+                              )}
+                            </div>
+                          )}
                         </div>
 
                         {showPerformanceMetrics && (
@@ -343,7 +432,7 @@ export function EventStatDialog({
                               </p>
                               <div className="flex items-center gap-2">
                                 <p className="text-2xl font-bold text-yellow-600">
-                                  {event.averageRating}
+                                  {event.averageRating?.toFixed(1) || "0.0"}
                                 </p>
                                 <div className="flex items-center">
                                   {Array.from({ length: 5 }).map((_, i) => (
@@ -374,8 +463,7 @@ export function EventStatDialog({
 
                         {!showPerformanceMetrics && (
                           <p className="text-sm text-muted-foreground text-center py-4">
-                            Performance metrics will be available after the
-                            event is completed.
+                            {t("metricsAvailableAfterCompletion")}
                           </p>
                         )}
                       </CardContent>
@@ -603,6 +691,56 @@ export function EventStatDialog({
               {kickParticipantMutation.isPending
                 ? t("kickDialog.kicking")
                 : t("kickDialog.confirmButton")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Payout Success Dialog */}
+      <Dialog
+        open={showPayoutSuccessDialog}
+        onOpenChange={setShowPayoutSuccessDialog}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-green-600">
+              <IconCheck className="h-6 w-6" />
+              {t("payout.successDialog.title")}
+            </DialogTitle>
+            <DialogDescription>
+              {t("payout.successDialog.description")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4 py-4">
+            <div className="p-4 bg-green-500/10 rounded-lg border border-green-500/20">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">
+                  {t("payout.amount")}
+                </span>
+                <span className="text-xl font-bold text-green-600">
+                  {formatCurrency(event?.hostPayoutAmount || 0)}
+                </span>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground text-center">
+              {t("payout.successDialog.message")}
+            </p>
+          </div>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowPayoutSuccessDialog(false)}
+              className="w-full sm:w-auto"
+            >
+              {t("payout.successDialog.close")}
+            </Button>
+            <Button
+              variant="default"
+              onClick={handleGoToWallet}
+              className="w-full sm:w-auto"
+            >
+              <IconCash className="h-4 w-4 mr-2" />
+              {t("payout.successDialog.goToWallet")}
             </Button>
           </DialogFooter>
         </DialogContent>

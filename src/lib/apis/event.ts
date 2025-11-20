@@ -100,6 +100,10 @@ const eventApiRequest = {
   // NEW: tạo rating (POST /events/rating)
   createEventRating: (body: CreateEventRatingBodyType) =>
     http.post<MessageResType>(`${prefix}/rating`, body),
+
+  // POST payout host for an event
+  payout: (eventId: string) =>
+    http.post<MessageResType>(`${prefix}/${eventId}/host-payout`, null),
 };
 
 export default eventApiRequest;

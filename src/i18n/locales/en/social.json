@@ -23,7 +23,13 @@
       "justNow": "Just now",
       "viewAllComments": "View all {count} comments",
       "delete": "Delete post",
-      "noPosts": "No posts yet"
+      "update": "Update post",
+      "noPosts": "No posts yet",
+      "updatePost": "Update Post",
+      "updatePostDescription": "Edit your post content below",
+      "contentPlaceholder": "Write something...",
+      "cancel": "Cancel",
+      "updating": "Updating..."
     },
     "leftSidebar": {
       "games": {

@@ -656,7 +656,12 @@
         "participants": "Participants",
         "registeredAt": "Registered",
         "roleHost": "Host",
-        "roleAttendee": "Attendee"
+        "roleAttendee": "Attendee",
+        "payoutInfo": "Payout Information",
+        "payoutAmount": "Payout Amount",
+        "payoutStatus": "Payout Status",
+        "payoutClaimed": "Claimed",
+        "payoutPending": "Pending"
       }
     },
     "wordsets": {

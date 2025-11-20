@@ -753,7 +753,12 @@
         "participants": "Người tham gia",
         "registeredAt": "Đã đăng ký",
         "roleHost": "Người tổ chức",
-        "roleAttendee": "Người tham gia"
+        "roleAttendee": "Người tham gia",
+        "payoutInfo": "Thông tin thanh toán",
+        "payoutAmount": "Số tiền thanh toán",
+        "payoutStatus": "Trạng thái thanh toán",
+        "payoutClaimed": "Đã thanh toán",
+        "payoutPending": "Chờ xử lý"
       }
     },
     "wordsets": {
