@@ -1,4 +1,4 @@
-import { ReactionEnum } from "@/constants";
+import { ReactionEnum, ShareEnum } from "@/constants";
 import {
   PaginationMetaSchema,
   PaginationQuerySchema,
@@ -11,6 +11,8 @@ export const PostSchema = z.object({
   imageUrls: z.array(z.string()).optional().default([]),
   createdAt: z.iso.datetime(),
   creatorId: z.string(),
+  sharedEventId: z.string().optional().nullable(),
+  sharedPostId: z.string().optional().nullable(),
 });
 
 export const CommentSchema = z.object({
@@ -49,7 +51,32 @@ export const SearchPostQuerySchema = PaginationQuerySchema.extend({
 
 // GET POSTS
 export const GetPostItemsSchema = PostSchema.extend({
+  isShare: z.boolean().default(false).optional(),
+  shareType: z.enum(ShareEnum).optional(),
+  sharedEvent: z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      description: z.string(),
+      startAt: z.iso.datetime(),
+      endAt: z.iso.datetime(),
+      fee: z.number().nonnegative(),
+      bannerUrl: z.string(),
+      status: z.string(),
+      host: creatorInfor,
+    })
+    .optional(),
+  sharedPost: z
+    .object({
+      id: z.string(),
+      content: z.string(),
+      imageUrls: z.array(z.string()).optional().default([]),
+      createdAt: z.iso.datetime(),
+      creator: creatorInfor,
+    })
+    .optional(),
   creator: creatorInfor,
+  isMyPost: z.boolean().default(false),
   commentsCount: z.number().nonnegative().default(0),
   reactionsCount: z.number().nonnegative().default(0),
   comments: z
@@ -119,6 +146,15 @@ export const CreateReactionBodySchema = z.object({
   reactionType: z.enum(ReactionEnum),
 });
 
+// share post:
+const SharePostBodySchema = z
+  .object({
+    shareType: z.enum(ShareEnum),
+    targetId: z.string(),
+    content: z.string(),
+  })
+  .strict();
+
 // PUT
 export const UpdatePostBodySchema = CreatePostBodySchema.partial();
 export const UpdateCommentBodySchema = CreateCommentBodySchema.partial();
@@ -140,5 +176,6 @@ export type CreatePostResType = z.infer<typeof CreatePostResSchema>;
 export type CreateCommentBodyType = z.infer<typeof CreateCommentBodySchema>;
 export type CreateCommentResType = z.infer<typeof CreateCommentResSchema>;
 export type CreateReactionBodyType = z.infer<typeof CreateReactionBodySchema>;
+export type SharePostBodyType = z.infer<typeof SharePostBodySchema>;
 export type UpdatePostBodyType = z.infer<typeof UpdatePostBodySchema>;
 export type UpdateCommentBodyType = z.infer<typeof UpdateCommentBodySchema>;

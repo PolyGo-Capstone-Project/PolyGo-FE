@@ -16,7 +16,6 @@
       "reactions": "lượt thích",
       "comment": "bình luận",
       "comments": "bình luận",
-      "share": "Chia sẻ",
       "report": "Báo cáo",
       "reply": "Trả lời",
       "commentPlaceholder": "Viết bình luận...",
@@ -29,7 +28,17 @@
       "updatePostDescription": "Chỉnh sửa nội dung bài viết của bạn",
       "contentPlaceholder": "Viết gì đó...",
       "cancel": "Hủy",
-      "updating": "Đang cập nhật..."
+      "updating": "Đang cập nhật...",
+      "share": {
+        "title": "Chia sẻ bài viết",
+        "description": "Chia sẻ bài viết này cùng suy nghĩ của bạn",
+        "contentPlaceholder": "Nói gì đó về bài viết này...",
+        "shareButton": "Chia sẻ",
+        "sharing": "Đang chia sẻ...",
+        "cancel": "Hủy",
+        "success": "Chia sẻ bài viết thành công!",
+        "error": "Chia sẻ bài viết thất bại"
+      }
     },
     "leftSidebar": {
       "games": {

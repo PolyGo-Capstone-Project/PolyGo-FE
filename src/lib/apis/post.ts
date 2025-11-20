@@ -12,6 +12,7 @@ import {
   GetUserPostResType,
   MessageResType,
   SearchPostQueryType,
+  SharePostBodyType,
   UpdateCommentBodyType,
   UpdatePostBodyType,
 } from "@/models";
@@ -39,6 +40,9 @@ const postApiRequest = {
     http.put<CreatePostResType>(`${prefix}/${id}`, body),
   // DELETE post by ID
   deletePost: (id: string) => http.delete<MessageResType>(`${prefix}/${id}`),
+  // POST share post/event
+  share: (body: SharePostBodyType) =>
+    http.post<MessageResType>(`${prefix}/share`, body),
   // POST commnet
   createComment: (postId: string, body: CreateCommentBodyType) =>
     http.post<CreateCommentResType>(`${prefix}/${postId}/comments`, body),
