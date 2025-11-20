@@ -11,6 +11,7 @@ import {
   CreatePostBodyType,
   CreateReactionBodyType,
   GetPostQueryType,
+  SharePostBodyType,
   UpdateCommentBodyType,
   UpdatePostBodyType,
 } from "@/models";
@@ -253,6 +254,23 @@ export const useDeleteReaction = () => {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["posts", variables] });
+    },
+  });
+};
+
+// ===== SHARE POST =====
+type SharePostMutationResponse = Awaited<
+  ReturnType<typeof postApiRequest.share>
+>;
+
+export const useSharePost = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<SharePostMutationResponse, Error, SharePostBodyType>({
+    mutationFn: (body) => postApiRequest.share(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["my-posts"] });
     },
   });
 };
