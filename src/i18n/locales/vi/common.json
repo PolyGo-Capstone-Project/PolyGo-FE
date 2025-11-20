@@ -39,7 +39,16 @@
     "friendRemoved": "Xóa bạn bè thành công!",
     "friendRequestCancelled": "Hủy lời mời kết bạn thành công!",
     "profileLinkCopied": "Đã sao chép liên kết hồ sơ!",
-    "copy": "Đã sao chép tin nhắn"
+    "copy": "Đã sao chép tin nhắn",
+    "DepositUrl": "Đã tạo URL nạp tiền thành công!",
+    "RequestWithdrawal": "Yêu cầu rút tiền đã được tạo thành công!",
+    "ConfirmWithdrawal": "Xác nhận rút tiền thành công!",
+    "ApproveWithdrawal": "Phê duyệt rút tiền thành công!",
+    "SendTransactionInquiry": "Đã gửi yêu cầu giao dịch thành công!",
+    "ReplyTransactionInquiry": "Đã trả lời yêu cầu giao dịch thành công!",
+    "Timeout": "OTP hết hạn. Vui lòng yêu cầu OTP mới.",
+    "InvalidOTP": "OTP không hợp lệ. Vui lòng thử lại.",
+    "export": "Xuất dữ liệu thành công!"
   },
   "Error": {
     "default": "Đã xảy ra lỗi.",
@@ -69,7 +78,7 @@
     "InvalidFormat": "Định dạng không hợp lệ.",
     "InvalidMailOrPassword": "Email hoặc mật khẩu không đúng.",
     "invalidFileType": "Loại file không hợp lệ. Vui lòng chọn file ảnh.",
-    "fileTooLarge": "Kích thước file quá lớn. Kích thước tối đa là 5MB.",
+    "fileTooLarge": "Kích thước file quá lớn. Kích thước tối đa là 10MB.",
     "EventCannotBeCancelledWithin24Hours": "Sự kiện không thể hủy trong vòng 24 giờ trước thời gian bắt đầu.",
     "FriendRequestAlreadySent": "Lời mời kết bạn đã được gửi đến người dùng này.",
     "CannotSendFriendRequestToYourself": "Bạn không thể gửi lời mời kết bạn cho chính mình.",
@@ -85,6 +94,12 @@
     "OnlyPlusUserCanCreateEvent": "Chỉ người dùng Plus mới có thể tạo sự kiện.",
     "CannotRateIfNotAttendedEvent": "Bạn không thể đánh giá một sự kiện mà bạn không tham dự.",
     "DuplicateWords": "Lặp từ"
+    "depositError": "Khởi tạo nạp tiền thất bại. Vui lòng thử lại.",
+    "OutOfWithdrawTimes": "Bạn đã đạt đến số lần rút tiền tối đa trong tháng này.",
+    "fetchBanksError": "Lấy danh sách ngân hàng thất bại. Vui lòng thử lại.",
+    "requestError": "Tạo yêu cầu rút tiền thất bại. Vui lòng thử lại.",
+    "export": "Xuất dữ liệu thất bại. Vui lòng thử lại.",
+    "SendTransactionInquiry": "Gửi yêu cầu giao dịch thất bại. Vui lòng thử lại."
   },
   "header": {
     "products": "Sản phẩm",
@@ -154,7 +169,8 @@
     "subscriptions": "Quản lý đăng ký",
     "events": "Quản lý sự kiện",
     "games": "Quản lý trò chơi",
-    "reports": "Quản lý báo cáo"
+    "reports": "Quản lý báo cáo",
+    "transactions": "Quản lý giao dịch"
   },
   "pagination": {
     "showing": "Hiển thị",

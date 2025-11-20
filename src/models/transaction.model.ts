@@ -3,61 +3,229 @@ import {
   TransactionStatus,
   TransactionTypeEnum,
 } from "@/constants";
-import {
-  PaginationLangQuerySchema,
-  PaginationMetaSchema,
-} from "@/models/common.model";
 import z from "zod";
+import { PaginationMetaSchema, PaginationQuerySchema } from "./common.model";
 
 export const WalletSchema = z.object({
   id: z.string(),
-  balance: z.number().min(0).default(0),
+  balance: z.number().min(0),
   userId: z.string(),
+  pendingBalance: z.number().min(0),
+  totalEarned: z.number().min(0),
+  totalSpent: z.number().min(0),
+  totalWithdrawn: z.number().min(0),
+  totalDeposit: z.number().min(0),
 });
 
-export const WalletTransactionsSchema = z.object({
+export const WalletBankAccountSchema = z.object({
+  id: z.string(),
+  bankName: z.string(),
+  encryptedBankName: z.string(),
+  encryptedBankNumber: z.string(),
+  walletId: z.string(),
+});
+
+export const TransactionSchema = z.object({
   id: z.string(),
   amount: z.number(),
-  remainingBalance: z.number().min(0),
+  remainingBalance: z.number(),
+  description: z.string().nullable(),
   transactionType: z.enum(TransactionTypeEnum),
   transactionMethod: z.enum(TransactionMethod),
   transactionStatus: z.enum(TransactionStatus),
-  walletId: z.string(),
+  walledId: z.string(),
+  orderCode: z.string().nullable(),
+  encryptedAccountName: z.string().nullable(),
+  encryptedBankName: z.string().nullable(),
+  encryptedBankNumber: z.string().nullable(),
+  isInquiry: z.boolean().default(false),
+  withdrawalApprovedImageUrl: z.string().nullable().optional(),
+  lastUpdatedAt: z.string(),
   createdAt: z.iso.datetime(),
 });
 
-export const TransactionListItemSchema = WalletTransactionsSchema.omit({
-  walletId: true,
+//QUERIES
+export const GetTransactionQuerySchema = PaginationQuerySchema;
+export const GetTransactionAdminQuerySchema = PaginationQuerySchema.extend({
+  description: z.string().min(1).max(100).optional(),
+  isInquiry: z.boolean().optional(),
+  transactionType: z.enum(TransactionTypeEnum).optional(),
+  transactionMethod: z.enum(TransactionMethod).optional(),
+  transactionStatus: z.enum(TransactionStatus).optional(),
 });
 
-//GET History
-export const GetTransactionsQuerySchema = PaginationLangQuerySchema;
+// GET
+// GET USER WALLET
+const accountBank = z.object({
+  bankName: z.string(),
+  bankNumber: z.string(),
+  accountName: z.string(),
+});
+export const GetUserWalletResSchema = z.object({
+  data: WalletSchema.extend({
+    accounts: z.array(accountBank),
+    numberOfAccounts: z.number().min(0).max(2).optional(),
+  }),
+  message: z.string(),
+});
 
-export const GetTransactionsResSchema = z.object({
+// GET USER TRANSACTIONS
+export const UserTransactionItemSchema = TransactionSchema.pick({
+  id: true,
+  amount: true,
+  remainingBalance: true,
+  description: true,
+  isInquiry: true,
+  transactionType: true,
+  transactionMethod: true,
+  transactionStatus: true,
+  withdrawalApprovedImageUrl: true,
+  createdAt: true,
+  lastUpdatedAt: true,
+}).extend({
+  bankName: z.string().nullable().optional(),
+  bankNumber: z.string().nullable().optional(),
+  accountName: z.string().nullable().optional(),
+});
+
+export const GetUserTransactionsResSchema = z.object({
   data: z.object({
-    items: z.array(TransactionListItemSchema),
+    items: z.array(UserTransactionItemSchema),
     ...PaginationMetaSchema.shape,
   }),
   message: z.string(),
 });
 
-//GET MY BALANCE
-export const GetMyBalanceResSchema = z.object({
+// GET ADMIN TRANSACTIONS
+export const AdminTransactionItemSchema = UserTransactionItemSchema;
+
+export const GetAdminTransactionsResSchema = z.object({
   data: z.object({
-    balance: z.number().min(0).default(0),
-    totalEarned: z.number().min(0).default(0),
-    totalSpent: z.number().min(0).default(0),
-    totalWithdrawn: z.number().min(0).default(0),
+    items: z.array(AdminTransactionItemSchema),
+    ...PaginationMetaSchema.shape,
   }),
   message: z.string(),
 });
 
-//types
+// GET TRANSACTION DETAIL
+export const GetTransactionDetailItem = UserTransactionItemSchema.extend({
+  userNotes: z
+    .array(
+      z.object({
+        id: z.string(),
+        notes: z.string(),
+        createdAt: z.iso.datetime(),
+      })
+    )
+    .default([]),
+});
+
+export const GetTransactionDetailResSchema = z.object({
+  data: GetTransactionDetailItem,
+  message: z.string(),
+});
+
+// POST
+// Create account bank
+export const CreateAccountBankBodySchema = z
+  .object({
+    bankName: z.string(),
+    bankNumber: z.string(),
+    accountName: z.string(),
+  })
+  .strict();
+
+// WITHDRAWAL REQUEST
+export const WithdrawalRequestBodySchema = z
+  .object({
+    amount: z.number().min(10000).max(10000000),
+    bankNumber: z.string(),
+    bankName: z.string(),
+    accountName: z.string(),
+  })
+  .strict();
+
+// WITHDRAWAL CONFIRM
+export const WithdrawalConfirmBodySchema = z
+  .object({
+    otp: z.string().length(6),
+  })
+  .strict();
+
+// inquiry transaction
+export const CreateInquiryTransactionBodySchema = z
+  .object({
+    userNotes: z.string().optional(),
+  })
+  .strict();
+
+// PUT
+// Withdrawal cancel
+export const WithdrawalCancelBodySchema = z
+  .object({
+    systemNotes: z.string().optional(),
+  })
+  .strict();
+
+// Withdrawal approve
+export const WithdrawalApproveBodySchema = z
+  .object({
+    withdrawalApprovedImageUrl: z.string().optional(),
+  })
+  .strict();
+
+// inquiry
+export const UpdateInquiryTransactionBodySchema = z
+  .object({
+    userNotesId: z.string(),
+    systemNotes: z.string(),
+  })
+  .strict();
+
+//types:
 export type WalletType = z.infer<typeof WalletSchema>;
-export type WalletTransactionsType = z.infer<typeof WalletTransactionsSchema>;
-export type TransactionListItemType = z.infer<typeof TransactionListItemSchema>;
-export type GetTransactionsQueryType = z.infer<
-  typeof GetTransactionsQuerySchema
+export type WalletBankAccountType = z.infer<typeof WalletBankAccountSchema>;
+export type TransactionType = z.infer<typeof TransactionSchema>;
+export type GetTransactionQueryType = z.infer<typeof GetTransactionQuerySchema>;
+export type GetTransactionAdminQueryType = z.infer<
+  typeof GetTransactionAdminQuerySchema
 >;
-export type GetTransactionsResType = z.infer<typeof GetTransactionsResSchema>;
-export type GetMyBalanceResType = z.infer<typeof GetMyBalanceResSchema>;
+
+export type GetUserWalletResType = z.infer<typeof GetUserWalletResSchema>;
+export type UserTransactionItemType = z.infer<typeof UserTransactionItemSchema>;
+export type GetUserTransactionsResType = z.infer<
+  typeof GetUserTransactionsResSchema
+>;
+export type AdminTransactionItemType = z.infer<
+  typeof AdminTransactionItemSchema
+>;
+export type GetAdminTransactionsResType = z.infer<
+  typeof GetAdminTransactionsResSchema
+>;
+export type GetTransactionDetailItemType = z.infer<
+  typeof GetTransactionDetailItem
+>;
+export type GetTransactionDetailResType = z.infer<
+  typeof GetTransactionDetailResSchema
+>;
+export type CreateAccountBankBodyType = z.infer<
+  typeof CreateAccountBankBodySchema
+>;
+export type WithdrawalRequestBodyType = z.infer<
+  typeof WithdrawalRequestBodySchema
+>;
+export type WithdrawalConfirmBodyType = z.infer<
+  typeof WithdrawalConfirmBodySchema
+>;
+export type WithdrawalCancelBodyType = z.infer<
+  typeof WithdrawalCancelBodySchema
+>;
+export type WithdrawalApproveBodyType = z.infer<
+  typeof WithdrawalApproveBodySchema
+>;
+export type CreateInquiryTransactionBodyType = z.infer<
+  typeof CreateInquiryTransactionBodySchema
+>;
+export type UpdateInquiryTransactionBodyType = z.infer<
+  typeof UpdateInquiryTransactionBodySchema
+>;

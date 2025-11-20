@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { ComingSoon } from "@/components";
+import ReportContent from "@/app/[locale]/(protected)/(admin)/manage/reports/report-content";
 
 export const metadata: Metadata = {
   title: "Manage Reports - PolyGo",
@@ -10,10 +10,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
-      <ComingSoon
-        title="Game Features"
-        description="We're building amazing game features. Check back soon!"
-      />
+      <ReportContent />
     </>
   );
 }

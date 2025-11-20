@@ -7,6 +7,7 @@ import { twMerge } from "tailwind-merge";
 import { EntityError } from "@/lib/http";
 import { TokenPayload } from "@/types";
 
+import envConfig from "@/config";
 import { getTranslatedMessage } from "./message-handler";
 
 export type QueryParamPrimitive = string | number | boolean | null | undefined;
@@ -198,6 +199,20 @@ export const formatDateTime = (
     hour: "2-digit",
     minute: "2-digit",
   }).format(date);
+};
+
+/**
+ * Lấy payment URLs dựa trên NEXT_PUBLIC_URL
+ *
+ * @returns Object chứa returnUrl và cancelUrl
+ */
+export const getPaymentUrls = (locale: string) => {
+  const baseUrl = envConfig.NEXT_PUBLIC_URL;
+
+  return {
+    returnUrl: `${baseUrl}/${locale}/payment/success`,
+    cancelUrl: `${baseUrl}/${locale}/payment/fail`,
+  };
 };
 
 export {

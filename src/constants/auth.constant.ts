@@ -1,9 +1,9 @@
 export const TypeOfVerificationCode = {
-  REGISTER: "0",
-  FORGOT_PASSWORD: "1",
-  LOGIN: "2",
-  DISABLE_2FA: "3",
-  WITHDRAW_MONEY: "4",
+  Register: "Register",
+  Forgot_password: "Forgot_password",
+  Login: "Login",
+  Disble_2FA: "Disble_2FA",
+  Withdraw_money: "Withdraw_money",
 } as const;
 
 export type TypeOfVerificationCodeType =

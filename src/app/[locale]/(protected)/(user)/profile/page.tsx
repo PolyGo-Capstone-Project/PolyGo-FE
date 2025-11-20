@@ -4,15 +4,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Badge,
-  Button,
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
   EditProfileDialog,
   LoadingSpinner,
   ProfileBadgesSection,
@@ -22,24 +13,22 @@ import {
   ProfileInterestsSection,
   ProfileLanguagesSection,
   ProfileStats,
-  Separator,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
+  UserPostsList,
 } from "@/components";
 import { useUserCommunicationHubContext } from "@/components/providers";
 import {
   useAuthMe,
   useCurrentSubscriptionQuery,
-  useMyReceivedGiftsQuery,
+  useMyPurchasedGiftsQuery,
   useUserBadgesQuery,
   useUserInterestsQuery,
   useUserLanguagesLearningQuery,
   useUserLanguagesSpeakingQuery,
 } from "@/hooks";
-import { IconHeart, IconMessageCircle, IconShare } from "@tabler/icons-react";
-import { formatDistanceToNow } from "date-fns";
 
 // Mock data for features not yet implemented
 const MOCK_STATS = {
@@ -49,34 +38,6 @@ const MOCK_STATS = {
   totalHours: 150,
   eventsHosted: 2,
 };
-
-// Mock posts data
-const MOCK_POSTS = [
-  {
-    id: "1",
-    content:
-      "Just finished an amazing language exchange session! 🎉 Learning Japanese has been such a rewarding journey. Anyone else learning Japanese?",
-    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-    likes: 15,
-    comments: 3,
-  },
-  {
-    id: "2",
-    content:
-      "Looking for practice partners for Spanish conversation. Intermediate level, interested in discussing culture and daily life topics.",
-    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-    likes: 8,
-    comments: 5,
-  },
-  {
-    id: "3",
-    content:
-      "Pro tip: Watching movies with subtitles in your target language is a game changer! 🎬",
-    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
-    likes: 23,
-    comments: 7,
-  },
-];
 
 export default function ProfilePage() {
   const t = useTranslations("profile");
@@ -109,7 +70,7 @@ export default function ProfilePage() {
 
   // Fetch received gifts (only accepted ones - isRead: true)
   const { data: receivedGiftsData, isLoading: isLoadingGifts } =
-    useMyReceivedGiftsQuery({
+    useMyPurchasedGiftsQuery({
       params: { lang: locale, pageNumber: 1, pageSize: 20 },
     });
 
@@ -142,24 +103,14 @@ export default function ProfilePage() {
   // Get planType from subscription
   const planType = subscriptionData?.payload.data?.planType;
 
-  // Filter only accepted gifts (isRead: true)
-  const acceptedGifts =
-    receivedGiftsData?.payload.data.items.filter((gift) => gift.isRead) || [];
-
   // Transform gifts to match ProfileGiftsSection format
-  const transformedGifts = acceptedGifts.map((gift) => ({
-    id: gift.presentationId,
-    name: gift.giftName,
-    value: 0, // Price not provided in received gifts
-    from: {
-      name: gift.isAnonymous ? "Anonymous" : gift.senderName,
-      avatarUrl: gift.isAnonymous ? null : gift.senderAvatarUrl,
-    },
-    message: gift.message,
-    createdAt: gift.createdAt,
-    iconUrl: gift.giftIconUrl,
-    status: gift.status,
-  }));
+  const transformedGifts =
+    receivedGiftsData?.payload.data?.items.map((gift) => ({
+      id: gift.id,
+      name: gift.name,
+      iconUrl: gift.iconUrl,
+      quantity: gift.quantity,
+    })) || [];
 
   if (!user) {
     return (
@@ -219,7 +170,7 @@ export default function ProfilePage() {
                 merit={user.merit}
                 streakDays={user.streakDays}
                 longestStreakDays={user.longestStreakDays}
-                bannedStreakDays={user.bannedStreakDays}
+                nextUnbannedAt={user.nextUnbannedAt}
               />
               {/* Stats */}
               <ProfileStats
@@ -239,68 +190,21 @@ export default function ProfilePage() {
         <TabsContent value="social" className="mt-6">
           <div className="grid gap-6 lg:grid-cols-3">
             {/* Left Column - Posts */}
-            <div className="space-y-6 lg:col-span-2">
-              {MOCK_POSTS.length > 0 ? (
-                MOCK_POSTS.map((post) => (
-                  <Card key={post.id}>
-                    <CardHeader>
-                      <div className="flex items-start gap-4">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={user.avatarUrl ?? undefined} />
-                          <AvatarFallback>
-                            {user.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                              .toUpperCase()
-                              .slice(0, 2)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <p className="font-semibold">{user.name}</p>
-                            <Badge variant="secondary" className="text-xs">
-                              {user.merit}
-                            </Badge>
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {formatDistanceToNow(new Date(post.createdAt), {
-                              addSuffix: true,
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm">{post.content}</p>
-                    </CardContent>
-                    <Separator />
-                    <CardFooter className="pt-4">
-                      <div className="flex w-full items-center gap-4">
-                        <Button variant="ghost" size="sm">
-                          <IconHeart className="mr-2 h-4 w-4" />
-                          {post.likes}
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <IconMessageCircle className="mr-2 h-4 w-4" />
-                          {post.comments}
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <IconShare className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                ))
-              ) : (
-                <Card>
-                  <CardContent className="flex h-64 items-center justify-center">
-                    <p className="text-muted-foreground">
-                      {t("social.noPosts")}
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+            <div className="lg:col-span-2">
+              <UserPostsList
+                currentUserAuthor={{
+                  id: user.id,
+                  name: user.name || "",
+                  avatar: user.avatarUrl || "",
+                  initials: (user.name || "")
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()
+                    .slice(0, 2),
+                }}
+                locale={locale}
+              />
             </div>
 
             {/* Right Column - Stats & XP (same as overview) */}
@@ -319,7 +223,7 @@ export default function ProfilePage() {
                 merit={user.merit}
                 streakDays={user.streakDays}
                 longestStreakDays={user.longestStreakDays}
-                bannedStreakDays={user.bannedStreakDays}
+                nextUnbannedAt={user.nextUnbannedAt}
               />
             </div>
           </div>

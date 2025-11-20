@@ -39,7 +39,14 @@
     "friendRemoved": "Friend removed successfully!",
     "friendRequestCancelled": "Friend request cancelled successfully!",
     "profileLinkCopied": "Profile link copied!",
-    "copy": "Copy message successful!"
+    "copy": "Copy message successful!",
+    "DepositUrl": "Deposit URL generated successfully!",
+    "RequestWithdrawal": "Withdrawal request created successfully!",
+    "ConfirmWithdrawal": "Withdrawal confirmed successfully!",
+    "ApproveWithdrawal": "Withdrawal approved successfully!",
+    "SendTransactionInquiry": "Transaction inquiry sent successfully!",
+    "ReplyTransactionInquiry": "Transaction inquiry replied successfully!",
+    "export": "Data exported successfully!"
   },
   "Error": {
     "default": "An error occurred.",
@@ -69,7 +76,7 @@
     "MailNotFound": "Email address not found.",
     "InvalidMailOrPassword": "Invalid email or password.",
     "invalidFileType": "Invalid file type. Please select an image file.",
-    "fileTooLarge": "File size too large. Maximum size is 5MB.",
+    "fileTooLarge": "File size too large. Maximum size is 10MB.",
     "EventCannotBeCancelledWithin24Hours": "Event cannot be cancelled within 24 hours of start time.",
     "FriendRequestAlreadySent": "Friend request has already been sent to this user.",
     "CannotSendFriendRequestToYourself": "You cannot send a friend request to yourself.",
@@ -85,6 +92,14 @@
     "OnlyPlusUserCanCreateEvent": "Only Plus users can create events.",
     "CannotRateIfNotAttendedEvent": "You cannot rate an event you did not attend.",
     "DuplicateWords": "Duplicate Word"
+    "depositError": "Failed to initiate deposit. Please try again.",
+    "OutOfWithdrawTimes": "You have reached the maximum number of withdrawals for this month.",
+    "fetchBanksError": "Failed to fetch bank list. Please try again.",
+    "requestError": "Failed to create withdrawal request. Please try again.",
+    "Timeout": "OTP timeout. Please request a new OTP.",
+    "InvalidOTP": "Invalid OTP. Please try again.",
+    "export": "Failed to export data. Please try again.",
+    "SendTransactionInquiry": "Failed to send transaction inquiry. Please try again."
   },
   "header": {
     "products": "Products",
@@ -161,7 +176,8 @@
     "subscriptions": "Subscriptions Management",
     "events": "Events Management",
     "games": "Games Management",
-    "reports": "Reports Management"
+    "reports": "Reports Management",
+    "transactions": "Transactions Management"
   },
   "pagination": {
     "showing": "Showing",

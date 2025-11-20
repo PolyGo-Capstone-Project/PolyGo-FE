@@ -1,5 +1,9 @@
 {
   "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "description": "Overview of platform statistics and recent activities."
+    },
     "languages": {
       "title": "Languages",
       "description": "Manage the languages available across the PolyGo platform.",
@@ -667,7 +671,12 @@
         "participants": "Participants",
         "registeredAt": "Registered",
         "roleHost": "Host",
-        "roleAttendee": "Attendee"
+        "roleAttendee": "Attendee",
+        "payoutInfo": "Payout Information",
+        "payoutAmount": "Payout Amount",
+        "payoutStatus": "Payout Status",
+        "payoutClaimed": "Claimed",
+        "payoutPending": "Pending"
       }
     },
     "wordsets": {
@@ -748,6 +757,10 @@
         "pronunciation": "Pronunciation",
         "hint": "Hint"
       }
+    },
+    "transactions": {
+      "title": "Transactions",
+      "description": "View and manage user transactions on the PolyGo platform."
     }
   }
 }

@@ -426,7 +426,23 @@
             "allowRejoin": "Allow rejoin"
           },
           "noFeedback": "No feedback yet",
-          "close": "Close"
+          "close": "Close",
+          "metricsAvailableAfterCompletion": "Performance metrics will be available after the event is completed.",
+          "payout": {
+            "amount": "Payout Amount",
+            "claim": "Claim Payout",
+            "claiming": "Claiming...",
+            "claimed": "Payout Claimed",
+            "pending": "Pending",
+            "claimedAt": "Claimed at",
+            "successDialog": {
+              "title": "Payout Successful!",
+              "description": "Your payout has been processed successfully.",
+              "message": "The funds have been added to your wallet balance.",
+              "close": "Close",
+              "goToWallet": "Go to Wallet"
+            }
+          }
         }
       },
       "joined": {

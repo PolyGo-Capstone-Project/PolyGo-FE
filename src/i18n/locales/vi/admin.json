@@ -1,7 +1,9 @@
 {
   "admin": {
-    "title": "Trang quản trị",
-    "description": "Quản lý người dùng, nội dung và cài đặt hệ thống",
+    "dashboard": {
+      "title": "Bảng điều khiển quản trị",
+      "description": "Tổng quan về thống kê nền tảng và các hoạt động gần đây."
+    },
     "nav": {
       "dashboard": "Bảng điều khiển",
       "users": "Người dùng",
@@ -758,7 +760,12 @@
         "participants": "Người tham gia",
         "registeredAt": "Đã đăng ký",
         "roleHost": "Người tổ chức",
-        "roleAttendee": "Người tham gia"
+        "roleAttendee": "Người tham gia",
+        "payoutInfo": "Thông tin thanh toán",
+        "payoutAmount": "Số tiền thanh toán",
+        "payoutStatus": "Trạng thái thanh toán",
+        "payoutClaimed": "Đã thanh toán",
+        "payoutPending": "Chờ xử lý"
       }
     },
     "wordsets": {
@@ -839,6 +846,10 @@
         "pronunciation": "Phiên âm",
         "hint": "Gợi ý"
       }
+    },
+    "transactions": {
+      "title": "Quản lý giao dịch",
+      "description": "Xem và quản lý các giao dịch của người dùng trên nền tảng PolyGo."
     }
   }
 }
