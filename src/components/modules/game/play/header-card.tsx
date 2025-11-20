@@ -9,7 +9,8 @@ type Props = {
   title: string;
   description: string;
   languageLabel: string;
-  category: string;
+  // giờ category là label (tên interest), có thể rỗng
+  category?: string;
   onQuit: () => void;
 };
 
@@ -30,7 +31,7 @@ export default function HeaderCard({
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
             <Badge variant="secondary">{languageLabel}</Badge>
-            <Badge variant="outline">{category}</Badge>
+            {category && <Badge variant="outline">{category}</Badge>}
           </div>
         </div>
         <Button

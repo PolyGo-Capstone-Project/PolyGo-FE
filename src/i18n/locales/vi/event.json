@@ -428,7 +428,23 @@
             "allowRejoin": "Cho phép tham gia lại"
           },
           "noFeedback": "Chưa có phản hồi nào",
-          "close": "Đóng"
+          "close": "Đóng",
+          "metricsAvailableAfterCompletion": "Số liệu hiệu suất sẽ có sau khi sự kiện hoàn thành.",
+          "payout": {
+            "amount": "Số tiền thanh toán",
+            "claim": "Nhận thanh toán",
+            "claiming": "Đang xử lý...",
+            "claimed": "Đã thanh toán",
+            "pending": "Chờ xử lý",
+            "claimedAt": "Đã nhận lúc",
+            "successDialog": {
+              "title": "Thanh toán thành công!",
+              "description": "Yêu cầu thanh toán của bạn đã được xử lý thành công.",
+              "message": "Số tiền đã được thêm vào số dư ví của bạn.",
+              "close": "Đóng",
+              "goToWallet": "Đến ví"
+            }
+          }
         }
       },
       "joined": {

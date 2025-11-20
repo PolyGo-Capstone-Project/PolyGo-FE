@@ -8,6 +8,7 @@
       "totalEarned": "Tổng thu nhập",
       "totalSpent": "Tổng chi tiêu",
       "totalWithdrawn": "Tổng đã rút",
+      "totalDeposit": "Tổng đã nạp",
       "pending": "Số dư đang chờ xử lý"
     },
     "quickActions": {
@@ -106,6 +107,7 @@
         "Deposit": "Nạp tiền",
         "Purchase": "Mua hàng",
         "Refund": "Hoàn tiền",
+        "Earn": "Kiếm tiền",
         "Withdraw": "Rút tiền",
         "Gift": "Quà tặng",
         "Adjustment": "Điều chỉnh",

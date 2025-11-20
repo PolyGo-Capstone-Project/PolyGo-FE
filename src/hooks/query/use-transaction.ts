@@ -59,6 +59,28 @@ export const useUserTransactions = ({
   });
 };
 
+// ===== TRANSACTION DETAIL =====
+type TransactionDetailQueryResponse = Awaited<
+  ReturnType<typeof transactionApiRequest.getTransactionDetail>
+>;
+
+type UseTransactionDetailQueryOptions = {
+  id: string;
+  enabled?: boolean;
+};
+
+export const useTransactionDetail = ({
+  id,
+  enabled = true,
+}: UseTransactionDetailQueryOptions) => {
+  return useQuery<TransactionDetailQueryResponse>({
+    queryKey: ["transaction-detail", id],
+    queryFn: () => transactionApiRequest.getTransactionDetail(id),
+    enabled: enabled && !!id,
+    placeholderData: keepPreviousData,
+  });
+};
+
 // ===== ADMIN TRANSACTIONS =====
 type AdminTransactionsQueryResponse = Awaited<
   ReturnType<typeof transactionApiRequest.getAdminTransactions>

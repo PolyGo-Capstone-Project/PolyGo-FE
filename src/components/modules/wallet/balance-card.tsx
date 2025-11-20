@@ -1,6 +1,14 @@
 "use client";
 
-import { ArrowDownLeft, ArrowUpRight, Eye, EyeOff, Wallet } from "lucide-react";
+import {
+  Banknote,
+  CreditCard,
+  Eye,
+  EyeOff,
+  ShoppingCart,
+  TrendingUp,
+  Wallet,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -14,6 +22,7 @@ interface BalanceCardProps {
   totalSpent?: number;
   totalWithdrawn?: number;
   pendingBalance?: number;
+  totalDeposit?: number;
 }
 
 export function BalanceCard({
@@ -22,6 +31,7 @@ export function BalanceCard({
   totalSpent = 0,
   totalWithdrawn = 0,
   pendingBalance = 0,
+  totalDeposit = 0,
 }: BalanceCardProps) {
   const t = useTranslations("wallet.balance");
   const [showBalance, setShowBalance] = useState(true);
@@ -78,10 +88,19 @@ export function BalanceCard({
 
         <Separator />
 
-        <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
           <div className="space-y-1.5 md:space-y-2">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground md:gap-2 md:text-sm">
-              <ArrowUpRight className="h-3.5 w-3.5 text-green-500 md:h-4 md:w-4" />
+              <CreditCard className="h-3.5 w-3.5 text-blue-500 md:h-4 md:w-4" />
+              <span className="line-clamp-1">{t("totalDeposit")}</span>
+            </div>
+            <p className="text-base font-semibold text-blue-600 md:text-xl">
+              {showBalance ? formatCurrency(totalDeposit) : "••••••••"}
+            </p>
+          </div>
+          <div className="space-y-1.5 md:space-y-2">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground md:gap-2 md:text-sm">
+              <TrendingUp className="h-3.5 w-3.5 text-green-500 md:h-4 md:w-4" />
               <span className="line-clamp-1">{t("totalEarned")}</span>
             </div>
             <p className="text-base font-semibold text-green-600 md:text-xl">
@@ -91,7 +110,7 @@ export function BalanceCard({
 
           <div className="space-y-1.5 md:space-y-2">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground md:gap-2 md:text-sm">
-              <ArrowDownLeft className="h-3.5 w-3.5 text-red-500 md:h-4 md:w-4" />
+              <ShoppingCart className="h-3.5 w-3.5 text-red-500 md:h-4 md:w-4" />
               <span className="line-clamp-1">{t("totalSpent")}</span>
             </div>
             <p className="text-base font-semibold text-red-600 md:text-xl">
@@ -99,9 +118,9 @@ export function BalanceCard({
             </p>
           </div>
 
-          <div className="col-span-2 space-y-1.5 md:space-y-2 lg:col-span-1">
+          <div className="space-y-1.5 md:space-y-2">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground md:gap-2 md:text-sm">
-              <ArrowDownLeft className="h-3.5 w-3.5 text-orange-500 md:h-4 md:w-4" />
+              <Banknote className="h-3.5 w-3.5 text-orange-500 md:h-4 md:w-4" />
               <span className="line-clamp-1">{t("totalWithdrawn")}</span>
             </div>
             <p className="text-base font-semibold text-orange-600 md:text-xl">

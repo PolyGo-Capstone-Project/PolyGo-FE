@@ -65,7 +65,10 @@ export default function PuzzleCard({ data: p }: { data: PuzzleCardData }) {
             {p.languageLabel}
           </Badge>
           <Badge className={LEVEL_BADGE_STYLE[p.level]} variant="secondary">
-            {p.level}
+            {/* Sửa từ p.level thành capitalize(p.level) */}
+            {t(`filters.wordset.difficulty.${capitalize(p.level)}`, {
+              default: capitalize(p.level), // Cập nhật luôn giá trị mặc định
+            })}
           </Badge>
           <Badge variant="outline">{p.category}</Badge>
         </div>
@@ -99,7 +102,7 @@ export default function PuzzleCard({ data: p }: { data: PuzzleCardData }) {
           </Avatar>
           <div className="text-sm">
             <div className="font-medium leading-none">{p.creator.name}</div>
-            {p.bestTimeSec !== undefined && (
+            {p.bestTimeSec !== undefined && p.bestTimeSec > 0 && (
               <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                 <Flag className="h-3 w-3" />
                 <span>
@@ -133,4 +136,10 @@ export default function PuzzleCard({ data: p }: { data: PuzzleCardData }) {
       </CardContent>
     </Card>
   );
+}
+
+// Thêm hàm utility
+function capitalize(s: string) {
+  if (!s) return s;
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }

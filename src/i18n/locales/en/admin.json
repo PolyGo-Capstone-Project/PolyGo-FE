@@ -71,6 +71,21 @@
         "confirm": "Delete"
       }
     },
+    "filters": {
+      "search": "Search",
+      "status": "Status",
+      "role": "Role",
+      "dateRange": "Date Range",
+      "apply": "Apply",
+      "reset": "Reset",
+      "wordset": {
+        "difficulty": {
+          "easy": "Easy",
+          "medium": "Medium",
+          "hard": "Hard"
+        }
+      }
+    },
     "gifts": {
       "title": "Gifts",
       "description": "Manage gifts available on the PolyGo platform.",
@@ -656,7 +671,12 @@
         "participants": "Participants",
         "registeredAt": "Registered",
         "roleHost": "Host",
-        "roleAttendee": "Attendee"
+        "roleAttendee": "Attendee",
+        "payoutInfo": "Payout Information",
+        "payoutAmount": "Payout Amount",
+        "payoutStatus": "Payout Status",
+        "payoutClaimed": "Claimed",
+        "payoutPending": "Pending"
       }
     },
     "wordsets": {
@@ -734,6 +754,7 @@
         "words": "words",
         "word": "Word",
         "definition": "Definition",
+        "pronunciation": "Pronunciation",
         "hint": "Hint"
       }
     },

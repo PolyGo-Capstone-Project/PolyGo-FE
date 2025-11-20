@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Medal } from "lucide-react";
+import { Medal, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
@@ -108,7 +108,10 @@ export default function TopPlayersCard({
         )}
 
         {!isLoading && rows.length === 0 && (
-          <div className="text-sm text-muted-foreground">
+          <div className="text-muted-foreground text-center py-40 text-lg font-semibold flex flex-col items-center justify-center gap-3">
+            {/* Icon */}
+            <Users className="h-8 w-8 text-amber-500" />
+            {/* Text */}
             {t("lb.noPlayers", { default: "No players yet." })}
           </div>
         )}
@@ -156,9 +159,15 @@ export default function TopPlayersCard({
 
             <div className="flex items-center gap-4">
               <div className="text-sm hidden sm:flex gap-3 text-muted-foreground">
-                <span>☆ {row.score}</span>
-                <span>Ⓧ {row.mistakes}</span>
-                <span>💡 {row.hints}</span>
+                <span className="font-bold text-1xl text-yellow-500">
+                  ☆ {row.score}
+                </span>
+                <span className="font-bold text-1xl text-red-500">
+                  Ⓧ {row.mistakes}
+                </span>
+                <span className="font-bold text-1xl text-blue-500">
+                  💡 {row.hints}
+                </span>
               </div>
               <div className="text-lg font-semibold">{mmss(row.timeSec)}</div>
             </div>

@@ -8,7 +8,7 @@ import LeaderboardHeader from "@/components/modules/game/leaderboard/leaderboard
 import PuzzleDetailsCard from "@/components/modules/game/leaderboard/puzzle-detail-card";
 import TopPlayersCard from "@/components/modules/game/leaderboard/top-player-card";
 import YourBestCard from "@/components/modules/game/leaderboard/your-best-card";
-import { useWordsetDetailQuery } from "@/hooks"; // đường dẫn hook của bạn
+import { useWordsetDetailQuery } from "@/hooks";
 
 export default function LeaderboardPage() {
   const t = useTranslations();
@@ -33,7 +33,7 @@ export default function LeaderboardPage() {
                 id: wd.id,
                 title: wd.title,
                 languageLabel: wd.language?.name ?? "",
-                category: wd.category,
+                category: wd.interest?.name ?? "",
                 // chuyển "Easy" | "Medium" | "Hard" -> "easy" | "medium" | "hard"
                 level:
                   (wd.difficulty?.toLowerCase() as
@@ -77,6 +77,7 @@ export default function LeaderboardPage() {
             creator={
               wd
                 ? {
+                    id: wd.creator?.id,
                     name: wd.creator?.name ?? "",
                     avatar: wd.creator?.avatarUrl ?? undefined,
                     createdAt: wd.createdAt,

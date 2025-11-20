@@ -42,6 +42,14 @@ export default function PuzzleDetailsCard({
 }) {
   const t = useTranslations();
 
+  // Hàm tạo nhãn dịch cho độ khó
+  const diffLabel = (level: Difficulty) => {
+    const capitalizedLevel = capitalize(level); // "easy" -> "Easy"
+    return t(`filters.wordset.difficulty.${capitalizedLevel}`, {
+      default: capitalizedLevel,
+    });
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -62,7 +70,7 @@ export default function PuzzleDetailsCard({
             />
             <Row
               label={t("lb.difficulty", { default: "Difficulty" })}
-              value={details.level[0].toUpperCase() + details.level.slice(1)}
+              value={diffLabel(details.level)}
             />
             <Row
               label={t("lb.estTime", { default: "Estimated Time" })}
@@ -83,4 +91,9 @@ export default function PuzzleDetailsCard({
       </CardContent>
     </Card>
   );
+}
+
+/* ========== tiny util ========== */
+function capitalize(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }

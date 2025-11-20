@@ -1,32 +1,6 @@
 "use client";
 
 import {
-  IconAlertTriangle,
-  IconArrowLeft,
-  IconCalendar,
-  IconCheck,
-  IconClock,
-  IconCoin,
-  IconEye,
-  IconLoader2,
-  IconMapPin,
-  IconShare3,
-  IconUsers,
-  IconVideo,
-} from "@tabler/icons-react";
-import { format } from "date-fns";
-import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-
-import {
-  EventAllRatingsSection,
-  EventYourRatingSection,
-  RegistrationSuccessDialog,
-  ShareEventDialog,
-} from "@/components/modules/event";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -52,9 +26,16 @@ import {
   DialogTitle,
   Input,
   Label,
+  MarkdownRenderer,
   Separator,
   Textarea,
-} from "@/components/ui";
+} from "@/components";
+import {
+  EventAllRatingsSection,
+  EventYourRatingSection,
+  RegistrationSuccessDialog,
+  ShareEventDialog,
+} from "@/components/modules/event";
 import { EventStatus } from "@/constants";
 import {
   useCreateEventRatingMutation,
@@ -67,6 +48,25 @@ import {
 } from "@/hooks";
 import { useAuthMe } from "@/hooks/query/use-auth";
 import { formatCurrency, handleErrorApi } from "@/lib/utils";
+import {
+  IconAlertTriangle,
+  IconArrowLeft,
+  IconCalendar,
+  IconCheck,
+  IconClock,
+  IconCoin,
+  IconEye,
+  IconLoader2,
+  IconMapPin,
+  IconShare3,
+  IconUsers,
+  IconVideo,
+} from "@tabler/icons-react";
+import { format } from "date-fns";
+import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 export default function EventDetailPage() {
   const params = useParams();
@@ -329,11 +329,11 @@ export default function EventDetailPage() {
           {t("back")}
         </Button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-3 space-y-6">
             {/* Banner */}
-            <div className="relative w-full h-96 rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-background">
+            <div className="relative w-full h-[400px] rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-background">
               {hasBanner ? (
                 <Image
                   src={event.bannerUrl}
@@ -364,16 +364,18 @@ export default function EventDetailPage() {
               </div>
             </div>
 
-            {/* Title */}
+            {/* Title & Host Info */}
             <div className="space-y-4">
-              <h1 className="text-4xl font-bold">{event.title}</h1>
+              <h1 className="text-3xl lg:text-4xl font-bold leading-tight">
+                {event.title}
+              </h1>
 
               {/* Host Info Card */}
               <Card className="border-primary/20 shadow-sm">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3 flex-1">
-                      <Avatar className="h-14 w-14 border-2 border-primary/20 shadow-sm">
+                      <Avatar className="h-12 w-12 border-2 border-primary/20 shadow-sm">
                         <AvatarImage
                           src={
                             isValidAvatarUrl(event.host.avatarUrl)
@@ -382,15 +384,15 @@ export default function EventDetailPage() {
                           }
                           alt={event.host.name}
                         />
-                        <AvatarFallback className="text-base font-semibold bg-primary/10">
+                        <AvatarFallback className="text-sm font-semibold bg-primary/10">
                           {initials}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-xs text-muted-foreground">
                           {t("host")}
                         </p>
-                        <p className="text-lg font-semibold">
+                        <p className="text-base font-semibold">
                           {event.host.name}
                         </p>
                       </div>
@@ -413,19 +415,9 @@ export default function EventDetailPage() {
               </Card>
             </div>
 
-            <Separator />
-
-            {/* Description */}
-            <div>
-              <h2 className="text-2xl font-semibold mb-4">{t("aboutEvent")}</h2>
-              <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                {event.description}
-              </p>
-            </div>
-
-            {/* Categories */}
-            <div>
-              <h3 className="font-semibold mb-3">{t("categories")}</h3>
+            {/* Categories Section */}
+            <div className="space-y-3">
+              <h3 className="text-lg font-semibold">{t("categories")}</h3>
               <div className="flex flex-wrap gap-2">
                 {event.categories.map((category, index) => (
                   <Badge key={index} variant="secondary" className="text-sm">
@@ -437,7 +429,7 @@ export default function EventDetailPage() {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="lg:col-span-2 space-y-6">
             {/* Event Details Card */}
             <Card className="shadow-lg">
               <CardHeader>
@@ -629,6 +621,16 @@ export default function EventDetailPage() {
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Description Section - Moved inside main content */}
+        <div className="space-y-4 mt-5">
+          <h2 className="text-2xl font-semibold">{t("aboutEvent")}</h2>
+          <Card>
+            <CardContent className="p-6 prose-sm">
+              <MarkdownRenderer content={event.description} />
+            </CardContent>
+          </Card>
         </div>
 
         {/* Your Rating */}

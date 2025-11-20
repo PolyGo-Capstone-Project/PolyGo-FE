@@ -91,6 +91,7 @@
     "UserBanned": "You have been banned from the platform.",
     "OnlyPlusUserCanCreateEvent": "Only Plus users can create events.",
     "CannotRateIfNotAttendedEvent": "You cannot rate an event you did not attend.",
+    "DuplicateWords": "Duplicate Word"
     "depositError": "Failed to initiate deposit. Please try again.",
     "OutOfWithdrawTimes": "You have reached the maximum number of withdrawals for this month.",
     "fetchBanksError": "Failed to fetch bank list. Please try again.",
