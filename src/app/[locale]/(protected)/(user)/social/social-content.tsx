@@ -106,7 +106,7 @@ export default function SocialContent({ locale }: ContentProps) {
 
   // Get practice games (12 wordsets)
   const { data: wordsetsData } = useWordsetsQuery({
-    params: { lang, pageNumber: 1, pageSize: 10 },
+    params: { lang, pageNumber: 1, pageSize: 6 },
     enabled: true,
   });
 

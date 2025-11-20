@@ -16,7 +16,6 @@
       "reactions": "likes",
       "comment": "comment",
       "comments": "comments",
-      "share": "Share",
       "report": "Report",
       "reply": "Reply",
       "commentPlaceholder": "Write a comment...",
@@ -29,7 +28,17 @@
       "updatePostDescription": "Edit your post content below",
       "contentPlaceholder": "Write something...",
       "cancel": "Cancel",
-      "updating": "Updating..."
+      "updating": "Updating...",
+      "share": {
+        "title": "Share Post",
+        "description": "Share this post with your thoughts",
+        "contentPlaceholder": "Say something about this...",
+        "shareButton": "Share",
+        "sharing": "Sharing...",
+        "cancel": "Cancel",
+        "success": "Post shared successfully!",
+        "error": "Failed to share post"
+      }
     },
     "leftSidebar": {
       "games": {
