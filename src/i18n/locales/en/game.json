@@ -7,6 +7,15 @@
     "areYouNew": "Are you a new player?",
     "howToPlay": "How to Play Word Puzzle",
     "rules": "Rules:",
+    "noResultsTitle": "No Results Found",
+    "noResultsDesc": "Try different search terms",
+    "loading": "Loading",
+    "loadMore": "View more",
+    "allLoaded": "All wordsets loaded",
+    "deleteTitle": "Delete puzzle set?",
+    "deleteDesc": "This action cannot be undone. Are you sure you want to delete this puzzle set?",
+    "deleting": "Deleting",
+    "delete": "Delete",
     "rule": {
       "chooseSet": "Choose a question set by your favorite topic",
       "scramble": "Words will be scrambled randomly (e.g. \"apple\" → \"p/a/l/p/e\")",
@@ -31,6 +40,7 @@
     "allDifficulties": "All Difficulties",
     "category": "Category",
     "allCategories": "All Categories",
+    "clearFilters": "Clear Filters",
     "searchPlaceholder": "Search vocabulary sets...",
     "wordset": {
       "difficulty": {
@@ -42,11 +52,23 @@
         "Food": "Food",
         "Travel": "Travel",
         "Business": "Business",
-        "Tech": "Technology",
+        "Technology": "Technology",
         "Culture": "Culture",
         "Daily": "Daily",
         "Education": "Education",
-        "Health": "Health"
+        "Health": "Health",
+        "Cooking": "Cooking",
+        "Sports": "Sports",
+        "Relaxing": "Relaxing",
+        "Reading": "Reading",
+        "Gaming": "Gaming",
+        "Art": "Art",
+        "Music": "Music",
+        "Traveling": "Traveling",
+        "Photography": "Photography",
+        "Movies": "Movies",
+        "Fashion": "Fashion",
+        "Dancing": "Dancing"
       }
     }
   },
@@ -65,7 +87,7 @@
     "section": {
       "mySets": "My Puzzle Sets",
       "approved": "Approved",
-      "pending": "Pending"
+      "pending": "Pending - Rejected"
     },
     "noCreatedSets": "You haven't created any puzzle sets yet.",
     "noPlayedSets": "You haven't played any puzzle sets yet."
@@ -185,7 +207,8 @@
     "progressBar": "Progress",
     "unscramble": "Unscramble this word:",
     "definition": "Definition:",
-    "hint": "Hint:",
+    "pronuciation": "Pronuciation",
+    "hint": "Hint",
     "typeHere": "Type the word here...",
     "submit": "Submit Answer",
     "reshuffle": "Reshuffle",
@@ -219,10 +242,12 @@
     "hints": "Hints",
     "creator": "Created By",
     "rating": "rating",
-    "messageCreator": "Message Creator",
+    "messageCreator": "View Profile",
     "createdOn": "Created On",
     "noRank": "No Rank",
-    "na": "N/A"
+    "na": "N/A",
+    "noBestYet": "No best score yet",
+    "noPlayers": "No players have completed this puzzle yet."
   },
   "common": {
     "loading": "Loading...",

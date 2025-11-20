@@ -64,7 +64,7 @@ export function UpdateWordsetStatusDialog({ wordsetId }: Props) {
   };
 
   const statusOptions: WordsetStatus[] = [
-    "Draft",
+    // "Draft",
     "Pending",
     "Approved",
     "Rejected",

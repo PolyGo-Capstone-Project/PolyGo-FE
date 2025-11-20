@@ -66,7 +66,14 @@
       "role": "Vai trò",
       "dateRange": "Khoảng thời gian",
       "apply": "Áp dụng",
-      "reset": "Đặt lại"
+      "reset": "Đặt lại",
+      "wordset": {
+        "difficulty": {
+          "easy": "Dễ",
+          "medium": "Trung bình",
+          "hard": "Khó"
+        }
+      }
     },
     "status": {
       "active": "Hoạt động",
@@ -836,6 +843,7 @@
         "words": "từ",
         "word": "Từ",
         "definition": "Định nghĩa",
+        "pronunciation": "Phiên âm",
         "hint": "Gợi ý"
       }
     },

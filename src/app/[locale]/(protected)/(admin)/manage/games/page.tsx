@@ -32,6 +32,7 @@ import {
   TableRow,
 } from "@/components/ui";
 import {
+  IconEye,
   IconFilter,
   IconRefresh,
   IconSearch,
@@ -41,12 +42,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 
 import { UpdateWordsetStatusDialog } from "@/components/modules/admin/game/update-status-dialog";
+import { useInterestsQuery } from "@/hooks";
 import { useLanguagesQuery } from "@/hooks/query/use-language";
 import {
   useGetAdminWordsets,
   useWordsetDetailQuery,
 } from "@/hooks/query/use-wordset";
-import { WordsetCategory, WordsetDifficulty, WordsetStatus } from "@/models";
+import { WordsetDifficulty, WordsetStatus } from "@/models";
 
 /* ----------------- helpers ----------------- */
 const statusList: WordsetStatus[] = [
@@ -78,12 +80,16 @@ export default function ManageWordsets() {
   const locale = useLocale();
 
   type AdminStatus = WordsetStatus; // "Draft" | "Pending" | "Approved" | "Rejected"
+
   // pagination
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
 
   // filters
   const [searchTerm, setSearchTerm] = useState("");
+  // ✅ debounce 400ms cho search
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
   const [status, setStatus] = useState<AdminStatus | "all">("all");
   const [languageId, setLanguageId] = useState<string>("all");
   const [difficulty, setDifficulty] = useState<string>("all");
@@ -95,6 +101,32 @@ export default function ManageWordsets() {
     params: { lang: locale, pageNumber: 1, pageSize: 200 },
   });
   const languages = languagesData?.payload?.data?.items ?? [];
+
+  const { data: interestsData } = useInterestsQuery({
+    params: { lang: locale, pageNumber: 1, pageSize: 200 },
+  });
+  // const interests = interestsData?.payload?.data?.items ?? [];
+  const interests = useMemo(
+    () => interestsData?.payload?.data?.items ?? [],
+    [interestsData?.payload?.data?.items]
+  );
+
+  const interestMap = useMemo(() => {
+    const m = new Map<string, any>();
+    interests.forEach((it: any) => {
+      if (it?.id) m.set(it.id, it);
+    });
+    return m;
+  }, [interests]);
+
+  // ✅ Debounce logic: sau 400ms không gõ nữa mới update term dùng cho query
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm.trim());
+    }, 400);
+
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
 
   // query build
   const query = useMemo(() => {
@@ -112,12 +144,12 @@ export default function ManageWordsets() {
       lang: locale,
       pageNumber: page,
       pageSize,
-      ...(searchTerm.trim() ? { name: searchTerm.trim() } : {}),
-      ...(status !== "all" ? { status: status as AdminStatus } : {}), // ✅ narrow
+      ...(debouncedSearchTerm ? { name: debouncedSearchTerm } : {}),
+      ...(status !== "all" ? { status: status as AdminStatus } : {}),
       ...(difficulty !== "all"
         ? { difficulty: toApiDifficulty(difficulty) }
         : {}),
-      ...(category !== "all" ? { category } : {}),
+      ...(category !== "all" ? { interestIds: [category] as string[] } : {}),
       ...(languageId !== "all"
         ? { languageIds: [languageId] as string[] }
         : {}),
@@ -126,22 +158,23 @@ export default function ManageWordsets() {
     locale,
     page,
     pageSize,
-    searchTerm,
+    debouncedSearchTerm,
     status,
     difficulty,
     category,
     languageId,
   ]);
+
   // data
   const listQuery = useGetAdminWordsets(query, { enabled: true });
   const items = listQuery.data?.payload?.data?.items ?? [];
   const totalPages = listQuery.data?.payload?.data?.totalPages ?? 1;
   const totalItems = listQuery.data?.payload?.data?.totalItems ?? 0;
 
-  // reset trang khi đổi filter
+  // ✅ reset trang khi filter/search (đã debounce) thay đổi
   useEffect(() => {
     setPage(1);
-  }, [searchTerm, status, difficulty, category, languageId]);
+  }, [debouncedSearchTerm, status, difficulty, category, languageId]);
 
   const hasActiveFilters =
     searchTerm.trim() ||
@@ -190,7 +223,9 @@ export default function ManageWordsets() {
                 disabled={listQuery.isLoading}
               >
                 <IconRefresh
-                  className={`mr-2 size-4 ${listQuery.isLoading ? "animate-spin" : ""}`}
+                  className={`mr-2 size-4 ${
+                    listQuery.isLoading ? "animate-spin" : ""
+                  }`}
                 />
                 {t("refresh")}
               </Button>
@@ -297,21 +332,21 @@ export default function ManageWordsets() {
                           <SelectItem value="all">
                             {tFilters("allDifficulties")}
                           </SelectItem>
-                          {difficultyList.map((k) => (
-                            <SelectItem key={k} value={k}>
-                              {t(
-                                `filters.wordset.difficulty.${capitalize(k.toLowerCase())}`,
-                                {
-                                  default: capitalize(k.toLowerCase()),
-                                }
-                              )}
-                            </SelectItem>
-                          ))}
+                          {difficultyList.map((k) => {
+                            const key = k.toLowerCase(); // "easy" | "medium" | "hard"
+                            return (
+                              <SelectItem key={k} value={k}>
+                                {t(`filters.wordset.difficulty.${key}`, {
+                                  default: capitalize(key),
+                                })}
+                              </SelectItem>
+                            );
+                          })}
                         </SelectContent>
                       </Select>
                     </div>
 
-                    {/* Category */}
+                    {/* Category (Interest) */}
                     <div className="space-y-2">
                       <Label>{tFilters("category")}</Label>
                       <Select value={category} onValueChange={setCategory}>
@@ -324,11 +359,9 @@ export default function ManageWordsets() {
                           <SelectItem value="all">
                             {tFilters("allCategories")}
                           </SelectItem>
-                          {Object.values(WordsetCategory).map((c) => (
-                            <SelectItem key={c} value={c}>
-                              {t(`filters.wordset.category.${c}`, {
-                                default: c,
-                              })}
+                          {interests.map((i: any) => (
+                            <SelectItem key={i.id} value={i.id}>
+                              {i.name}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -427,10 +460,18 @@ export default function ManageWordsets() {
                             {tStatus(ws.status)}
                           </Badge>
                         </TableCell>
-                        <TableCell>{ws.category}</TableCell>
+                        <TableCell>
+                          {ws.interest
+                            ? (interestMap.get(ws.interest.id)?.name ??
+                              ws.interest.name)
+                            : "-"}
+                        </TableCell>
+
                         <TableCell>
                           {t(
-                            `filters.wordset.difficulty.${(ws.difficulty ?? "Medium").toLowerCase()}`,
+                            `filters.wordset.difficulty.${(
+                              ws.difficulty ?? "Medium"
+                            ).toLowerCase()}`,
                             {
                               default: ws.difficulty,
                             }
@@ -439,14 +480,14 @@ export default function ManageWordsets() {
                         <TableCell>{ws.wordCount}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-1">
-                            {/* <Button
+                            <Button
                               variant="ghost"
                               size="sm"
                               onClick={() => openDetailSheet(ws.id)}
                               aria-label="View details"
                             >
                               <IconEye className="size-4" />
-                            </Button> */}
+                            </Button>
                             <UpdateWordsetStatusDialog wordsetId={ws.id} />
                           </div>
                         </TableCell>
@@ -498,15 +539,14 @@ function WordsetDetailSheet({
   const locale = useLocale();
   const t = useTranslations("admin.wordsets.detail");
   const tStatus = useTranslations("admin.wordsets.status");
+  const tFilters = useTranslations("admin.filters");
 
-  // ✅ Đúng chữ ký hook: truyền object { id, lang, enabled }
   const { data, isLoading } = useWordsetDetailQuery({
     id,
     lang: locale,
     enabled: open,
   });
 
-  // ✅ Đúng shape dữ liệu: hook đã trả res.payload, nên ở đây là { data, message }
   const ws = data?.data;
 
   return (
@@ -524,7 +564,7 @@ function WordsetDetailSheet({
             ))}
           </div>
         ) : (
-          <div className="mt-6 space-y-4">
+          <div className="space-y-4 mx-4">
             <div>
               <div className="text-xl font-semibold">{ws.title}</div>
               <p className="text-sm text-muted-foreground mt-1">
@@ -536,10 +576,12 @@ function WordsetDetailSheet({
               <Badge variant={statusBadge(ws.status)}>
                 {tStatus(ws.status)}
               </Badge>
-              <Badge variant="secondary">{ws.category}</Badge>
+              <Badge variant="secondary">{ws.interest?.name ?? "-"}</Badge>
               <Badge variant="outline">
-                {t(
-                  `filters.wordset.difficulty.${(ws.difficulty ?? "Medium").toLowerCase()}`,
+                {tFilters(
+                  `wordset.difficulty.${(
+                    ws.difficulty ?? "Medium"
+                  ).toLowerCase()}`,
                   { default: ws.difficulty }
                 )}
               </Badge>
@@ -559,6 +601,7 @@ function WordsetDetailSheet({
                       <TableHead className="w-12">#</TableHead>
                       <TableHead>{t("word")}</TableHead>
                       <TableHead>{t("definition")}</TableHead>
+                      <TableHead>{t("pronunciation")}</TableHead>
                       <TableHead className="hidden sm:table-cell">
                         {t("hint")}
                       </TableHead>
@@ -570,6 +613,7 @@ function WordsetDetailSheet({
                         <TableCell>{i + 1}</TableCell>
                         <TableCell className="font-medium">{w.word}</TableCell>
                         <TableCell>{w.definition}</TableCell>
+                        <TableCell>{w.pronunciation}</TableCell>
                         <TableCell className="hidden sm:table-cell">
                           {w.hint ?? "—"}
                         </TableCell>

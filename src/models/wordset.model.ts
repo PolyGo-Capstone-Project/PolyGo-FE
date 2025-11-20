@@ -45,13 +45,19 @@ const CreatorLiteSchema = z.object({
   avatarUrl: z.string().optional().nullable(),
 });
 
+const InterestLiteSchema = z.object({
+  id: z.string(),
+  iconUrl: z.string(),
+  name: z.string(),
+});
+
 export const WordsetListItemSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string().optional().nullable(),
   status: z.enum(WordsetStatus),
   difficulty: z.enum(WordsetDifficulty),
-  category: z.string(),
+  interest: InterestLiteSchema.optional(),
   estimatedTimeInMinutes: z.number().int(),
   playCount: z.number().int(),
   averageTimeInSeconds: z.number().int(),
@@ -73,9 +79,12 @@ export const GetWordsetsQuerySchema = PaginationLangQuerySchema.merge(
     name: z.string().max(200).optional(),
     languageIds: z.array(z.string()).optional(),
     difficulty: z.enum(WordsetDifficulty).optional(),
-    category: z.string().optional(),
+    interestIds: z.array(z.string()).optional(),
   })
 );
+
+//search for admin
+export const SearchWordsetsQuerySchema = GetWordsetsQuerySchema;
 
 /* ====== Response ====== */
 export const GetWordsetsResSchema = z.object({
@@ -101,7 +110,7 @@ export const CreateWordsetBodySchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   languageId: z.string(),
-  category: z.enum(WordsetCategory),
+  interestId: z.string(),
   difficulty: z.enum(WordsetDifficulty),
   words: z.array(WordItemSchema).min(1),
 });
@@ -149,7 +158,7 @@ export const WordsetDetailSchema = z.object({
   description: z.string().optional().nullable(),
   status: z.enum(WordsetStatus),
   difficulty: z.enum(WordsetDifficulty),
-  category: z.string(),
+  interest: InterestLiteSchema.optional(),
   estimatedTimeInMinutes: z.number().int(),
   playCount: z.number().int(),
   averageTimeInSeconds: z.number().int(),
@@ -188,7 +197,7 @@ export const UpdateWordsetBodySchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   languageId: z.string().min(1),
-  category: z.string().min(1),
+  interestId: z.string().min(1),
   difficulty: z.enum(WordsetDifficulty),
   words: z
     .array(
@@ -226,6 +235,7 @@ export const AdminWordsetListItemSchema = z.object({
   averageTimeInSeconds: z.number().int(),
   averageRating: z.number(),
   wordCount: z.number().int(),
+  interest: InterestLiteSchema.optional(),
   creator: z.object({
     id: z.string(),
     name: z.string(),
@@ -237,10 +247,12 @@ export const AdminWordsetListItemSchema = z.object({
 // Query: giống user + thêm status
 export const GetAdminWordsetsQuerySchema = PaginationLangQuerySchema.merge(
   z.object({
+    name: z.string().max(200).optional(),
     status: z.enum(WordsetStatus).optional(),
     languageIds: z.array(z.string()).optional(),
     difficulty: z.enum(WordsetDifficulty).optional(),
     category: z.string().optional(),
+    interestIds: z.array(z.string()).optional(),
   })
 );
 
@@ -350,6 +362,7 @@ export const GameWordSchema = z.object({
   scrambledWord: z.string(),
   definition: z.string(),
   hint: z.string().optional().nullable(),
+  pronunciation: z.string().optional().nullable(),
 });
 
 // [ADD] ==== GAMEPLAY: Start game (POST /wordsets/:id/start) ====
@@ -408,6 +421,20 @@ export const WordsetGameStateResSchema = z.object({
   message: z.string(),
 });
 
+// [ADD] ==== GAMEPLAY: Hint usage (POST /wordsets/:id/hint) ====
+export const UseHintBodySchema = z.object({
+  wordId: z.string(),
+});
+
+export const UseHintDataSchema = z.object({
+  wordId: z.string(),
+  totalHintsUsed: z.number().int(),
+});
+
+export const UseHintResSchema = z.object({
+  data: UseHintDataSchema,
+  message: z.string(),
+});
 /* ====== Types ====== */
 //List game cho user
 export type WordsetListItemType = z.infer<typeof WordsetListItemSchema>;
@@ -474,3 +501,8 @@ export type StartWordsetGameResType = z.infer<typeof StartWordsetGameResSchema>;
 export type PlayWordsetBodyType = z.infer<typeof PlayWordsetBodySchema>;
 export type PlayWordsetResType = z.infer<typeof PlayWordsetResSchema>;
 export type WordsetGameStateResType = z.infer<typeof WordsetGameStateResSchema>;
+// [ADD] Hint usage
+export type UseHintBodyType = z.infer<typeof UseHintBodySchema>;
+export type UseHintResType = z.infer<typeof UseHintResSchema>;
+// NEW: search type (giống SearchEventsQueryType)
+export type SearchWordsetsQueryType = z.infer<typeof SearchWordsetsQuerySchema>;

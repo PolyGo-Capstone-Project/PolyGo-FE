@@ -31,7 +31,6 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   BookOpen,
   Clock,
-  LineChart,
   Pencil,
   Plus,
   Star,
@@ -44,12 +43,14 @@ import {
 
 import {
   useDeleteWordsetMutation,
+  useInterestsQuery,
   useLanguagesQuery,
   useMyCreatedWordsetsQuery,
   useUpdateWordsetMutation,
   useWordsetDetailQuery,
 } from "@/hooks";
-import { WordsetCategory, WordsetDifficulty } from "@/models";
+import { showErrorToast, showSuccessToast } from "@/lib/utils";
+import { WordsetDifficulty } from "@/models";
 
 /* ==================== Local helpers ==================== */
 type UiDifficulty = "easy" | "medium" | "hard";
@@ -74,6 +75,7 @@ const toUiLevel = (d?: string): UiDifficulty => {
 
 const isApproved = (s?: string) => (s || "").toLowerCase() === "approved";
 const isPending = (s?: string) => (s || "").toLowerCase() === "pending";
+const isRejected = (s?: string) => (s || "").toLowerCase() === "rejected";
 
 /* ==================== UI ==================== */
 export default function CreatedTab() {
@@ -88,8 +90,21 @@ export default function CreatedTab() {
     pageSize: 50,
   });
 
+  // master interests
+  const { data: interestsData } = useInterestsQuery({
+    params: { pageNumber: 1, pageSize: 200, lang: locale },
+  });
+  const interests = interestsData?.payload?.data?.items ?? [];
+
+  const interestMap = useMemo(() => {
+    const m = new Map<string, any>();
+    interests.forEach((it: any) => {
+      if (it?.id) m.set(it.id, it);
+    });
+    return m;
+  }, [interests]);
+
   // unwrap items
-  // const items = data?.data?.items ?? [];
   const memoItems = useMemo(() => data?.data?.items ?? [], [data?.data?.items]);
 
   // Split groups
@@ -97,8 +112,9 @@ export default function CreatedTab() {
     () => memoItems.filter((s) => isApproved(s.status)),
     [memoItems]
   );
-  const pendingItems = useMemo(
-    () => memoItems.filter((s) => isPending(s.status)),
+
+  const reviewItems = useMemo(
+    () => memoItems.filter((s) => isPending(s.status) || isRejected(s.status)),
     [memoItems]
   );
 
@@ -198,43 +214,46 @@ export default function CreatedTab() {
                 routerPush={router.push}
                 data={s}
                 status="approved"
+                categoryLabel={interestMap.get(s.category)?.name ?? s.category}
                 onEdit={() => openEditDialog(s.id)}
-                onDelete={() => openDeleteDialog(s.id, s.title)} // <-- NEW
+                onDelete={() => openDeleteDialog(s.id, s.title)}
               />
             ))
           )}
         </CardContent>
       </Card>
 
-      {/* Pending list */}
+      {/* Pending + Rejected list */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-base md:text-lg">
-            {t("mysets.section.pending", { default: "Pending Review" })}
+            {t("mysets.section.pending", { default: "Pending / Rejected" })}
           </CardTitle>
-          <Badge variant="secondary">{pendingItems.length} sets</Badge>
+          <Badge variant="secondary">{reviewItems.length} sets</Badge>
         </CardHeader>
 
         <CardContent className="space-y-4">
           {isLoading ? (
             <ListSkeleton />
-          ) : pendingItems.length === 0 ? (
+          ) : reviewItems.length === 0 ? (
             <div className="text-center text-muted-foreground py-8">
               {t("mysets.noCreatedSets", {
-                default: "You have no pending puzzle sets.",
+                default: "You have no pending or rejected puzzle sets.",
               })}
             </div>
           ) : (
-            pendingItems.map((s) => (
+            reviewItems.map((s) => (
               <ItemRow
                 key={s.id}
                 locale={locale}
                 t={t}
                 routerPush={router.push}
                 data={s}
-                status="pending"
+                // ✅ phân biệt pending vs rejected để style & action
+                status={isRejected(s.status) ? "rejected" : "pending"}
+                categoryLabel={interestMap.get(s.category)?.name ?? s.category}
                 onEdit={() => openEditDialog(s.id)}
-                onDelete={() => openDeleteDialog(s.id, s.title)} // <-- NEW
+                onDelete={() => openDeleteDialog(s.id, s.title)}
               />
             ))
           )}
@@ -276,9 +295,16 @@ function ConfirmDeleteDialog({
   onOpenChange: (v: boolean) => void;
 }) {
   const t = useTranslations();
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
+
   const del = useDeleteWordsetMutation({
-    onSuccess: () => {
+    onSuccess: (res) => {
+      showSuccessToast(res?.message, tSuccess);
       onOpenChange(false);
+    },
+    onError: () => {
+      showErrorToast("Delete", tError);
     },
   });
 
@@ -291,10 +317,10 @@ function ConfirmDeleteDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {t("common.deleteTitle", { default: "Xoá bộ câu đố?" })}
+            {t("wordPuzzle.deleteTitle", { default: "Xoá bộ câu đố?" })}
           </DialogTitle>
           <DialogDescription>
-            {t("common.deleteDesc", {
+            {t("wordPuzzle.deleteDesc", {
               default:
                 "Hành động này không thể hoàn tác. Bạn chắc chắn muốn xoá bộ câu đố này?",
             })}
@@ -303,7 +329,8 @@ function ConfirmDeleteDialog({
         <div className="text-sm text-muted-foreground">
           {title ? (
             <span>
-              {t("common.deleting", { default: "Đang xoá:" })} <b>{title}</b>
+              {t("wordPuzzle.deleting", { default: "Đang xoá:" })}{" "}
+              <b>{title}</b>
             </span>
           ) : null}
         </div>
@@ -321,8 +348,8 @@ function ConfirmDeleteDialog({
             disabled={del.isPending}
           >
             {del.isPending
-              ? t("common.deleting", { default: "Đang xoá..." })
-              : t("common.delete", { default: "Xoá" })}
+              ? t("wordPuzzle.deleting", { default: "Đang xoá..." })
+              : t("wordPuzzle.delete", { default: "Xoá" })}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -330,7 +357,7 @@ function ConfirmDeleteDialog({
   );
 }
 
-/* ==================== Edit Dialog (giữ nguyên logic cập nhật) ==================== */
+/* ==================== Edit Dialog (có toast) ==================== */
 function EditWordsetDialog({
   id,
   open,
@@ -341,6 +368,8 @@ function EditWordsetDialog({
   onOpenChange: (v: boolean) => void;
 }) {
   const t = useTranslations();
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
   const locale = useLocale();
 
   // get detail
@@ -354,15 +383,23 @@ function EditWordsetDialog({
   const { data: languagesData } = useLanguagesQuery({
     params: { pageNumber: 1, pageSize: 200, lang: locale },
   });
+
+  const { data: interestsData } = useInterestsQuery({
+    params: { pageNumber: 1, pageSize: 200, lang: locale },
+  });
+
   const languages = languagesData?.payload?.data?.items ?? [];
+
+  const interests = useMemo(
+    () => interestsData?.payload?.data?.items ?? [],
+    [interestsData?.payload?.data?.items]
+  );
 
   // local form state
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [languageId, setLanguageId] = useState<string>("");
-  const [category, setCategory] = useState<string>(
-    Object.values(WordsetCategory)[0]
-  );
+  const [interestId, setInterestId] = useState<string>("");
   const [difficulty, setDifficulty] =
     useState<keyof typeof WordsetDifficulty>("EASY");
   const [words, setWords] = useState<
@@ -382,7 +419,7 @@ function EditWordsetDialog({
     setTitle(detail.title || "");
     setDesc(detail.description || "");
     setLanguageId(detail.language?.id || detail.language?.code || "");
-    setCategory(detail.category || Object.values(WordsetCategory)[0]);
+    setInterestId(detail.interest?.id || "");
 
     const d = (
       detail.difficulty || "Medium"
@@ -418,31 +455,48 @@ function EditWordsetDialog({
   const min5 =
     words.filter((w) => w.word.trim() && w.definition.trim()).length >= 5;
   const canSave =
-    title.trim() && desc.trim() && languageId && category && min5 && !isLoading;
+    title.trim() &&
+    desc.trim() &&
+    languageId &&
+    interestId &&
+    min5 &&
+    !isLoading;
 
-  const updateMutation = useUpdateWordsetMutation();
+  // mutation có toast success
+  const updateMutation = useUpdateWordsetMutation({
+    onSuccess: (data) => {
+      // giống create: truyền message + namespace "Success"
+      showSuccessToast(data?.message, tSuccess);
+    },
+  });
 
   const onSave = async () => {
     if (!canSave || updateMutation.isPending) return;
-    await updateMutation.mutateAsync({
-      id,
-      body: {
-        title,
-        description: desc,
-        languageId,
-        category,
-        difficulty: difficulty as any,
-        words: words.map((w) => ({
-          id: w.id,
-          word: w.word,
-          definition: w.definition,
-          hint: w.hint || undefined,
-          pronunciation: w.pronunciation || undefined,
-          imageUrl: w.imageUrl || undefined,
-        })),
-      },
-    });
-    onOpenChange(false);
+    try {
+      await updateMutation.mutateAsync({
+        id,
+        body: {
+          title,
+          description: desc,
+          languageId,
+          interestId,
+          difficulty: difficulty as any,
+          words: words.map((w) => ({
+            id: w.id,
+            word: w.word,
+            definition: w.definition,
+            hint: w.hint || undefined,
+            pronunciation: w.pronunciation || undefined,
+            imageUrl: w.imageUrl || undefined,
+          })),
+        },
+      });
+      // thành công -> đóng dialog
+      onOpenChange(false);
+    } catch (error) {
+      // lỗi -> toast error giống create (dùng key "Update")
+      showErrorToast("Update", tError);
+    }
   };
 
   const diffLabel = (k: keyof typeof WordsetDifficulty) =>
@@ -450,13 +504,10 @@ function EditWordsetDialog({
       default: capitalize(k.toLowerCase()),
     });
 
-  const catLabel = (c: string) =>
-    t(`filters.wordset.category.${c}`, { default: c });
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-4xl lg:max-w-5xl max-h-[85vh] overflow-y-auto">
+        <DialogHeader className="pb-3">
           <DialogTitle>
             {t("create.title", { default: "Edit Wordset" })}
           </DialogTitle>
@@ -467,7 +518,7 @@ function EditWordsetDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-5">
+        <div className="space-y-5 pr-1">
           {/* Basic */}
           <div className="grid grid-cols-1 gap-3">
             <div className="grid gap-2">
@@ -483,7 +534,7 @@ function EditWordsetDialog({
               <Textarea
                 value={desc}
                 onChange={(e) => setDesc(e.target.value)}
-                className="min-h-[84px]"
+                className="min-h-[72px]"
               />
             </div>
           </div>
@@ -497,7 +548,7 @@ function EditWordsetDialog({
                 {t("create.language.label", { default: "Language" })}
               </Label>
               <Select value={languageId} onValueChange={setLanguageId}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={t("filters.language", { default: "Language" })}
                   />
@@ -514,16 +565,16 @@ function EditWordsetDialog({
 
             <div className="grid gap-2">
               <Label>{t("filters.category", { default: "Category" })}</Label>
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger>
+              <Select value={interestId} onValueChange={setInterestId}>
+                <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={t("filters.category", { default: "Category" })}
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.values(WordsetCategory).map((c) => (
-                    <SelectItem key={c} value={c}>
-                      {catLabel(c)}
+                  {interests.map((i: any) => (
+                    <SelectItem key={i.id} value={i.id}>
+                      {i.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -540,7 +591,7 @@ function EditWordsetDialog({
                   setDifficulty(v as keyof typeof WordsetDifficulty)
                 }
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue
                     placeholder={t("filters.difficulty", {
                       default: "Difficulty",
@@ -566,22 +617,13 @@ function EditWordsetDialog({
 
           <Separator />
 
-          {/* Words Editor (inline) */}
+          {/* Words Editor */}
           <div className="space-y-3">
+            {/* chỉ còn label ở trên */}
             <div className="flex items-center justify-between">
               <Label className="text-base">
                 {t("create.words.title", { default: "Vocabulary" })}
               </Label>
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                onClick={addWord}
-                className="gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                {t("create.words.add", { default: "Add word" })}
-              </Button>
             </div>
 
             {words.length === 0 ? (
@@ -589,7 +631,7 @@ function EditWordsetDialog({
                 {t("create.words.empty", { default: "No words yet." })}
               </div>
             ) : (
-              <div className="space-y-3 max-h-[48vh] overflow-y-auto pr-1">
+              <div className="space-y-3">
                 {words.map((w, idx) => (
                   <div key={idx} className="rounded-lg border p-3 space-y-3">
                     <div className="text-sm font-medium">
@@ -615,7 +657,9 @@ function EditWordsetDialog({
                       </div>
                       <div className="grid gap-2">
                         <Label>
-                          {t("create.words.pron", { default: "Pronunciation" })}{" "}
+                          {t("create.words.pron", {
+                            default: "Pronunciation",
+                          })}{" "}
                           <span className="text-muted-foreground">
                             (
                             {t("create.common.optional", {
@@ -645,7 +689,7 @@ function EditWordsetDialog({
                             default:
                               "A round fruit that grows on trees, typically red, green, or yellow.",
                           })}
-                          className="min-h-[72px]"
+                          className="min-h-[64px]"
                         />
                       </div>
                       <div className="sm:col-span-2 grid gap-2">
@@ -686,6 +730,20 @@ function EditWordsetDialog({
               </div>
             )}
 
+            {/* ✅ nút Add word đưa xuống dưới cùng */}
+            <div className="flex justify-end">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={addWord}
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                {t("create.words.add", { default: "Add word" })}
+              </Button>
+            </div>
+
             {!min5 && (
               <div className="text-sm text-destructive">
                 {t("create.minRequired", {
@@ -696,7 +754,7 @@ function EditWordsetDialog({
           </div>
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-3">
+        <DialogFooter className="gap-2 sm:gap-3 pt-3">
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             {t("create.success.close", { default: "Close" })}
           </Button>
@@ -724,6 +782,7 @@ function ItemRow({
   routerPush,
   onEdit,
   onDelete,
+  categoryLabel,
 }: {
   data: {
     id: string;
@@ -731,23 +790,33 @@ function ItemRow({
     description?: string | null;
     status: string;
     difficulty: string;
-    category: string;
     estimatedTimeInMinutes: number;
     wordCount: number;
     totalPlays?: number;
     playCount?: number;
+    interest?: {
+      id: string;
+      name: string;
+      iconUrl?: string | null;
+    };
   };
-  status: "approved" | "pending";
+  status: "approved" | "pending" | "rejected";
   locale: string;
   t: ReturnType<typeof useTranslations>;
   routerPush: (href: string) => void;
   onEdit: () => void;
-  onDelete: () => void; // <-- NEW
+  onDelete: () => void;
+  categoryLabel: string;
 }) {
   const plays = s.totalPlays ?? s.playCount ?? 0;
 
+  // ✅ rejected thì mờ hơn
+  const cardClass =
+    "rounded-lg border p-4 md:p-5 bg-card hover:bg-accent/40 transition-colors " +
+    (status === "rejected" ? "opacity-60" : "");
+
   return (
-    <div className="rounded-lg border p-4 md:p-5 bg-card hover:bg-accent/40 transition-colors">
+    <div className={cardClass}>
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="font-medium truncate">{s.title}</div>
@@ -771,12 +840,21 @@ function ItemRow({
           </div>
 
           <div className="mt-3 flex flex-wrap gap-2">
-            <Badge variant="outline">{s.category}</Badge>
+            <Badge variant="outline">
+              {categoryLabel ?? s.interest?.name ?? "-"}
+            </Badge>
             <Badge
               className={LEVEL_BADGE_STYLE[toUiLevel(s.difficulty)]}
               variant="secondary"
             >
-              {toUiLevel(s.difficulty)}
+              {t(
+                `filters.wordset.difficulty.${capitalize(
+                  toUiLevel(s.difficulty)
+                )}`,
+                {
+                  default: capitalize(toUiLevel(s.difficulty)),
+                }
+              )}
             </Badge>
           </div>
         </div>
@@ -784,14 +862,14 @@ function ItemRow({
         {/* actions */}
         <div className="flex flex-wrap items-center gap-2 md:pt-1 md:flex-col md:items-end">
           <div className="flex gap-2">
-            <Button
+            {/* <Button
               variant="ghost"
               className="gap-2 h-9 px-3"
               onClick={() => routerPush(`/${locale}/game/${s.id}/stats`)}
             >
               <LineChart className="h-4 w-4" />
               {t("actions.stats", { default: "Stats" })}
-            </Button>
+            </Button> */}
             <Button
               variant="ghost"
               className="gap-2 h-9 px-3"
@@ -812,14 +890,6 @@ function ItemRow({
                 <Pencil className="h-4 w-4" />
               </Button>
             )}
-            {/* <Button
-              variant="ghost"
-              size="icon"
-              onClick={onEdit}
-              aria-label="Edit"
-            >
-              <Pencil className="h-4 w-4" />
-            </Button> */}
             <Button
               variant="ghost"
               size="icon"
@@ -861,7 +931,11 @@ function StatCard({
   );
 }
 
-function StatusBadge({ status }: { status: "approved" | "pending" }) {
+function StatusBadge({
+  status,
+}: {
+  status: "approved" | "pending" | "rejected";
+}) {
   if (status === "approved") {
     return (
       <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
@@ -869,9 +943,17 @@ function StatusBadge({ status }: { status: "approved" | "pending" }) {
       </Badge>
     );
   }
+  if (status === "pending") {
+    return (
+      <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
+        Pending Review
+      </Badge>
+    );
+  }
+
   return (
-    <Badge className="bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
-      Pending Review
+    <Badge className="bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300">
+      Rejected
     </Badge>
   );
 }

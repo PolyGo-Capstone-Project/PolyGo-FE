@@ -4,9 +4,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 type Creator = {
+  id?: string;
   name: string;
   avatar?: string;
   createdAt?: string; // lấy từ wordset.createdAt
@@ -14,6 +16,7 @@ type Creator = {
 };
 
 const DEFAULT_CREATOR: Creator = {
+  id: undefined,
   name: "—",
   avatar: undefined,
   createdAt: undefined,
@@ -28,6 +31,8 @@ export default function CreatorCard({
   loading?: boolean;
 }) {
   const t = useTranslations();
+  const locale = useLocale();
+  const router = useRouter();
   const c = creator ?? DEFAULT_CREATOR;
 
   const createdDate = c.createdAt
@@ -38,6 +43,11 @@ export default function CreatorCard({
       ? c.rating.toFixed(1)
       : t("lb.na", { default: "N/A" });
 
+  const goToProfile = () => {
+    if (c.id) {
+      router.push(`/${locale}/matching/${c.id}`);
+    }
+  };
   return (
     <Card>
       <CardHeader>
@@ -73,7 +83,7 @@ export default function CreatorCard({
                 </div>
               </div>
             </div>
-            <Button className="w-full">
+            <Button className="w-full" onClick={goToProfile} disabled={!c.id}>
               {t("lb.messageCreator", { default: "Message Creator" })}
             </Button>
           </>

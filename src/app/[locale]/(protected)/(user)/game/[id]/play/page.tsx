@@ -14,10 +14,12 @@ import StatsRow from "@/components/modules/game/play/stat-row";
 
 // ✅ hooks API
 import {
+  useInterestsQuery,
   usePlayWordsetMutation,
   useStartWordsetGameMutation,
   useWordsetDetailQuery,
   useWordsetGameStateQuery,
+  useWordsetHintMutation, // 🆕 thêm hook hint
 } from "@/hooks";
 
 // --------- Helper shuffle chỉ dùng trong trang ----------
@@ -31,6 +33,8 @@ export default function PlayGamePage() {
   const router = useRouter();
   const params = useParams<{ id: string }>();
   const wordsetId = params?.id;
+  const [hasActiveGame, setHasActiveGame] = useState(false);
+  const [isGameCompleted, setIsGameCompleted] = useState(false);
 
   // ===== Lấy meta (title/desc/lang/category/...) từ detail =====
   const { data: detailRes } = useWordsetDetailQuery({
@@ -40,10 +44,44 @@ export default function PlayGamePage() {
   });
   const detail = detailRes?.data;
 
-  // ===== GAME STATE (polling mỗi 1s để hiển thị đồng hồ, mistakes, tiến độ) =====
-  const { data: gameStateRes } = useWordsetGameStateQuery(wordsetId, {
-    enabled: Boolean(wordsetId),
-    refetchInterval: 1000,
+  // ===== Master interests để map category (id) -> tên =====
+  const { data: interestsData } = useInterestsQuery({
+    params: { pageNumber: 1, pageSize: 200, lang: locale },
+  });
+  // const interests = interestsData?.payload?.data?.items ?? [];
+  const interests = useMemo(
+    () => interestsData?.payload?.data?.items ?? [],
+    [interestsData?.payload?.data?.items]
+  );
+
+  const interestMap = useMemo(() => {
+    const m = new Map<string, any>();
+    interests.forEach((it: any) => {
+      if (it?.id) m.set(it.id, it);
+    });
+    return m;
+  }, [interests]);
+
+  const interestLabel = useMemo(() => {
+    if (!detail?.interest) return "";
+
+    const id = detail.interest.id;
+    const fallbackName = detail.interest.name ?? "";
+
+    if (!id) return fallbackName;
+
+    return interestMap.get(id)?.name ?? fallbackName;
+  }, [detail?.interest, interestMap]);
+
+  // ===== GAME STATE (lấy 1 lần làm baseline, KHÔNG polling) =====
+  const {
+    data: gameStateRes,
+    refetch: refetchGameState, // 🆕 sẽ dùng khi bấm hint
+  } = useWordsetGameStateQuery(wordsetId, {
+    enabled: Boolean(wordsetId && hasActiveGame),
+    refetchInterval: false, // ⛔ không poll
+    refetchOnWindowFocus: false, // ⛔ không refetch khi focus
+    refetchOnMount: false,
   });
   const gameState = gameStateRes?.data;
 
@@ -54,23 +92,56 @@ export default function PlayGamePage() {
       setCurrentWord(w);
       setLetters(w.scrambledWord.split(""));
       setAnswer("");
+      setHasActiveGame(true);
+      setIsGameCompleted(false);
+      // Đồng bộ counters khởi tạo nếu server có
+      if (typeof res.data.totalWords === "number")
+        setTotalLocal(res.data.totalWords);
+
+      // Khởi tạo mốc bắt đầu cho đồng hồ (schema của bạn là startTime)
+      const serverStartTs = res.data.startTime
+        ? new Date(res.data.startTime).getTime()
+        : Date.now();
+      sessionStorage.setItem("polygo_wordset_startedAt", String(serverStartTs));
+      const initElapsed = Math.max(
+        0,
+        Math.floor((Date.now() - serverStartTs) / 1000)
+      );
+      setElapsedLocal(initElapsed);
+      setRunning(true);
     },
   });
 
   const { mutateAsync: playAnswerAsync } = usePlayWordsetMutation({
     onSuccess: (res) => {
       const d = res.data;
+
+      // ✅ Nếu đã hoàn tất, ngừng đồng hồ và chuyển leaderboard
       if (d.isCompleted) {
+        setIsGameCompleted(true);
+        setRunning(false);
+        setHasActiveGame(false);
         router.push(`/${locale}/game/${wordsetId}/leaderboard`);
+
+        setTimeout(() => {
+          router.push(`/${locale}/game/${wordsetId}/leaderboard`);
+        }, 400);
+
         return;
       }
+
+      // ✅ Chỉ đổi từ mới khi đúng
       if (d.isCorrect && d.nextWord) {
         setCurrentWord(d.nextWord);
         setLetters(d.nextWord.scrambledWord.split(""));
         setAnswer("");
       }
+      // ❌ Nếu sai thì KHÔNG đổi thứ tự letters
     },
   });
+
+  // 🆕 Mutation cho Hint
+  const { mutate: hintMutation } = useWordsetHintMutation();
 
   // ===== local state hiển thị từ hiện tại + input =====
   const [currentWord, setCurrentWord] = useState<
@@ -79,6 +150,7 @@ export default function PlayGamePage() {
         scrambledWord: string;
         definition: string;
         hint?: string | null;
+        pronunciation?: string | null;
       }
     | undefined
   >(undefined);
@@ -87,17 +159,71 @@ export default function PlayGamePage() {
   const [answer, setAnswer] = useState("");
   const [quitOpen, setQuitOpen] = useState(false);
 
+  // ===== Đồng hồ & counters local =====
+  const [elapsedLocal, setElapsedLocal] = useState(0);
+  const [running, setRunning] = useState(false);
+
+  const [completedLocal, setCompletedLocal] = useState(0);
+  const [totalLocal, setTotalLocal] = useState(0);
+  const [mistakesLocal, setMistakesLocal] = useState(0);
+  const [hintsUsedLocal, setHintsUsedLocal] = useState(0);
+
   // ===== Start game ngay khi vào trang =====
   useEffect(() => {
     if (wordsetId) startGame(wordsetId);
   }, [wordsetId, startGame]);
 
-  // ===== Derived UI values từ game-state =====
-  const completed = gameState?.completedWords ?? 0;
-  const total = gameState?.totalWords ?? 0;
-  const mistakes = gameState?.mistakes ?? 0;
-  const hintsUsed = gameState?.hintsUsed ?? 0;
-  const elapsed = gameState?.elapsedTime ?? 0;
+  // ===== Khôi phục từ gameState (1 lần) & sessionStorage =====
+  useEffect(() => {
+    if (!gameState) return;
+
+    if (typeof gameState.totalWords === "number")
+      setTotalLocal(gameState.totalWords);
+    if (typeof gameState.completedWords === "number")
+      setCompletedLocal(gameState.completedWords);
+    if (typeof gameState.mistakes === "number")
+      setMistakesLocal(gameState.mistakes);
+    if (typeof gameState.hintsUsed === "number")
+      setHintsUsedLocal(gameState.hintsUsed);
+
+    // Ưu tiên mốc startTime từ server; nếu không có, lấy từ sessionStorage
+    const serverStart = gameState.startTime
+      ? new Date(gameState.startTime).getTime()
+      : undefined;
+    if (serverStart) {
+      const initElapsed = Math.max(
+        0,
+        Math.floor((Date.now() - serverStart) / 1000)
+      );
+      setElapsedLocal(initElapsed);
+      sessionStorage.setItem("polygo_wordset_startedAt", String(serverStart));
+      setRunning(true);
+    } else {
+      const ss = sessionStorage.getItem("polygo_wordset_startedAt");
+      if (ss) {
+        const ts = Number(ss);
+        if (!Number.isNaN(ts)) {
+          const initElapsed = Math.max(0, Math.floor((Date.now() - ts) / 1000));
+          setElapsedLocal(initElapsed);
+          setRunning(true);
+        }
+      }
+    }
+  }, [gameState]);
+
+  // ===== Interval cho timer local =====
+  useEffect(() => {
+    if (!running) return;
+    const id = setInterval(() => setElapsedLocal((e) => e + 1), 1000);
+    return () => clearInterval(id);
+  }, [running]);
+
+  // ===== Derived UI values từ local =====
+  const completed = completedLocal;
+  const total = totalLocal;
+  const mistakes = mistakesLocal;
+  const hintsUsed = hintsUsedLocal;
+  const elapsed = elapsedLocal;
 
   const progressPct = useMemo(() => {
     if (!total) return 0;
@@ -123,23 +249,54 @@ export default function PlayGamePage() {
         wordId: currentWord.id,
         answer: answer.trim(),
       });
-      // true => flash xanh, false => flash đỏ
       return Boolean(res.payload?.data?.isCorrect);
     } catch {
       return false;
     }
   };
 
-  // Map dữ liệu cho PlayCard
+  // 🆕 handler khi user bấm Hint
+  const handleHint = () => {
+    if (!wordsetId || !currentWord) return;
+    hintMutation(
+      {
+        wordSetId: wordsetId,
+        body: { wordId: currentWord.id },
+      },
+      {
+        // Sau khi POST thành công -> gọi lại game-state để lấy hintsUsed mới
+        onSuccess: () => {
+          refetchGameState();
+        },
+      }
+    );
+  };
+
+  // Map dữ liệu cho PlayCard (lấy hint từ currentWord hoặc gameState.currentWord)
   const wordForUI =
     currentWord &&
-    ({
-      id: currentWord.id,
-      word: "", // không lộ đáp án
-      letters,
-      definition: currentWord.definition,
-      hint: currentWord.hint ?? undefined,
-    } as const);
+    ((): {
+      id: string;
+      word: string;
+      letters: string[];
+      definition: string;
+      hint?: string;
+      pronunciation?: string;
+    } => {
+      const hintFromGameState = gameState?.currentWord?.hint ?? undefined;
+      const pronunciationFromGameState =
+        gameState?.currentWord?.pronunciation ?? undefined;
+
+      return {
+        id: currentWord.id,
+        word: "", // không lộ đáp án
+        letters,
+        definition: currentWord.definition,
+        hint: currentWord.hint ?? hintFromGameState ?? undefined,
+        pronunciation:
+          currentWord.pronunciation ?? pronunciationFromGameState ?? undefined,
+      };
+    })();
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-6 space-y-6">
@@ -150,7 +307,7 @@ export default function PlayGamePage() {
           t("play.description", { default: "Solve the vocabulary puzzle." })
         }
         languageLabel={detail?.language?.name ?? ""}
-        category={detail?.category ?? ""}
+        category={interestLabel}
         onQuit={() => setQuitOpen(true)}
       />
 
@@ -161,7 +318,6 @@ export default function PlayGamePage() {
         progressValue={`${completed}/${total || 0}`}
         mistakesLabel={t("play.mistakes", { default: "Mistakes" })}
         mistakesValue={mistakes}
-        // Hints đã bật mặc định trong component
         hintsLabel={t("play.hintsUsed", { default: "Hints" })}
         hintsValue={hintsUsed}
       />
@@ -180,7 +336,8 @@ export default function PlayGamePage() {
             default: "Unscramble this word:",
           })}
           tDefinition={t("play.definition", { default: "Definition:" })}
-          tHint={t("play.hint", { default: "Hint:" })}
+          tHint={t("play.hint", { default: "Hint" })} // dùng làm text nút Hint luôn
+          tPronuciation={t("play.pronuciation", { default: "Pronuciation" })}
           tPlaceholder={t("play.typeHere", {
             default: "Type the word here...",
           })}
@@ -190,9 +347,10 @@ export default function PlayGamePage() {
           setAnswer={setAnswer}
           onSubmit={submit}
           onReshuffle={reshuffle}
+          onHint={handleHint} // 🆕 truyền xuống
+          isCompleted={isGameCompleted}
         />
       ) : (
-        // Trạng thái chưa có currentWord (đang start/poll)
         <div className="text-sm text-muted-foreground">
           {t("play.loading", { default: "Preparing your game..." })}
         </div>
@@ -209,7 +367,11 @@ export default function PlayGamePage() {
         wordsLabel={t("meta.words", { default: "words" })}
         continueText={t("play.continue", { default: "Continue Playing" })}
         quitText={t("play.quit", { default: "Quit Game" })}
-        onQuit={() => router.push(`/${locale}/game`)}
+        onQuit={() => {
+          setRunning(false);
+          sessionStorage.removeItem("polygo_wordset_startedAt");
+          router.push(`/${locale}/game`);
+        }}
       />
     </div>
   );

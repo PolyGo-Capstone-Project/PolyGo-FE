@@ -12,23 +12,25 @@ import {
   GetMyPlayedWordsetsResType,
   GetWordsetByIdQueryType,
   GetWordsetByIdResType,
-  GetWordsetsQueryType,
   GetWordsetsResType,
   MyBestWordsetScoreResponse,
   PlayWordsetBodyType,
   PlayWordsetResType,
+  SearchWordsetsQueryType,
   StartWordsetGameResType,
   UpdateWordsetBodyType,
   UpdateWordsetResType,
   UpdateWordsetStatusBodyType,
   UpdateWordsetStatusResType,
+  UseHintBodyType,
+  UseHintResType,
   WordsetGameStateResType,
   WordsetLeaderboardResponse,
 } from "@/models";
 
 const prefix = "/wordsets";
 
-export type GetWordsetsParams = GetWordsetsQueryType;
+export type GetWordsetsParams = SearchWordsetsQueryType;
 export type GetWordsetByIdParams = GetWordsetByIdQueryType;
 
 export const wordsetApiRequest = {
@@ -104,6 +106,10 @@ export const wordsetApiRequest = {
   // [ADD] GAMEPLAY: play – POST /wordsets/play
   play: (body: PlayWordsetBodyType) =>
     http.post<PlayWordsetResType>(`${prefix}/play`, body),
+
+  // [ADD] GAMEPLAY: hint – POST /wordsets/:id/hint
+  useHint: (wordsetId: string, body: UseHintBodyType) =>
+    http.post<UseHintResType>(`${prefix}/${wordsetId}/hint`, body),
 
   // [ADD] GAMEPLAY: game-state – GET /wordsets/:id/game-state
   getGameState: (wordsetId: string) =>
