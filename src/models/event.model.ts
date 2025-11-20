@@ -188,6 +188,9 @@ export const GetEventStatResSchema = z.object({
     averageRating: z.number().min(0).max(5).nullable(),
     totalReviews: z.number().min(0).default(0),
     reviews: z.array(EventReview).default([]),
+    hostPayoutClaimed: z.boolean().default(false).optional(),
+    hostPayoutAmount: z.number().min(0).default(0),
+    hostPayoutClaimedAt: z.iso.datetime().nullable(),
   }),
   message: z.string(),
 });

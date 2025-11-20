@@ -2,9 +2,11 @@
 
 import {
   IconCalendar,
+  IconCheck,
   IconClock,
   IconMapPin,
   IconUsers,
+  IconX,
 } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -200,6 +202,67 @@ export function EventStats({ eventId }: EventStatsProps) {
                   </div>
                 </div>
               </div>
+
+              {/* Payout Information - Only show if event has fee and is completed */}
+              {event.fee > 0 && event.status === EventStatus.Completed && (
+                <>
+                  <Separator />
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium">{t("payoutInfo")}</p>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      {/* Payout Amount */}
+                      <div className="flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+                        <div>
+                          <p className="text-xs text-muted-foreground">
+                            {t("payoutAmount")}
+                          </p>
+                          <p className="font-bold text-green-700">
+                            {formatCurrency(
+                              event.hostPayoutAmount || 0,
+                              locale
+                            )}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Payout Status */}
+                      <div className="flex items-center gap-3 p-3 rounded-lg border">
+                        <div className="flex-1">
+                          <p className="text-xs text-muted-foreground mb-1">
+                            {t("payoutStatus")}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            {event.hostPayoutClaimed ? (
+                              <>
+                                <IconCheck className="size-4 text-green-600" />
+                                <span className="text-sm font-medium text-green-600">
+                                  {t("payoutClaimed")}
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <IconX className="size-4 text-orange-600" />
+                                <span className="text-sm font-medium text-orange-600">
+                                  {t("payoutPending")}
+                                </span>
+                              </>
+                            )}
+                          </div>
+                          {event.hostPayoutClaimed &&
+                            event.hostPayoutClaimedAt && (
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {formatDateTime(
+                                  event.hostPayoutClaimedAt,
+                                  locale
+                                )}
+                              </p>
+                            )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* Categories */}
               {event.categories && event.categories.length > 0 && (

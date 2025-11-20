@@ -83,6 +83,8 @@ type CreateEventRatingResponse = Awaited<
   ReturnType<typeof eventApiRequest.createEventRating>
 >;
 
+type PayoutEventResponse = Awaited<ReturnType<typeof eventApiRequest.payout>>;
+
 // ============= QUERIES =============
 export const useGetRecommendedEvents = (
   query: GetEventsQueryType,
@@ -428,6 +430,26 @@ export const useCreateEventRatingMutation = (options?: {
         queryKey: ["events", "ratings", variables.eventId],
       });
       options?.onSuccess?.(data, variables);
+    },
+    onError: options?.onError,
+  });
+};
+
+export const usePayoutEventMutation = (options?: {
+  onSuccess?: (data: PayoutEventResponse) => void;
+  onError?: (error: unknown) => void;
+}) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (eventId: string) => eventApiRequest.payout(eventId),
+    onSuccess: (data, variables, context) => {
+      // Invalidate event stats and details after payout
+      queryClient.invalidateQueries({
+        queryKey: ["events", "stat", variables],
+      });
+      queryClient.invalidateQueries({ queryKey: ["events", "one", variables] });
+      queryClient.invalidateQueries({ queryKey: ["events", "hosted"] });
+      options?.onSuccess?.(data);
     },
     onError: options?.onError,
   });
