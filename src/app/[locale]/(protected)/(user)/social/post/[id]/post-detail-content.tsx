@@ -4,13 +4,17 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
+  Badge,
   Button,
+  Card,
+  CardContent,
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   Input,
   LoadingSpinner,
+  MarkdownRenderer,
   Separator,
   Tabs,
   TabsContent,
@@ -30,6 +34,7 @@ import {
 import authApiRequest from "@/lib/apis/auth";
 import {
   IconArrowLeft,
+  IconCalendar,
   IconCheck,
   IconEdit,
   IconSend2,
@@ -370,6 +375,135 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
               <p className="text-sm whitespace-pre-wrap mb-4 leading-relaxed">
                 {post.content}
               </p>
+
+              {/* Shared Post - if this is a shared post */}
+              {post.isShare && post.shareType === "Post" && post.sharedPost && (
+                <Card className="mb-4 border-2 border-muted hover:border-primary/30 transition-all cursor-pointer">
+                  <CardContent
+                    className="p-4"
+                    onClick={() =>
+                      router.push(
+                        `/${locale}/social/post/${post.sharedPost!.id}`
+                      )
+                    }
+                  >
+                    <div className="flex gap-3 mb-3">
+                      <Avatar className="h-8 w-8 ring-1 ring-border">
+                        <AvatarImage src={post.sharedPost.creator.avatarUrl} />
+                        <AvatarFallback className="text-xs bg-gradient-to-br from-muted to-accent">
+                          {(post.sharedPost.creator.name || "")
+                            .split(" ")
+                            .map((n: string) => n[0])
+                            .join("")
+                            .toUpperCase()
+                            .slice(0, 2) || "??"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-semibold text-sm">
+                          {post.sharedPost.creator.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(
+                            post.sharedPost.createdAt
+                          ).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-sm mb-3">
+                      <MarkdownRenderer content={post.sharedPost.content} />
+                    </div>
+                    {post.sharedPost.imageUrls &&
+                      post.sharedPost.imageUrls.length > 0 && (
+                        <div className="relative w-full max-h-[200px] overflow-hidden rounded-lg">
+                          <Image
+                            src={post.sharedPost.imageUrls[0]}
+                            alt="Shared post"
+                            width={400}
+                            height={200}
+                            className="w-full h-auto object-cover rounded-lg"
+                            style={{ maxHeight: "200px" }}
+                          />
+                          {post.sharedPost.imageUrls.length > 1 && (
+                            <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                              +{post.sharedPost.imageUrls.length - 1} more
+                            </div>
+                          )}
+                        </div>
+                      )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Shared Event - if this is a shared event */}
+              {post.isShare &&
+                post.shareType === "Event" &&
+                post.sharedEvent && (
+                  <Card className="mb-4 border-2 border-muted hover:border-primary/30 transition-all cursor-pointer">
+                    <CardContent
+                      className="p-4"
+                      onClick={() =>
+                        router.push(`/${locale}/event/${post.sharedEvent!.id}`)
+                      }
+                    >
+                      {post.sharedEvent.bannerUrl && (
+                        <div className="relative w-full h-[150px] rounded-lg overflow-hidden mb-3">
+                          <Image
+                            src={post.sharedEvent.bannerUrl}
+                            alt={post.sharedEvent.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <h3 className="font-semibold text-sm line-clamp-2 flex-1">
+                            {post.sharedEvent.title}
+                          </h3>
+                          {post.sharedEvent.fee === 0 ? (
+                            <Badge className="bg-green-500/90 hover:bg-green-500 text-white text-xs flex-shrink-0">
+                              Free
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-blue-500/90 hover:bg-blue-500 text-white text-xs flex-shrink-0">
+                              {post.sharedEvent.fee.toLocaleString()} VND
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground line-clamp-2">
+                          {post.sharedEvent.description}
+                        </p>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <IconCalendar size={12} />
+                            <span>
+                              {new Date(
+                                post.sharedEvent.startAt
+                              ).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Avatar className="h-4 w-4">
+                              <AvatarImage
+                                src={post.sharedEvent.host.avatarUrl}
+                              />
+                              <AvatarFallback className="text-[8px]">
+                                {(post.sharedEvent.host.name || "")
+                                  .split(" ")
+                                  .map((n: string) => n[0])
+                                  .join("")
+                                  .toUpperCase()
+                                  .slice(0, 2) || "??"}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span>{post.sharedEvent.host.name}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
 
               {/* Stats */}
               <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">

@@ -442,7 +442,6 @@ export default function EventDetailPage() {
                     onClick={() => setShowShareDialog(true)}
                   >
                     <IconShare3 className="h-4 w-4" />
-                    {/* {t("share.button")} */}
                   </Button>
                 </div>
               </CardHeader>
@@ -814,6 +813,15 @@ export default function EventDetailPage() {
           onOpenChange={setShowShareDialog}
           eventTitle={event.title}
           eventUrl={eventUrl}
+          eventId={event.id}
+          eventData={{
+            id: event.id,
+            title: event.title,
+            description: event.description,
+            startAt: event.startAt,
+            fee: event.fee,
+            bannerUrl: event.bannerUrl,
+          }}
         />
       )}
     </>
