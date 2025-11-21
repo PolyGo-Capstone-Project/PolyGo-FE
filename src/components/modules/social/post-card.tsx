@@ -500,14 +500,12 @@ export default function PostCard({
               </div>
               {post.sharedPost.imageUrls &&
                 post.sharedPost.imageUrls.length > 0 && (
-                  <div className="relative w-full max-h-[300px] overflow-hidden rounded-lg">
+                  <div className="relative w-full aspect-video overflow-hidden rounded-lg">
                     <Image
                       src={post.sharedPost.imageUrls[0]}
                       alt="Shared post"
-                      width={600}
-                      height={300}
-                      className="w-full h-auto object-cover rounded-lg"
-                      style={{ maxHeight: "300px" }}
+                      fill
+                      className="object-cover rounded-lg"
                     />
                     {post.sharedPost.imageUrls.length > 1 && (
                       <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
@@ -554,9 +552,9 @@ export default function PostCard({
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {post.sharedEvent.description}
-                </p>
+                <div className="text-sm text-muted-foreground line-clamp-2">
+                  <MarkdownRenderer content={post.sharedEvent.description} />
+                </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <IconCalendar size={14} />
