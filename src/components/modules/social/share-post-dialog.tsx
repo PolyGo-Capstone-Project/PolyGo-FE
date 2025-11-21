@@ -49,9 +49,10 @@ export function SharePostDialog({
 
   const handleShare = async () => {
     try {
+      const id = post.isShare ? post.sharedPostId! : post.id;
       await sharePostMutation.mutateAsync({
         shareType: ShareEnum.Post,
-        targetId: post.id,
+        targetId: id,
         content: shareContent.trim() || "",
       });
 
