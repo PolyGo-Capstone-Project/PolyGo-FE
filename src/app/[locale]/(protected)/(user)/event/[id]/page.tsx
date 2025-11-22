@@ -319,7 +319,7 @@ export default function EventDetailPage() {
 
   return (
     <>
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Back Button */}
         <Button
           variant="ghost"
@@ -330,112 +330,189 @@ export default function EventDetailPage() {
           {t("back")}
         </Button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Banner */}
-            <div className="relative w-full h-[400px] rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-background">
-              {hasBanner ? (
-                <Image
-                  src={event.bannerUrl}
-                  alt={event.title}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center space-y-3">
-                    <IconCalendar className="h-20 w-20 mx-auto text-muted-foreground/30" />
-                    <p className="text-lg font-medium text-muted-foreground/50">
-                      {event.title}
-                    </p>
-                  </div>
-                </div>
-              )}
-              <div className="absolute top-4 right-4 flex flex-col gap-2">
-                {event.fee === 0 ? (
-                  <Badge className="bg-green-500/90 hover:bg-green-500 text-white border-0 shadow-lg backdrop-blur-sm text-sm">
-                    {t("free")}
-                  </Badge>
-                ) : (
-                  <Badge className="bg-blue-500/90 hover:bg-blue-500 text-white border-0 shadow-lg backdrop-blur-sm text-sm">
-                    {formatCurrency(event.fee)}
-                  </Badge>
-                )}
+        {/* Banner - Full Width */}
+        <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 via-primary/5 to-background mb-8 shadow-lg animate-in fade-in duration-500">
+          {hasBanner ? (
+            <Image
+              src={event.bannerUrl}
+              alt={event.title}
+              fill
+              className="object-cover object-center transition-transform duration-700 hover:scale-105"
+              priority
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <IconCalendar className="h-20 w-20 mx-auto text-muted-foreground/30" />
+                <p className="text-lg font-medium text-muted-foreground/50">
+                  {event.title}
+                </p>
               </div>
             </div>
+          )}
+          <div className="absolute top-4 right-4 flex flex-col gap-2 animate-in slide-in-from-right-4 fade-in duration-500">
+            {event.fee === 0 ? (
+              <Badge className="bg-green-500/90 hover:bg-green-500 text-white border-0 shadow-lg backdrop-blur-sm text-sm transition-all hover:scale-110">
+                {t("free")}
+              </Badge>
+            ) : (
+              <Badge className="bg-blue-500/90 hover:bg-blue-500 text-white border-0 shadow-lg backdrop-blur-sm text-sm transition-all hover:scale-110">
+                {formatCurrency(event.fee)}
+              </Badge>
+            )}
+          </div>
+        </div>
 
-            {/* Title & Host Info */}
-            <div className="space-y-4">
-              <h1 className="text-3xl lg:text-4xl font-bold leading-tight">
+        {/* Main Content - 6:4 Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
+          {/* Left Column - 6 parts */}
+          <div className="lg:col-span-6 space-y-6">
+            {/* Event Title */}
+            <div className="animate-in fade-in slide-in-from-left-4 duration-500">
+              <h1 className="text-3xl lg:text-4xl font-bold leading-tight mb-4">
                 {event.title}
               </h1>
-
-              {/* Host Info Card */}
-              <Card className="border-primary/20 shadow-sm">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 flex-1">
-                      <Avatar className="h-12 w-12 border-2 border-primary/20 shadow-sm">
-                        <AvatarImage
-                          src={
-                            isValidAvatarUrl(event.host.avatarUrl)
-                              ? event.host.avatarUrl!
-                              : undefined
-                          }
-                          alt={event.host.name}
-                        />
-                        <AvatarFallback className="text-sm font-semibold bg-primary/10">
-                          {initials}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <p className="text-xs text-muted-foreground">
-                          {t("host")}
-                        </p>
-                        <p className="text-base font-semibold">
-                          {event.host.name}
-                        </p>
-                      </div>
-                    </div>
-                    {!isHost && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="gap-2 flex-shrink-0"
-                        onClick={() =>
-                          router.push(`/${locale}/matching/${event.host.id}`)
-                        }
-                      >
-                        <IconEye className="h-4 w-4" />
-                        {t("hostInfo")}
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
             </div>
 
+            {/* Host Info Card */}
+            <Card className="border-primary/20 shadow-md hover:shadow-lg transition-shadow animate-in fade-in slide-in-from-left-5 duration-700">
+              <CardContent className="p-5">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4 flex-1">
+                    <Avatar className="h-14 w-14 border-2 border-primary/20 shadow-sm">
+                      <AvatarImage
+                        src={
+                          isValidAvatarUrl(event.host.avatarUrl)
+                            ? event.host.avatarUrl!
+                            : undefined
+                        }
+                        alt={event.host.name}
+                      />
+                      <AvatarFallback className="text-sm font-semibold bg-primary/10">
+                        {initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                        {t("host")}
+                      </p>
+                      <p className="text-lg font-semibold mt-1">
+                        {event.host.name}
+                      </p>
+                    </div>
+                  </div>
+                  {!isHost && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-2 flex-shrink-0"
+                      onClick={() =>
+                        router.push(`/${locale}/matching/${event.host.id}`)
+                      }
+                    >
+                      <IconEye className="h-4 w-4" />
+                      {t("hostInfo")}
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Categories Section */}
-            <div className="space-y-3">
+            <div className="space-y-3 animate-in fade-in slide-in-from-left-6 duration-[800ms]">
               <h3 className="text-lg font-semibold">{t("categories")}</h3>
               <div className="flex flex-wrap gap-2">
                 {event.categories.map((category, index) => (
-                  <Badge key={index} variant="secondary" className="text-sm">
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="text-sm px-3 py-1 hover:scale-105 transition-transform"
+                  >
                     {category.name}
                   </Badge>
                 ))}
               </div>
             </div>
+
+            {/* Event Details Section */}
+            <Card className="shadow-md hover:shadow-lg transition-shadow animate-in fade-in slide-in-from-left-7 duration-[900ms]">
+              <CardHeader>
+                <CardTitle className="text-xl">Event Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <IconCalendar className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-muted-foreground">
+                        {t("startTime")}
+                      </p>
+                      <p className="text-base font-medium mt-1">
+                        {format(new Date(event.startAt), "PPPp")}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-blue-500/10 rounded-lg">
+                      <IconClock className="h-5 w-5 text-blue-500" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-muted-foreground">
+                        {t("duration")}
+                      </p>
+                      <p className="text-base font-medium mt-1">
+                        {event.expectedDurationInMinutes} {t("minutes")}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-purple-500/10 rounded-lg">
+                      <IconMapPin className="h-5 w-5 text-purple-500" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-muted-foreground">
+                        {t("language")}
+                      </p>
+                      <p className="text-base font-medium mt-1">
+                        {event.language.name}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-green-500/10 rounded-lg">
+                      <IconUsers className="h-5 w-5 text-green-500" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-muted-foreground">
+                        {t("capacity")}
+                      </p>
+                      <p className="text-base font-medium mt-1">
+                        {event.numberOfParticipants} / {event.capacity}
+                      </p>
+                      {!isFull && (
+                        <p className="text-sm text-green-600 font-medium mt-1">
+                          {spotsLeft} {t("available")}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Event Details Card */}
-            <Card className="shadow-lg">
+          {/* Right Column - 4 parts */}
+          <div className="lg:col-span-4 space-y-6">
+            {/* Registration & Actions Card */}
+            <Card className="shadow-lg sticky top-20 animate-in fade-in slide-in-from-right-4 duration-700">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>{t("eventDetails")}</CardTitle>
+                  <CardTitle>{t("registrationInfo")}</CardTitle>
                   <Button
                     variant="outline"
                     size="sm"
@@ -448,51 +525,6 @@ export default function EventDetailPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-4 text-sm">
-                  <div className="flex items-start gap-3">
-                    <IconCalendar className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="font-semibold">{t("startTime")}</p>
-                      <p className="text-muted-foreground">
-                        {format(new Date(event.startAt), "PPPp")}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <IconClock className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="font-semibold">{t("duration")}</p>
-                      <p className="text-muted-foreground">
-                        {event.expectedDurationInMinutes} {t("minutes")}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <IconMapPin className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="font-semibold">{t("language")}</p>
-                      <p className="text-muted-foreground">
-                        {event.language.name}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <IconUsers className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                    <div className="flex-1">
-                      <p className="font-semibold">{t("capacity")}</p>
-                      <p className="text-muted-foreground">
-                        {event.numberOfParticipants} / {event.capacity}
-                      </p>
-                      {!isFull && (
-                        <p className="text-sm text-green-600 font-medium mt-1">
-                          {spotsLeft} {t("available")}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
                   <Separator />
 
                   <div>
@@ -634,12 +666,14 @@ export default function EventDetailPage() {
           </div>
         </div>
 
-        {/* Description Section - Moved inside main content */}
-        <div className="space-y-4 mt-5">
-          <h2 className="text-2xl font-semibold">{t("aboutEvent")}</h2>
-          <Card>
-            <CardContent className="px-4 text-justify prose-sm">
-              <MarkdownRenderer content={event.description} />
+        {/* About This Event Section */}
+        <div className="space-y-4 mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <h2 className="text-2xl font-bold">{t("aboutEvent")}</h2>
+          <Card className="shadow-md hover:shadow-lg transition-shadow">
+            <CardContent className="p-6">
+              <div className="prose prose-sm dark:prose-invert max-w-none">
+                <MarkdownRenderer content={event.description} />
+              </div>
             </CardContent>
           </Card>
         </div>

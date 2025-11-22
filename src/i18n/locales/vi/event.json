@@ -89,7 +89,8 @@
           "label": "Ảnh bìa",
           "upload": "Tải ảnh lên",
           "uploading": "Đang tải...",
-          "changeImage": "Thay đổi ảnh"
+          "changeImage": "Thay đổi ảnh",
+          "tooltip": "Khuyến nghị: Tỷ lệ 16:9 (1920x1080px). Hình ảnh sẽ hiển thị toàn bộ chiều rộng. Nên dùng ảnh ngang để có kết quả tốt nhất."
         },
         "language": {
           "label": "Ngôn ngữ",
@@ -231,6 +232,7 @@
       "available": "Còn trống",
       "fee": "Phí tham gia",
       "planRequired": "Gói yêu cầu",
+      "registrationInfo": "Thông tin đăng ký",
       "lateRegistrationAllowed": "Cho phép đăng ký muộn",
       "password": {
         "label": "Mật khẩu sự kiện",

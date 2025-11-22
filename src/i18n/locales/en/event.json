@@ -89,7 +89,8 @@
           "label": "Event Banner",
           "upload": "Upload Banner",
           "uploading": "Uploading...",
-          "changeImage": "Change Image"
+          "changeImage": "Change Image",
+          "tooltip": "Recommended: 16:9 aspect ratio (1920x1080px). Image will be displayed as full-width banner. Use landscape orientation for best results."
         },
         "language": {
           "label": "Language",
@@ -231,6 +232,7 @@
       "available": "Available",
       "fee": "Fee",
       "planRequired": "Plan Required",
+      "registrationInfo": "Registration Info",
       "lateRegistrationAllowed": "Late registration allowed",
       "confirmRegistration": "Confirm Registration",
       "eventFee": "Event Fee",
