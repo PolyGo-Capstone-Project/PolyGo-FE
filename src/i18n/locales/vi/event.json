@@ -255,6 +255,7 @@
       "waitingForHost": "Đang chờ người chủ trì bắt đầu sự kiện...",
       "hostCanJoinMessage": "Bạn có thể vào phòng họp trước 1 giờ khi sự kiện bắt đầu",
       "eventEnded": "Sự kiện đã kết thúc",
+      "eventPending": "Sự kiện chưa được duyệt",
       "insufficientFunds": "Số dư không đủ",
       "yourBalance": "Số dư của bạn",
       "registrationSuccess": {

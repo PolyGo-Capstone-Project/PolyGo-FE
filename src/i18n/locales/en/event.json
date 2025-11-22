@@ -246,6 +246,7 @@
       "waitingForHost": "Waiting for host to start the event...",
       "hostCanJoinMessage": "You can join the meeting room 1 hour before the event starts",
       "eventEnded": "This event has ended",
+      "eventPending": "This event is pending approval",
       "password": {
         "label": "Event Password",
         "placeholder": "Enter event password",

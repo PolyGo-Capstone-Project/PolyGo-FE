@@ -292,6 +292,7 @@ export default function EventDetailPage() {
   const spotsLeft = event.capacity - event.numberOfParticipants;
   const isFull = spotsLeft <= 0;
   const hasInsufficientFunds = event.fee > 0 && balance < event.fee;
+  const pending = event.status === EventStatus.Pending;
 
   // Handle join meeting
   const handleJoinMeeting = () => {
@@ -546,8 +547,15 @@ export default function EventDetailPage() {
                   </div>
                 )}
 
-                {/* Register Button - Hide if already registered */}
-                {!isRegistered && (
+                {/* Event Pending Message */}
+                {pending && (
+                  <div className="w-full py-3 px-4 bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 rounded-lg border border-yellow-500/20 text-center">
+                    <p className="text-sm font-medium">{t("eventPending")}</p>
+                  </div>
+                )}
+
+                {/* Register Button - Hide if already registered or pending */}
+                {!isRegistered && !pending && (
                   <Button
                     className="w-full gap-2"
                     size="lg"
@@ -573,14 +581,14 @@ export default function EventDetailPage() {
                 )}
 
                 {/* Already Registered Badge. If event has ended, show event ended message instead */}
-                {isRegistered && !eventEnd && (
+                {isRegistered && !eventEnd && !pending && (
                   <div className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-primary/10 text-primary rounded-lg border border-primary/20">
                     <IconCheck className="h-5 w-5" />
                     <span className="font-semibold">{t("registered")}</span>
                   </div>
                 )}
 
-                {isRegistered && eventEnd && (
+                {isRegistered && eventEnd && !pending && (
                   <div className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-muted rounded-lg border text-muted-foreground">
                     <IconCheck className="h-5 w-5" />
                     <span className="font-semibold">{t("eventEnded")}</span>
@@ -588,7 +596,7 @@ export default function EventDetailPage() {
                 )}
 
                 {/* Join Meeting Button */}
-                {canJoin && showJoinButton && (
+                {canJoin && showJoinButton && !pending && (
                   <Button
                     className="w-full gap-2"
                     size="lg"
@@ -601,16 +609,20 @@ export default function EventDetailPage() {
                 )}
 
                 {/* Waiting message for attendees */}
-                {canJoin && !showJoinButton && !isHost && !eventEnd && (
-                  <div className="w-full py-3 px-4 bg-muted rounded-lg border text-center">
-                    <p className="text-sm text-muted-foreground">
-                      {t("waitingForHost")}
-                    </p>
-                  </div>
-                )}
+                {canJoin &&
+                  !showJoinButton &&
+                  !isHost &&
+                  !eventEnd &&
+                  !pending && (
+                    <div className="w-full py-3 px-4 bg-muted rounded-lg border text-center">
+                      <p className="text-sm text-muted-foreground">
+                        {t("waitingForHost")}
+                      </p>
+                    </div>
+                  )}
 
                 {/* Time until host can join */}
-                {isHost && !canHostJoin && (
+                {isHost && !canHostJoin && !pending && (
                   <div className="w-full py-3 px-4 bg-muted rounded-lg border text-center">
                     <p className="text-sm text-muted-foreground">
                       {t("hostCanJoinMessage")}
