@@ -1,7 +1,6 @@
 "use client";
 
 import { CreatedEventCard } from "@/components/modules/event/my-event/created-event-card";
-import { EventDetailDialog } from "@/components/modules/event/my-event/event-detail-dialog";
 import { EventStatDialog } from "@/components/modules/event/my-event/event-stat-dialog";
 import { Pagination } from "@/components/shared";
 import {
@@ -54,7 +53,6 @@ export function EventsCreatedTab() {
   const [upcomingPage, setUpcomingPage] = useState(1);
   const [pastPage, setPastPage] = useState(1);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-  const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [showStatsDialog, setShowStatsDialog] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<
@@ -171,8 +169,7 @@ export function EventsCreatedTab() {
   };
 
   const handleViewDetail = (eventId: string) => {
-    setSelectedEventId(eventId);
-    setShowDetailDialog(true);
+    router.push(`/${locale}/event/${eventId}`);
   };
 
   const handleViewStats = (eventId: string) => {
@@ -488,13 +485,6 @@ export function EventsCreatedTab() {
           )}
         </div>
       </div>
-
-      {/* Event Detail Dialog - uses useGetEventById */}
-      <EventDetailDialog
-        eventId={selectedEventId}
-        open={showDetailDialog}
-        onOpenChange={setShowDetailDialog}
-      />
 
       {/* Event Stats Dialog - uses useGetEventStats */}
       <EventStatDialog

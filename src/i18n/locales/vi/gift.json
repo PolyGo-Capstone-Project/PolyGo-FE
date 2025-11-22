@@ -1,9 +1,11 @@
 {
   "gift": {
     "title": "Quà tặng",
+    "description": "Gửi những món quà ý nghĩa để kết nối và lan tỏa niềm vui cùng bạn học ngôn ngữ",
+    "badge": "Cửa hàng quà tặng",
     "tabs": {
-      "available": "Quà có sẵn",
-      "purchased": "Đã mua",
+      "available": "Cửa hàng",
+      "purchased": "Kho quà",
       "sent": "Đã tặng",
       "received": "Đã nhận"
     },
@@ -16,10 +18,23 @@
       "empty": "Hiện không có quà tặng nào"
     },
     "purchased": {
-      "title": "Quà đã mua",
-      "description": "Các món quà bạn đã mua",
+      "title": "Kho quà của tôi",
+      "description": "Quà đã mua và quà đã nhận hiện đang có",
       "quantity": "Số lượng",
-      "empty": "Bạn chưa mua món quà nào"
+      "empty": "Bạn chưa mua món quà nào",
+      "emptyDescription": "Kho quà của bạn đang trống",
+      "browseGifts": "Duyệt quà có sẵn",
+      "totalItems": "Tổng số món",
+      "giftTypes": "Loại quà",
+      "totalValue": "Tổng giá trị",
+      "inventoryValue": "Giá trị kho",
+      "item": "món",
+      "items": "món",
+      "unitPrice": "Đơn giá",
+      "itemTotalValue": "Tổng giá trị",
+      "sendAsGift": "Tặng quà",
+      "noGiftsFound": "Không tìm thấy quà",
+      "tryAdjustingSearch": "Thử điều chỉnh từ khóa tìm kiếm"
     },
     "sent": {
       "title": "Quà đã tặng",
@@ -121,7 +136,12 @@
       "sort": "Sắp xếp theo",
       "date": "Ngày",
       "price": "Giá",
-      "name": "Tên"
+      "name": "Tên",
+      "page": "Trang",
+      "of": "của",
+      "items": "mục",
+      "previous": "Trước",
+      "next": "Tiếp"
     },
     "visibility": {
       "changeVisibility": "Thay đổi hiển thị",

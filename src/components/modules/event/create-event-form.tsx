@@ -1,7 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconCheck, IconLoader2, IconUpload, IconX } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconHelp,
+  IconLoader2,
+  IconUpload,
+  IconX,
+} from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -26,6 +32,9 @@ import {
   SelectTrigger,
   SelectValue,
   Separator,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from "@/components/ui";
 import { DateTimePicker } from "@/components/ui/date-time";
 import { EventStatus, PlanTypeEnum } from "@/constants";
@@ -243,7 +252,19 @@ export function CreateEventForm() {
 
           {/* Banner Upload */}
           <div className="space-y-2">
-            <Label>{t("fields.banner.label")}</Label>
+            <div className="flex items-center gap-2">
+              <Label>{t("fields.banner.label")}</Label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button type="button" className="inline-flex">
+                    <IconHelp className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-xs">
+                  <p>{t("fields.banner.tooltip")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             {bannerPreview ? (
               <div className="relative w-full h-48 rounded-lg overflow-hidden border">
                 <Image
@@ -625,7 +646,7 @@ export function CreateEventForm() {
                       {t("fields.requiredPlanType.plus")}
                     </Label>
                   </div>
-                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                  {/* <div className="flex items-center space-x-2 p-3 border rounded-lg">
                     <RadioGroupItem
                       value={PlanTypeEnum.PREMIUM}
                       id="plan-premium"
@@ -636,7 +657,7 @@ export function CreateEventForm() {
                     >
                       {t("fields.requiredPlanType.premium")}
                     </Label>
-                  </div>
+                  </div> */}
                 </RadioGroup>
               )}
             />

@@ -1,6 +1,7 @@
 {
   "wallet": {
     "title": "My Wallet",
+    "subtitle": "Manage your balance, subscriptions, and transactions",
     "balance": {
       "title": "Current Balance",
       "show": "Show Balance",
@@ -83,13 +84,21 @@
     },
     "transactions": {
       "title": "Transaction History",
+      "subtitle": "View and manage all your transaction history",
+      "recentTitle": "Recent Transactions",
+      "recentDescription": "Your latest transaction activity",
+      "viewAll": "View All",
+      "noTransactions": "No transactions yet",
       "filter": {
         "all": "All Transactions",
         "deposits": "Deposits",
         "purchases": "Purchases",
         "withdrawals": "Withdrawals",
         "refunds": "Refunds",
-        "adjustments": "Adjustments"
+        "adjustments": "Adjustments",
+        "allTypes": "All Types",
+        "allMethods": "All Methods",
+        "allStatus": "All Status"
       },
       "export": {
         "button": "Export",
@@ -100,8 +109,10 @@
         "date": "Date",
         "description": "Description",
         "type": "Type",
+        "method": "Method",
         "amount": "Amount",
-        "status": "Status"
+        "status": "Status",
+        "actions": "Actions"
       },
       "type": {
         "Deposit": "Deposit",
@@ -120,7 +131,41 @@
         "Cancelled": "Cancelled"
       },
       "empty": "No transactions found",
-      "search": "Search transactions..."
+      "search": "Search transactions...",
+      "paymentMethod": "Payment Method",
+      "transactionType": "Transaction Type",
+      "reset": "Reset",
+      "actions": {
+        "viewDetails": "Details",
+        "viewReceipt": "Receipt",
+        "inquiry": "Inquiry"
+      },
+      "receiptDialog": {
+        "title": "Withdrawal Receipt",
+        "transactionId": "Transaction ID",
+        "amount": "Amount",
+        "date": "Date",
+        "bankName": "Bank Name",
+        "accountName": "Account Name",
+        "transferReceipt": "Transfer Receipt"
+      },
+      "inquiryDialog": {
+        "title": "Submit Inquiry",
+        "transactionId": "Transaction ID",
+        "amount": "Amount",
+        "type": "Type",
+        "notesLabel": "Notes (Optional)",
+        "notesPlaceholder": "Describe your issue or question...",
+        "cancel": "Cancel",
+        "submit": "Submit Inquiry",
+        "submitting": "Submitting..."
+      },
+      "detailDialog": {
+        "title": "Transaction Details",
+        "withdrawalReceipt": "Withdrawal Receipt",
+        "inquiryInformation": "Inquiry Information",
+        "inquiryBadge": "Inquiry"
+      }
     },
     "toast": {
       "exportSuccess": "Exported successfully",

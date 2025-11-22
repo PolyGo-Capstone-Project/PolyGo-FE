@@ -77,7 +77,7 @@ export function UpdateStatusDialog({ eventId }: UpdateStatusDialogProps) {
     EventStatus.Approved,
     EventStatus.Rejected,
     // EventStatus.Live,
-    // EventStatus.Cancelled,
+    EventStatus.Cancelled,
     EventStatus.Completed,
   ];
 

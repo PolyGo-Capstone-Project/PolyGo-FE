@@ -89,7 +89,8 @@
           "label": "Ảnh bìa",
           "upload": "Tải ảnh lên",
           "uploading": "Đang tải...",
-          "changeImage": "Thay đổi ảnh"
+          "changeImage": "Thay đổi ảnh",
+          "tooltip": "Khuyến nghị: Tỷ lệ 16:9 (1920x1080px). Hình ảnh sẽ hiển thị toàn bộ chiều rộng. Nên dùng ảnh ngang để có kết quả tốt nhất."
         },
         "language": {
           "label": "Ngôn ngữ",
@@ -231,6 +232,7 @@
       "available": "Còn trống",
       "fee": "Phí tham gia",
       "planRequired": "Gói yêu cầu",
+      "registrationInfo": "Thông tin đăng ký",
       "lateRegistrationAllowed": "Cho phép đăng ký muộn",
       "password": {
         "label": "Mật khẩu sự kiện",
@@ -255,6 +257,7 @@
       "waitingForHost": "Đang chờ người chủ trì bắt đầu sự kiện...",
       "hostCanJoinMessage": "Bạn có thể vào phòng họp trước 1 giờ khi sự kiện bắt đầu",
       "eventEnded": "Sự kiện đã kết thúc",
+      "eventPending": "Sự kiện chưa được duyệt",
       "insufficientFunds": "Số dư không đủ",
       "yourBalance": "Số dư của bạn",
       "registrationSuccess": {
@@ -457,8 +460,10 @@
         "historyEventsDescription": "Các sự kiện đã qua sẽ hiển thị ở đây",
         "exploreEvents": "Khám phá sự kiện",
         "viewDetail": "Xem chi tiết",
+        "viewButton": "Xem",
+        "leaveButton": "Rời",
         "unregister": "Hủy đăng ký",
-        "cannotUnregister": "Không thể hủy đăng ký trong vòng 6 giờ trước sự kiện",
+        "cannotUnregister": "Không thể hủy đăng ký trong vòng 24 giờ trước sự kiện",
         "eventCount": {
           "singular": "sự kiện",
           "plural": "sự kiện"

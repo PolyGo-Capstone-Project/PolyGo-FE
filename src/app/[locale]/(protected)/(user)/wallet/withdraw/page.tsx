@@ -4,6 +4,7 @@ import { Button, Card, CardContent, CardHeader, CardTitle } from "@/components";
 import { WithdrawForm } from "@/components/modules/wallet/withdraw-form";
 import { WithdrawOTPDialog } from "@/components/modules/wallet/withdraw-otp-dialog";
 import { useAuthMe, useUserWallet } from "@/hooks";
+import { ArrowLeft } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -26,7 +27,7 @@ export default function WithdrawPage() {
 
   const handleOtpSuccess = () => {
     setOtpDialogOpen(false);
-    router.push("/wallet/withdraw/success");
+    router.push(`/${locale}/wallet/withdraw/success`);
   };
 
   return (
@@ -38,7 +39,7 @@ export default function WithdrawPage() {
           onClick={() => router.back()}
           className="h-9 w-9 p-0"
         >
-          ←
+          <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
           <h1 className="text-2xl font-bold tracking-tight md:text-3xl">

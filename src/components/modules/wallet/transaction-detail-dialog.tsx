@@ -15,6 +15,7 @@ import {
   Spinner,
 } from "@/components/ui";
 import { useTransactionDetail } from "@/hooks";
+import { useTranslations } from "next-intl";
 
 interface TransactionDetailDialogProps {
   transactionId: string;
@@ -27,6 +28,7 @@ export function TransactionDetailDialog({
   open,
   onOpenChange,
 }: TransactionDetailDialogProps) {
+  const t = useTranslations("wallet.transactions");
   const { data, isLoading } = useTransactionDetail({
     id: transactionId,
     enabled: open && !!transactionId,
@@ -83,9 +85,9 @@ export function TransactionDetailDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Transaction Details</DialogTitle>
+          <DialogTitle>{t("detailDialog.title")}</DialogTitle>
           <DialogDescription>
-            View complete transaction information
+            {t("receiptDialog.transactionId")}: {transactionId}
           </DialogDescription>
         </DialogHeader>
 
@@ -137,7 +139,7 @@ export function TransactionDetailDialog({
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">
-                    Method
+                    {t("columns.method")}
                   </Label>
                   <p>{transaction.transactionMethod}</p>
                 </div>
@@ -225,7 +227,9 @@ export function TransactionDetailDialog({
               <>
                 <Separator />
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-lg">Withdrawal Receipt</h3>
+                  <h3 className="font-semibold text-lg">
+                    {t("detailDialog.withdrawalReceipt")}
+                  </h3>
                   <div className="rounded-lg border overflow-hidden">
                     <Image
                       src={transaction.withdrawalApprovedImageUrl}
@@ -244,7 +248,9 @@ export function TransactionDetailDialog({
               <>
                 <Separator />
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-lg">Inquiry Information</h3>
+                  <h3 className="font-semibold text-lg">
+                    {t("detailDialog.inquiryInformation")}
+                  </h3>
                   <div className="space-y-3">
                     {transaction.userNotes.map((note) => (
                       <div

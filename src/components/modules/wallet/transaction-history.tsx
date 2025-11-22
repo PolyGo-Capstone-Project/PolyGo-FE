@@ -345,10 +345,10 @@ export function TransactionHistory() {
 
             <Select value={transactionType} onValueChange={setTransactionType}>
               <SelectTrigger className=" w-[160px]">
-                <SelectValue placeholder="Transaction Type" />
+                <SelectValue placeholder={t("transactionType")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="all">{t("filter.allTypes")}</SelectItem>
                 {Object.values(TransactionTypeEnum).map((type) => (
                   <SelectItem key={type} value={type}>
                     {type}
@@ -362,10 +362,10 @@ export function TransactionHistory() {
               onValueChange={setTransactionMethod}
             >
               <SelectTrigger className=" w-[160px]">
-                <SelectValue placeholder="Payment Method" />
+                <SelectValue placeholder={t("paymentMethod")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Methods</SelectItem>
+                <SelectItem value="all">{t("filter.allMethods")}</SelectItem>
                 {Object.values(TransactionMethod).map((method) => (
                   <SelectItem key={method} value={method}>
                     {method}
@@ -379,10 +379,10 @@ export function TransactionHistory() {
               onValueChange={setTransactionStatus}
             >
               <SelectTrigger className="w-[160px]">
-                <SelectValue placeholder="Status" />
+                <SelectValue placeholder={t("columns.status")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="all">{t("filter.allStatus")}</SelectItem>
                 {Object.values(TransactionStatus).map((status) => (
                   <SelectItem key={status} value={status}>
                     {status}
@@ -393,7 +393,7 @@ export function TransactionHistory() {
 
             <Button onClick={handleReset} variant="outline">
               <IconFilter className="mr-2 h-4 w-4" />
-              Reset
+              {t("reset")}
             </Button>
           </div>
 
@@ -452,7 +452,7 @@ export function TransactionHistory() {
                           onClick={() => handleViewDetails(transaction.id)}
                         >
                           <Eye className="mr-1 h-3 w-3" />
-                          Details
+                          {t("actions.viewDetails")}
                         </Button>
                         {canViewReceipt(transaction) && (
                           <Button
@@ -461,7 +461,7 @@ export function TransactionHistory() {
                             onClick={() => handleViewReceipt(transaction)}
                           >
                             <FileImage className="mr-1 h-3 w-3" />
-                            Receipt
+                            {t("actions.viewReceipt")}
                           </Button>
                         )}
                         {canInquiry(transaction) && (
@@ -471,7 +471,7 @@ export function TransactionHistory() {
                             onClick={() => handleOpenInquiry(transaction)}
                           >
                             <MessageCircleWarning className="mr-1 h-3 w-3" />
-                            Inquiry
+                            {t("actions.inquiry")}
                           </Button>
                         )}
                       </div>
@@ -488,12 +488,14 @@ export function TransactionHistory() {
                       <TableHead>{t("columns.date")}</TableHead>
                       <TableHead>{t("columns.description")}</TableHead>
                       <TableHead>{t("columns.type")}</TableHead>
-                      <TableHead>Method</TableHead>
+                      <TableHead>{t("columns.method")}</TableHead>
                       <TableHead className="text-right">
                         {t("columns.amount")}
                       </TableHead>
                       <TableHead>{t("columns.status")}</TableHead>
-                      <TableHead className="text-center">Actions</TableHead>
+                      <TableHead className="text-center">
+                        {t("columns.actions")}
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -558,7 +560,7 @@ export function TransactionHistory() {
                                   onClick={() => handleViewReceipt(transaction)}
                                 >
                                   <FileImage className="mr-1 h-3.5 w-3.5" />
-                                  Receipt
+                                  {t("actions.viewReceipt")}
                                 </Button>
                               )}
                               {canInquiry(transaction) && (
@@ -568,7 +570,7 @@ export function TransactionHistory() {
                                   onClick={() => handleOpenInquiry(transaction)}
                                 >
                                   <MessageCircleWarning className="mr-1 h-3.5 w-3.5" />
-                                  Inquiry
+                                  {t("actions.inquiry")}
                                 </Button>
                               )}
                             </div>
@@ -606,22 +608,26 @@ export function TransactionHistory() {
       <Dialog open={isReceiptDialogOpen} onOpenChange={setIsReceiptDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Withdrawal Receipt</DialogTitle>
+            <DialogTitle>{t("receiptDialog.title")}</DialogTitle>
             <DialogDescription>
-              Transaction ID: {selectedTransaction?.id}
+              {t("receiptDialog.transactionId")}: {selectedTransaction?.id}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <Label className="text-muted-foreground">Amount</Label>
+                <Label className="text-muted-foreground">
+                  {t("receiptDialog.amount")}
+                </Label>
                 <p className="font-semibold">
                   {selectedTransaction &&
                     formatCurrency(selectedTransaction.amount)}
                 </p>
               </div>
               <div>
-                <Label className="text-muted-foreground">Date</Label>
+                <Label className="text-muted-foreground">
+                  {t("receiptDialog.date")}
+                </Label>
                 <p className="font-semibold">
                   {selectedTransaction &&
                     formatDate(selectedTransaction.createdAt)}
@@ -629,7 +635,9 @@ export function TransactionHistory() {
               </div>
               {selectedTransaction?.bankName && (
                 <div>
-                  <Label className="text-muted-foreground">Bank Name</Label>
+                  <Label className="text-muted-foreground">
+                    {t("receiptDialog.bankName")}
+                  </Label>
                   <p className="font-semibold">
                     {selectedTransaction.bankName}
                   </p>
@@ -637,7 +645,9 @@ export function TransactionHistory() {
               )}
               {selectedTransaction?.accountName && (
                 <div>
-                  <Label className="text-muted-foreground">Account Name</Label>
+                  <Label className="text-muted-foreground">
+                    {t("receiptDialog.accountName")}
+                  </Label>
                   <p className="font-semibold">
                     {selectedTransaction.accountName}
                   </p>
@@ -647,11 +657,11 @@ export function TransactionHistory() {
             {selectedTransaction?.withdrawalApprovedImageUrl && (
               <div>
                 <Label className="mb-2 block text-muted-foreground">
-                  Transfer Receipt
+                  {t("receiptDialog.transferReceipt")}
                 </Label>
                 <img
                   src={selectedTransaction.withdrawalApprovedImageUrl}
-                  alt="Withdrawal Receipt"
+                  alt={t("receiptDialog.title")}
                   className="w-full rounded-lg border"
                 />
               </div>
@@ -664,32 +674,38 @@ export function TransactionHistory() {
       <Dialog open={isInquiryDialogOpen} onOpenChange={setIsInquiryDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Submit Inquiry</DialogTitle>
+            <DialogTitle>{t("inquiryDialog.title")}</DialogTitle>
             <DialogDescription>
-              Transaction ID: {selectedTransaction?.id}
+              {t("inquiryDialog.transactionId")}: {selectedTransaction?.id}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <Label className="text-muted-foreground">Amount</Label>
+                <Label className="text-muted-foreground">
+                  {t("inquiryDialog.amount")}
+                </Label>
                 <p className="font-semibold">
                   {selectedTransaction &&
                     formatCurrency(selectedTransaction.amount)}
                 </p>
               </div>
               <div>
-                <Label className="text-muted-foreground">Type</Label>
+                <Label className="text-muted-foreground">
+                  {t("inquiryDialog.type")}
+                </Label>
                 <p className="font-semibold">
                   {selectedTransaction?.transactionType}
                 </p>
               </div>
             </div>
             <div>
-              <Label htmlFor="inquiry-notes">Notes (Optional)</Label>
+              <Label htmlFor="inquiry-notes">
+                {t("inquiryDialog.notesLabel")}
+              </Label>
               <Textarea
                 id="inquiry-notes"
-                placeholder="Describe your issue or question..."
+                placeholder={t("inquiryDialog.notesPlaceholder")}
                 value={inquiryNotes}
                 onChange={(e) => setInquiryNotes(e.target.value)}
                 rows={4}
@@ -700,13 +716,15 @@ export function TransactionHistory() {
                 variant="outline"
                 onClick={() => setIsInquiryDialogOpen(false)}
               >
-                Cancel
+                {t("inquiryDialog.cancel")}
               </Button>
               <Button
                 onClick={handleSubmitInquiry}
                 disabled={inquiryMutation.isPending}
               >
-                {inquiryMutation.isPending ? "Submitting..." : "Submit Inquiry"}
+                {inquiryMutation.isPending
+                  ? t("inquiryDialog.submitting")
+                  : t("inquiryDialog.submit")}
               </Button>
             </div>
           </div>

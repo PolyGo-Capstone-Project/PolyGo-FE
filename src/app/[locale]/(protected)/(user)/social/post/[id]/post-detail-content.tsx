@@ -334,7 +334,7 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
         <div
           className={`flex flex-col bg-background ${hasImages ? "lg:w-[400px] xl:w-[500px]" : "flex-1 max-w-2xl mx-auto w-full"}`}
         >
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto scrollbar-hide">
             {/* Post Header */}
             <div className="p-4 border-b">
               <div className="flex items-start justify-between mb-4">

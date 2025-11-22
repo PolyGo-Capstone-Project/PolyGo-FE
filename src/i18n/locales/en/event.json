@@ -89,7 +89,8 @@
           "label": "Event Banner",
           "upload": "Upload Banner",
           "uploading": "Uploading...",
-          "changeImage": "Change Image"
+          "changeImage": "Change Image",
+          "tooltip": "Recommended: 16:9 aspect ratio (1920x1080px). Image will be displayed as full-width banner. Use landscape orientation for best results."
         },
         "language": {
           "label": "Language",
@@ -231,6 +232,7 @@
       "available": "Available",
       "fee": "Fee",
       "planRequired": "Plan Required",
+      "registrationInfo": "Registration Info",
       "lateRegistrationAllowed": "Late registration allowed",
       "confirmRegistration": "Confirm Registration",
       "eventFee": "Event Fee",
@@ -246,6 +248,7 @@
       "waitingForHost": "Waiting for host to start the event...",
       "hostCanJoinMessage": "You can join the meeting room 1 hour before the event starts",
       "eventEnded": "This event has ended",
+      "eventPending": "This event is pending approval",
       "password": {
         "label": "Event Password",
         "placeholder": "Enter event password",
@@ -455,8 +458,10 @@
         "historyEventsDescription": "Your past events will appear here",
         "exploreEvents": "Explore Events",
         "viewDetail": "View Details",
+        "viewButton": "View",
+        "leaveButton": "Leave",
         "unregister": "Unregister",
-        "cannotUnregister": "Cannot unregister within 6 hours of event start",
+        "cannotUnregister": "Cannot unregister within 24 hours of event start",
         "eventCount": {
           "singular": "event",
           "plural": "events"

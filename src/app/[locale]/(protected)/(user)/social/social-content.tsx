@@ -291,17 +291,19 @@ export default function SocialContent({ locale }: ContentProps) {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="min-h-screen bg-background">
       {/* 3 columns */}
-      <div className="flex-1 max-w-8xl mx-auto w-full px-4 py-4 overflow-hidden">
-        <div className="grid h-full grid-cols-1 lg:grid-cols-[1fr_4fr_1fr] xl:grid-cols-[1fr_2.5fr_1fr] gap-6 min-h-0">
-          {/* Left */}
-          <div className="min-h-0 overflow-y-auto">
-            <SuggestedGamesCard t={t} games={practiceGames} />
+      <div className="max-w-8xl mx-auto w-full px-4 py-4">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_4fr_1fr] xl:grid-cols-[1fr_2.5fr_1fr] gap-6">
+          {/* Left - Sticky */}
+          <div className="hidden lg:block">
+            <div className="sticky top-20">
+              <SuggestedGamesCard t={t} games={practiceGames} />
+            </div>
           </div>
 
-          {/* Middle */}
-          <div className="min-h-0 overflow-y-auto">
+          {/* Middle - Normal flow */}
+          <div>
             <div className="max-w-xl mx-auto w-full lg:max-w-full">
               <CreatePostCard t={t} currentUserAuthor={currentUserAuthor} />
               <div className="space-y-4 md:space-y-6">
@@ -345,13 +347,15 @@ export default function SocialContent({ locale }: ContentProps) {
             </div>
           </div>
 
-          {/* Right */}
-          <div className="min-h-0 overflow-y-auto">
-            <FriendSidebar
-              t={t}
-              suggestedFriends={suggestedFriends}
-              onlineFriends={onlineFriends}
-            />
+          {/* Right - Sticky */}
+          <div className="hidden lg:block">
+            <div className="sticky top-20">
+              <FriendSidebar
+                t={t}
+                suggestedFriends={suggestedFriends}
+                onlineFriends={onlineFriends}
+              />
+            </div>
           </div>
         </div>
       </div>
