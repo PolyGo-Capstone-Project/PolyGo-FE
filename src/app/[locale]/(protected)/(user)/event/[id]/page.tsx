@@ -638,7 +638,7 @@ export default function EventDetailPage() {
         <div className="space-y-4 mt-5">
           <h2 className="text-2xl font-semibold">{t("aboutEvent")}</h2>
           <Card>
-            <CardContent className="p-6 prose-sm">
+            <CardContent className="px-4 text-justify prose-sm">
               <MarkdownRenderer content={event.description} />
             </CardContent>
           </Card>
