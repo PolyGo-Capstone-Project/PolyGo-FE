@@ -18,7 +18,7 @@ export default function SuggestedGamesCard({ t, games }: Props) {
       <Card
         className={`hover:shadow-md transition-shadow ${isEmpty ? "" : "h-full"}`}
       >
-        <CardHeader className="pb-3 border-b sticky top-0 bg-background z-10">
+        <CardHeader className="pb-3 border-b sticky top-0 z-10">
           <CardTitle className="text-base font-semibold flex items-center gap-2 text-primary">
             <Gamepad className="h-5 w-5" />
             {t("leftSidebar.games.title", {

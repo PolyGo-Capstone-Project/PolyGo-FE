@@ -24,7 +24,7 @@ export default function FriendSidebar({
     <div className="hidden lg:flex flex-col gap-6 overflow-hidden">
       {/* Suggested Friends */}
       <Card className="flex-shrink-0 hover:shadow-md transition-shadow">
-        <CardHeader className="border-b sticky top-0 bg-background z-10 pb-3">
+        <CardHeader className="border-b sticky top-0 z-10 pb-3">
           <CardTitle className="text-base font-semibold flex items-center gap-2 text-primary">
             <UserPlus className="h-5 w-5" />
             {t("rightSidebar.suggestions.title", {
