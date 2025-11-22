@@ -1,35 +1,21 @@
 "use client";
 
 import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconDotsVertical,
-  IconEye,
-  IconEyeOff,
-  IconGift,
-  IconInbox,
-  IconPinFilled,
-} from "@tabler/icons-react";
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Badge,
+  Card,
+  CardContent,
+  Pagination,
+} from "@/components";
+import { useMyReceivedGiftsQuery } from "@/hooks";
+import { IconGift, IconInbox } from "@tabler/icons-react";
 import { format } from "date-fns";
+import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { GiftVisibilityEnum } from "@/constants";
-import {
-  useMyReceivedGiftsQuery,
-  useUpdateGiftVisibilityMutation,
-} from "@/hooks";
 import Image from "next/image";
+import { useState } from "react";
 
 type MyReceivedGiftsTabProps = {
   locale: string;
@@ -38,9 +24,8 @@ type MyReceivedGiftsTabProps = {
 export function MyReceivedGiftsTab({ locale }: MyReceivedGiftsTabProps) {
   const t = useTranslations("gift.received");
   const tCommon = useTranslations("gift.common");
-  const tVisibility = useTranslations("gift.visibility");
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
+  const [pageSize, setPageSize] = useState(10);
 
   // Fetch received gifts
   const { data, isLoading } = useMyReceivedGiftsQuery({
@@ -50,236 +35,172 @@ export function MyReceivedGiftsTab({ locale }: MyReceivedGiftsTabProps) {
   const gifts = data?.payload.data.items || [];
   const pagination = data?.payload.data;
 
-  // Update visibility mutation
-  const updateVisibilityMutation = useUpdateGiftVisibilityMutation({
-    lang: locale,
-    pageNumber: currentPage,
-    pageSize,
-  });
-
-  const handleVisibilityChange = (
-    presentationId: string,
-    status: keyof typeof GiftVisibilityEnum
-  ) => {
-    updateVisibilityMutation.mutate({
-      id: presentationId,
-      body: { status: GiftVisibilityEnum[status] },
-    });
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case GiftVisibilityEnum.Pinned:
-        return (
-          <Badge variant="default" className="gap-1">
-            <IconPinFilled className="h-3 w-3" />
-            {tVisibility("pinned")}
-          </Badge>
-        );
-      case GiftVisibilityEnum.Hidden:
-        return (
-          <Badge variant="secondary" className="gap-1">
-            <IconEyeOff className="h-3 w-3" />
-            {tVisibility("hidden")}
-          </Badge>
-        );
-      default:
-        return (
-          <Badge variant="outline" className="gap-1">
-            <IconEye className="h-3 w-3" />
-            {tVisibility("visible")}
-          </Badge>
-        );
-    }
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1);
   };
 
   if (isLoading) {
     return (
-      <div className="flex h-[40vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className="flex h-[60vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <p className="text-sm text-muted-foreground">{tCommon("loading")}</p>
+        </div>
       </div>
     );
   }
 
   if (gifts.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex h-[40vh] items-center justify-center">
-          <div className="text-center">
-            <IconInbox className="mx-auto h-12 w-12 text-muted-foreground" />
-            <p className="mt-4 text-sm text-muted-foreground">{t("empty")}</p>
-          </div>
-        </CardContent>
-      </Card>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex h-[60vh] items-center justify-center"
+      >
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center p-12">
+            <div className="mb-4 rounded-full bg-primary/10 p-6">
+              <IconInbox className="h-12 w-12 text-primary" />
+            </div>
+            <h3 className="mb-2 text-lg font-semibold">{t("empty")}</h3>
+            <p className="text-sm text-muted-foreground">{t("description")}</p>
+          </CardContent>
+        </Card>
+      </motion.div>
     );
   }
 
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("title")}</CardTitle>
-          <p className="text-sm text-muted-foreground">{t("description")}</p>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-3">
-            {gifts.map((gift) => (
-              <div
-                key={gift.presentationId}
-                className="flex items-start gap-3 rounded-lg border p-4 transition-colors hover:bg-muted/50"
-              >
-                {/* Gift Icon */}
-                <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 overflow-hidden">
-                  {gift.giftIconUrl ? (
-                    <Image
-                      src={gift.giftIconUrl}
-                      alt={gift.giftName}
-                      fill
-                      className="object-contain p-2"
-                    />
-                  ) : (
-                    <IconGift className="h-6 w-6 text-primary" />
-                  )}
-                </div>
+    <div className="space-y-6">
+      {/* Header Section */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-pink-500/10 via-purple-500/5 to-transparent p-8"
+      >
+        <div className="absolute right-8 top-8 opacity-10">
+          <IconInbox className="h-32 w-32" />
+        </div>
+        <div className="relative">
+          <h2 className="mb-2 text-3xl font-bold tracking-tight">
+            {t("title")}
+          </h2>
+          <p className="text-muted-foreground">{t("description")}</p>
+        </div>
+      </motion.div>
 
-                {/* Gift Details */}
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="space-y-1">
-                      <h4 className="font-semibold">{gift.giftName}</h4>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        {!gift.isAnonymous && (
-                          <>
-                            <Avatar className="h-5 w-5">
-                              <AvatarImage src={gift.senderAvatarUrl || ""} />
-                              <AvatarFallback className="text-xs">
-                                {gift.senderName[0]}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span>
-                              {t("from")}: {gift.senderName}
-                            </span>
-                          </>
-                        )}
-                        {gift.isAnonymous && (
-                          <Badge variant="secondary" className="text-xs">
-                            {t("from")}: {t("anonymous")}
-                          </Badge>
-                        )}
+      {/* Gift History List */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className="space-y-4"
+      >
+        {gifts.map((gift, index) => (
+          <motion.div
+            key={gift.presentationId}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.05 }}
+          >
+            <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/50">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  {/* Gift Icon */}
+                  <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 transition-transform duration-300 group-hover:scale-110">
+                    {gift.giftIconUrl ? (
+                      <Image
+                        src={gift.giftIconUrl}
+                        alt={gift.giftName}
+                        width={48}
+                        height={48}
+                        className="h-12 w-12 object-contain"
+                      />
+                    ) : (
+                      <IconGift className="h-8 w-8 text-primary" />
+                    )}
+                  </div>
+
+                  {/* Gift Details */}
+                  <div className="flex-1 space-y-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="space-y-1">
+                        <h3 className="text-lg font-semibold leading-tight">
+                          {gift.giftName}
+                        </h3>
+                        <div className="flex items-center gap-2">
+                          {!gift.isAnonymous ? (
+                            <>
+                              <Avatar className="h-6 w-6 border-2 border-background">
+                                <AvatarImage src={gift.senderAvatarUrl || ""} />
+                                <AvatarFallback className="text-xs">
+                                  {gift.senderName[0]}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="text-sm text-muted-foreground">
+                                {t("from")}:{" "}
+                                <span className="font-medium text-foreground">
+                                  {gift.senderName}
+                                </span>
+                              </span>
+                            </>
+                          ) : (
+                            <Badge variant="secondary" className="text-xs">
+                              {t("from")}: {t("anonymous")}
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                      <Badge variant="secondary" className="shadow-sm">
+                        x{gift.quantity}
+                      </Badge>
+                    </div>
+
+                    {/* Message */}
+                    {gift.message && (
+                      <div className="rounded-lg bg-muted/50 p-3 border-l-4 border-primary/30">
+                        <p className="text-sm italic text-muted-foreground">
+                          &quot;{gift.message}&quot;
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Date */}
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                        <span>{format(new Date(gift.createdAt), "PPp")}</span>
                       </div>
                     </div>
-                    <Badge variant="outline">x{gift.quantity}</Badge>
-                  </div>
-
-                  {/* Message */}
-                  {gift.message && (
-                    <p className="text-sm italic text-muted-foreground">
-                      &quot;{gift.message}&quot;
-                    </p>
-                  )}
-
-                  {/* Date */}
-                  <p className="text-xs text-muted-foreground">
-                    {format(new Date(gift.createdAt), "PPp")}
-                  </p>
-
-                  {/* Status & Actions */}
-                  <div className="flex items-center justify-between gap-2">
-                    {getStatusBadge(gift.status)}
-
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          disabled={updateVisibilityMutation.isPending}
-                          className="h-7 w-7 p-0"
-                        >
-                          <IconDotsVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40">
-                        <DropdownMenuItem
-                          onClick={() =>
-                            handleVisibilityChange(
-                              gift.presentationId,
-                              "Visible"
-                            )
-                          }
-                          className="gap-2"
-                        >
-                          <IconEye className="h-4 w-4" />
-                          {tVisibility("visible")}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            handleVisibilityChange(
-                              gift.presentationId,
-                              "Hidden"
-                            )
-                          }
-                          className="gap-2"
-                        >
-                          <IconEyeOff className="h-4 w-4" />
-                          {tVisibility("hidden")}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() =>
-                            handleVisibilityChange(
-                              gift.presentationId,
-                              "Pinned"
-                            )
-                          }
-                          className="gap-2"
-                        >
-                          <IconPinFilled className="h-4 w-4" />
-                          {tVisibility("pinned")}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </motion.div>
 
-          {/* Pagination */}
-          {pagination && pagination.totalPages > 1 && (
-            <div className="flex items-center justify-between border-t pt-4">
-              <p className="text-sm text-muted-foreground">
-                Page {pagination.currentPage} of {pagination.totalPages} (
-                {pagination.totalItems} items)
-              </p>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(1, prev - 1))
-                  }
-                  disabled={!pagination.hasPreviousPage}
-                >
-                  <IconChevronLeft className="h-4 w-4" />
-                  Previous
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() =>
-                    setCurrentPage((prev) =>
-                      Math.min(pagination.totalPages, prev + 1)
-                    )
-                  }
-                  disabled={!pagination.hasNextPage}
-                >
-                  Next
-                  <IconChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </>
+      {/* Pagination */}
+      {pagination && pagination.totalPages > 1 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Pagination
+            currentPage={pagination.currentPage}
+            totalPages={pagination.totalPages}
+            totalItems={pagination.totalItems}
+            pageSize={pageSize}
+            hasNextPage={pagination.hasNextPage}
+            hasPreviousPage={pagination.hasPreviousPage}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={handlePageSizeChange}
+            showPageSizeSelector={true}
+          />
+        </motion.div>
+      )}
+    </div>
   );
 }

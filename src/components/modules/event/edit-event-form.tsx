@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconLoader2, IconUpload } from "@tabler/icons-react";
+import { IconHelp, IconLoader2, IconUpload } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -26,6 +26,9 @@ import {
   SelectTrigger,
   SelectValue,
   Skeleton,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from "@/components/ui";
 import { DateTimePicker } from "@/components/ui/date-time";
 import { EventStatus, PlanTypeEnum } from "@/constants";
@@ -312,7 +315,19 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
 
           {/* Banner Upload */}
           <div className="space-y-2">
-            <Label>{tCreate("fields.banner.label")}</Label>
+            <div className="flex items-center gap-2">
+              <Label>{tCreate("fields.banner.label")}</Label>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button type="button" className="inline-flex">
+                    <IconHelp className="h-4 w-4 text-muted-foreground hover:text-foreground transition-colors" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="max-w-xs">
+                  <p>{tCreate("fields.banner.tooltip")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
             {bannerPreview ? (
               <div className="relative w-full h-48 rounded-lg overflow-hidden border">
                 <Image
@@ -660,7 +675,7 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
                       {tCreate("fields.requiredPlanType.plus")}
                     </Label>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  {/* <div className="flex items-center space-x-2">
                     <RadioGroupItem
                       value={PlanTypeEnum.PREMIUM}
                       id="plan-premium"
@@ -668,7 +683,7 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
                     <Label htmlFor="plan-premium" className="cursor-pointer">
                       {tCreate("fields.requiredPlanType.premium")}
                     </Label>
-                  </div>
+                  </div> */}
                 </RadioGroup>
               )}
             />

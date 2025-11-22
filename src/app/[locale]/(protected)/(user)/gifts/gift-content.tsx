@@ -1,6 +1,13 @@
 "use client";
 
-import { IconGift, IconSparkles } from "@tabler/icons-react";
+import {
+  IconArchive,
+  IconBasketBolt,
+  IconBrandTelegram,
+  IconBuildingWarehouse,
+  IconGift,
+  IconSparkles,
+} from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
@@ -22,22 +29,22 @@ export default function GiftsContent() {
     {
       value: "available",
       label: t("tabs.available"),
-      icon: IconSparkles,
+      icon: IconBasketBolt,
     },
     {
       value: "purchased",
       label: t("tabs.purchased"),
-      icon: IconGift,
+      icon: IconBuildingWarehouse,
     },
     {
       value: "sent",
       label: t("tabs.sent"),
-      icon: IconGift,
+      icon: IconBrandTelegram,
     },
     {
       value: "received",
       label: t("tabs.received"),
-      icon: IconGift,
+      icon: IconArchive,
     },
   ];
 
@@ -92,7 +99,7 @@ export default function GiftsContent() {
             className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 backdrop-blur-sm"
           >
             <IconSparkles className="h-5 w-5" />
-            <span className="text-sm font-medium">Gift Store</span>
+            <span className="text-sm font-medium">{t("badge")}</span>
           </motion.div>
 
           <motion.h1
@@ -110,8 +117,7 @@ export default function GiftsContent() {
             transition={{ delay: 0.4 }}
             className="text-lg text-primary-foreground/90 md:text-xl"
           >
-            Browse, purchase, and send amazing gifts to your friends and
-            language exchange partners
+            {t("description")}
           </motion.p>
         </div>
       </motion.div>

@@ -10,7 +10,6 @@ import {
   GetMyPurchasedGiftsResType,
   GetMyReceivedGiftsResType,
   GetMySentGiftsResType,
-  GiftVisibilityBodyType,
   MessageResType,
   PresentGiftBodyType,
   PurchaseGiftBodyType,
@@ -53,9 +52,6 @@ const giftApiRequest = {
   myReceivedGifts: createGetAll<GetMyReceivedGiftsResType, GetGiftsQueryType>(
     `${prefix}/received`
   ),
-  // visibility
-  updateVisibility: (id: string, body: GiftVisibilityBodyType) =>
-    http.put<MessageResType>(`${prefix}/presentations/${id}/visibility`, body),
 };
 
 export default giftApiRequest;

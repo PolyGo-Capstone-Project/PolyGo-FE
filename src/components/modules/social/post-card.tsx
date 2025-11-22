@@ -237,6 +237,10 @@ export default function PostCard({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [editPostContent, setEditPostContent] = useState(post.content);
+  const [isContentExpanded, setIsContentExpanded] = useState(false);
+  const [isSharedContentExpanded, setIsSharedContentExpanded] = useState(false);
+  const [isSharedEventDescExpanded, setIsSharedEventDescExpanded] =
+    useState(false);
 
   // Image handling states
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -462,7 +466,19 @@ export default function PostCard({
 
         {/* Content */}
         <div className="mb-4 text-sm md:text-base whitespace-pre-wrap leading-relaxed">
-          <MarkdownRenderer content={post.content} />
+          <div
+            className={`${!isContentExpanded && post.content.length > 300 ? "line-clamp-6" : ""}`}
+          >
+            <MarkdownRenderer content={post.content} />
+          </div>
+          {post.content.length > 300 && (
+            <button
+              onClick={() => setIsContentExpanded(!isContentExpanded)}
+              className="text-primary hover:underline text-sm font-medium mt-2"
+            >
+              {isContentExpanded ? t("post.seeLess") : t("post.seeMore")}
+            </button>
+          )}
         </div>
 
         {/* Shared Post - if this is a shared post */}
@@ -496,7 +512,24 @@ export default function PostCard({
                 </div>
               </div>
               <div className="text-sm mb-3">
-                <MarkdownRenderer content={post.sharedPost.content} />
+                <div
+                  className={`${!isSharedContentExpanded && post.sharedPost.content.length > 300 ? "line-clamp-4" : ""}`}
+                >
+                  <MarkdownRenderer content={post.sharedPost.content} />
+                </div>
+                {post.sharedPost.content.length > 300 && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsSharedContentExpanded(!isSharedContentExpanded);
+                    }}
+                    className="text-primary hover:underline text-xs font-medium mt-1"
+                  >
+                    {isSharedContentExpanded
+                      ? t("post.seeLess")
+                      : t("post.seeMore")}
+                  </button>
+                )}
               </div>
               {post.sharedPost.imageUrls &&
                 post.sharedPost.imageUrls.length > 0 && (
@@ -552,8 +585,27 @@ export default function PostCard({
                     </Badge>
                   )}
                 </div>
-                <div className="text-sm text-muted-foreground line-clamp-2">
-                  <MarkdownRenderer content={post.sharedEvent.description} />
+                <div className="text-sm text-muted-foreground">
+                  <div
+                    className={`${!isSharedEventDescExpanded && post.sharedEvent.description.length > 150 ? "line-clamp-2" : ""}`}
+                  >
+                    <MarkdownRenderer content={post.sharedEvent.description} />
+                  </div>
+                  {post.sharedEvent.description.length > 150 && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsSharedEventDescExpanded(
+                          !isSharedEventDescExpanded
+                        );
+                      }}
+                      className="text-primary hover:underline text-xs font-medium mt-1"
+                    >
+                      {isSharedEventDescExpanded
+                        ? t("post.seeLess")
+                        : t("post.seeMore")}
+                    </button>
+                  )}
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1">

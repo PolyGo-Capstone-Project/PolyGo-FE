@@ -1,9 +1,11 @@
 {
   "gift": {
     "title": "Gifts",
+    "description": "Send meaningful gifts to connect and spread joy with your language partners",
+    "badge": "Gift Store",
     "tabs": {
-      "available": "Available Gifts",
-      "purchased": "My Purchased",
+      "available": "Gift Store",
+      "purchased": "My Gift Inventory",
       "sent": "Sent Gifts",
       "received": "Received Gifts"
     },
@@ -16,10 +18,23 @@
       "empty": "No gifts available at the moment"
     },
     "purchased": {
-      "title": "My Purchased Gifts",
-      "description": "Gifts you have purchased",
+      "title": "My Gift Inventory",
+      "description": "Purchased gifts and received gifts you currently have",
       "quantity": "Quantity",
-      "empty": "You haven't purchased any gifts yet"
+      "empty": "You haven't purchased any gifts yet",
+      "emptyDescription": "Your gift inventory is empty",
+      "browseGifts": "Browse Available Gifts",
+      "totalItems": "Total Items",
+      "giftTypes": "Gift Types",
+      "totalValue": "Total Value",
+      "inventoryValue": "Inventory Value",
+      "item": "item",
+      "items": "items",
+      "unitPrice": "Unit Price",
+      "itemTotalValue": "Total Value",
+      "sendAsGift": "Send as Gift",
+      "noGiftsFound": "No gifts found",
+      "tryAdjustingSearch": "Try adjusting your search terms"
     },
     "sent": {
       "title": "Sent Gifts",
@@ -121,7 +136,12 @@
       "sort": "Sort by",
       "date": "Date",
       "price": "Price",
-      "name": "Name"
+      "name": "Name",
+      "page": "Page",
+      "of": "of",
+      "items": "items",
+      "previous": "Previous",
+      "next": "Next"
     },
     "visibility": {
       "changeVisibility": "Change Visibility",

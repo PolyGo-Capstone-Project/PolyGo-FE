@@ -1,11 +1,9 @@
 "use client";
 
+import { Button, TransactionHistory } from "@/components";
 import { ArrowLeft } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-
-import { TransactionHistory } from "@/components";
-import { Button } from "@/components/ui/button";
 
 export default function TransactionsPage() {
   const t = useTranslations("wallet");
@@ -25,7 +23,7 @@ export default function TransactionsPage() {
             {t("transactions.title")}
           </h1>
           <p className="text-sm text-muted-foreground md:text-base">
-            View and manage all your transaction history
+            {t("transactions.subtitle")}
           </p>
         </div>
       </div>
