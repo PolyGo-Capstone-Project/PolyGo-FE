@@ -104,7 +104,7 @@ export default function WalletPage() {
           {t("title")}
         </h1>
         <p className="text-sm text-muted-foreground md:text-base">
-          Manage your balance, subscriptions, and transactions
+          {t("subtitle")}
         </p>
       </div>
 
@@ -128,15 +128,15 @@ export default function WalletPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-lg md:text-xl">
-                    Recent Transactions
+                    {t("transactions.recentTitle")}
                   </CardTitle>
                   <CardDescription>
-                    Your latest transaction activity
+                    {t("transactions.recentDescription")}
                   </CardDescription>
                 </div>
                 <Button variant="outline" size="sm" asChild>
                   <Link href={`/${locale}/wallet/transactions`}>
-                    View All
+                    {t("transactions.viewAll")}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
@@ -150,7 +150,7 @@ export default function WalletPage() {
               ) : recentTransactions.length === 0 ? (
                 <div className="rounded-md border border-dashed py-12 text-center">
                   <p className="text-sm text-muted-foreground">
-                    No transactions yet
+                    {t("transactions.noTransactions")}
                   </p>
                 </div>
               ) : (
@@ -201,11 +201,21 @@ export default function WalletPage() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Date</TableHead>
-                          <TableHead>Description</TableHead>
-                          <TableHead>Type</TableHead>
-                          <TableHead className="text-right">Amount</TableHead>
-                          <TableHead>Status</TableHead>
+                          <TableHead>
+                            {t("transactions.columns.date")}
+                          </TableHead>
+                          <TableHead>
+                            {t("transactions.columns.description")}
+                          </TableHead>
+                          <TableHead>
+                            {t("transactions.columns.type")}
+                          </TableHead>
+                          <TableHead className="text-right">
+                            {t("transactions.columns.amount")}
+                          </TableHead>
+                          <TableHead>
+                            {t("transactions.columns.status")}
+                          </TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>

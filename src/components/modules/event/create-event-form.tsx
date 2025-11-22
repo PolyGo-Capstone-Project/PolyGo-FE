@@ -646,7 +646,7 @@ export function CreateEventForm() {
                       {t("fields.requiredPlanType.plus")}
                     </Label>
                   </div>
-                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                  {/* <div className="flex items-center space-x-2 p-3 border rounded-lg">
                     <RadioGroupItem
                       value={PlanTypeEnum.PREMIUM}
                       id="plan-premium"
@@ -657,7 +657,7 @@ export function CreateEventForm() {
                     >
                       {t("fields.requiredPlanType.premium")}
                     </Label>
-                  </div>
+                  </div> */}
                 </RadioGroup>
               )}
             />

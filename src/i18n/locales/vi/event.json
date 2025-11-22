@@ -460,8 +460,10 @@
         "historyEventsDescription": "Các sự kiện đã qua sẽ hiển thị ở đây",
         "exploreEvents": "Khám phá sự kiện",
         "viewDetail": "Xem chi tiết",
+        "viewButton": "Xem",
+        "leaveButton": "Rời",
         "unregister": "Hủy đăng ký",
-        "cannotUnregister": "Không thể hủy đăng ký trong vòng 6 giờ trước sự kiện",
+        "cannotUnregister": "Không thể hủy đăng ký trong vòng 24 giờ trước sự kiện",
         "eventCount": {
           "singular": "sự kiện",
           "plural": "sự kiện"

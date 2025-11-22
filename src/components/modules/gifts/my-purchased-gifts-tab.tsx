@@ -1,6 +1,16 @@
 "use client";
 
 import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  Input,
+  Pagination,
+} from "@/components";
+import { useMyPurchasedGiftsQuery } from "@/hooks";
+import { formatCurrency } from "@/lib/utils";
+import {
   IconGift,
   IconPackage,
   IconSearch,
@@ -12,14 +22,6 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
-
-import { Pagination } from "@/components/shared/pagination";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useMyPurchasedGiftsQuery } from "@/hooks";
-import { formatCurrency } from "@/lib/utils";
 
 type MyPurchasedGiftsTabProps = {
   locale: string;
@@ -82,11 +84,11 @@ export function MyPurchasedGiftsTab({ locale }: MyPurchasedGiftsTabProps) {
             </div>
             <h3 className="mb-2 text-lg font-semibold">{t("empty")}</h3>
             <p className="mb-4 text-sm text-muted-foreground">
-              Your gift inventory is empty
+              {t("emptyDescription")}
             </p>
             <Button variant="outline">
               <IconShoppingCart className="mr-2 h-4 w-4" />
-              Browse Available Gifts
+              {t("browseGifts")}
             </Button>
           </CardContent>
         </Card>
@@ -121,7 +123,9 @@ export function MyPurchasedGiftsTab({ locale }: MyPurchasedGiftsTabProps) {
                   <IconPackage className="h-6 w-6 text-purple-500" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Items</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("totalItems")}
+                  </p>
                   <p className="text-2xl font-bold">{totalItems}</p>
                 </div>
               </CardContent>
@@ -133,7 +137,9 @@ export function MyPurchasedGiftsTab({ locale }: MyPurchasedGiftsTabProps) {
                   <IconGift className="h-6 w-6 text-pink-500" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Gift Types</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("giftTypes")}
+                  </p>
                   <p className="text-2xl font-bold">{gifts.length}</p>
                 </div>
               </CardContent>
@@ -145,7 +151,9 @@ export function MyPurchasedGiftsTab({ locale }: MyPurchasedGiftsTabProps) {
                   <IconSparkles className="h-6 w-6 text-amber-500" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Value</p>
+                  <p className="text-sm text-muted-foreground">
+                    {t("inventoryValue")}
+                  </p>
                   <p className="text-2xl font-bold">
                     {formatCurrency(totalValue)}
                   </p>
@@ -174,7 +182,8 @@ export function MyPurchasedGiftsTab({ locale }: MyPurchasedGiftsTabProps) {
           />
         </div>
         <Badge variant="secondary" className="px-4 py-2">
-          {filteredGifts.length} {filteredGifts.length === 1 ? "item" : "items"}
+          {filteredGifts.length}{" "}
+          {filteredGifts.length === 1 ? t("item") : t("items")}
         </Badge>
       </motion.div>
 
@@ -276,13 +285,17 @@ export function MyPurchasedGiftsTab({ locale }: MyPurchasedGiftsTabProps) {
                 {/* Price and Quantity Info */}
                 <div className="mb-4 space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Unit Price</span>
+                    <span className="text-muted-foreground">
+                      {t("unitPrice")}
+                    </span>
                     <span className="font-semibold">
                       {formatCurrency(gift.price)}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Total Value</span>
+                    <span className="text-muted-foreground">
+                      {t("itemTotalValue")}
+                    </span>
                     <span className="font-bold text-primary">
                       {formatCurrency(gift.price * gift.quantity)}
                     </span>
@@ -296,7 +309,7 @@ export function MyPurchasedGiftsTab({ locale }: MyPurchasedGiftsTabProps) {
                   className="w-full gap-2 transition-all duration-300 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground"
                 >
                   <IconSend className="h-5 w-5" />
-                  Send as Gift
+                  {t("sendAsGift")}
                 </Button>
               </CardContent>
             </Card>
@@ -314,9 +327,11 @@ export function MyPurchasedGiftsTab({ locale }: MyPurchasedGiftsTabProps) {
           <Card className="border-dashed">
             <CardContent className="flex flex-col items-center justify-center p-12">
               <IconSearch className="mb-4 h-12 w-12 text-muted-foreground" />
-              <h3 className="mb-2 text-lg font-semibold">No gifts found</h3>
+              <h3 className="mb-2 text-lg font-semibold">
+                {t("noGiftsFound")}
+              </h3>
               <p className="text-sm text-muted-foreground">
-                Try adjusting your search terms
+                {t("tryAdjustingSearch")}
               </p>
             </CardContent>
           </Card>

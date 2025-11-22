@@ -1,6 +1,7 @@
 {
   "wallet": {
     "title": "Ví của tôi",
+    "subtitle": "Quản lý số dư, gói cước và lịch sử giao dịch",
     "balance": {
       "title": "Số dư hiện tại",
       "show": "Hiện số dư",
@@ -83,13 +84,21 @@
     },
     "transactions": {
       "title": "Lịch sử giao dịch",
+      "subtitle": "Xem và quản lý toàn bộ lịch sử giao dịch",
+      "recentTitle": "Giao dịch gần đây",
+      "recentDescription": "Hoạt động giao dịch mới nhất của bạn",
+      "viewAll": "Xem tất cả",
+      "noTransactions": "Chưa có giao dịch nào",
       "filter": {
         "all": "Tất cả giao dịch",
         "deposits": "Nạp tiền",
         "purchases": "Mua hàng",
         "withdrawals": "Rút tiền",
         "refunds": "Hoàn tiền",
-        "adjustments": "Điều chỉnh"
+        "adjustments": "Điều chỉnh",
+        "allTypes": "Tất cả loại",
+        "allMethods": "Tất cả phương thức",
+        "allStatus": "Tất cả trạng thái"
       },
       "export": {
         "button": "Xuất file",
@@ -100,8 +109,10 @@
         "date": "Ngày",
         "description": "Mô tả",
         "type": "Loại",
+        "method": "Phương thức",
         "amount": "Số tiền",
-        "status": "Trạng thái"
+        "status": "Trạng thái",
+        "actions": "Thao tác"
       },
       "type": {
         "Deposit": "Nạp tiền",
@@ -120,7 +131,41 @@
         "Cancelled": "Đã hủy"
       },
       "empty": "Không có giao dịch nào",
-      "search": "Tìm kiếm giao dịch..."
+      "search": "Tìm kiếm giao dịch...",
+      "paymentMethod": "Phương thức thanh toán",
+      "transactionType": "Loại giao dịch",
+      "reset": "Làm mới",
+      "actions": {
+        "viewDetails": "Chi tiết",
+        "viewReceipt": "Biên lai",
+        "inquiry": "Khiếu nại"
+      },
+      "receiptDialog": {
+        "title": "Biên lai rút tiền",
+        "transactionId": "Mã giao dịch",
+        "amount": "Số tiền",
+        "date": "Ngày",
+        "bankName": "Tên ngân hàng",
+        "accountName": "Tên chủ tài khoản",
+        "transferReceipt": "Biên lai chuyển khoản"
+      },
+      "inquiryDialog": {
+        "title": "Gửi khiếu nại",
+        "transactionId": "Mã giao dịch",
+        "amount": "Số tiền",
+        "type": "Loại",
+        "notesLabel": "Ghi chú (Không bắt buộc)",
+        "notesPlaceholder": "Mô tả vấn đề hoặc câu hỏi của bạn...",
+        "cancel": "Hủy",
+        "submit": "Gửi khiếu nại",
+        "submitting": "Đang gửi..."
+      },
+      "detailDialog": {
+        "title": "Chi tiết giao dịch",
+        "withdrawalReceipt": "Biên lai rút tiền",
+        "inquiryInformation": "Thông tin khiếu nại",
+        "inquiryBadge": "Khiếu nại"
+      }
     },
     "toast": {
       "exportSuccess": "Xuất file thành công",

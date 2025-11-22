@@ -675,7 +675,7 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
                       {tCreate("fields.requiredPlanType.plus")}
                     </Label>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  {/* <div className="flex items-center space-x-2">
                     <RadioGroupItem
                       value={PlanTypeEnum.PREMIUM}
                       id="plan-premium"
@@ -683,7 +683,7 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
                     <Label htmlFor="plan-premium" className="cursor-pointer">
                       {tCreate("fields.requiredPlanType.premium")}
                     </Label>
-                  </div>
+                  </div> */}
                 </RadioGroup>
               )}
             />

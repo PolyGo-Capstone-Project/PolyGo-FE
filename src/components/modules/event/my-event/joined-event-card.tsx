@@ -72,8 +72,8 @@ export function JoinedEventCard({
   const hoursUntilEvent =
     (eventStartTime.getTime() - now.getTime()) / (1000 * 60 * 60);
 
-  // Can unregister if event is upcoming and more than 6 hours away
-  const canUnregister = eventStartTime > now && hoursUntilEvent > 6;
+  // Can unregister if event is upcoming and more than 24 hours away
+  const canUnregister = eventStartTime > now && hoursUntilEvent > 24;
   const isUpcoming = eventStartTime > now;
 
   const handleUnregisterConfirm = () => {
@@ -190,7 +190,7 @@ export function JoinedEventCard({
               onClick={() => onViewDetail?.(event.id)}
             >
               <IconEye className="h-3.5 w-3.5 mr-1" />
-              View
+              {t("viewButton")}
             </Button>
 
             {isUpcoming &&
@@ -204,7 +204,7 @@ export function JoinedEventCard({
                   disabled={isUnregistering}
                 >
                   <IconUserMinus className="h-3.5 w-3.5 mr-1" />
-                  Leave
+                  {t("leaveButton")}
                 </Button>
               ) : (
                 <TooltipProvider>
@@ -218,7 +218,7 @@ export function JoinedEventCard({
                           disabled
                         >
                           <IconUserMinus className="h-3.5 w-3.5 mr-1" />
-                          Leave
+                          {t("leaveButton")}
                         </Button>
                       </div>
                     </TooltipTrigger>

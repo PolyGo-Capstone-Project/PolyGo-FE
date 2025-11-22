@@ -458,8 +458,10 @@
         "historyEventsDescription": "Your past events will appear here",
         "exploreEvents": "Explore Events",
         "viewDetail": "View Details",
+        "viewButton": "View",
+        "leaveButton": "Leave",
         "unregister": "Unregister",
-        "cannotUnregister": "Cannot unregister within 6 hours of event start",
+        "cannotUnregister": "Cannot unregister within 24 hours of event start",
         "eventCount": {
           "singular": "event",
           "plural": "events"

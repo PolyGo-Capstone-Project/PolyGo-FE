@@ -4,7 +4,6 @@ import { CreateEventForm } from "@/components/modules/event";
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -51,7 +50,7 @@ export default function CreateEventPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{t("purposeDialog.cancel")}</AlertDialogCancel>
+            {/* <AlertDialogCancel>{t("purposeDialog.cancel")}</AlertDialogCancel> */}
             <AlertDialogAction onClick={() => setShowPurposeDialog(false)}>
               {t("purposeDialog.understand")}
             </AlertDialogAction>

@@ -8,7 +8,6 @@ import {
 import { giftApiRequest } from "@/lib/apis";
 import {
   CreateGiftBodyType,
-  GiftVisibilityBodyType,
   PaginationLangQueryType,
   PresentGiftBodyType,
   PurchaseGiftBodyType,
@@ -295,29 +294,5 @@ export const useMyReceivedGiftsQuery = ({
     queryFn: () => giftApiRequest.myReceivedGifts(params),
     enabled,
     placeholderData: keepPreviousData,
-  });
-};
-
-// Update Gift Visibility
-type UpdateGiftVisibilityResponse = Awaited<
-  ReturnType<typeof giftApiRequest.updateVisibility>
->;
-
-export const useUpdateGiftVisibilityMutation = (
-  params?: PaginationLangQueryType,
-  options?: {
-    onSuccess?: (response: UpdateGiftVisibilityResponse) => void;
-  }
-) => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, body }: { id: string; body: GiftVisibilityBodyType }) =>
-      giftApiRequest.updateVisibility(id, body),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ["my-received-gifts", params ?? null],
-      });
-      options?.onSuccess?.(data);
-    },
   });
 };
