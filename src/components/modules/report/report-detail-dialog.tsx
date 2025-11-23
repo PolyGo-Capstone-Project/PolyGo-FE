@@ -388,7 +388,7 @@ export function ReportDetailDialog({
                     value={status}
                     onValueChange={(v) => setStatus(v as ReportStatusTypeEnum)}
                   >
-                    <SelectTrigger id="status" className="mt-1">
+                    <SelectTrigger id="status" className="my-2 w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

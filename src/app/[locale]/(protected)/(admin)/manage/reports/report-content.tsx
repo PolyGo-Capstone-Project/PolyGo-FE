@@ -11,6 +11,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  LoadingSpinner,
+  MarkdownRenderer,
+  Pagination,
   Select,
   SelectContent,
   SelectItem,
@@ -79,45 +82,61 @@ export default function ReportContent() {
   >("all");
 
   // Fetch data for each tab
-  const { data: allReportsData, refetch: refetchAll } = useGetAllReports({
+  const {
+    data: allReportsData,
+    refetch: refetchAll,
+    isLoading: isLoadingAll,
+  } = useGetAllReports({
     pageNumber: allPage,
     pageSize: PAGE_SIZE,
     status: allStatusFilter === "all" ? undefined : allStatusFilter,
     reportType: allTypeFilter === "all" ? undefined : allTypeFilter,
   });
 
-  const { data: pendingReportsData, refetch: refetchPending } =
-    useGetAllReports({
-      pageNumber: pendingPage,
-      pageSize: PAGE_SIZE,
-      status: ReportStatusEnum.Pending,
-      reportType: pendingTypeFilter === "all" ? undefined : pendingTypeFilter,
-    });
+  const {
+    data: pendingReportsData,
+    refetch: refetchPending,
+    isLoading: isLoadingPending,
+  } = useGetAllReports({
+    pageNumber: pendingPage,
+    pageSize: PAGE_SIZE,
+    status: ReportStatusEnum.Pending,
+    reportType: pendingTypeFilter === "all" ? undefined : pendingTypeFilter,
+  });
 
-  const { data: processingReportsData, refetch: refetchProcessing } =
-    useGetAllReports({
-      pageNumber: processingPage,
-      pageSize: PAGE_SIZE,
-      status: ReportStatusEnum.Processing,
-      reportType:
-        processingTypeFilter === "all" ? undefined : processingTypeFilter,
-    });
+  const {
+    data: processingReportsData,
+    refetch: refetchProcessing,
+    isLoading: isLoadingProcessing,
+  } = useGetAllReports({
+    pageNumber: processingPage,
+    pageSize: PAGE_SIZE,
+    status: ReportStatusEnum.Processing,
+    reportType:
+      processingTypeFilter === "all" ? undefined : processingTypeFilter,
+  });
 
-  const { data: resolvedReportsData, refetch: refetchResolved } =
-    useGetAllReports({
-      pageNumber: resolvedPage,
-      pageSize: PAGE_SIZE,
-      status: ReportStatusEnum.Resolved,
-      reportType: resolvedTypeFilter === "all" ? undefined : resolvedTypeFilter,
-    });
+  const {
+    data: resolvedReportsData,
+    refetch: refetchResolved,
+    isLoading: isLoadingResolved,
+  } = useGetAllReports({
+    pageNumber: resolvedPage,
+    pageSize: PAGE_SIZE,
+    status: ReportStatusEnum.Resolved,
+    reportType: resolvedTypeFilter === "all" ? undefined : resolvedTypeFilter,
+  });
 
-  const { data: rejectedReportsData, refetch: refetchRejected } =
-    useGetAllReports({
-      pageNumber: rejectedPage,
-      pageSize: PAGE_SIZE,
-      status: ReportStatusEnum.Rejected,
-      reportType: rejectedTypeFilter === "all" ? undefined : rejectedTypeFilter,
-    });
+  const {
+    data: rejectedReportsData,
+    refetch: refetchRejected,
+    isLoading: isLoadingRejected,
+  } = useGetAllReports({
+    pageNumber: rejectedPage,
+    pageSize: PAGE_SIZE,
+    status: ReportStatusEnum.Rejected,
+    reportType: rejectedTypeFilter === "all" ? undefined : rejectedTypeFilter,
+  });
 
   const getInitials = (name: string) => {
     return name
@@ -147,7 +166,12 @@ export default function ReportContent() {
 
     // Post
     if ("content" in targetInfo) {
-      return targetInfo.content.substring(0, 50) + "...";
+      const content = targetInfo.content;
+      const truncatedContent =
+        content.length > 100 ? content.substring(0, 100) + "..." : content;
+      return (
+        <MarkdownRenderer content={truncatedContent} className="line-clamp-2" />
+      );
     }
 
     return "N/A";
@@ -160,6 +184,7 @@ export default function ReportContent() {
     typeFilter: ReportTypeEnum | "all",
     setTypeFilter: (type: ReportTypeEnum | "all") => void,
     refetch: () => void,
+    isLoading: boolean,
     showStatusFilter: boolean = false,
     statusFilter?: ReportStatusTypeEnum | "all",
     setStatusFilter?: (status: ReportStatusTypeEnum | "all") => void
@@ -169,166 +194,175 @@ export default function ReportContent() {
 
     return (
       <div className="space-y-4">
-        {/* Filters */}
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Select
-              value={typeFilter}
-              onValueChange={(v) => setTypeFilter(v as any)}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder={t("admin.filters.type")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("admin.filters.all")}</SelectItem>
-                {Object.values(ReportEnum).map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {t(`type.${type}`)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {showStatusFilter && setStatusFilter && (
-              <Select
-                value={statusFilter}
-                onValueChange={(v) => setStatusFilter(v as any)}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder={t("admin.filters.status")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{t("admin.filters.all")}</SelectItem>
-                  {Object.values(ReportStatusEnum).map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {t(`status.${status}`)}
+        {isLoading ? (
+          <>
+            <div className="flex justify-center items-center py-24">
+              <LoadingSpinner size="lg" showLabel label="Loading reports..." />
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Filters */}
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Select
+                  value={typeFilter}
+                  onValueChange={(v) => setTypeFilter(v as any)}
+                  disabled={isLoading}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder={t("admin.filters.type")} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">
+                      {t("admin.filters.all")}
                     </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+                    {Object.values(ReportEnum).map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {t(`type.${type}`)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-            <Button variant="outline" size="sm" onClick={refetch}>
-              <IconRefresh className="h-4 w-4 mr-2" />
-              {t("admin.filters.refresh")}
-            </Button>
-          </div>
-        </div>
+                {showStatusFilter && setStatusFilter && (
+                  <Select
+                    value={statusFilter}
+                    onValueChange={(v) => setStatusFilter(v as any)}
+                    disabled={isLoading}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder={t("admin.filters.status")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">
+                        {t("admin.filters.all")}
+                      </SelectItem>
+                      {Object.values(ReportStatusEnum).map((status) => (
+                        <SelectItem key={status} value={status}>
+                          {t(`status.${status}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
 
-        {/* Table */}
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t("admin.table.type")}</TableHead>
-                <TableHead>{t("admin.table.reporter")}</TableHead>
-                <TableHead>{t("admin.table.target")}</TableHead>
-                <TableHead>{t("admin.table.reason")}</TableHead>
-                <TableHead>{t("admin.table.status")}</TableHead>
-                <TableHead>{t("admin.table.createdAt")}</TableHead>
-                <TableHead className="text-right">
-                  {t("admin.table.actions")}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {reports.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8">
-                    {t("admin.table.noReports")}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                reports.map((report: any) => (
-                  <TableRow key={report.id}>
-                    <TableCell>
-                      <Badge variant="outline">
-                        {t(`type.${report.reportType}`)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={report.reporter.avatarUrl} />
-                          <AvatarFallback className="text-xs">
-                            {getInitials(report.reporter.name)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-sm">{report.reporter.name}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm max-w-[200px] truncate block">
-                        {getTargetName(report)}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm max-w-[250px] truncate block">
-                        {report.reason}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          report.status === ReportStatusEnum.Resolved
-                            ? "default"
-                            : report.status === ReportStatusEnum.Rejected
-                              ? "destructive"
-                              : report.status === ReportStatusEnum.Processing
-                                ? "secondary"
-                                : "outline"
-                        }
-                      >
-                        {t(`status.${report.status}`)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm">
-                        {format(new Date(report.createdAt), "PPp")}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setSelectedReportId(report.id)}
-                      >
-                        <IconEye className="h-4 w-4 mr-1" />
-                        {t("admin.table.viewDetails")}
-                      </Button>
-                    </TableCell>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={refetch}
+                  disabled={isLoading}
+                >
+                  <IconRefresh className="h-4 w-4 mr-2" />
+                  {t("admin.filters.refresh")}
+                </Button>
+              </div>
+            </div>
+            {/* Table */}
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("admin.table.reporter")}</TableHead>
+                    <TableHead>{t("admin.table.type")}</TableHead>
+                    <TableHead>{t("admin.table.target")}</TableHead>
+                    <TableHead>{t("admin.table.reason")}</TableHead>
+                    <TableHead>{t("admin.table.status")}</TableHead>
+                    <TableHead>{t("admin.table.createdAt")}</TableHead>
+                    <TableHead className="text-right">
+                      {t("admin.table.actions")}
+                    </TableHead>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-muted-foreground">
-              Page {page} of {totalPages}
+                </TableHeader>
+                <TableBody>
+                  {reports.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="text-center py-8">
+                        {t("admin.table.noReports")}
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    reports.map((report: any) => (
+                      <TableRow key={report.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={report.reporter.avatarUrl} />
+                              <AvatarFallback className="text-xs">
+                                {getInitials(report.reporter.name)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="text-sm">
+                              {report.reporter.name}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline">
+                            {t(`type.${report.reportType}`)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <span className="text-sm max-w-[200px] truncate block">
+                            {getTargetName(report)}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <span className="text-sm max-w-[250px] truncate block">
+                            {report.reason}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              report.status === ReportStatusEnum.Resolved
+                                ? "default"
+                                : report.status === ReportStatusEnum.Rejected
+                                  ? "destructive"
+                                  : report.status ===
+                                      ReportStatusEnum.Processing
+                                    ? "secondary"
+                                    : "outline"
+                            }
+                          >
+                            {t(`status.${report.status}`)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <span className="text-sm">
+                            {format(new Date(report.createdAt), "PPp")}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedReportId(report.id)}
+                          >
+                            <IconEye className="h-4 w-4 mr-1" />
+                            {t("admin.table.viewDetails")}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
             </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(page - 1)}
-                disabled={page === 1}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(page + 1)}
-                disabled={page === totalPages}
-              >
-                Next
-              </Button>
-            </div>
-          </div>
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={data?.data?.totalCount || 0}
+                pageSize={PAGE_SIZE}
+                hasNextPage={page < totalPages}
+                hasPreviousPage={page > 1}
+                onPageChange={setPage}
+              />
+            )}
+            )
+          </>
         )}
       </div>
     );
@@ -336,12 +370,10 @@ export default function ReportContent() {
 
   return (
     <>
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="">
         <div>
           <h1 className="text-3xl font-bold">{t("admin.title")}</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage and review all reports submitted by users
-          </p>
+          <p className="text-muted-foreground mt-1">{t("admin.description")}</p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -365,7 +397,7 @@ export default function ReportContent() {
               <CardHeader>
                 <CardTitle>{t("admin.tabs.all")}</CardTitle>
                 <CardDescription>
-                  View all reports in the system
+                  {t("admin.tabs.allDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -376,6 +408,7 @@ export default function ReportContent() {
                   allTypeFilter,
                   setAllTypeFilter,
                   refetchAll,
+                  isLoadingAll,
                   true,
                   allStatusFilter,
                   setAllStatusFilter
@@ -390,7 +423,7 @@ export default function ReportContent() {
               <CardHeader>
                 <CardTitle>{t("admin.tabs.pending")}</CardTitle>
                 <CardDescription>
-                  Reports waiting to be reviewed
+                  {t("admin.tabs.pendingDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -400,7 +433,8 @@ export default function ReportContent() {
                   setPendingPage,
                   pendingTypeFilter,
                   setPendingTypeFilter,
-                  refetchPending
+                  refetchPending,
+                  isLoadingPending
                 )}
               </CardContent>
             </Card>
@@ -412,7 +446,7 @@ export default function ReportContent() {
               <CardHeader>
                 <CardTitle>{t("admin.tabs.processing")}</CardTitle>
                 <CardDescription>
-                  Reports currently being processed
+                  {t("admin.tabs.processingDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -422,7 +456,8 @@ export default function ReportContent() {
                   setProcessingPage,
                   processingTypeFilter,
                   setProcessingTypeFilter,
-                  refetchProcessing
+                  refetchProcessing,
+                  isLoadingProcessing
                 )}
               </CardContent>
             </Card>
@@ -434,7 +469,7 @@ export default function ReportContent() {
               <CardHeader>
                 <CardTitle>{t("admin.tabs.resolved")}</CardTitle>
                 <CardDescription>
-                  Reports that have been resolved
+                  {t("admin.tabs.resolvedDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -444,7 +479,8 @@ export default function ReportContent() {
                   setResolvedPage,
                   resolvedTypeFilter,
                   setResolvedTypeFilter,
-                  refetchResolved
+                  refetchResolved,
+                  isLoadingResolved
                 )}
               </CardContent>
             </Card>
@@ -456,7 +492,7 @@ export default function ReportContent() {
               <CardHeader>
                 <CardTitle>{t("admin.tabs.rejected")}</CardTitle>
                 <CardDescription>
-                  Reports that have been rejected
+                  {t("admin.tabs.rejectedDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -466,7 +502,8 @@ export default function ReportContent() {
                   setRejectedPage,
                   rejectedTypeFilter,
                   setRejectedTypeFilter,
-                  refetchRejected
+                  refetchRejected,
+                  isLoadingRejected
                 )}
               </CardContent>
             </Card>

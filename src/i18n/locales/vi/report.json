@@ -67,12 +67,18 @@
     },
     "admin": {
       "title": "Quản lý báo cáo",
+      "description": "Quản lý và xem xét tất cả các báo cáo được gửi bởi người dùng",
       "tabs": {
         "all": "Tất cả báo cáo",
+        "allDescription": "Xem tất cả báo cáo trong hệ thống",
         "pending": "Chờ xử lý",
+        "pendingDescription": "Các báo cáo đang chờ được xem xét",
         "processing": "Đang xử lý",
+        "processingDescription": "Các báo cáo đang được xử lý",
         "resolved": "Đã giải quyết",
-        "rejected": "Đã từ chối"
+        "resolvedDescription": "Các báo cáo đã được giải quyết",
+        "rejected": "Đã từ chối",
+        "rejectedDescription": "Các báo cáo đã bị từ chối"
       },
       "table": {
         "id": "ID",

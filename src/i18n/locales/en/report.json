@@ -67,12 +67,18 @@
     },
     "admin": {
       "title": "Manage Reports",
+      "description": "Manage and review all reports submitted by users",
       "tabs": {
         "all": "All Reports",
+        "allDescription": "View all reports in the system",
         "pending": "Pending",
+        "pendingDescription": "Reports waiting to be reviewed",
         "processing": "Processing",
+        "processingDescription": "Reports currently being processed",
         "resolved": "Resolved",
-        "rejected": "Rejected"
+        "resolvedDescription": "Reports that have been resolved",
+        "rejected": "Rejected",
+        "rejectedDescription": "Reports that have been rejected"
       },
       "table": {
         "id": "ID",
