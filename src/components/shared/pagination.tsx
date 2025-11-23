@@ -1,6 +1,14 @@
 "use client";
 
 import {
+  Button,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components";
+import {
   IconChevronLeft,
   IconChevronRight,
   IconChevronsLeft,
@@ -8,15 +16,6 @@ import {
 } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 type PaginationProps = {
   currentPage: number;

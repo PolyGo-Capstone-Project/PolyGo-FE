@@ -36,6 +36,7 @@ import {
   RegistrationSuccessDialog,
   ShareEventDialog,
 } from "@/components/modules/event";
+import { ReportDialog } from "@/components/modules/report";
 import { EventStatus } from "@/constants";
 import {
   useCreateEventRatingMutation,
@@ -56,6 +57,7 @@ import {
   IconClock,
   IconCoin,
   IconEye,
+  IconFlag,
   IconLoader2,
   IconMapPin,
   IconShare3,
@@ -85,6 +87,7 @@ export default function EventDetailPage() {
   const [commentValue, setCommentValue] = useState<string>("");
   const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [showReportDialog, setShowReportDialog] = useState(false);
 
   const { data, isLoading, error } = useGetEventById(eventId, { lang: locale });
   const { data: balanceData } = useUserWallet();
@@ -513,14 +516,24 @@ export default function EventDetailPage() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>{t("registrationInfo")}</CardTitle>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                    onClick={() => setShowShareDialog(true)}
-                  >
-                    <IconShare3 className="h-4 w-4" />
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => setShowShareDialog(true)}
+                    >
+                      <IconShare3 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => setShowReportDialog(true)}
+                    >
+                      <IconFlag className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -613,7 +626,7 @@ export default function EventDetailPage() {
                 )}
 
                 {/* Already Registered Badge. If event has ended, show event ended message instead */}
-                {isRegistered && !eventEnd && !pending && (
+                {isRegistered && !eventEnd && !pending && !isHost && (
                   <div className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-primary/10 text-primary rounded-lg border border-primary/20">
                     <IconCheck className="h-5 w-5" />
                     <span className="font-semibold">{t("registered")}</span>
@@ -868,6 +881,16 @@ export default function EventDetailPage() {
             fee: event.fee,
             bannerUrl: event.bannerUrl,
           }}
+        />
+      )}
+
+      {/* Report Dialog */}
+      {event && (
+        <ReportDialog
+          open={showReportDialog}
+          onOpenChange={setShowReportDialog}
+          reportType="Event"
+          targetId={event.id}
         />
       )}
     </>

@@ -53,6 +53,7 @@ import {
   Search,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import { TransactionDetailDialog } from "./transaction-detail-dialog";
 
@@ -659,9 +660,11 @@ export function TransactionHistory() {
                 <Label className="mb-2 block text-muted-foreground">
                   {t("receiptDialog.transferReceipt")}
                 </Label>
-                <img
+                <Image
                   src={selectedTransaction.withdrawalApprovedImageUrl}
                   alt={t("receiptDialog.title")}
+                  width={600}
+                  height={400}
                   className="w-full rounded-lg border"
                 />
               </div>

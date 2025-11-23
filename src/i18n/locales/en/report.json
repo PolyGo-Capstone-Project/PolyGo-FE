@@ -1,0 +1,170 @@
+{
+  "report": {
+    "title": "Report",
+    "dialog": {
+      "title": "Report {type}",
+      "step1": {
+        "title": "Select Reason",
+        "description": "Please select the reason for reporting this {type}",
+        "otherReason": "Other reason",
+        "continue": "Continue",
+        "cancel": "Cancel"
+      },
+      "step2": {
+        "title": "Additional Information",
+        "description": "Provide more details to help us understand the issue (Optional)",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Describe the issue in detail...",
+        "imagesLabel": "Attach Images (Optional)",
+        "imagesPlaceholder": "Upload images to support your report",
+        "uploadButton": "Upload Images",
+        "maxImages": "Maximum {max} images",
+        "back": "Back",
+        "submit": "Submit Report",
+        "submitting": "Submitting..."
+      }
+    },
+    "reasons": {
+      "event": {
+        "negative_content": "Negative content (violence, sensitive, discrimination, offensive, ...)",
+        "spam": "Spam / Advertising / Scam",
+        "unreasonable_price": "Unreasonable pricing",
+        "violation": "Legal violation / Platform policy violation (content not related to language culture, ...)",
+        "other": "Other reason"
+      },
+      "post": {
+        "negative_content": "Negative content",
+        "spam": "Spam / Advertising / Scam",
+        "misinformation": "False information",
+        "copyright": "Copyright violation",
+        "violation": "Legal violation / Platform policy violation",
+        "other": "Other reason"
+      },
+      "user": {
+        "impersonation": "Impersonation",
+        "spam": "Spam / Advertising / Scam",
+        "negative_behavior": "Negative behavior (harassment, offensive, discrimination, ...)",
+        "violation": "Legal violation / Platform policy violation",
+        "other": "Other reason"
+      },
+      "system": {
+        "appeal": "Appeal",
+        "bug": "Report Bug",
+        "support": "Support"
+      }
+    },
+    "status": {
+      "Pending": "Pending",
+      "Processing": "Processing",
+      "Resolved": "Resolved",
+      "Rejected": "Rejected"
+    },
+    "type": {
+      "Event": "Event",
+      "Post": "Post",
+      "User": "User",
+      "System": "System"
+    },
+    "admin": {
+      "title": "Manage Reports",
+      "description": "Manage and review all reports submitted by users",
+      "tabs": {
+        "all": "All Reports",
+        "allDescription": "View all reports in the system",
+        "pending": "Pending",
+        "pendingDescription": "Reports waiting to be reviewed",
+        "processing": "Processing",
+        "processingDescription": "Reports currently being processed",
+        "resolved": "Resolved",
+        "resolvedDescription": "Reports that have been resolved",
+        "rejected": "Rejected",
+        "rejectedDescription": "Reports that have been rejected"
+      },
+      "table": {
+        "id": "ID",
+        "type": "Type",
+        "reporter": "Reporter",
+        "target": "Target",
+        "reason": "Reason",
+        "status": "Status",
+        "createdAt": "Created At",
+        "actions": "Actions",
+        "viewDetails": "View Details",
+        "noReports": "No reports found"
+      },
+      "filters": {
+        "status": "Filter by Status",
+        "type": "Filter by Type",
+        "all": "All",
+        "refresh": "Refresh"
+      },
+      "detail": {
+        "title": "Report Details",
+        "reportInfo": "Report Information",
+        "reportType": "Report Type",
+        "reportStatus": "Status",
+        "reporter": "Reporter",
+        "reportedAt": "Reported At",
+        "processedBy": "Processed By",
+        "processedAt": "Processed At",
+        "reason": "Reason",
+        "description": "Description",
+        "images": "Attached Images",
+        "targetInfo": "Target Information",
+        "targetUser": "Reported User",
+        "targetEvent": "Reported Event",
+        "targetPost": "Reported Post",
+        "adminResponse": "Admin Response",
+        "adminResponsePlaceholder": "Write your response to the reporter...",
+        "adminResponseToTarget": "Response to Target",
+        "adminResponseToTargetPlaceholder": "Write your response to the reported user/content...",
+        "updateStatus": "Update Status",
+        "processing": "Processing",
+        "close": "Close"
+      }
+    },
+    "user": {
+      "title": "My Reports",
+      "createReport": "Create Report",
+      "viewReport": "View Report",
+      "noReports": "You haven't submitted any reports yet",
+      "table": {
+        "type": "Type",
+        "target": "Target",
+        "reason": "Reason",
+        "status": "Status",
+        "createdAt": "Submitted At",
+        "actions": "Actions"
+      },
+      "pagination": {
+        "page": "Page {current} of {total}",
+        "previous": "Previous",
+        "next": "Next"
+      }
+    },
+    "help": {
+      "title": "Help & Support",
+      "description": "Get help with issues, report problems, or view your report history",
+      "systemReport": {
+        "title": "System Report",
+        "description": "Report bugs, request support, or submit an appeal",
+        "createButton": "Create System Report"
+      },
+      "myReports": {
+        "title": "My Reports",
+        "description": "View all your submitted reports and their status"
+      }
+    },
+    "success": {
+      "submitted": "Report submitted successfully",
+      "updated": "Report updated successfully"
+    },
+    "error": {
+      "failed": "Failed to submit report",
+      "loadFailed": "Failed to load report",
+      "updateFailed": "Failed to update report",
+      "invalidImages": "Please upload valid image files",
+      "maxImages": "Maximum {max} images allowed"
+    }
+  }
+}

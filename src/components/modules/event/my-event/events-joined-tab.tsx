@@ -11,7 +11,7 @@ import {
 } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { JoinedEventCard } from "@/components/modules/event/my-event/joined-event-card";
 import { Pagination } from "@/components/shared";
@@ -82,8 +82,10 @@ export function EventsJoinedTab() {
   // Memoize current time to avoid recreating Date object on every render
   const now = useMemo(() => new Date(), []);
 
-  // Get all events
-  const allEvents = allEventsData?.payload?.data?.items || [];
+  const allEvents = useMemo(
+    () => allEventsData?.payload.data.items || [],
+    [allEventsData?.payload.data.items]
+  );
 
   // Filter and separate upcoming vs history events
   const { upcomingEvents, historyEvents } = useMemo(() => {
@@ -141,7 +143,7 @@ export function EventsJoinedTab() {
   }, [historyEvents, historyPage]);
 
   // Reset to page 1 when filters change
-  useMemo(() => {
+  useEffect(() => {
     setUpcomingPage(1);
     setHistoryPage(1);
   }, [searchQuery, sortBy]);
@@ -162,7 +164,7 @@ export function EventsJoinedTab() {
   const stats = useMemo(() => {
     const totalFees = allEvents
       .filter((e) => new Date(e.startAt) <= now)
-      .reduce((sum, e) => sum + e.fee, 0);
+      .reduce((sum: number, e) => sum + e.fee, 0);
 
     return {
       total: allEvents.length,

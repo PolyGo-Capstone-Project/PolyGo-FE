@@ -74,7 +74,7 @@ export function WithdrawOTPDialog({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [open, timeLeft, onOpenChange, t]);
+  }, [open, timeLeft, onOpenChange, t, tError]);
 
   // Format time as mm:ss
   const formatTime = (seconds: number) => {
