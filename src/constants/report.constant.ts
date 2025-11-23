@@ -9,7 +9,7 @@ export type ReportTypeEnum = (typeof ReportEnum)[keyof typeof ReportEnum];
 
 export const ReportStatusEnum = {
   Pending: "Pending",
-  InProcessing: "InProcessing",
+  Processing: "Processing",
   Resolved: "Resolved",
   Rejected: "Rejected",
 } as const;

@@ -58,7 +58,7 @@ export const ReportQuerySchema = PaginationQuerySchema.extend({
 export const GetReportItemSchema = ReportSchema.extend({
   reporter: UserInfoSchema,
   processedBy: UserInfoSchema.optional(),
-  targetInfo: ReportTargetInfoSchema,
+  targetInfo: ReportTargetInfoSchema.optional(),
 });
 
 export const GetReportListSchema = z.object({
@@ -70,9 +70,15 @@ export const GetReportListSchema = z.object({
 });
 
 // GET - for user reports
+export const GetUserReportItemSchema = ReportSchema.omit({
+  reporterId: true,
+}).extend({
+  processedBy: UserInfoSchema.optional(),
+});
+
 export const GetUserReportListSchema = z.object({
   data: z.object({
-    items: z.array(GetReportItemSchema),
+    items: z.array(GetUserReportItemSchema),
     ...PaginationMetaSchema.shape,
   }),
   message: z.string(),

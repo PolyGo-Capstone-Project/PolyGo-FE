@@ -25,6 +25,7 @@ import {
   MDXEditorWrapper,
   Separator,
 } from "@/components";
+import { ReportDialog } from "@/components/modules/report";
 import { SharePostDialog } from "@/components/modules/social";
 import type { ReactionEnumType } from "@/constants";
 import { ReactionEnum } from "@/constants";
@@ -236,6 +237,7 @@ export default function PostCard({
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [editPostContent, setEditPostContent] = useState(post.content);
   const [isContentExpanded, setIsContentExpanded] = useState(false);
   const [isSharedContentExpanded, setIsSharedContentExpanded] = useState(false);
@@ -695,7 +697,12 @@ export default function PostCard({
               <IconShare3 size={16} />
               {t("post.share.title")}
             </Button>
-            <Button variant="ghost" size="sm" className="gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1"
+              onClick={() => setReportDialogOpen(true)}
+            >
               <IconFlag size={16} />
               {t("post.report")}
             </Button>
@@ -1046,6 +1053,14 @@ export default function PostCard({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Report Dialog */}
+      <ReportDialog
+        open={reportDialogOpen}
+        onOpenChange={setReportDialogOpen}
+        reportType="Post"
+        targetId={post.id}
+      />
     </Card>
   );
 }

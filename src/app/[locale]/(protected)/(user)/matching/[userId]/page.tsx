@@ -17,6 +17,7 @@ import {
   UserNotFound,
   UserPostsList,
 } from "@/components";
+import { ReportDialog } from "@/components/modules/report";
 import { useUserCommunicationHubContext } from "@/components/providers";
 import { FriendStatus } from "@/constants";
 import {
@@ -30,7 +31,6 @@ import { showErrorToast, showSuccessToast } from "@/lib";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
 
 // Mock data for features not yet implemented
 const MOCK_STATS = {
@@ -53,6 +53,7 @@ export default function UserProfilePage() {
   const tSuccess = useTranslations("Success");
   const tError = useTranslations("Error");
   const [sendGiftDialogOpen, setSendGiftDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [lang] = useState(initialLang);
 
   const userId = params.userId as string;
@@ -106,7 +107,7 @@ export default function UserProfilePage() {
   });
 
   const handleReportUser = () => {
-    toast.error("Report user feature is not implemented yet.");
+    setReportDialogOpen(true);
   };
 
   // Handle loading state
@@ -335,6 +336,14 @@ export default function UserProfilePage() {
         receiverId={userId}
         receiverName={user.name}
         locale={locale}
+      />
+
+      {/* Report Dialog */}
+      <ReportDialog
+        open={reportDialogOpen}
+        onOpenChange={setReportDialogOpen}
+        reportType="User"
+        targetId={userId}
       />
     </>
   );

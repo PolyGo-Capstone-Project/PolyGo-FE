@@ -36,6 +36,7 @@ import {
   RegistrationSuccessDialog,
   ShareEventDialog,
 } from "@/components/modules/event";
+import { ReportDialog } from "@/components/modules/report";
 import { EventStatus } from "@/constants";
 import {
   useCreateEventRatingMutation,
@@ -880,6 +881,16 @@ export default function EventDetailPage() {
             fee: event.fee,
             bannerUrl: event.bannerUrl,
           }}
+        />
+      )}
+
+      {/* Report Dialog */}
+      {event && (
+        <ReportDialog
+          open={showReportDialog}
+          onOpenChange={setShowReportDialog}
+          reportType="Event"
+          targetId={event.id}
         />
       )}
     </>
