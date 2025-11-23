@@ -9,6 +9,7 @@ export { default as interestApiRequest } from "./interest";
 export { default as languageApiRequest } from "./language";
 export { default as paymentApiRequest } from "./payment";
 export { default as postApiRequest } from "./post";
+export { default as reportApiRequest } from "./report";
 export { default as subscriptionApiRequest } from "./subscription";
 export { default as transactionApiRequest } from "./transaction";
 export { default as userApiRequest } from "./user";
