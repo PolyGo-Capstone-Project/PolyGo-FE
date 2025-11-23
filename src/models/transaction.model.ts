@@ -57,6 +57,7 @@ export const GetTransactionAdminQuerySchema = PaginationQuerySchema.extend({
 // GET
 // GET USER WALLET
 const accountBank = z.object({
+  id: z.string(),
   bankName: z.string(),
   bankNumber: z.string(),
   accountName: z.string(),

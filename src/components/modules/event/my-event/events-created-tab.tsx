@@ -39,7 +39,7 @@ import {
 } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const PAGE_SIZE = 8;
 
@@ -88,8 +88,14 @@ export function EventsCreatedTab() {
     },
   });
 
-  // Get all events
-  const allEvents = allEventsData?.payload?.data?.items || [];
+  const allEvents = useMemo(
+    () =>
+      (allEventsData?.payload.data.items || []).map((event) => ({
+        ...event,
+        isOwner: true,
+      })),
+    [allEventsData?.payload.data.items]
+  );
 
   // Filter and separate upcoming vs past events
   const { upcomingEvents, pastEvents } = useMemo(() => {
@@ -152,7 +158,7 @@ export function EventsCreatedTab() {
   }, [pastEvents, pastPage]);
 
   // Reset to page 1 when filters change
-  useMemo(() => {
+  useEffect(() => {
     setUpcomingPage(1);
     setPastPage(1);
   }, [searchQuery, statusFilter]);
