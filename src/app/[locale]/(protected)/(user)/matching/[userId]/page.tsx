@@ -30,6 +30,7 @@ import { showErrorToast, showSuccessToast } from "@/lib";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 // Mock data for features not yet implemented
 const MOCK_STATS = {
@@ -103,6 +104,10 @@ export default function UserProfilePage() {
       showErrorToast("failReject", tError);
     },
   });
+
+  const handleReportUser = () => {
+    toast.error("Report user feature is not implemented yet.");
+  };
 
   // Handle loading state
   if (isLoading) {
@@ -220,6 +225,7 @@ export default function UserProfilePage() {
           onAddFriend={handleAddFriend}
           onRejectFriend={handleRejectFriend}
           onChat={handleChat}
+          onReport={handleReportUser}
         />
 
         {/* Tabs Section */}

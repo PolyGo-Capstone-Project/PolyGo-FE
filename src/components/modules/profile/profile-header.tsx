@@ -3,6 +3,7 @@
 import {
   IconCheck,
   IconEdit,
+  IconFlag,
   IconGift,
   IconMessageCircle,
   IconShare,
@@ -36,6 +37,7 @@ type ProfileHeaderProps = {
   onAddFriend?: () => void;
   onRejectFriend?: () => void;
   onChat?: () => void;
+  onReport?: () => void;
 };
 
 export function ProfileHeader({
@@ -54,6 +56,7 @@ export function ProfileHeader({
   onAddFriend,
   onRejectFriend,
   onChat,
+  onReport,
 }: ProfileHeaderProps) {
   const t = useTranslations("profile");
   const locale = useLocale();
@@ -210,18 +213,27 @@ export function ProfileHeader({
                     size="sm"
                     className="flex-1 md:flex-none"
                   >
-                    <IconGift className="mr-2 h-4 w-4" />
-                    {t("sendGift")}
+                    <IconGift className="h-4 w-4" />
                   </Button>
                 )}
                 {onShare && (
                   <Button
                     onClick={onShare}
                     size="sm"
-                    variant="link"
+                    variant="secondary"
                     className="flex-1 md:flex-none"
                   >
                     <IconShare className="h-4 w-4" />
+                  </Button>
+                )}
+                {onReport && (
+                  <Button
+                    onClick={onReport}
+                    size="sm"
+                    variant="destructive"
+                    className="flex-1 md:flex-none"
+                  >
+                    <IconFlag className="h-4 w-4" />
                   </Button>
                 )}
               </div>

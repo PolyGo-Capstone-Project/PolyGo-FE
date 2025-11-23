@@ -22,7 +22,9 @@ const reportApiRequest = {
     `${prefix}/me`
   ),
   // Admin - get all reports
-  getAllReports: createGetAll<GetReportListType, ReportQueryType>(`${prefix}`),
+  getAllReports: createGetAll<GetReportListType, ReportQueryType>(
+    `${prefix}/all`
+  ),
   // Get report by ID
   getReportById: (reportId: string) =>
     http.get<GetReportByIdType>(`${prefix}/${reportId}`),

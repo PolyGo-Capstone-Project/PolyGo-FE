@@ -18,6 +18,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui";
+import { useAuthMe } from "@/hooks";
 import { formatCurrency } from "@/lib";
 import {
   IconCalendar,
@@ -90,6 +91,10 @@ export function JoinedEventCard({
   };
 
   const hasBanner = isValidBannerUrl(event.bannerUrl);
+
+  // check isHost
+  const me = useAuthMe();
+  const isHost = me?.data?.payload.data.id === event.host.id;
 
   return (
     <>
@@ -195,6 +200,7 @@ export function JoinedEventCard({
 
             {isUpcoming &&
               onUnregister &&
+              !isHost &&
               (canUnregister ? (
                 <Button
                   variant="destructive"
