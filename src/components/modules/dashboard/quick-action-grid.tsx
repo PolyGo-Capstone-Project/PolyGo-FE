@@ -34,8 +34,8 @@ export function QuickActionsGrid({
       case "joinEvent":
         path = `/${locale}/event`;
         break;
-      case "upgradePlus":
-        path = `/${locale}/pricing`;
+      case "helpCenter":
+        path = `/${locale}/help`;
         break;
       case "myWallet":
         path = `/${locale}/wallet`;
