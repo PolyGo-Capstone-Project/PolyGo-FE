@@ -7,7 +7,6 @@
     "seeAll": "Xem tất cả",
     "profile": "Hồ sơ",
     "chat": "Nhắn tin",
-
     "stats": {
       "title": "Thống kê của bạn",
       "xp": "Tổng XP",
@@ -16,7 +15,6 @@
       "rating": "Đánh giá cộng đồng",
       "levelProgress": "Tiến trình Cấp độ"
     },
-
     "quickActions": {
       "title": "Hành động Nhanh",
       "findPartner": "Tìm Đối tác Luyện tập",
@@ -25,28 +23,23 @@
       "startChatDesc": "Nhắn tin với bạn bè và đối tác.",
       "joinEvent": "Tham gia Sự kiện",
       "joinEventDesc": "Khám phá các buổi họp mặt và hội thảo.",
-      "upgradePlus": "Nâng cấp Plus",
-      "upgradePlusDesc": "Mở khóa các tính năng cao cấp.",
       "myWallet": "Ví của tôi",
       "myWalletDesc": "Quản lý số dư và giao dịch của bạn.",
       "games": "Trò chơi",
-      "gamesDesc": "Chơi và học ngôn ngữ qua trò chơi."
+      "gamesDesc": "Chơi và học ngôn ngữ qua trò chơi.",
+      "helpCenter": "Trung tâm Trợ giúp"
     },
-
     "suggestedPartners": {
       "title": "Đối tác Đề xuất"
     },
-
     "upcomingEvents": {
       "title": "Sự kiện Sắp tới",
       "viewDashboard": "Xem tất cả",
       "join": "Tham gia ngay"
     },
-
     "recentChats": {
       "title": "Cuộc trò chuyện Gần đây"
     },
-
     "upgradePlus": {
       "badge": "Nâng cấp lên Plus",
       "title": "Mở khóa cuộc gọi và dịch thuật không giới hạn",

@@ -11,6 +11,7 @@ export * from "./media.model";
 export * from "./payment.model";
 export * from "./post.model";
 export * from "./presence.model";
+export * from "./report.model";
 export * from "./subscription.model";
 export * from "./transaction.model";
 export * from "./user.model";

@@ -17,6 +17,7 @@ import {
   UserNotFound,
   UserPostsList,
 } from "@/components";
+import { ReportDialog } from "@/components/modules/report";
 import { useUserCommunicationHubContext } from "@/components/providers";
 import { FriendStatus } from "@/constants";
 import {
@@ -52,6 +53,7 @@ export default function UserProfilePage() {
   const tSuccess = useTranslations("Success");
   const tError = useTranslations("Error");
   const [sendGiftDialogOpen, setSendGiftDialogOpen] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
   const [lang] = useState(initialLang);
 
   const userId = params.userId as string;
@@ -103,6 +105,10 @@ export default function UserProfilePage() {
       showErrorToast("failReject", tError);
     },
   });
+
+  const handleReportUser = () => {
+    setReportDialogOpen(true);
+  };
 
   // Handle loading state
   if (isLoading) {
@@ -220,6 +226,7 @@ export default function UserProfilePage() {
           onAddFriend={handleAddFriend}
           onRejectFriend={handleRejectFriend}
           onChat={handleChat}
+          onReport={handleReportUser}
         />
 
         {/* Tabs Section */}
@@ -329,6 +336,14 @@ export default function UserProfilePage() {
         receiverId={userId}
         receiverName={user.name}
         locale={locale}
+      />
+
+      {/* Report Dialog */}
+      <ReportDialog
+        open={reportDialogOpen}
+        onOpenChange={setReportDialogOpen}
+        reportType="User"
+        targetId={userId}
       />
     </>
   );

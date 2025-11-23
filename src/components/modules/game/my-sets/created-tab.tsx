@@ -94,7 +94,10 @@ export default function CreatedTab() {
   const { data: interestsData } = useInterestsQuery({
     params: { pageNumber: 1, pageSize: 200, lang: locale },
   });
-  const interests = interestsData?.payload?.data?.items ?? [];
+  const interests = useMemo(
+    () => (interestsData?.payload?.data?.items || []).map((it: any) => it.id),
+    [interestsData?.payload?.data?.items]
+  );
 
   const interestMap = useMemo(() => {
     const m = new Map<string, any>();

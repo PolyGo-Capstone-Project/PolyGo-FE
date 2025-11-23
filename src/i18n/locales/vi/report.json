@@ -1,0 +1,170 @@
+{
+  "report": {
+    "title": "Báo cáo",
+    "dialog": {
+      "title": "Báo cáo {type}",
+      "step1": {
+        "title": "Chọn Lý Do",
+        "description": "Vui lòng chọn lý do báo cáo {type} này",
+        "otherReason": "Lý do khác",
+        "continue": "Tiếp tục",
+        "cancel": "Hủy"
+      },
+      "step2": {
+        "title": "Thông Tin Bổ Sung",
+        "description": "Cung cấp thêm chi tiết để giúp chúng tôi hiểu vấn đề (Tùy chọn)",
+        "descriptionLabel": "Mô tả",
+        "descriptionPlaceholder": "Mô tả chi tiết vấn đề...",
+        "imagesLabel": "Đính kèm hình ảnh (Tùy chọn)",
+        "imagesPlaceholder": "Tải lên hình ảnh để hỗ trợ báo cáo của bạn",
+        "uploadButton": "Tải lên hình ảnh",
+        "maxImages": "Tối đa {max} hình ảnh",
+        "back": "Quay lại",
+        "submit": "Gửi báo cáo",
+        "submitting": "Đang gửi..."
+      }
+    },
+    "reasons": {
+      "event": {
+        "negative_content": "Nội dung tiêu cực (bạo lực, nhạy cảm, phân biệt, xúc phạm, ...)",
+        "spam": "Spam / Quảng cáo / Lừa đảo",
+        "unreasonable_price": "Giá cả không hợp lý",
+        "violation": "Vi phạm pháp luật / Chính sách nền tảng (nội dung không liên quan văn hóa ngôn ngữ, ...)",
+        "other": "Lý do khác"
+      },
+      "post": {
+        "negative_content": "Nội dung tiêu cực",
+        "spam": "Spam / Quảng cáo / Lừa đảo",
+        "misinformation": "Thông tin sai sự thật",
+        "copyright": "Vi phạm bản quyền",
+        "violation": "Vi phạm pháp luật / Chính sách nền tảng",
+        "other": "Lý do khác"
+      },
+      "user": {
+        "impersonation": "Giả mạo",
+        "spam": "Spam / Quảng cáo / Lừa đảo",
+        "negative_behavior": "Hành vi tiêu cực (quấy rối, xúc phạm, phân biệt, ...)",
+        "violation": "Vi phạm pháp luật / Chính sách nền tảng",
+        "other": "Lý do khác"
+      },
+      "system": {
+        "appeal": "Kháng cáo",
+        "bug": "Báo lỗi",
+        "support": "Hỗ trợ"
+      }
+    },
+    "status": {
+      "Pending": "Chờ xử lý",
+      "Processing": "Đang xử lý",
+      "Resolved": "Đã giải quyết",
+      "Rejected": "Đã từ chối"
+    },
+    "type": {
+      "Event": "Sự kiện",
+      "Post": "Bài đăng",
+      "User": "Người dùng",
+      "System": "Hệ thống"
+    },
+    "admin": {
+      "title": "Quản lý báo cáo",
+      "description": "Quản lý và xem xét tất cả các báo cáo được gửi bởi người dùng",
+      "tabs": {
+        "all": "Tất cả báo cáo",
+        "allDescription": "Xem tất cả báo cáo trong hệ thống",
+        "pending": "Chờ xử lý",
+        "pendingDescription": "Các báo cáo đang chờ được xem xét",
+        "processing": "Đang xử lý",
+        "processingDescription": "Các báo cáo đang được xử lý",
+        "resolved": "Đã giải quyết",
+        "resolvedDescription": "Các báo cáo đã được giải quyết",
+        "rejected": "Đã từ chối",
+        "rejectedDescription": "Các báo cáo đã bị từ chối"
+      },
+      "table": {
+        "id": "ID",
+        "type": "Loại",
+        "reporter": "Người báo cáo",
+        "target": "Đối tượng",
+        "reason": "Lý do",
+        "status": "Trạng thái",
+        "createdAt": "Ngày tạo",
+        "actions": "Thao tác",
+        "viewDetails": "Xem chi tiết",
+        "noReports": "Không tìm thấy báo cáo"
+      },
+      "filters": {
+        "status": "Lọc theo trạng thái",
+        "type": "Lọc theo loại",
+        "all": "Tất cả",
+        "refresh": "Làm mới"
+      },
+      "detail": {
+        "title": "Chi tiết báo cáo",
+        "reportInfo": "Thông tin báo cáo",
+        "reportType": "Loại báo cáo",
+        "reportStatus": "Trạng thái",
+        "reporter": "Người báo cáo",
+        "reportedAt": "Thời gian báo cáo",
+        "processedBy": "Người xử lý",
+        "processedAt": "Thời gian xử lý",
+        "reason": "Lý do",
+        "description": "Mô tả",
+        "images": "Hình ảnh đính kèm",
+        "targetInfo": "Thông tin đối tượng",
+        "targetUser": "Người dùng bị báo cáo",
+        "targetEvent": "Sự kiện bị báo cáo",
+        "targetPost": "Bài đăng bị báo cáo",
+        "adminResponse": "Phản hồi của Admin",
+        "adminResponsePlaceholder": "Viết phản hồi của bạn cho người báo cáo...",
+        "adminResponseToTarget": "Phản hồi cho đối tượng",
+        "adminResponseToTargetPlaceholder": "Viết phản hồi của bạn cho người dùng/nội dung bị báo cáo...",
+        "updateStatus": "Cập nhật trạng thái",
+        "processing": "Đang xử lý",
+        "close": "Đóng"
+      }
+    },
+    "user": {
+      "title": "Báo cáo của tôi",
+      "createReport": "Tạo báo cáo",
+      "viewReport": "Xem báo cáo",
+      "noReports": "Bạn chưa gửi báo cáo nào",
+      "table": {
+        "type": "Loại",
+        "target": "Đối tượng",
+        "reason": "Lý do",
+        "status": "Trạng thái",
+        "createdAt": "Thời gian gửi",
+        "actions": "Thao tác"
+      },
+      "pagination": {
+        "page": "Trang {current} / {total}",
+        "previous": "Trước",
+        "next": "Tiếp"
+      }
+    },
+    "help": {
+      "title": "Trợ giúp & Hỗ trợ",
+      "description": "Nhận trợ giúp về các vấn đề, báo cáo sự cố hoặc xem lịch sử báo cáo của bạn",
+      "systemReport": {
+        "title": "Báo cáo hệ thống",
+        "description": "Báo lỗi, yêu cầu hỗ trợ hoặc gửi kháng cáo",
+        "createButton": "Tạo báo cáo hệ thống"
+      },
+      "myReports": {
+        "title": "Báo cáo của tôi",
+        "description": "Xem tất cả các báo cáo bạn đã gửi và trạng thái của chúng"
+      }
+    },
+    "success": {
+      "submitted": "Gửi báo cáo thành công",
+      "updated": "Cập nhật báo cáo thành công"
+    },
+    "error": {
+      "failed": "Gửi báo cáo thất bại",
+      "loadFailed": "Tải báo cáo thất bại",
+      "updateFailed": "Cập nhật báo cáo thất bại",
+      "invalidImages": "Vui lòng tải lên file hình ảnh hợp lệ",
+      "maxImages": "Tối đa {max} hình ảnh"
+    }
+  }
+}

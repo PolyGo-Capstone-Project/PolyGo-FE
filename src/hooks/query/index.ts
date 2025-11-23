@@ -9,6 +9,7 @@ export * from "./use-language";
 export * from "./use-media";
 export * from "./use-payment";
 export * from "./use-post";
+export * from "./use-report";
 export * from "./use-subscription";
 export * from "./use-transaction";
 export * from "./use-user";

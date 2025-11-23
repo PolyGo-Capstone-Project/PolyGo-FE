@@ -9,6 +9,7 @@ export * from "./matching";
 export * as meeting from "./meeting";
 export * from "./pricing";
 export * from "./profile";
+export * from "./report";
 export * from "./setup-profile";
 export * from "./social";
 export * from "./wallet";

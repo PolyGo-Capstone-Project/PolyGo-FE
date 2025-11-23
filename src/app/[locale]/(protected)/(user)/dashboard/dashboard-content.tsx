@@ -23,19 +23,15 @@ import { UserMatchingItemType } from "@/models";
 import { format, formatDistanceToNow } from "date-fns";
 import { enUS, vi } from "date-fns/locale";
 import {
+  BadgeQuestionMark,
   CreditCard,
   Gamepad2,
   MessageSquare,
   Search,
-  Star,
   Ticket,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
-
-/* ======================================================= */
-/* ================= MOCK DATA + UTILITIES ================ */
-/* ======================================================= */
 
 const MOCK_TOTAL_HOURS = 15;
 const MOCK_RATING = 4.8;
@@ -63,21 +59,21 @@ const mockQuickActions: QuickActionItemType[] = [
   },
   {
     id: 4,
-    icon: <Star className="w-6 h-6 text-white" />,
-    title: "upgradePlus",
-    color: "bg-amber-500",
-  },
-  {
-    id: 5,
     icon: <CreditCard className="w-6 h-6 text-white" />,
     title: "myWallet",
     color: "bg-pink-500",
   },
   {
-    id: 6,
+    id: 5,
     icon: <Gamepad2 className="w-6 h-6 text-white" />,
     title: "games",
     color: "bg-red-500",
+  },
+  {
+    id: 6,
+    icon: <BadgeQuestionMark className="w-6 h-6 text-white" />,
+    title: "helpCenter",
+    color: "bg-amber-500",
   },
 ];
 
@@ -208,9 +204,7 @@ export default function DashboardContent({ locale }: ContentProps) {
   const progressPct = (levelProgress.current / levelProgress.total) * 100;
 
   // Filter quick actions if not Free plan
-  const quickActions = isFreePlan
-    ? mockQuickActions
-    : mockQuickActions.filter((action) => action.title !== "upgradePlus");
+  const quickActions = mockQuickActions;
 
   return (
     <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
