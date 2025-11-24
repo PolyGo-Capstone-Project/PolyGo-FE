@@ -108,7 +108,7 @@
     "events": "My Events",
     "wallet": "Wallet"
   },
-  "common": {
+  "commonGender": {
     "gender": {
       "Male": "Male",
       "Female": "Female",

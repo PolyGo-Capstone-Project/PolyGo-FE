@@ -49,7 +49,7 @@ export function PersonalInfoStep({
   errors,
 }: PersonalInfoStepProps) {
   const t = useTranslations("setupProfile.steps.personalInfo");
-  const tCommon = useTranslations("common");
+  const tCommon = useTranslations("commonGender");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
 

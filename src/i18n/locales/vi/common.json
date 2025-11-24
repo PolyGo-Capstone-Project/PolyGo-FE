@@ -108,6 +108,13 @@
     "events": "Sự kiện của tôi",
     "wallet": "Ví cá nhân"
   },
+  "commonGender": {
+    "gender": {
+      "Male": "Nam",
+      "Female": "Nữ",
+      "Other": "Khác"
+    }
+  },
   "merit": {
     "reliable": {
       "label": "Rất tin cậy",
