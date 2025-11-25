@@ -35,6 +35,7 @@
     "voiceMessage": "Tin nhắn thoại",
     "imageMessage": "Hình ảnh",
     "imagesMessage": "{count} hình ảnh",
+    "audioMessage": "Tin nhắn âm thanh",
     "loadMore": "Tải thêm tin nhắn",
     "loadingMessages": "Đang tải tin nhắn...",
     "noMessages": "Chưa có tin nhắn nào",

@@ -192,7 +192,9 @@ export function MessageList({
 
       if (!urls.length) {
         return (
-          <p className="break-words text-xs md:text-sm">{message.content}</p>
+          <p className="break-all whitespace-pre-wrap text-xs md:text-sm">
+            {message.content}
+          </p>
         );
       }
 
@@ -233,7 +235,11 @@ export function MessageList({
       return <AudioPlayer src={message.content} isOwn={isOwn} />;
     }
 
-    return <p className="break-words text-xs md:text-sm">{message.content}</p>;
+    return (
+      <p className="break-all whitespace-pre-wrap text-xs md:text-sm">
+        {message.content}
+      </p>
+    );
   };
 
   // Scroll to bottom on initial mount or when first messages load
@@ -419,7 +425,7 @@ export function MessageList({
                   {/* Message Bubble */}
                   <div
                     className={cn(
-                      "max-w-[75%] rounded-2xl md:max-w-[70%]",
+                      "max-w-[75%] rounded-2xl overflow-hidden md:max-w-[70%]",
                       isImageMessage
                         ? "p-0"
                         : isAudioMessage
