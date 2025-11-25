@@ -196,6 +196,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     isConnected,
     sendTextMessage,
     sendImageMessage,
+    sendAudioMessage,
     markAsRead,
     deleteMessage,
     error: hubError,
@@ -561,6 +562,31 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     }
   };
 
+  const handleSendAudioMessage = async (file: File) => {
+    if (!selectedConversationId || !currentUserId) {
+      throw new Error("Missing conversation or user");
+    }
+
+    const upload = await mediaApiRequest.uploadFile({ file });
+    const audioUrl = upload.payload.data;
+
+    if (!audioUrl) {
+      throw new Error("No audio uploaded");
+    }
+
+    const optimisticId = createOptimisticMessage({
+      content: audioUrl,
+      type: MessageEnum.Audio,
+    });
+
+    try {
+      await sendAudioMessage(selectedConversationId, currentUserId, audioUrl);
+    } catch (error) {
+      removeOptimisticMessage(optimisticId);
+      throw error;
+    }
+  };
+
   const handleLoadMoreMessages = async () => {
     if (
       !selectedConversationId ||
@@ -805,6 +831,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
             <MessageInput
               onSendText={handleSendTextMessage}
               onSendImages={handleSendImageMessage}
+              onSendAudio={handleSendAudioMessage}
               disabled={
                 !selectedConversationId || !currentUserId || !isConnected
               }
@@ -883,6 +910,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
             <MessageInput
               onSendText={handleSendTextMessage}
               onSendImages={handleSendImageMessage}
+              onSendAudio={handleSendAudioMessage}
               disabled={
                 !selectedConversationId || !currentUserId || !isConnected
               }
