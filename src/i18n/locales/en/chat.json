@@ -35,6 +35,7 @@
     "voiceMessage": "Voice message",
     "imageMessage": "Image",
     "imagesMessage": "{count} images",
+    "audioMessage": "Audio message",
     "loadMore": "Load more messages",
     "loadingMessages": "Loading messages...",
     "noMessages": "No messages yet",

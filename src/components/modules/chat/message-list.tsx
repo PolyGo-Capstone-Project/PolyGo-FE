@@ -19,6 +19,7 @@ import { ChatMessage } from "@/types";
 import { format, isToday, isYesterday } from "date-fns";
 import { enUS, vi } from "date-fns/locale";
 import { Copy, MoreVertical, Trash2 } from "lucide-react";
+import { AudioPlayer } from "./audio-player";
 import { ImagePreviewModal } from "./image-preview-modal";
 
 interface MessageListProps {
@@ -191,7 +192,9 @@ export function MessageList({
 
       if (!urls.length) {
         return (
-          <p className="break-words text-xs md:text-sm">{message.content}</p>
+          <p className="break-all whitespace-pre-wrap text-xs md:text-sm">
+            {message.content}
+          </p>
         );
       }
 
@@ -228,7 +231,15 @@ export function MessageList({
       );
     }
 
-    return <p className="break-words text-xs md:text-sm">{message.content}</p>;
+    if (message.type === "Audio") {
+      return <AudioPlayer src={message.content} isOwn={isOwn} />;
+    }
+
+    return (
+      <p className="break-all whitespace-pre-wrap text-xs md:text-sm">
+        {message.content}
+      </p>
+    );
   };
 
   // Scroll to bottom on initial mount or when first messages load
@@ -348,8 +359,9 @@ export function MessageList({
             {/* Messages */}
             {group.messages.map((message) => {
               const isOwn = message.senderId === currentUserId;
-              const isMediaMessage =
+              const isImageMessage =
                 message.type === "Image" || message.type === "Images";
+              const isAudioMessage = message.type === "Audio";
 
               return (
                 <div
@@ -389,7 +401,7 @@ export function MessageList({
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start">
-                        {onCopyMessage && (
+                        {onCopyMessage && !isAudioMessage && (
                           <DropdownMenuItem
                             onClick={() => onCopyMessage(message.content)}
                           >
@@ -413,9 +425,13 @@ export function MessageList({
                   {/* Message Bubble */}
                   <div
                     className={cn(
-                      "max-w-[75%] rounded-2xl md:max-w-[70%]",
-                      isMediaMessage ? "p-0" : "px-3 py-1.5 md:px-4 md:py-2",
-                      !isMediaMessage &&
+                      "max-w-[75%] rounded-2xl overflow-hidden md:max-w-[70%]",
+                      isImageMessage
+                        ? "p-0"
+                        : isAudioMessage
+                          ? "p-2 md:p-2.5"
+                          : "px-3 py-1.5 md:px-4 md:py-2",
+                      !isImageMessage &&
                         (isOwn
                           ? "bg-primary text-primary-foreground"
                           : "bg-muted")
@@ -436,7 +452,7 @@ export function MessageList({
                   </div>
 
                   {/* Message actions - right side for other user's messages */}
-                  {!isOwn && onCopyMessage && (
+                  {!isOwn && onCopyMessage && !isAudioMessage && (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button

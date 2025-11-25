@@ -258,7 +258,8 @@ export const useChatHub = (
         });
       }
     };
-  }, []); // Only run once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once - conversationId and queryClient are intentionally omitted
 
   // Join conversation when conversationId changes
   useEffect(() => {
@@ -391,6 +392,33 @@ export const useChatHub = (
     }
   };
 
+  const sendAudioMessage = async (
+    conversationId: string,
+    senderId: string,
+    audioUrl: string
+  ) => {
+    if (!connection || !isConnected) {
+      throw new Error("Not connected to chat hub");
+    }
+
+    if (!audioUrl.trim()) {
+      throw new Error("No audio URL provided");
+    }
+
+    try {
+      await connection.invoke(
+        "SendAudioMessage",
+        conversationId,
+        senderId,
+        audioUrl
+      );
+      console.log("✅ Audio message sent successfully");
+    } catch (err: any) {
+      console.error("❌ Error sending audio message:", err);
+      throw err;
+    }
+  };
+
   const markAsRead = async (conversationId: string, userId: string) => {
     if (!connection || !isConnected) {
       throw new Error("Not connected to chat hub");
@@ -427,6 +455,7 @@ export const useChatHub = (
     error,
     sendTextMessage,
     sendImageMessage,
+    sendAudioMessage,
     markAsRead,
     deleteMessage,
   };

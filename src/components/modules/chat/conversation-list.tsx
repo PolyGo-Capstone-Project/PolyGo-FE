@@ -15,6 +15,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  MessageEnum,
+  MessageTypeNumber,
+} from "@/constants/communication.constant";
 import { cn } from "@/lib/utils";
 import { ChatConversation } from "@/types";
 import { formatDistanceToNow } from "date-fns";
@@ -123,7 +127,11 @@ export function ConversationList({
 
     const { type, content, imageUrls } = conv.lastMessage;
 
-    if (type === "Image") {
+    // Convert to number for comparison to handle both string and number from API
+    const numericType =
+      typeof type === "number" ? type : parseInt(String(type), 10);
+
+    if (type === MessageEnum.Image || numericType === MessageTypeNumber.Image) {
       return (
         <span className="text-muted-foreground text-xs md:text-sm">
           🖼 {t("imageMessage")}
@@ -131,18 +139,35 @@ export function ConversationList({
       );
     }
 
-    if (type === "Images") {
+    if (
+      type === MessageEnum.Images ||
+      numericType === MessageTypeNumber.Images
+    ) {
       const total = imageUrls?.length ?? 1;
       return (
         <span className="text-muted-foreground text-xs md:text-sm">
-          🖼 {t("imagesMessage", { count: total })}
+          🖼 {t("imageMessage")}
         </span>
       );
     }
 
+    if (type === MessageEnum.Audio || numericType === MessageTypeNumber.Audio) {
+      return (
+        <span className="text-muted-foreground text-xs md:text-sm">
+          🎵 {t("audioMessage")}
+        </span>
+      );
+    }
+
+    const maxLength = 50;
+    const displayContent =
+      content && content.length > maxLength
+        ? `${content.substring(0, maxLength)}...`
+        : content;
+
     return (
-      <span className="text-muted-foreground line-clamp-1 text-xs md:text-sm">
-        {content}
+      <span className="text-muted-foreground line-clamp-1 break-all text-xs md:text-sm">
+        {displayContent}
       </span>
     );
   };
