@@ -1,3 +1,29 @@
 {
-  "notification": {}
+  "userNotification": {
+    "title": "Notifications",
+    "summary": "{count} new",
+    "summaryWithChat": "{count} new ({chatCount} chat)",
+    "noNew": "No new notifications 🎉",
+    "chatUnreadSingle": "{count} unread message",
+    "chatUnreadMultiple": "{count} unread messages",
+    "clickToView": "Click to view",
+    "viewAll": "View all notifications",
+    "time": {
+      "justNow": "Just now",
+      "minutesAgo": "{value}m ago",
+      "hoursAgo": "{value}h ago",
+      "daysAgo": "{value}d ago"
+    },
+
+    "pageTitle": "Notifications",
+    "pageDescription": "Stay up to date with your latest activity on PolyGo.",
+    "emptyTitle": "You're all caught up!",
+    "emptyDescription": "You don't have any notifications right now. New updates will appear here.",
+    "error": "Something went wrong while loading notifications.",
+    "unread": "Unread",
+    "read": "Read",
+    "loadingMore": "Loading more notifications...",
+    "noMore": "No more notifications.",
+    "loadMore": "View older notifications"
+  }
 }
