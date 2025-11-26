@@ -1,6 +1,20 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import {
+  Bell,
+  CalendarDays,
+  CheckCircle2,
+  ChevronDown,
+  DollarSign,
+  Flag,
+  MapPin,
+  MessageCircle,
+  Package,
+  Star,
+  TrendingUp,
+  Users as UsersIcon,
+} from "lucide-react";
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 import {
   Area,
@@ -42,13 +56,15 @@ import { useLocale, useTranslations } from "next-intl";
 
 type TimeRange = "7d" | "30d" | "1y" | "custom";
 
+// 🔧 CHỖ CẦN SỬA: cập nhật formatCurrency để luôn hiển thị đơn vị "VNĐ"
 const formatCurrency = (value: number | undefined, locale: string) => {
   if (!value || Number.isNaN(value)) return "-";
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: "VND",
+
+  const formatted = new Intl.NumberFormat(locale, {
     maximumFractionDigits: 0,
   }).format(value);
+
+  return `${formatted} VNĐ`;
 };
 
 const formatInteger = (value: number | undefined) => {
@@ -70,7 +86,7 @@ interface MetricCardProps {
   label: string;
   value: string;
   change: string;
-  icon: string;
+  icon: ReactNode;
 }
 
 function MetricCard({ label, value, change, icon }: MetricCardProps) {
@@ -158,7 +174,7 @@ export default function AdminDashboardPage() {
           overview.revenue.revenueInRange,
           locale
         )}`,
-        icon: "$",
+        icon: <DollarSign className="h-5 w-5" />,
       },
       {
         label: t("metrics.subscriptions.label"),
@@ -166,7 +182,7 @@ export default function AdminDashboardPage() {
         change: `${t("metrics.subscriptions.changePrefix")} ${formatInteger(
           overview.subscriptions.newSubscriptionsInRange
         )}`,
-        icon: "📦",
+        icon: <Package className="h-5 w-5" />,
       },
       {
         label: t("metrics.users.label"),
@@ -174,7 +190,7 @@ export default function AdminDashboardPage() {
         change: `${t("metrics.users.changePrefix")} ${formatInteger(
           overview.users.newUsersInRange
         )}`,
-        icon: "👥",
+        icon: <UsersIcon className="h-5 w-5" />,
       },
       {
         label: t("metrics.events.label"),
@@ -182,19 +198,19 @@ export default function AdminDashboardPage() {
         change: `${t("metrics.events.changePrefix")} ${formatInteger(
           overview.events.completedEvents
         )}`,
-        icon: "📍",
+        icon: <MapPin className="h-5 w-5" />,
       },
     ];
   }, [overview, locale, t]);
 
-  // Overview chart: Users / Events
+  // Overview chart: Upcoming vs Completed events
   const overviewHorizontalData = overview && [
     {
-      metric: t("overviewChart.usersLabel"),
-      value: overview.users.newUsersInRange,
+      metric: t("overviewChart.upcomingEventsLabel"),
+      value: overview.events.upcomingEvents,
     },
     {
-      metric: t("overviewChart.eventsLabel"),
+      metric: t("overviewChart.completedEventsLabel"),
       value: overview.events.completedEvents,
     },
   ];
@@ -219,17 +235,64 @@ export default function AdminDashboardPage() {
     },
   ];
 
-  // Users line chart
+  // Revenue trend theo khoảng filter (daily / weekly / monthly từ BE)
+  const revenueTrendData =
+    overview?.revenue?.trend?.map((it) => ({
+      label: it.label,
+      amount: it.amount,
+    })) ?? [];
+
+  const revenueTrendGranularityLabel = useMemo(() => {
+    const g = overview?.revenue?.trendGranularity;
+    if (!g) return "";
+    switch (g) {
+      case "daily":
+        return t("revenue.trendGranularity.daily");
+      case "weekly":
+        return t("revenue.trendGranularity.weekly");
+      case "monthly":
+        return t("revenue.trendGranularity.monthly");
+      default:
+        return "";
+    }
+  }, [overview?.revenue?.trendGranularity, t]);
+
+  // Users line chart (tổng / trong khoảng / active 7 ngày)
   const usersChartData = overview && [
     { label: t("usersChart.total"), users: overview.users.totalUsers },
-    { label: t("usersChart.newRange"), users: overview.users.newUsersInRange },
+    {
+      label: t("usersChart.newRange"),
+      users: overview.users.newUsersInRange,
+    },
     {
       label: t("usersChart.active7days"),
       users: overview.users.activeUsersLast7Days,
     },
   ];
 
-  // Events line chart
+  // Users trend theo filter (daily / weekly / monthly từ BE)
+  const usersTrendData =
+    overview?.users?.newUsersTrend?.map((it) => ({
+      label: it.label,
+      count: it.count,
+    })) ?? [];
+
+  const usersTrendGranularityLabel = useMemo(() => {
+    const g = overview?.users?.newUsersGranularity;
+    if (!g) return "";
+    switch (g) {
+      case "daily":
+        return t("users.trendGranularity.daily");
+      case "weekly":
+        return t("users.trendGranularity.weekly");
+      case "monthly":
+        return t("users.trendGranularity.monthly");
+      default:
+        return "";
+    }
+  }, [overview?.users?.newUsersGranularity, t]);
+
+  // Events line chart (tổng, upcoming, completed, registrations)
   const eventsChartData = overview && [
     { label: t("eventsChart.total"), events: overview.events.totalEvents },
     {
@@ -246,16 +309,57 @@ export default function AdminDashboardPage() {
     },
   ];
 
-  // Content / subscriptions pie chart
+  // Events trend theo filter (daily / weekly / monthly từ BE)
+  const eventsTrendData =
+    overview?.events?.newEventsTrend?.map((it) => ({
+      label: it.label,
+      count: it.count,
+    })) ?? [];
+
+  const eventsTrendGranularityLabel = useMemo(() => {
+    const g = overview?.events?.newEventsGranularity;
+    if (!g) return "";
+    switch (g) {
+      case "daily":
+        return t("events.trendGranularity.daily");
+      case "weekly":
+        return t("events.trendGranularity.weekly");
+      case "monthly":
+        return t("events.trendGranularity.monthly");
+      default:
+        return "";
+    }
+  }, [overview?.events?.newEventsGranularity, t]);
+
+  // Content / subscriptions pie chart + most used plan
+  const subscriptionEntries =
+    overview && overview.subscriptions
+      ? Object.entries(overview.subscriptions.planBreakdown ?? {})
+      : [];
+
   const subscriptionPieData =
-    overview &&
-    Object.entries(overview.subscriptions.planBreakdown ?? {}).map(
-      ([name, value], index) => ({
-        name,
-        value: typeof value === "number" ? value : Number(value) || 0,
-        fill: `var(--chart-${(index % 5) + 1})`,
-      })
-    );
+    subscriptionEntries.map(([name, value], index) => ({
+      name,
+      value: typeof value === "number" ? value : Number(value) || 0,
+      fill: `var(--chart-${(index % 5) + 1})`,
+    })) ?? [];
+
+  const mostUsedSubscriptionPlan =
+    subscriptionEntries.length > 0
+      ? subscriptionEntries.reduce(
+          (acc, [name, raw]) => {
+            const num = typeof raw === "number" ? raw : Number(raw) || 0;
+            if (num > acc.count) return { name, count: num };
+            return acc;
+          },
+          (() => {
+            const [firstName, firstRaw] = subscriptionEntries[0];
+            const firstNum =
+              typeof firstRaw === "number" ? firstRaw : Number(firstRaw) || 0;
+            return { name: firstName, count: firstNum };
+          })()
+        )
+      : undefined;
 
   const timeRangeLabel = useMemo(() => {
     switch (timeRange) {
@@ -451,7 +555,7 @@ export default function AdminDashboardPage() {
                 ))}
               </div>
 
-              {/* Overview horizontal chart: Users, Events */}
+              {/* Overview horizontal chart: Upcoming vs Completed events */}
               <div className="mt-2">
                 <Card className="border-border bg-card">
                   <CardHeader>
@@ -532,7 +636,7 @@ export default function AdminDashboardPage() {
                     <ResponsiveContainer width="100%" height={260}>
                       <BarChart
                         data={revenueChartData}
-                        margin={{ top: 10, right: 24, left: 40, bottom: 0 }}
+                        margin={{ top: 40, right: 24, left: 40, bottom: 0 }}
                       >
                         <CartesianGrid
                           strokeDasharray="3 3"
@@ -542,7 +646,7 @@ export default function AdminDashboardPage() {
                         <YAxis
                           stroke="#9ca3af"
                           width={80}
-                          // tickFormatter={(value) => formatShortNumber(Number(value))}
+                          tickFormatter={(value) => `${value} VNĐ`}
                         />
                         <Tooltip
                           cursor={false}
@@ -580,17 +684,19 @@ export default function AdminDashboardPage() {
                 <MetricCard
                   label={t("revenue.metrics.total.label")}
                   value={formatCurrency(overview.revenue.totalRevenue, locale)}
-                  change={`${t("revenue.metrics.total.changePrefix")} ${formatCurrency(
+                  change={`${t(
+                    "revenue.metrics.total.changePrefix"
+                  )} ${formatCurrency(
                     overview.revenue.revenueInRange,
                     locale
                   )}`}
-                  icon="$"
+                  icon={<DollarSign className="h-5 w-5" />}
                 />
                 <MetricCard
                   label={t("revenue.metrics.today.label")}
                   value={formatCurrency(overview.revenue.revenueToday, locale)}
                   change=""
-                  icon="📅"
+                  icon={<CalendarDays className="h-5 w-5" />}
                 />
                 <MetricCard
                   label={t("revenue.metrics.thisMonth.label")}
@@ -599,10 +705,11 @@ export default function AdminDashboardPage() {
                     locale
                   )}
                   change=""
-                  icon="📈"
+                  icon={<TrendingUp className="h-5 w-5" />}
                 />
               </div>
 
+              {/* Biểu đồ 1: tổng quan Today / Week / Month / Year */}
               <Card className="border-border bg-card">
                 <CardHeader>
                   <CardTitle className="text-foreground">
@@ -616,7 +723,7 @@ export default function AdminDashboardPage() {
                   <ResponsiveContainer width="100%" height={350}>
                     <AreaChart
                       data={revenueChartData}
-                      margin={{ top: 10, right: 30, left: 40, bottom: 0 }}
+                      margin={{ top: 40, right: 30, left: 40, bottom: 0 }}
                     >
                       <defs>
                         <linearGradient
@@ -642,15 +749,20 @@ export default function AdminDashboardPage() {
                       <XAxis dataKey="label" stroke="#9ca3af" />
                       <YAxis
                         stroke="#9ca3af"
-                        // tickFormatter={(value) => formatShortNumber(Number(value))}
+                        tickFormatter={(value) => `${value} VNĐ`}
                       />
                       <Tooltip
+                        cursor={false}
                         contentStyle={{
                           backgroundColor: "hsl(var(--popover))",
                           border: "1px solid hsl(var(--border))",
                           borderRadius: "8px",
                         }}
                         labelStyle={{ color: "hsl(var(--popover-foreground))" }}
+                        itemStyle={{
+                          color: "hsl(var(--foreground))",
+                          fontWeight: 500,
+                        }}
                         formatter={(value) =>
                           formatCurrency(Number(value), locale)
                         }
@@ -665,6 +777,58 @@ export default function AdminDashboardPage() {
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
+
+              {/* Biểu đồ 2: trend theo filter (daily / weekly / monthly) */}
+              <Card className="border-border bg-card">
+                <CardHeader>
+                  <CardTitle className="text-foreground">
+                    {t("revenue.trendByRange.title")}
+                  </CardTitle>
+                  <CardDescription className="text-muted-foreground">
+                    {t("revenue.trendByRange.subtitle", {
+                      granularity: revenueTrendGranularityLabel,
+                    })}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={350}>
+                    <BarChart
+                      data={revenueTrendData}
+                      margin={{ top: 40, right: 24, left: 40, bottom: 0 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb33" />
+                      <XAxis dataKey="label" stroke="#9ca3af" />
+                      <YAxis
+                        stroke="#9ca3af"
+                        tickFormatter={(value) => `${value} VNĐ`}
+                      />
+                      <Tooltip
+                        cursor={false}
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--popover))",
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: "8px",
+                        }}
+                        labelStyle={{
+                          color: "hsl(var(--popover-foreground))",
+                        }}
+                        itemStyle={{
+                          color: "hsl(var(--foreground))",
+                          fontWeight: 500,
+                        }}
+                        formatter={(value) =>
+                          formatCurrency(Number(value), locale)
+                        }
+                      />
+                      <Bar
+                        dataKey="amount"
+                        fill="var(--chart-4)"
+                        radius={[8, 8, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             {/* ===== Users Tab ===== */}
@@ -676,22 +840,23 @@ export default function AdminDashboardPage() {
                   change={`${t("users.metrics.total.changePrefix")} ${formatInteger(
                     overview.users.newUsersInRange
                   )}`}
-                  icon="👥"
+                  icon={<UsersIcon className="h-5 w-5" />}
                 />
                 <MetricCard
                   label={t("users.metrics.active7days.label")}
                   value={formatInteger(overview.users.activeUsersLast7Days)}
                   change=""
-                  icon="✅"
+                  icon={<CheckCircle2 className="h-5 w-5" />}
                 />
                 <MetricCard
                   label={t("users.metrics.newRange.label")}
                   value={formatInteger(overview.users.newUsersInRange)}
                   change=""
-                  icon="⭐"
+                  icon={<Star className="h-5 w-5" />}
                 />
               </div>
 
+              {/* Biểu đồ 1: tổng / trong khoảng / active 7 ngày */}
               <Card className="border-border bg-card">
                 <CardHeader>
                   <CardTitle className="text-foreground">
@@ -711,12 +876,17 @@ export default function AdminDashboardPage() {
                       <XAxis dataKey="label" stroke="#9ca3af" />
                       <YAxis stroke="#9ca3af" />
                       <Tooltip
+                        cursor={false}
                         contentStyle={{
                           backgroundColor: "hsl(var(--popover))",
                           border: "1px solid hsl(var(--border))",
                           borderRadius: "8px",
                         }}
                         labelStyle={{ color: "hsl(var(--popover-foreground))" }}
+                        itemStyle={{
+                          color: "hsl(var(--foreground))",
+                          fontWeight: 500,
+                        }}
                       />
                       <Line
                         type="monotone"
@@ -729,6 +899,53 @@ export default function AdminDashboardPage() {
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
+
+              {/* Biểu đồ 2: Users trend theo filter (daily/weekly/monthly) */}
+              <Card className="border-border bg-card">
+                <CardHeader>
+                  <CardTitle className="text-foreground">
+                    {t("users.trendByRange.title")}
+                  </CardTitle>
+                  <CardDescription className="text-muted-foreground">
+                    {t("users.trendByRange.subtitle", {
+                      granularity: usersTrendGranularityLabel,
+                    })}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={350}>
+                    <BarChart
+                      data={usersTrendData}
+                      margin={{ top: 10, right: 24, left: 40, bottom: 0 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb33" />
+                      <XAxis dataKey="label" stroke="#9ca3af" />
+                      <YAxis stroke="#9ca3af" />
+                      <Tooltip
+                        cursor={false}
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--popover))",
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: "8px",
+                        }}
+                        labelStyle={{
+                          color: "hsl(var(--popover-foreground))",
+                        }}
+                        itemStyle={{
+                          color: "hsl(var(--foreground))",
+                          fontWeight: 500,
+                        }}
+                        formatter={(value) => formatInteger(Number(value))}
+                      />
+                      <Bar
+                        dataKey="count"
+                        fill="var(--chart-3)"
+                        radius={[8, 8, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             {/* ===== Events Tab ===== */}
@@ -738,22 +955,23 @@ export default function AdminDashboardPage() {
                   label={t("events.metrics.total.label")}
                   value={formatInteger(overview.events.totalEvents)}
                   change=""
-                  icon="📍"
+                  icon={<MapPin className="h-5 w-5" />}
                 />
                 <MetricCard
                   label={t("events.metrics.upcoming.label")}
                   value={formatInteger(overview.events.upcomingEvents)}
                   change=""
-                  icon="🔔"
+                  icon={<Bell className="h-5 w-5" />}
                 />
                 <MetricCard
                   label={t("events.metrics.completed.label")}
                   value={formatInteger(overview.events.completedEvents)}
                   change=""
-                  icon="✅"
+                  icon={<CheckCircle2 className="h-5 w-5" />}
                 />
               </div>
 
+              {/* Biểu đồ 1: tổng / upcoming / completed / registrations */}
               <Card className="border-border bg-card">
                 <CardHeader>
                   <CardTitle className="text-foreground">
@@ -773,12 +991,17 @@ export default function AdminDashboardPage() {
                       <XAxis dataKey="label" stroke="#9ca3af" />
                       <YAxis stroke="#9ca3af" />
                       <Tooltip
+                        cursor={false}
                         contentStyle={{
                           backgroundColor: "hsl(var(--popover))",
                           border: "1px solid hsl(var(--border))",
                           borderRadius: "8px",
                         }}
                         labelStyle={{ color: "hsl(var(--popover-foreground))" }}
+                        itemStyle={{
+                          color: "hsl(var(--foreground))",
+                          fontWeight: 500,
+                        }}
                       />
                       <Line
                         type="monotone"
@@ -788,6 +1011,53 @@ export default function AdminDashboardPage() {
                         dot={false}
                       />
                     </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Biểu đồ 2: Events trend theo filter (daily/weekly/monthly) */}
+              <Card className="border-border bg-card">
+                <CardHeader>
+                  <CardTitle className="text-foreground">
+                    {t("events.trendByRange.title")}
+                  </CardTitle>
+                  <CardDescription className="text-muted-foreground">
+                    {t("events.trendByRange.subtitle", {
+                      granularity: eventsTrendGranularityLabel,
+                    })}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={350}>
+                    <BarChart
+                      data={eventsTrendData}
+                      margin={{ top: 10, right: 24, left: 40, bottom: 0 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb33" />
+                      <XAxis dataKey="label" stroke="#9ca3af" />
+                      <YAxis stroke="#9ca3af" />
+                      <Tooltip
+                        cursor={false}
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--popover))",
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: "8px",
+                        }}
+                        labelStyle={{
+                          color: "hsl(var(--popover-foreground))",
+                        }}
+                        itemStyle={{
+                          color: "hsl(var(--foreground))",
+                          fontWeight: 500,
+                        }}
+                        formatter={(value) => formatInteger(Number(value))}
+                      />
+                      <Bar
+                        dataKey="count"
+                        fill="var(--chart-5)"
+                        radius={[8, 8, 0, 0]}
+                      />
+                    </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
@@ -801,26 +1071,28 @@ export default function AdminDashboardPage() {
                   value={formatInteger(
                     overview.subscriptions.activeSubscriptions
                   )}
-                  change={`${t("content.metrics.activeSubscriptions.changePrefix")} ${formatInteger(
+                  change={`${t(
+                    "content.metrics.activeSubscriptions.changePrefix"
+                  )} ${formatInteger(
                     overview.subscriptions.newSubscriptionsInRange
                   )}`}
-                  icon="📦"
+                  icon={<Package className="h-5 w-5" />}
                 />
                 <MetricCard
                   label={t("content.metrics.socialPosts.label")}
                   value={formatInteger(overview.social.totalPosts)}
-                  change={`${t("content.metrics.socialPosts.changePrefix")} ${formatInteger(
-                    overview.social.postsInRange
-                  )}`}
-                  icon="📱"
+                  change={`${t(
+                    "content.metrics.socialPosts.changePrefix"
+                  )} ${formatInteger(overview.social.postsInRange)}`}
+                  icon={<MessageCircle className="h-5 w-5" />}
                 />
                 <MetricCard
                   label={t("content.metrics.reports.label")}
                   value={formatInteger(overview.reports.totalReports)}
-                  change={`${t("content.metrics.reports.changePrefix")} ${formatInteger(
-                    overview.reports.pendingReports
-                  )}`}
-                  icon="📄"
+                  change={`${t(
+                    "content.metrics.reports.changePrefix"
+                  )} ${formatInteger(overview.reports.pendingReports)}`}
+                  icon={<Flag className="h-5 w-5" />}
                 />
               </div>
 
@@ -832,17 +1104,33 @@ export default function AdminDashboardPage() {
                   <CardDescription className="text-muted-foreground">
                     {t("content.subscriptionPlans.subtitle")}
                   </CardDescription>
+
+                  {mostUsedSubscriptionPlan && (
+                    <p className="mt-3 text-md text-muted-foreground font-bold">
+                      {t("content.subscriptionPlans.mostUsed", {
+                        name: mostUsedSubscriptionPlan.name,
+                        count: formatInteger(mostUsedSubscriptionPlan.count),
+                      })}
+                    </p>
+                  )}
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={350}>
                     <PieChart>
                       <Tooltip
+                        cursor={false}
                         contentStyle={{
                           backgroundColor: "hsl(var(--popover))",
                           border: "1px solid hsl(var(--border))",
                           borderRadius: "8px",
                         }}
-                        labelStyle={{ color: "hsl(var(--popover-foreground))" }}
+                        labelStyle={{
+                          color: "hsl(var(--popover-foreground))",
+                        }}
+                        itemStyle={{
+                          color: "hsl(var(--foreground))",
+                          fontWeight: 500,
+                        }}
                       />
                       <Pie
                         data={subscriptionPieData}

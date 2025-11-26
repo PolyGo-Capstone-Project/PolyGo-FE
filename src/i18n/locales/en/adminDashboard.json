@@ -53,8 +53,8 @@
       "overviewChart": {
         "title": "Overview",
         "description": "Two main KPIs within the selected range",
-        "usersLabel": "New Users",
-        "eventsLabel": "Completed Events"
+        "upcomingEventsLabel": "Upcoming events",
+        "completedEventsLabel": "Completed events"
       },
 
       "revenue": {
@@ -81,6 +81,15 @@
         "trend": {
           "title": "Revenue Trend",
           "subtitle": "Revenue across major time periods"
+        },
+        "trendByRange": {
+          "title": "Revenue Trend by Range",
+          "subtitle": "Revenue over time by {granularity}"
+        },
+        "trendGranularity": {
+          "daily": "day",
+          "weekly": "week",
+          "monthly": "month"
         }
       },
 
@@ -106,6 +115,15 @@
         "trend": {
           "title": "User Growth",
           "subtitle": "User performance across metrics"
+        },
+        "trendByRange": {
+          "title": "User Growth by Range",
+          "subtitle": "New users over time by {granularity}"
+        },
+        "trendGranularity": {
+          "daily": "day",
+          "weekly": "week",
+          "monthly": "month"
         }
       },
 
@@ -125,6 +143,15 @@
         "trend": {
           "title": "Events Trend",
           "subtitle": "Event KPIs across different groups"
+        },
+        "trendByRange": {
+          "title": "Events Trend by Range",
+          "subtitle": "New events over time by {granularity}"
+        },
+        "trendGranularity": {
+          "daily": "day",
+          "weekly": "week",
+          "monthly": "month"
         }
       },
 
@@ -146,7 +173,8 @@
 
         "subscriptionPlans": {
           "title": "Subscription Plans",
-          "subtitle": "Distribution of current plans"
+          "subtitle": "Distribution of current plans",
+          "mostUsed": "Most used plan: {name} ({count} active subscriptions)"
         }
       }
     }

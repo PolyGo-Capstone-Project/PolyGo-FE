@@ -53,8 +53,8 @@
       "overviewChart": {
         "title": "Tổng quan",
         "description": "2 chỉ số chính trong khoảng thời gian đã chọn",
-        "usersLabel": "Người dùng mới",
-        "eventsLabel": "Sự kiện hoàn thành"
+        "upcomingEventsLabel": "Sự kiện sắp diễn ra",
+        "completedEventsLabel": "Sự kiện đã hoàn thành"
       },
 
       "revenue": {
@@ -81,6 +81,15 @@
         "trend": {
           "title": "Xu hướng doanh thu",
           "subtitle": "Tổng doanh thu theo từng mốc thời gian"
+        },
+        "trendByRange": {
+          "title": "Xu hướng doanh thu theo khoảng",
+          "subtitle": "Doanh thu theo từng mốc thời gian ({granularity})"
+        },
+        "trendGranularity": {
+          "daily": "ngày",
+          "weekly": "tuần",
+          "monthly": "tháng"
         }
       },
 
@@ -106,6 +115,15 @@
         "trend": {
           "title": "Xu hướng người dùng",
           "subtitle": "Tổng quan người dùng theo nhóm chỉ số"
+        },
+        "trendByRange": {
+          "title": "Xu hướng người dùng theo khoảng",
+          "subtitle": "Người dùng mới theo từng mốc thời gian ({granularity})"
+        },
+        "trendGranularity": {
+          "daily": "ngày",
+          "weekly": "tuần",
+          "monthly": "tháng"
         }
       },
 
@@ -125,6 +143,15 @@
         "trend": {
           "title": "Xu hướng sự kiện",
           "subtitle": "Tổng quan sự kiện theo nhóm chỉ số"
+        },
+        "trendByRange": {
+          "title": "Xu hướng sự kiện theo khoảng",
+          "subtitle": "Số sự kiện mới theo từng mốc thời gian ({granularity})"
+        },
+        "trendGranularity": {
+          "daily": "ngày",
+          "weekly": "tuần",
+          "monthly": "tháng"
         }
       },
 
@@ -146,7 +173,8 @@
 
         "subscriptionPlans": {
           "title": "Tỉ lệ gói subscription",
-          "subtitle": "Phân bổ các gói đăng ký hiện tại"
+          "subtitle": "Phân bổ các gói đăng ký hiện tại",
+          "mostUsed": "Gói được sử dụng nhiều nhất: {name} ({count} đăng ký đang hoạt động)"
         }
       }
     }
