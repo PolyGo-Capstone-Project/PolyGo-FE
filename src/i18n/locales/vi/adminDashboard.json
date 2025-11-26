@@ -1,0 +1,154 @@
+{
+  "adminDashboard": {
+    "dashboard": {
+      "header": {
+        "title": "Bảng điều khiển",
+        "subtitle": "Tổng quan các chỉ số chính của hệ thống",
+        "rangeLabel": "Khoảng thời gian"
+      },
+
+      "filters": {
+        "last7Days": "7 ngày gần đây",
+        "last30Days": "30 ngày gần đây",
+        "lastYear": "Năm nay",
+        "customRange": "Tùy chỉnh",
+        "from": "Từ ngày",
+        "to": "Đến ngày",
+        "apply": "Áp dụng"
+      },
+
+      "state": {
+        "loading": "Đang tải dữ liệu dashboard...",
+        "error": "Không tải được dữ liệu. Vui lòng thử lại sau.",
+        "empty": "Không có dữ liệu cho khoảng thời gian này."
+      },
+
+      "tabs": {
+        "overview": "Tổng quan",
+        "revenue": "Doanh thu",
+        "users": "Người dùng",
+        "events": "Sự kiện",
+        "content": "Nội dung"
+      },
+
+      "metrics": {
+        "totalRevenue": {
+          "label": "Tổng doanh thu",
+          "changePrefix": "Trong khoảng:"
+        },
+        "subscriptions": {
+          "label": "Gói đăng ký",
+          "changePrefix": "Gói mới:"
+        },
+        "users": {
+          "label": "Người dùng",
+          "changePrefix": "Người dùng mới:"
+        },
+        "events": {
+          "label": "Sự kiện",
+          "changePrefix": "Đã hoàn thành:"
+        }
+      },
+
+      "overviewChart": {
+        "title": "Tổng quan",
+        "description": "2 chỉ số chính trong khoảng thời gian đã chọn",
+        "usersLabel": "Người dùng mới",
+        "eventsLabel": "Sự kiện hoàn thành"
+      },
+
+      "revenue": {
+        "breakdown": {
+          "title": "Phân bổ doanh thu",
+          "subtitle": "Hôm nay / Tuần này / Tháng này / Năm nay",
+          "today": "Hôm nay",
+          "thisWeek": "Tuần này",
+          "thisMonth": "Tháng này",
+          "thisYear": "Năm nay"
+        },
+        "metrics": {
+          "total": {
+            "label": "Tổng doanh thu",
+            "changePrefix": "Trong khoảng:"
+          },
+          "today": {
+            "label": "Doanh thu hôm nay"
+          },
+          "thisMonth": {
+            "label": "Doanh thu tháng này"
+          }
+        },
+        "trend": {
+          "title": "Xu hướng doanh thu",
+          "subtitle": "Tổng doanh thu theo từng mốc thời gian"
+        }
+      },
+
+      "usersChart": {
+        "total": "Tổng người dùng",
+        "newRange": "Người dùng mới (khoảng)",
+        "active7days": "Hoạt động 7 ngày"
+      },
+
+      "users": {
+        "metrics": {
+          "total": {
+            "label": "Tổng người dùng",
+            "changePrefix": "Người dùng mới:"
+          },
+          "active7days": {
+            "label": "Hoạt động 7 ngày qua"
+          },
+          "newRange": {
+            "label": "Người dùng mới"
+          }
+        },
+        "trend": {
+          "title": "Xu hướng người dùng",
+          "subtitle": "Tổng quan người dùng theo nhóm chỉ số"
+        }
+      },
+
+      "eventsChart": {
+        "total": "Tổng sự kiện",
+        "upcoming": "Sự kiện sắp diễn ra",
+        "completed": "Đã hoàn thành",
+        "registrations": "Lượt đăng ký"
+      },
+
+      "events": {
+        "metrics": {
+          "total": { "label": "Tổng sự kiện" },
+          "upcoming": { "label": "Sắp diễn ra" },
+          "completed": { "label": "Hoàn thành" }
+        },
+        "trend": {
+          "title": "Xu hướng sự kiện",
+          "subtitle": "Tổng quan sự kiện theo nhóm chỉ số"
+        }
+      },
+
+      "content": {
+        "metrics": {
+          "activeSubscriptions": {
+            "label": "Gói đăng ký đang hoạt động",
+            "changePrefix": "Mới:"
+          },
+          "socialPosts": {
+            "label": "Bài đăng mạng xã hội",
+            "changePrefix": "Trong khoảng:"
+          },
+          "reports": {
+            "label": "Báo cáo người dùng",
+            "changePrefix": "Đang chờ:"
+          }
+        },
+
+        "subscriptionPlans": {
+          "title": "Tỉ lệ gói subscription",
+          "subtitle": "Phân bổ các gói đăng ký hiện tại"
+        }
+      }
+    }
+  }
+}
