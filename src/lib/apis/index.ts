@@ -7,6 +7,7 @@ export { default as friendApiRequest } from "./friend";
 export { default as giftApiRequest } from "./gift";
 export { default as interestApiRequest } from "./interest";
 export { default as languageApiRequest } from "./language";
+export { default as notificationApiRequest } from "./notification";
 export { default as paymentApiRequest } from "./payment";
 export { default as postApiRequest } from "./post";
 export { default as reportApiRequest } from "./report";

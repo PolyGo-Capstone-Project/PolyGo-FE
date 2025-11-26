@@ -7,6 +7,7 @@ export * from "./use-gift";
 export * from "./use-interest";
 export * from "./use-language";
 export * from "./use-media";
+export * from "./use-notification";
 export * from "./use-payment";
 export * from "./use-post";
 export * from "./use-report";
