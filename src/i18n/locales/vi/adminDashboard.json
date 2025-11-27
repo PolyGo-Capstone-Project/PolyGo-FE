@@ -172,7 +172,7 @@
         },
 
         "subscriptionPlans": {
-          "title": "Tỉ lệ gói subscription",
+          "title": "Tỉ lệ các gói",
           "subtitle": "Phân bổ các gói đăng ký hiện tại",
           "mostUsed": "Gói được sử dụng nhiều nhất: {name} ({count} đăng ký đang hoạt động)"
         }
