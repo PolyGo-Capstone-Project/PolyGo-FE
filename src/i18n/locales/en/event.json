@@ -211,6 +211,7 @@
     },
     "detail": {
       "title": "Event Details",
+      "insufficientFunds": "Insufficient Balance",
       "detail": "Event Information",
       "free": "Free",
       "back": "Back to Events",

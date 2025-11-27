@@ -30,6 +30,10 @@ export interface ChatMessage {
   imageUrls?: string[];
   isRead?: boolean;
   isDelivered?: boolean;
+  isTranslated?: boolean;
+  translatedContent?: string | null;
+  sourceLanguage?: string | null;
+  targetLanguage?: string | null;
 }
 
 export interface ChatConversation {

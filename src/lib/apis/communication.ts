@@ -1,13 +1,18 @@
 import { createGetAll, createGetOne } from "@/lib/apis/factory";
+import http from "@/lib/http";
 import {
   ConversationListResType,
   GetConversationByIdResType,
+  GetConversationLanguageSetupType,
   GetConversationsByUserIdResType,
   GetConversationsQueryType,
   GetMessageSearchQueryType,
   GetMessagesQueryType,
   MediaListResType,
   MessageListResType,
+  MessageResType,
+  SetConversationLanguageBodyType,
+  TranslateMessageResType,
 } from "@/models";
 
 const prefix = "/conversations";
@@ -38,6 +43,26 @@ const communicationApiRequest = {
   getConversationsByUserId: createGetOne<GetConversationsByUserIdResType>(
     `${prefix}/user`
   ),
+  // Get conversation language setup
+  getConversationLanguageSetup: (conversationId: string) =>
+    http.get<GetConversationLanguageSetupType>(
+      `${prefix}/${conversationId}/translation-language`
+    ),
+  // Set conversation language
+  setConversationLanguage: (
+    conversationId: string,
+    body: SetConversationLanguageBodyType
+  ) =>
+    http.put<MessageResType>(
+      `${prefix}/${conversationId}/translation-language`,
+      body
+    ),
+  // Translate message
+  translateMessage: (messageId: string) =>
+    http.post<TranslateMessageResType>(
+      `${prefix}/messages/${messageId}/translate`,
+      null
+    ),
 };
 
 export default communicationApiRequest;

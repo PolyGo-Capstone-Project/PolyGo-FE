@@ -10,6 +10,7 @@ import {
   GetMessageSearchQueryType,
   GetMessagesQueryType,
   RealtimeMessageType,
+  SetConversationLanguageBodyType,
 } from "@/models";
 import {
   HubConnection,
@@ -41,6 +42,15 @@ type SearchMessagesResponse = Awaited<
 >;
 type GetConversationMediaResponse = Awaited<
   ReturnType<typeof communicationApiRequest.getMedia>
+>;
+type GetConversationLanguageSetupResponse = Awaited<
+  ReturnType<typeof communicationApiRequest.getConversationLanguageSetup>
+>;
+type SetConversationLanguageResponse = Awaited<
+  ReturnType<typeof communicationApiRequest.setConversationLanguage>
+>;
+type TranslateMessageResponse = Awaited<
+  ReturnType<typeof communicationApiRequest.translateMessage>
 >;
 
 // ============= QUERIES =============
@@ -129,6 +139,61 @@ export const useGetConversationMedia = (
     enabled: (options?.enabled ?? true) && Boolean(conversationId),
     staleTime: 0,
     refetchOnMount: true,
+  });
+};
+
+// ============= TRANSLATION QUERIES =============
+
+export const useGetConversationLanguageSetup = (
+  conversationId: string,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery<GetConversationLanguageSetupResponse>({
+    queryKey: ["conversation", "language", conversationId],
+    queryFn: () =>
+      communicationApiRequest.getConversationLanguageSetup(conversationId),
+    enabled: (options?.enabled ?? true) && Boolean(conversationId),
+    staleTime: 0,
+    refetchOnMount: true,
+  });
+};
+
+export const useSetConversationLanguage = (conversationId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (body: SetConversationLanguageBodyType) => {
+      return communicationApiRequest.setConversationLanguage(
+        conversationId,
+        body
+      );
+    },
+    onSuccess: () => {
+      // Invalidate language setup to refetch updated settings
+      queryClient.invalidateQueries({
+        queryKey: ["conversation", "language", conversationId],
+      });
+      // Invalidate messages to show updated translations
+      queryClient.invalidateQueries({
+        queryKey: ["messages", conversationId],
+      });
+    },
+  });
+};
+
+export const useTranslateMessage = (conversationId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (messageId: string) => {
+      return communicationApiRequest.translateMessage(messageId);
+    },
+    onSuccess: () => {
+      // Invalidate messages to show translated content
+      queryClient.invalidateQueries({
+        queryKey: ["messages", conversationId],
+      });
+    },
   });
 };
 
