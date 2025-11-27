@@ -1,6 +1,7 @@
 export { default as authApiRequest } from "./auth";
 export { default as badgeApiRequest } from "./badge";
 export { default as communicationApiRequest } from "./communication";
+export { default as dashboardApiRequest } from "./dashboard";
 export { default as eventApiRequest } from "./event";
 export * from "./factory";
 export { default as friendApiRequest } from "./friend";
