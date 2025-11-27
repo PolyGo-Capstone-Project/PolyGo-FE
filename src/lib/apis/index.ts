@@ -1,12 +1,14 @@
 export { default as authApiRequest } from "./auth";
 export { default as badgeApiRequest } from "./badge";
 export { default as communicationApiRequest } from "./communication";
+export { default as dashboardApiRequest } from "./dashboard";
 export { default as eventApiRequest } from "./event";
 export * from "./factory";
 export { default as friendApiRequest } from "./friend";
 export { default as giftApiRequest } from "./gift";
 export { default as interestApiRequest } from "./interest";
 export { default as languageApiRequest } from "./language";
+export { default as notificationApiRequest } from "./notification";
 export { default as paymentApiRequest } from "./payment";
 export { default as postApiRequest } from "./post";
 export { default as reportApiRequest } from "./report";

@@ -1,3 +1,29 @@
 {
-  "notification": {}
+  "userNotification": {
+    "title": "Thông báo",
+    "summary": "{count} thông báo mới",
+    "summaryWithChat": "{count} mới ({chatCount} tin nhắn)",
+    "noNew": "Không có thông báo mới 🎉",
+    "chatUnreadSingle": "{count} tin nhắn chưa đọc",
+    "chatUnreadMultiple": "{count} tin nhắn chưa đọc",
+    "clickToView": "Nhấn để xem",
+    "viewAll": "Xem tất cả thông báo",
+    "time": {
+      "justNow": "Vừa xong",
+      "minutesAgo": "{value} phút trước",
+      "hoursAgo": "{value} giờ trước",
+      "daysAgo": "{value} ngày trước"
+    },
+
+    "pageTitle": "Thông báo",
+    "pageDescription": "Theo dõi các hoạt động và cập nhật mới nhất của bạn trên PolyGo.",
+    "emptyTitle": "Bạn đã xem hết rồi!",
+    "emptyDescription": "Hiện tại bạn chưa có thông báo nào. Khi có hoạt động mới, chúng sẽ xuất hiện tại đây.",
+    "error": "Đã xảy ra lỗi khi tải thông báo.",
+    "unread": "Chưa đọc",
+    "read": "Đã đọc",
+    "loadingMore": "Đang tải thêm thông báo...",
+    "noMore": "Không còn thông báo nào nữa.",
+    "loadMore": "Xem các thông báo cũ hơn"
+  }
 }

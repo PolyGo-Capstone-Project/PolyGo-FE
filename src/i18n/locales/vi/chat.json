@@ -63,6 +63,15 @@
     "noSearchResults": "Không tìm thấy kết quả",
     "sendImages": "Gửi ảnh",
     "sending": "Đang gửi...",
+    "translateMessage": "Dịch tin nhắn",
+    "translating": "Đang dịch...",
+    "aiTranslated": "AI Dịch thuật",
+    "setupTranslationLanguage": "Cài đặt ngôn ngữ dịch",
+    "translationLanguageTitle": "Cài đặt dịch thuật",
+    "translationLanguageDescription": "Chọn ngôn ngữ ưa thích để dịch tin nhắn",
+    "currentLanguage": "Ngôn ngữ hiện tại",
+    "selectLanguage": "Chọn ngôn ngữ",
+    "saveLanguage": "Lưu",
     "error": {
       "loadConversations": "Không thể tải danh sách cuộc trò chuyện",
       "loadMessages": "Không thể tải tin nhắn",
@@ -71,7 +80,10 @@
       "copyMessage": "Không thể sao chép tin nhắn",
       "recordVoice": "Không thể ghi âm. Vui lòng cho phép truy cập microphone.",
       "uploadImage": "Không thể tải hình ảnh lên",
-      "callFailed": "Cuộc gọi thất bại"
+      "callFailed": "Cuộc gọi thất bại",
+      "translateMessage": "Không thể dịch tin nhắn",
+      "loadLanguages": "Không thể tải danh sách ngôn ngữ",
+      "saveLanguage": "Không thể lưu cài đặt ngôn ngữ"
     }
   }
 }

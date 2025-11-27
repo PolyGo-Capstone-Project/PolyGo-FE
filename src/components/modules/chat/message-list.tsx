@@ -1,24 +1,25 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
+  Skeleton,
+} from "@/components";
 import { MESSAGE_IMAGE_SEPARATOR } from "@/constants";
 import { cn } from "@/lib/utils";
 import { ChatMessage } from "@/types";
 import { format, isToday, isYesterday } from "date-fns";
 import { enUS, vi } from "date-fns/locale";
-import { Copy, MoreVertical, Trash2 } from "lucide-react";
+import { Copy, Languages, MoreVertical, Trash2 } from "lucide-react";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { AudioPlayer } from "./audio-player";
 import { ImagePreviewModal } from "./image-preview-modal";
 
@@ -34,6 +35,7 @@ interface MessageListProps {
   otherUserAvatar?: string;
   onDeleteMessage?: (messageId: string) => void;
   onCopyMessage?: (content: string) => void;
+  onTranslateMessage?: (messageId: string) => void;
   scrollToMessageId?: string;
 }
 
@@ -49,6 +51,7 @@ export function MessageList({
   otherUserAvatar,
   onDeleteMessage,
   onCopyMessage,
+  onTranslateMessage,
   scrollToMessageId,
 }: MessageListProps) {
   const t = useTranslations("chat");
@@ -402,12 +405,14 @@ export function MessageList({
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start">
                         {onCopyMessage && !isAudioMessage && (
-                          <DropdownMenuItem
-                            onClick={() => onCopyMessage(message.content)}
-                          >
-                            <Copy className="mr-2 h-4 w-4" />
-                            {t("copyMessage")}
-                          </DropdownMenuItem>
+                          <>
+                            <DropdownMenuItem
+                              onClick={() => onCopyMessage(message.content)}
+                            >
+                              <Copy className="mr-2 h-4 w-4" />
+                              {t("copyMessage")}
+                            </DropdownMenuItem>
+                          </>
                         )}
                         {onDeleteMessage && (
                           <DropdownMenuItem
@@ -425,54 +430,100 @@ export function MessageList({
                   {/* Message Bubble */}
                   <div
                     className={cn(
-                      "max-w-[75%] rounded-2xl overflow-hidden md:max-w-[70%]",
-                      isImageMessage
-                        ? "p-0"
-                        : isAudioMessage
-                          ? "p-2 md:p-2.5"
-                          : "px-3 py-1.5 md:px-4 md:py-2",
-                      !isImageMessage &&
-                        (isOwn
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted")
+                      "max-w-[75%] md:max-w-[70%]",
+                      "flex flex-col gap-1"
                     )}
                   >
-                    {renderMessageContent(message, isOwn)}
-
                     <div
                       className={cn(
-                        "mt-1 flex items-center justify-end px-3 pb-1 text-[10px] md:mt-1.5 md:px-4 md:pb-1.5 md:text-xs",
-                        isOwn
-                          ? "text-primary-foreground/70"
-                          : "text-muted-foreground"
+                        "rounded-2xl overflow-hidden",
+                        isImageMessage
+                          ? "p-0"
+                          : isAudioMessage
+                            ? "p-2 md:p-2.5"
+                            : "px-3 py-1.5 md:px-4 md:py-2",
+                        !isImageMessage &&
+                          (isOwn
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted")
                       )}
                     >
-                      <span>{formatMessageTime(message.createdAt)}</span>
+                      {renderMessageContent(message, isOwn)}
+
+                      <div
+                        className={cn(
+                          "mt-1 flex items-center justify-end px-3 pb-1 text-[10px] md:mt-1.5 md:px-4 md:pb-1.5 md:text-xs",
+                          isOwn
+                            ? "text-primary-foreground/70"
+                            : "text-muted-foreground"
+                        )}
+                      >
+                        <span>{formatMessageTime(message.createdAt)}</span>
+                      </div>
                     </div>
+
+                    {/* Translated Content - Only show for other user's messages */}
+                    {!isOwn &&
+                      message.isTranslated &&
+                      message.translatedContent &&
+                      message.type === "Text" && (
+                        <div
+                          className={cn(
+                            "rounded-2xl px-3 py-1.5 md:px-4 md:py-2",
+                            "bg-muted/50 border border-muted-foreground/20"
+                          )}
+                        >
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <Languages className="size-3 md:size-3.5 text-primary" />
+                            <span className="text-[10px] md:text-xs text-muted-foreground font-medium">
+                              {t("aiTranslated")}:{" "}
+                              {message.sourceLanguage?.toUpperCase()} →{" "}
+                              {message.targetLanguage?.toUpperCase()}
+                            </span>
+                          </div>
+                          <p className="break-all whitespace-pre-wrap text-xs md:text-sm">
+                            {message.translatedContent}
+                          </p>
+                        </div>
+                      )}
                   </div>
 
                   {/* Message actions - right side for other user's messages */}
-                  {!isOwn && onCopyMessage && !isAudioMessage && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 self-center opacity-0 transition-opacity group-hover:opacity-100 hover:bg-muted"
-                        >
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() => onCopyMessage(message.content)}
-                        >
-                          <Copy className="mr-2 h-4 w-4" />
-                          {t("copyMessage")}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
+                  {!isOwn &&
+                    (onCopyMessage || onTranslateMessage) &&
+                    !isAudioMessage && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 self-center opacity-0 transition-opacity group-hover:opacity-100 hover:bg-muted"
+                          >
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          {onCopyMessage && (
+                            <DropdownMenuItem
+                              onClick={() => onCopyMessage(message.content)}
+                            >
+                              <Copy className="mr-2 h-4 w-4" />
+                              {t("copyMessage")}
+                            </DropdownMenuItem>
+                          )}
+                          {onTranslateMessage &&
+                            message.type === "Text" &&
+                            !message.isTranslated && (
+                              <DropdownMenuItem
+                                onClick={() => onTranslateMessage(message.id)}
+                              >
+                                <Languages className="mr-2 h-4 w-4" />
+                                {t("translateMessage")}
+                              </DropdownMenuItem>
+                            )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
                 </div>
               );
             })}

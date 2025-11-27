@@ -21,10 +21,19 @@ import {
 } from "@/components";
 import { useCall } from "@/contexts/call-context";
 import { ChatUser } from "@/types";
-import { MoreVertical, Phone, Search, Trash2, User, Video } from "lucide-react";
+import {
+  Languages,
+  MoreVertical,
+  Phone,
+  Search,
+  Trash2,
+  User,
+  Video,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { TranslationSetupDialog } from "./translation-setup-dialog";
 
 interface ChatHeaderProps {
   user: ChatUser;
@@ -33,6 +42,7 @@ interface ChatHeaderProps {
   onDeleteConversation: () => void;
   locale: string;
   hideActions?: boolean;
+  conversationId?: string;
 }
 
 export function ChatHeader({
@@ -42,10 +52,12 @@ export function ChatHeader({
   onDeleteConversation,
   locale,
   hideActions = false,
+  conversationId,
 }: ChatHeaderProps) {
   const t = useTranslations("chat");
   const router = useRouter();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showTranslationDialog, setShowTranslationDialog] = useState(false);
   const { startVoiceCall, startVideoCall } = useCall();
 
   const getInitials = (name: string) => {
@@ -192,6 +204,12 @@ export function ChatHeader({
                   <Search className="mr-2 size-4" />
                   {t("searchMessages")}
                 </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => setShowTranslationDialog(true)}
+                >
+                  <Languages className="mr-2 size-4" />
+                  {t("setupTranslationLanguage")}
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => setShowDeleteDialog(true)}
@@ -226,6 +244,15 @@ export function ChatHeader({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Translation Setup Dialog */}
+      {conversationId && (
+        <TranslationSetupDialog
+          conversationId={conversationId}
+          open={showTranslationDialog}
+          onOpenChange={setShowTranslationDialog}
+        />
+      )}
     </>
   );
 }

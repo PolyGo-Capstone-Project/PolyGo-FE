@@ -46,7 +46,8 @@
     "ApproveWithdrawal": "Withdrawal approved successfully!",
     "SendTransactionInquiry": "Transaction inquiry sent successfully!",
     "ReplyTransactionInquiry": "Transaction inquiry replied successfully!",
-    "export": "Data exported successfully!"
+    "export": "Data exported successfully!",
+    "translateMessage": "Message translated successfully!"
   },
   "Error": {
     "default": "An error occurred.",
@@ -99,7 +100,8 @@
     "Timeout": "OTP timeout. Please request a new OTP.",
     "InvalidOTP": "Invalid OTP. Please try again.",
     "export": "Failed to export data. Please try again.",
-    "SendTransactionInquiry": "Failed to send transaction inquiry. Please try again."
+    "SendTransactionInquiry": "Failed to send transaction inquiry. Please try again.",
+    "EventsOverlapping": "You have another event that overlaps with this time."
   },
   "header": {
     "products": "Products",

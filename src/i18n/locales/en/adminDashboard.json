@@ -1,0 +1,182 @@
+{
+  "adminDashboard": {
+    "dashboard": {
+      "header": {
+        "title": "Dashboard",
+        "subtitle": "Overview of system performance metrics",
+        "rangeLabel": "Range"
+      },
+
+      "filters": {
+        "last7Days": "Last 7 Days",
+        "last30Days": "Last 30 Days",
+        "lastYear": "Last Year",
+        "customRange": "Custom Range",
+        "from": "From",
+        "to": "To",
+        "apply": "Apply"
+      },
+
+      "state": {
+        "loading": "Loading dashboard data...",
+        "error": "Failed to load data. Please try again later.",
+        "empty": "No data available for this period."
+      },
+
+      "tabs": {
+        "overview": "Overview",
+        "revenue": "Revenue",
+        "users": "Users",
+        "events": "Events",
+        "content": "Content"
+      },
+
+      "metrics": {
+        "totalRevenue": {
+          "label": "Total Revenue",
+          "changePrefix": "In range:"
+        },
+        "subscriptions": {
+          "label": "Subscriptions",
+          "changePrefix": "New:"
+        },
+        "users": {
+          "label": "Users",
+          "changePrefix": "New:"
+        },
+        "events": {
+          "label": "Events",
+          "changePrefix": "Completed:"
+        }
+      },
+
+      "overviewChart": {
+        "title": "Overview",
+        "description": "Two main KPIs within the selected range",
+        "upcomingEventsLabel": "Upcoming events",
+        "completedEventsLabel": "Completed events"
+      },
+
+      "revenue": {
+        "breakdown": {
+          "title": "Revenue Breakdown",
+          "subtitle": "Today / This Week / This Month / This Year",
+          "today": "Today",
+          "thisWeek": "This week",
+          "thisMonth": "This month",
+          "thisYear": "This year"
+        },
+        "metrics": {
+          "total": {
+            "label": "Total Revenue",
+            "changePrefix": "In range:"
+          },
+          "today": {
+            "label": "Today"
+          },
+          "thisMonth": {
+            "label": "This Month"
+          }
+        },
+        "trend": {
+          "title": "Revenue Trend",
+          "subtitle": "Revenue across major time periods"
+        },
+        "trendByRange": {
+          "title": "Revenue Trend by Range",
+          "subtitle": "Revenue over time by {granularity}"
+        },
+        "trendGranularity": {
+          "daily": "day",
+          "weekly": "week",
+          "monthly": "month"
+        }
+      },
+
+      "usersChart": {
+        "total": "Total Users",
+        "newRange": "New Users (range)",
+        "active7days": "Active (7 days)"
+      },
+
+      "users": {
+        "metrics": {
+          "total": {
+            "label": "Total Users",
+            "changePrefix": "New:"
+          },
+          "active7days": {
+            "label": "Active last 7 days"
+          },
+          "newRange": {
+            "label": "New Users"
+          }
+        },
+        "trend": {
+          "title": "User Growth",
+          "subtitle": "User performance across metrics"
+        },
+        "trendByRange": {
+          "title": "User Growth by Range",
+          "subtitle": "New users over time by {granularity}"
+        },
+        "trendGranularity": {
+          "daily": "day",
+          "weekly": "week",
+          "monthly": "month"
+        }
+      },
+
+      "eventsChart": {
+        "total": "Total Events",
+        "upcoming": "Upcoming",
+        "completed": "Completed",
+        "registrations": "Registrations"
+      },
+
+      "events": {
+        "metrics": {
+          "total": { "label": "Total Events" },
+          "upcoming": { "label": "Upcoming" },
+          "completed": { "label": "Completed" }
+        },
+        "trend": {
+          "title": "Events Trend",
+          "subtitle": "Event KPIs across different groups"
+        },
+        "trendByRange": {
+          "title": "Events Trend by Range",
+          "subtitle": "New events over time by {granularity}"
+        },
+        "trendGranularity": {
+          "daily": "day",
+          "weekly": "week",
+          "monthly": "month"
+        }
+      },
+
+      "content": {
+        "metrics": {
+          "activeSubscriptions": {
+            "label": "Active Subscriptions",
+            "changePrefix": "New:"
+          },
+          "socialPosts": {
+            "label": "Social Posts",
+            "changePrefix": "In range:"
+          },
+          "reports": {
+            "label": "Reports",
+            "changePrefix": "Pending:"
+          }
+        },
+
+        "subscriptionPlans": {
+          "title": "Subscription Plans",
+          "subtitle": "Distribution of current plans",
+          "mostUsed": "Most used plan: {name} ({count} active subscriptions)"
+        }
+      }
+    }
+  }
+}

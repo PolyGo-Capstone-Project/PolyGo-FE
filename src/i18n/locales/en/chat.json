@@ -63,6 +63,15 @@
     "noSearchResults": "No results found",
     "sendImages": "Send Images",
     "sending": "Sending...",
+    "translateMessage": "Translate Message",
+    "translating": "Translating...",
+    "aiTranslated": "AI Translated",
+    "setupTranslationLanguage": "Setup Translation Language",
+    "translationLanguageTitle": "Translation Settings",
+    "translationLanguageDescription": "Choose your preferred language for message translation",
+    "currentLanguage": "Current Language",
+    "selectLanguage": "Select Language",
+    "saveLanguage": "Save",
     "error": {
       "loadConversations": "Failed to load conversations",
       "loadMessages": "Failed to load messages",
@@ -71,7 +80,10 @@
       "copyMessage": "Failed to copy message",
       "recordVoice": "Failed to record voice. Please allow microphone access.",
       "uploadImage": "Failed to upload image",
-      "callFailed": "Call failed"
+      "callFailed": "Call failed",
+      "translateMessage": "Failed to translate message",
+      "loadLanguages": "Failed to load languages",
+      "saveLanguage": "Failed to save language settings"
     }
   }
 }
