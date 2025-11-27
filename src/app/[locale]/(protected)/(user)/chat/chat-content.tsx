@@ -20,7 +20,9 @@ import {
   useChatHub,
   useGetConversations,
   useGetMessages,
+  useTranslateMessage,
 } from "@/hooks";
+import { showSuccessToast } from "@/lib";
 import communicationApiRequest from "@/lib/apis/communication";
 import mediaApiRequest from "@/lib/apis/media";
 import { HttpError } from "@/lib/http";
@@ -104,6 +106,10 @@ const mapMessageToChat = (message: MessageType): ChatMessage => ({
   type: message.type,
   createdAt: new Date(message.sentAt),
   imageUrls: extractImageUrlsFromContent(message.type, message.content),
+  isTranslated: message.isTranslated ?? false,
+  translatedContent: message.translatedContent,
+  sourceLanguage: message.sourceLanguage,
+  targetLanguage: message.targetLanguage,
 });
 
 interface ChatPageContentProps {
@@ -204,6 +210,11 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     selectedConversationId ?? undefined,
     currentUserId ?? undefined,
     handleNewMessage
+  );
+
+  // Translate message mutation
+  const translateMessageMutation = useTranslateMessage(
+    selectedConversationId ?? ""
   );
 
   // User presence management from context
@@ -728,6 +739,15 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
     }
   };
 
+  const handleTranslateMessage = async (messageId: string) => {
+    try {
+      await translateMessageMutation.mutateAsync(messageId);
+      showSuccessToast("translateMessage", tSuccess);
+    } catch (error) {
+      toast.error(tError("translateMessage"));
+    }
+  };
+
   const handleCopyMessage = async (content: string) => {
     try {
       await navigator.clipboard.writeText(content);
@@ -804,6 +824,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                   onSearchMessages={handleSearchMessages}
                   onDeleteConversation={() => handleDeleteConversation()}
                   locale={locale}
+                  conversationId={selectedConversationId ?? undefined}
                 />
               </div>
             </div>
@@ -825,6 +846,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                   undefined
                 }
                 onDeleteMessage={handleDeleteMessage}
+                onTranslateMessage={handleTranslateMessage}
                 onCopyMessage={handleCopyMessage}
               />
             </div>
@@ -883,6 +905,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
               onSearchMessages={handleSearchMessages}
               onDeleteConversation={() => handleDeleteConversation()}
               locale={locale}
+              conversationId={selectedConversationId ?? undefined}
             />
 
             <div className="flex-1 overflow-hidden">
@@ -902,6 +925,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                   undefined
                 }
                 onDeleteMessage={handleDeleteMessage}
+                onTranslateMessage={handleTranslateMessage}
                 onCopyMessage={handleCopyMessage}
                 scrollToMessageId={scrollToMessageId}
               />

@@ -48,7 +48,8 @@
     "ReplyTransactionInquiry": "Đã trả lời yêu cầu giao dịch thành công!",
     "Timeout": "OTP hết hạn. Vui lòng yêu cầu OTP mới.",
     "InvalidOTP": "OTP không hợp lệ. Vui lòng thử lại.",
-    "export": "Xuất dữ liệu thành công!"
+    "export": "Xuất dữ liệu thành công!",
+    "translateMessage": "Dịch tin nhắn thành công!"
   },
   "Error": {
     "default": "Đã xảy ra lỗi.",
@@ -99,7 +100,8 @@
     "fetchBanksError": "Lấy danh sách ngân hàng thất bại. Vui lòng thử lại.",
     "requestError": "Tạo yêu cầu rút tiền thất bại. Vui lòng thử lại.",
     "export": "Xuất dữ liệu thất bại. Vui lòng thử lại.",
-    "SendTransactionInquiry": "Gửi yêu cầu giao dịch thất bại. Vui lòng thử lại."
+    "SendTransactionInquiry": "Gửi yêu cầu giao dịch thất bại. Vui lòng thử lại.",
+    "EventsOverlapping": "Bạn có một sự kiện khác trùng thời gian với sự kiện này."
   },
   "header": {
     "products": "Sản phẩm",

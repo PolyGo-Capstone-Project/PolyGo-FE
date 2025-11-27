@@ -31,6 +31,10 @@ export const MessageSchema = z.object({
   type: z.enum(MessageEnum),
   sender: UserInfoSchema,
   content: z.string(),
+  isTranslated: z.boolean().default(false),
+  translatedContent: z.string().optional().nullable(),
+  sourceLanguage: z.string().max(10).optional().nullable(),
+  targetLanguage: z.string().max(10).optional().nullable(),
   sentAt: z.string(),
 });
 
@@ -88,6 +92,30 @@ export const GetConversationByIdResSchema = z.object({
 // Get conversations by user id => conversations
 export const GetConversationsByUserIdResSchema = GetConversationByIdResSchema;
 
+// SETUP translation for conversation
+export const GetConversationLanguageSetupSchema = z.object({
+  data: z.object({
+    conversationId: z.string(),
+    effectiveLanguageCode: z.string().max(10),
+  }),
+  message: z.string(),
+});
+
+// PUT seting conversation language
+export const SetConversationLanguageBodySchema = z
+  .object({
+    languageCode: z.string().max(10),
+  })
+  .strict();
+
+// POST translation for message
+export const TranslateMessageResSchema = z
+  .object({
+    data: MessageSchema,
+    message: z.string(),
+  })
+  .strict();
+
 // ============= TYPES =============
 export type UserInfoType = z.infer<typeof UserInfoSchema>;
 export type LastMessageType = z.infer<typeof LastMessageSchema>;
@@ -113,3 +141,10 @@ export type GetConversationByIdResType = z.infer<
 export type GetConversationsByUserIdResType = z.infer<
   typeof GetConversationsByUserIdResSchema
 >;
+export type GetConversationLanguageSetupType = z.infer<
+  typeof GetConversationLanguageSetupSchema
+>;
+export type SetConversationLanguageBodyType = z.infer<
+  typeof SetConversationLanguageBodySchema
+>;
+export type TranslateMessageResType = z.infer<typeof TranslateMessageResSchema>;
