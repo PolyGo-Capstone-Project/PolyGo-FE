@@ -35,6 +35,10 @@ export const UserSchema = z.object({
   lastLoginAt: z.iso.datetime(),
   nextUnbannedAt: z.iso.datetime().nullable(),
   nextWithdrawResetAt: z.iso.datetime().nullable(),
+  /** ✨ NEW FIELDS */
+  level: z.number().min(1).max(7).default(1),
+  xpInCurrentLevel: z.number().min(0).default(0),
+  xpToNextLevel: z.number().min(0).default(0),
 });
 
 // =================== for your self

@@ -1,0 +1,46 @@
+{
+  "levels": {
+    "title": "Cấp độ & Phần thưởng",
+    "subtitle": "Theo dõi tiến trình thăng cấp và nhận phần thưởng khi bạn lên level.",
+    "backToProfile": "Trở lại Hồ Sơ",
+
+    "errors": {
+      "loadUserFailed": "Không tải được dữ liệu người dùng."
+    },
+
+    "xpSummary": {
+      "title": "Tiến trình của bạn",
+      "description": "Bạn kiếm XP bằng cách tham gia buổi học, sự kiện và đóng góp cho cộng đồng.",
+      "totalXp": "Tổng XP",
+      "currentLevel": "Cấp hiện tại",
+      "levelLabel": "Cấp",
+      "maxLevel": "Cấp tối đa",
+      "maxLevelReached": "Bạn đã đạt cấp độ cao nhất.",
+      "progressTexts": "{xp}/{target} XP để lên cấp tiếp theo"
+    },
+
+    "levelsList": {
+      "title": "Phần thưởng theo cấp độ"
+    },
+
+    "levelBadge": "Cấp {order}",
+
+    "requiredXp": {
+      "label": "XP cần có"
+    },
+
+    "status": {
+      "locked": "Đã khóa",
+      "lockedShort": "Khóa",
+      "claimed": "Đã nhận",
+      "claimedShort": "Đã nhận",
+      "readyToClaim": "Có thể nhận",
+      "reached": "Bạn đã đạt cấp này",
+      "needMoreXp": "Tiếp tục tích lũy XP để mở khóa cấp này"
+    },
+
+    "actions": {
+      "claim": "Nhận thưởng"
+    }
+  }
+}

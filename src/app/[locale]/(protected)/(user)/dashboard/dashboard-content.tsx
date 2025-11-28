@@ -35,7 +35,6 @@ import { useMemo } from "react";
 
 const MOCK_TOTAL_HOURS = 15;
 const MOCK_RATING = 4.8;
-const MOCK_LEVEL_PROGRESS = { current: 1250, total: 2000, level: 5 };
 
 /* ✅ Dùng icon lucide thay cho emoji, giữ nguyên color/title/id */
 const mockQuickActions: QuickActionItemType[] = [
@@ -200,8 +199,19 @@ export default function DashboardContent({ locale }: ContentProps) {
   const streakDays = user.streakDays;
   const totalHours = MOCK_TOTAL_HOURS;
   const rating = MOCK_RATING;
-  const levelProgress = MOCK_LEVEL_PROGRESS;
-  const progressPct = (levelProgress.current / levelProgress.total) * 100;
+
+  // ✅ Dùng đúng API level / XP
+  const level = user.level ?? 1;
+  const xpInCurrentLevel = user.xpInCurrentLevel ?? 0;
+  const xpToNextLevel = user.xpToNextLevel ?? 0;
+  const isMaxLevel = xpToNextLevel <= 0;
+
+  const progressPct = isMaxLevel
+    ? 100
+    : Math.min(100, (xpInCurrentLevel / xpToNextLevel) * 100);
+
+  const currentXPBar = xpInCurrentLevel;
+  const totalXPBar = isMaxLevel ? xpInCurrentLevel : xpToNextLevel;
 
   // Filter quick actions if not Free plan
   const quickActions = mockQuickActions;
@@ -252,8 +262,8 @@ export default function DashboardContent({ locale }: ContentProps) {
               streakDays={streakDays}
               rating={rating}
               progressPct={progressPct}
-              currentXP={levelProgress.current}
-              totalXP={levelProgress.total}
+              currentXP={currentXPBar}
+              totalXP={totalXPBar}
               t={t}
             />
 

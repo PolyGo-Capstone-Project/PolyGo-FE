@@ -10,7 +10,7 @@ import {
   IconSparkles,
   IconTrophy,
 } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 type ProfileInfoSectionProps = {
   experiencePoints: number;
@@ -29,6 +30,10 @@ type ProfileInfoSectionProps = {
   streakDays: number;
   longestStreakDays: number;
   nextUnbannedAt: string | null;
+  level: number;
+  xpInCurrentLevel: number;
+  xpToNextLevel: number;
+  hasUnclaimedLevelRewards?: boolean;
 };
 
 export function ProfileInfoSection({
@@ -37,11 +42,17 @@ export function ProfileInfoSection({
   streakDays,
   longestStreakDays,
   nextUnbannedAt,
+  level,
+  xpInCurrentLevel,
+  xpToNextLevel,
+  hasUnclaimedLevelRewards,
 }: ProfileInfoSectionProps) {
   const t = useTranslations("profile");
   const tXp = useTranslations("profile");
   const tStreak = useTranslations("profile.streak");
   const tMerit = useTranslations("profile.merit");
+  const router = useRouter();
+  const locale = useLocale();
 
   // Calculate days until unbanned
   const daysUntilUnbanned = nextUnbannedAt
@@ -122,45 +133,15 @@ export function ProfileInfoSection({
     );
   }
 
-  // Normal flow - no banned streak
-  // Level thresholds
-  const levelThresholds = [
-    { level: 1, xp: 0 },
-    { level: 2, xp: 2000 },
-    { level: 3, xp: 4000 },
-    { level: 4, xp: 6000 },
-    { level: 5, xp: 8000 },
-    { level: 6, xp: 10000 },
-    { level: 7, xp: 12000 },
-    { level: 8, xp: 14000 },
-    { level: 9, xp: 16000 },
-    { level: 10, xp: 18000 },
-  ];
-
-  // Calculate current level based on XP
-  let currentLevel = 1;
-  let xpForCurrentLevel = 0;
-  let xpForNextLevel = 2000;
-
-  for (let i = levelThresholds.length - 1; i >= 0; i--) {
-    if (experiencePoints >= levelThresholds[i].xp) {
-      currentLevel = levelThresholds[i].level;
-      xpForCurrentLevel = levelThresholds[i].xp;
-
-      // Set XP for next level (if not at max level)
-      if (i < levelThresholds.length - 1) {
-        xpForNextLevel = levelThresholds[i + 1].xp;
-      } else {
-        // Max level reached
-        xpForNextLevel = levelThresholds[i].xp;
-      }
-      break;
-    }
-  }
-
-  const xpProgress = experiencePoints - xpForCurrentLevel;
-  const xpNeeded = xpForNextLevel - xpForCurrentLevel;
-  const progressPercent = xpNeeded > 0 ? (xpProgress / xpNeeded) * 100 : 100;
+  /** ===== XP & LEVEL (dùng đúng API) ===== */
+  const isMaxLevel = xpToNextLevel <= 0;
+  const xpProgress = xpInCurrentLevel;
+  const xpNeeded = isMaxLevel ? 0 : xpToNextLevel;
+  const progressPercent =
+    xpNeeded > 0 ? Math.min(100, (xpProgress / xpNeeded) * 100) : 100;
+  const remainingToNextLevel = isMaxLevel
+    ? 0
+    : Math.max(0, xpNeeded - xpProgress);
 
   // Merit classification
   const getMeritLevel = (score: number) => {
@@ -220,17 +201,30 @@ export function ProfileInfoSection({
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">
-          {t("sections.experiencePoints")}
-        </CardTitle>
+      <CardHeader className="space-y-2">
+        {/* Hàng 1: Title + tag quà chưa nhận */}
+        <div className="flex items-center justify-between gap-3">
+          <CardTitle className="text-lg">
+            {t("sections.experiencePoints")}
+          </CardTitle>
+
+          {hasUnclaimedLevelRewards && (
+            <Badge className="animate-pulse bg-gradient-to-r from-amber-500 to-orange-500 text-xs font-semibold text-white shadow-md">
+              <span className="mr-1.5 text-sm">🎁</span>
+              {tXp("xp.unclaimedRewards", {
+                default: "Rewards waiting to claim",
+              })}
+            </Badge>
+          )}
+        </div>
       </CardHeader>
+
       <CardContent className="space-y-4">
-        {/* Level Badge */}
+        {/* Level & tổng XP */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Badge variant="default" className="text-lg px-4 py-1">
-              {t("sections.level")} {currentLevel}
+            <Badge variant="default" className="px-4 py-1 text-lg">
+              {t("sections.level")} {level}
             </Badge>
             <TooltipProvider>
               <Tooltip>
@@ -239,7 +233,9 @@ export function ProfileInfoSection({
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="text-xs">
-                    {xpProgress} / {xpNeeded} {tXp("xp.toNextLevel")}
+                    {xpInCurrentLevel} /{" "}
+                    {xpToNextLevel > 0 ? xpToNextLevel : xpInCurrentLevel}{" "}
+                    {tXp("xp.toNextLevel")}
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -251,12 +247,24 @@ export function ProfileInfoSection({
           </div>
         </div>
 
-        {/* Progress Bar */}
+        {/* Thanh tiến độ xpInCurrentLevel / xpToNextLevel */}
         <div className="space-y-2">
           <Progress value={progressPercent} className="h-2" />
-          <p className="text-xs text-muted-foreground text-center">
-            {xpNeeded - xpProgress} {tXp("xp.untilLevel")} {currentLevel + 1}
+          <p className="text-center text-xs text-muted-foreground">
+            {remainingToNextLevel} {tXp("xp.untilLevel")} {level + 1}
           </p>
+        </div>
+
+        {/* Nút chuyển tới trang Level (đưa xuống dưới thanh XP) */}
+        <div className="flex justify-center pt-1">
+          <button
+            type="button"
+            onClick={() => router.push(`/${locale}/level`)}
+            className="inline-flex items-center gap-1.5 rounded-full border border-primary/60 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary shadow-sm transition hover:bg-primary/10 hover:shadow md:px-4 md:text-sm"
+          >
+            <IconSparkles className="h-4 w-4" />
+            {tXp("xp.goToLevel", { default: "View levels & rewards" })}
+          </button>
         </div>
 
         {/* Streak Section - Enhanced Design */}

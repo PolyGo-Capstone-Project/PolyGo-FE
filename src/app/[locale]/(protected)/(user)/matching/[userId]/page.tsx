@@ -26,6 +26,7 @@ import {
   useGetUserProfile,
   useRejectFriendRequestMutation,
   useSendFriendRequestMutation,
+  useUserLevelsQuery,
 } from "@/hooks";
 import { showErrorToast, showSuccessToast } from "@/lib";
 import { useLocale, useTranslations } from "next-intl";
@@ -74,6 +75,12 @@ export default function UserProfilePage() {
     enabled:
       !!userId && userData?.payload.data.friendStatus === FriendStatus.Friends,
   });
+
+  // Levels của user (để biết còn quà chưa nhận)
+  const { data: userLevelsData, isLoading: isLoadingLevels } =
+    useUserLevelsQuery({
+      params: { lang, pageNumber: -1, pageSize: -1 },
+    });
 
   // Friend mutations
   const sendFriendRequestMutation = useSendFriendRequestMutation({
@@ -268,6 +275,9 @@ export default function UserProfilePage() {
                   streakDays={user.streakDays ?? 0}
                   longestStreakDays={user.longestStreakDays ?? 0}
                   nextUnbannedAt={user.nextUnbannedAt ?? null}
+                  level={user.level}
+                  xpInCurrentLevel={user.xpInCurrentLevel}
+                  xpToNextLevel={user.xpToNextLevel}
                 />
                 {/* Stats */}
                 <ProfileStats
@@ -322,6 +332,9 @@ export default function UserProfilePage() {
                   streakDays={user.streakDays ?? 0}
                   longestStreakDays={user.longestStreakDays ?? 0}
                   nextUnbannedAt={user.nextUnbannedAt ?? null}
+                  level={user.level}
+                  xpInCurrentLevel={user.xpInCurrentLevel}
+                  xpToNextLevel={user.xpToNextLevel}
                 />
               </div>
             </div>

@@ -8,6 +8,7 @@ export * from "./friend.model";
 export * from "./gift.model";
 export * from "./interest.model";
 export * from "./language.model";
+export * from "./level.model";
 export * from "./media.model";
 export * from "./notification.model";
 export * from "./payment.model";
