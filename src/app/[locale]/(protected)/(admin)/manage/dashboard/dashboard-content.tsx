@@ -1,127 +1,35 @@
 "use client";
 
-import {
-  Bell,
-  CalendarDays,
-  CheckCircle2,
-  ChevronDown,
-  DollarSign,
-  Flag,
-  MapPin,
-  MessageCircle,
-  Package,
-  Star,
-  TrendingUp,
-  Users as UsersIcon,
-} from "lucide-react";
-import type { ReactNode } from "react";
-import { useEffect, useMemo, useState } from "react";
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import { useDashboardOverviewQuery } from "@/hooks";
 import type { DashboardOverviewQueryType } from "@/models";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useState } from "react";
 
-/* ========= Helpers ========= */
+import EventsTab from "@/components/modules/admin/admin-dashboard/events-tab";
+import OverviewTab from "@/components/modules/admin/admin-dashboard/overview-tab";
+import RevenueTab from "@/components/modules/admin/admin-dashboard/revenue-tab";
+import UsersTab from "@/components/modules/admin/admin-dashboard/users-tab";
 
 type TimeRange = "7d" | "30d" | "1y" | "custom";
-
-// 🔧 CHỖ CẦN SỬA: cập nhật formatCurrency để luôn hiển thị đơn vị "VNĐ"
-const formatCurrency = (value: number | undefined, locale: string) => {
-  if (!value || Number.isNaN(value)) return "-";
-
-  const formatted = new Intl.NumberFormat(locale, {
-    maximumFractionDigits: 0,
-  }).format(value);
-
-  return `${formatted} VNĐ`;
-};
-
-const formatInteger = (value: number | undefined) => {
-  if (value === undefined || Number.isNaN(value)) return "-";
-  return value.toLocaleString();
-};
-
-/** Rút gọn số lớn: 1500 -> 1.5K, 2000000 -> 2.0M */
-const formatShortNumber = (value: number | undefined) => {
-  if (value === undefined || Number.isNaN(value)) return "-";
-  const n = value;
-  if (Math.abs(n) >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(1)}B`;
-  if (Math.abs(n) >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-  if (Math.abs(n) >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
-  return n.toString();
-};
-
-interface MetricCardProps {
-  label: string;
-  value: string;
-  change: string;
-  icon: ReactNode;
-}
-
-function MetricCard({ label, value, change, icon }: MetricCardProps) {
-  return (
-    <Card className="border-border bg-card">
-      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {label}
-        </CardTitle>
-        <span className="text-xl text-muted-foreground">{icon}</span>
-      </CardHeader>
-      <CardContent className="space-y-1">
-        <div className="text-2xl font-bold text-foreground">{value}</div>
-        <p className="text-xs text-emerald-500">{change}</p>
-      </CardContent>
-    </Card>
-  );
-}
+type DashboardTab = "overview" | "revenue" | "users" | "events";
 
 export default function AdminDashboardPage() {
   const t = useTranslations("adminDashboard.dashboard");
-  const locale = useLocale();
 
   const [timeRange, setTimeRange] = useState<TimeRange>("7d");
   const [showCustom, setShowCustom] = useState(false);
+  const [activeTab, setActiveTab] = useState<DashboardTab>("overview");
 
   // from/to dùng để gọi API
   const [from, setFrom] = useState<string>("");
   const [to, setTo] = useState<string>("");
 
-  // from/to cho input custom (chỉ apply khi nhấn Apply)
+  // from/to cho input custom
   const [customFrom, setCustomFrom] = useState<string>("");
   const [customTo, setCustomTo] = useState<string>("");
 
-  // tính from/to cho 7d / 30d / 1y
+  // Tính from/to cho 7d / 30d / 1y
   useEffect(() => {
     if (timeRange === "custom") return;
 
@@ -162,204 +70,17 @@ export default function AdminDashboardPage() {
 
   const overview = data?.payload?.data;
 
-  /* ======= Data cho charts & cards ======= */
-
-  const overviewMetricCards = useMemo(() => {
-    if (!overview) return [];
-    return [
-      {
-        label: t("metrics.totalRevenue.label"),
-        value: formatCurrency(overview.revenue.totalRevenue, locale),
-        change: `${t("metrics.totalRevenue.changePrefix")} ${formatCurrency(
-          overview.revenue.revenueInRange,
-          locale
-        )}`,
-        icon: <DollarSign className="h-5 w-5" />,
-      },
-      {
-        label: t("metrics.subscriptions.label"),
-        value: formatInteger(overview.subscriptions.activeSubscriptions),
-        change: `${t("metrics.subscriptions.changePrefix")} ${formatInteger(
-          overview.subscriptions.newSubscriptionsInRange
-        )}`,
-        icon: <Package className="h-5 w-5" />,
-      },
-      {
-        label: t("metrics.users.label"),
-        value: formatInteger(overview.users.totalUsers),
-        change: `${t("metrics.users.changePrefix")} ${formatInteger(
-          overview.users.newUsersInRange
-        )}`,
-        icon: <UsersIcon className="h-5 w-5" />,
-      },
-      {
-        label: t("metrics.events.label"),
-        value: formatInteger(overview.events.totalEvents),
-        change: `${t("metrics.events.changePrefix")} ${formatInteger(
-          overview.events.completedEvents
-        )}`,
-        icon: <MapPin className="h-5 w-5" />,
-      },
-    ];
-  }, [overview, locale, t]);
-
-  // Overview chart: Upcoming vs Completed events
-  const overviewHorizontalData = overview && [
-    {
-      metric: t("overviewChart.upcomingEventsLabel"),
-      value: overview.events.upcomingEvents,
-    },
-    {
-      metric: t("overviewChart.completedEventsLabel"),
-      value: overview.events.completedEvents,
-    },
-  ];
-
-  // Revenue chart (Today / Week / Month / Year)
-  const revenueChartData = overview && [
-    {
-      label: t("revenue.breakdown.today"),
-      revenue: overview.revenue.revenueToday,
-    },
-    {
-      label: t("revenue.breakdown.thisWeek"),
-      revenue: overview.revenue.revenueThisWeek,
-    },
-    {
-      label: t("revenue.breakdown.thisMonth"),
-      revenue: overview.revenue.revenueThisMonth,
-    },
-    {
-      label: t("revenue.breakdown.thisYear"),
-      revenue: overview.revenue.revenueThisYear,
-    },
-  ];
-
-  // Revenue trend theo khoảng filter (daily / weekly / monthly từ BE)
-  const revenueTrendData =
-    overview?.revenue?.trend?.map((it) => ({
-      label: it.label,
-      amount: it.amount,
-    })) ?? [];
-
-  const revenueTrendGranularityLabel = useMemo(() => {
-    const g = overview?.revenue?.trendGranularity;
-    if (!g) return "";
-    switch (g) {
-      case "daily":
-        return t("revenue.trendGranularity.daily");
-      case "weekly":
-        return t("revenue.trendGranularity.weekly");
-      case "monthly":
-        return t("revenue.trendGranularity.monthly");
-      default:
-        return "";
+  const handleSelectRange = (range: TimeRange) => {
+    if (range === "custom") {
+      setTimeRange("custom");
+      setShowCustom(true);
+      setCustomFrom(from);
+      setCustomTo(to);
+    } else {
+      setTimeRange(range);
+      setShowCustom(false);
     }
-  }, [overview?.revenue?.trendGranularity, t]);
-
-  // Users line chart (tổng / trong khoảng / active 7 ngày)
-  const usersChartData = overview && [
-    { label: t("usersChart.total"), users: overview.users.totalUsers },
-    {
-      label: t("usersChart.newRange"),
-      users: overview.users.newUsersInRange,
-    },
-    {
-      label: t("usersChart.active7days"),
-      users: overview.users.activeUsersLast7Days,
-    },
-  ];
-
-  // Users trend theo filter (daily / weekly / monthly từ BE)
-  const usersTrendData =
-    overview?.users?.newUsersTrend?.map((it) => ({
-      label: it.label,
-      count: it.count,
-    })) ?? [];
-
-  const usersTrendGranularityLabel = useMemo(() => {
-    const g = overview?.users?.newUsersGranularity;
-    if (!g) return "";
-    switch (g) {
-      case "daily":
-        return t("users.trendGranularity.daily");
-      case "weekly":
-        return t("users.trendGranularity.weekly");
-      case "monthly":
-        return t("users.trendGranularity.monthly");
-      default:
-        return "";
-    }
-  }, [overview?.users?.newUsersGranularity, t]);
-
-  // Events line chart (tổng, upcoming, completed, registrations)
-  const eventsChartData = overview && [
-    { label: t("eventsChart.total"), events: overview.events.totalEvents },
-    {
-      label: t("eventsChart.upcoming"),
-      events: overview.events.upcomingEvents,
-    },
-    {
-      label: t("eventsChart.completed"),
-      events: overview.events.completedEvents,
-    },
-    {
-      label: t("eventsChart.registrations"),
-      events: overview.events.totalRegistrations,
-    },
-  ];
-
-  // Events trend theo filter (daily / weekly / monthly từ BE)
-  const eventsTrendData =
-    overview?.events?.newEventsTrend?.map((it) => ({
-      label: it.label,
-      count: it.count,
-    })) ?? [];
-
-  const eventsTrendGranularityLabel = useMemo(() => {
-    const g = overview?.events?.newEventsGranularity;
-    if (!g) return "";
-    switch (g) {
-      case "daily":
-        return t("events.trendGranularity.daily");
-      case "weekly":
-        return t("events.trendGranularity.weekly");
-      case "monthly":
-        return t("events.trendGranularity.monthly");
-      default:
-        return "";
-    }
-  }, [overview?.events?.newEventsGranularity, t]);
-
-  // Content / subscriptions pie chart + most used plan
-  const subscriptionEntries =
-    overview && overview.subscriptions
-      ? Object.entries(overview.subscriptions.planBreakdown ?? {})
-      : [];
-
-  const subscriptionPieData =
-    subscriptionEntries.map(([name, value], index) => ({
-      name,
-      value: typeof value === "number" ? value : Number(value) || 0,
-      fill: `var(--chart-${(index % 5) + 1})`,
-    })) ?? [];
-
-  const mostUsedSubscriptionPlan =
-    subscriptionEntries.length > 0
-      ? subscriptionEntries.reduce(
-          (acc, [name, raw]) => {
-            const num = typeof raw === "number" ? raw : Number(raw) || 0;
-            if (num > acc.count) return { name, count: num };
-            return acc;
-          },
-          (() => {
-            const [firstName, firstRaw] = subscriptionEntries[0];
-            const firstNum =
-              typeof firstRaw === "number" ? firstRaw : Number(firstRaw) || 0;
-            return { name: firstName, count: firstNum };
-          })()
-        )
-      : undefined;
+  };
 
   const timeRangeLabel = useMemo(() => {
     switch (timeRange) {
@@ -378,11 +99,10 @@ export default function AdminDashboardPage() {
 
   const tabs = useMemo(
     () => [
-      { value: "overview", label: t("tabs.overview") },
-      { value: "revenue", label: t("tabs.revenue") },
-      { value: "users", label: t("tabs.users") },
-      { value: "events", label: t("tabs.events") },
-      { value: "content", label: t("tabs.content") },
+      { value: "overview" as const, label: t("tabs.overview") },
+      { value: "revenue" as const, label: t("tabs.revenue") },
+      { value: "users" as const, label: t("tabs.users") },
+      { value: "events" as const, label: t("tabs.events") },
     ],
     [t]
   );
@@ -407,64 +127,11 @@ export default function AdminDashboardPage() {
             </p>
           )}
         </div>
-
-        {/* Filter Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 border-border bg-card text-foreground hover:bg-accent hover:text-accent-foreground"
-            >
-              {timeRangeLabel}
-              <ChevronDown className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="border-border bg-popover text-popover-foreground">
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => {
-                setTimeRange("7d");
-                setShowCustom(false);
-              }}
-            >
-              {t("filters.last7Days")}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => {
-                setTimeRange("30d");
-                setShowCustom(false);
-              }}
-            >
-              {t("filters.last30Days")}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => {
-                setTimeRange("1y");
-                setShowCustom(false);
-              }}
-            >
-              {t("filters.lastYear")}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => {
-                setTimeRange("custom");
-                setShowCustom(true);
-                setCustomFrom(from);
-                setCustomTo(to);
-              }}
-            >
-              {t("filters.customRange")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
 
-      {/* Custom Date Range Inputs */}
+      {/* Custom Date Range */}
       {showCustom && (
-        <div className="flex w-full items-end gap-4 border-b border-border bg-card/60 px-8 py-4">
+        <div className="flex w-full flex-wrap items-end gap-4 border-b border-border bg-card/60 px-8 py-4">
           <div>
             <label className="mb-1 block text-sm text-muted-foreground">
               {t("filters.from")}
@@ -521,631 +188,47 @@ export default function AdminDashboardPage() {
         )}
 
         {!isLoading && !isError && overview && (
-          <Tabs defaultValue="overview" className="w-full">
-            {/* Navigation Tabs */}
-            <TabsList
-              className="
-                h-auto gap-8 bg-transparent p-0 
-                border-0
-              "
-            >
+          <>
+            {/* Tabs */}
+            <div className="mb-4 flex gap-2 overflow-x-auto border-b">
               {tabs.map((tab) => (
-                <TabsTrigger
+                <Button
                   key={tab.value}
-                  value={tab.value}
-                  className="shadow-blackxl"
+                  variant={activeTab === tab.value ? "default" : "ghost"}
+                  onClick={() => setActiveTab(tab.value)}
+                  className="whitespace-nowrap rounded-b-none"
                 >
                   {tab.label}
-                </TabsTrigger>
+                </Button>
               ))}
-            </TabsList>
+            </div>
 
-            {/* ===== Overview Tab ===== */}
-            <TabsContent value="overview" className="mt-6 space-y-6 pb-8">
-              {/* Metric Cards */}
-              <div className="grid grid-cols-1 gap-4 px-0 md:grid-cols-2 lg:grid-cols-4">
-                {overviewMetricCards.map((m) => (
-                  <MetricCard
-                    key={m.label}
-                    label={m.label}
-                    value={m.value}
-                    change={m.change}
-                    icon={m.icon}
-                  />
-                ))}
-              </div>
+            {activeTab === "overview" && <OverviewTab overview={overview} />}
 
-              {/* Overview horizontal chart: Upcoming vs Completed events */}
-              <div className="mt-2">
-                <Card className="border-border bg-card">
-                  <CardHeader>
-                    <CardTitle className="text-foreground">
-                      {t("overviewChart.title")}
-                    </CardTitle>
-                    <CardDescription className="text-muted-foreground">
-                      {t("overviewChart.description")}
-                    </CardDescription>
-                  </CardHeader>
+            {activeTab === "revenue" && (
+              <RevenueTab
+                overview={overview}
+                timeRangeLabel={timeRangeLabel}
+                onSelectRange={handleSelectRange}
+              />
+            )}
 
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={260}>
-                      <BarChart
-                        layout="vertical"
-                        data={overviewHorizontalData}
-                        margin={{ top: 10, right: 30, left: 40, bottom: 0 }}
-                      >
-                        <CartesianGrid
-                          strokeDasharray="3 3"
-                          stroke="#e5e7eb33"
-                        />
-                        <XAxis
-                          type="number"
-                          stroke="#9ca3af"
-                          domain={[0, "dataMax"]}
-                          tickFormatter={(value) =>
-                            formatShortNumber(Number(value))
-                          }
-                        />
-                        <YAxis
-                          type="category"
-                          dataKey="metric"
-                          stroke="#9ca3af"
-                          width={80}
-                        />
-                        <Tooltip
-                          cursor={false}
-                          contentStyle={{
-                            backgroundColor: "hsl(var(--popover))",
-                            border: "1px solid hsl(var(--border))",
-                            borderRadius: "8px",
-                            color: "hsl(var(--popover-foreground))",
-                          }}
-                          labelStyle={{
-                            color: "hsl(var(--popover-foreground))",
-                          }}
-                          itemStyle={{
-                            color: "hsl(var(--foreground))",
-                            fontWeight: 500,
-                          }}
-                          formatter={(value) => formatInteger(Number(value))}
-                        />
-                        <Bar
-                          dataKey="value"
-                          fill="var(--chart-2)"
-                          radius={[0, 8, 8, 0]}
-                          minPointSize={12}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-              </div>
+            {activeTab === "users" && (
+              <UsersTab
+                overview={overview}
+                timeRangeLabel={timeRangeLabel}
+                onSelectRange={handleSelectRange}
+              />
+            )}
 
-              {/* Bottom Section: Revenue breakdown */}
-              <div className="grid grid-cols-1 gap-6 px-0">
-                <Card className="border-border bg-card">
-                  <CardHeader>
-                    <CardTitle className="text-foreground">
-                      {t("revenue.breakdown.title")}
-                    </CardTitle>
-                    <CardDescription className="text-muted-foreground">
-                      {t("revenue.breakdown.subtitle")}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={260}>
-                      <BarChart
-                        data={revenueChartData}
-                        margin={{ top: 40, right: 24, left: 40, bottom: 0 }}
-                      >
-                        <CartesianGrid
-                          strokeDasharray="3 3"
-                          stroke="#e5e7eb33"
-                        />
-                        <XAxis dataKey="label" stroke="#9ca3af" />
-                        <YAxis
-                          stroke="#9ca3af"
-                          width={80}
-                          tickFormatter={(value) => `${value} VNĐ`}
-                        />
-                        <Tooltip
-                          cursor={false}
-                          contentStyle={{
-                            backgroundColor: "hsl(var(--popover))",
-                            border: "1px solid hsl(var(--border))",
-                            borderRadius: "8px",
-                          }}
-                          labelStyle={{
-                            color: "hsl(var(--popover-foreground))",
-                          }}
-                          itemStyle={{
-                            color: "hsl(var(--foreground))",
-                            fontWeight: 500,
-                          }}
-                          formatter={(value) =>
-                            formatCurrency(Number(value), locale)
-                          }
-                        />
-                        <Bar
-                          dataKey="revenue"
-                          fill="var(--chart-1)"
-                          radius={[8, 8, 0, 0]}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-
-            {/* ===== Revenue Tab ===== */}
-            <TabsContent value="revenue" className="mt-6 space-y-6 px-0 pb-8">
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <MetricCard
-                  label={t("revenue.metrics.total.label")}
-                  value={formatCurrency(overview.revenue.totalRevenue, locale)}
-                  change={`${t(
-                    "revenue.metrics.total.changePrefix"
-                  )} ${formatCurrency(
-                    overview.revenue.revenueInRange,
-                    locale
-                  )}`}
-                  icon={<DollarSign className="h-5 w-5" />}
-                />
-                <MetricCard
-                  label={t("revenue.metrics.today.label")}
-                  value={formatCurrency(overview.revenue.revenueToday, locale)}
-                  change=""
-                  icon={<CalendarDays className="h-5 w-5" />}
-                />
-                <MetricCard
-                  label={t("revenue.metrics.thisMonth.label")}
-                  value={formatCurrency(
-                    overview.revenue.revenueThisMonth,
-                    locale
-                  )}
-                  change=""
-                  icon={<TrendingUp className="h-5 w-5" />}
-                />
-              </div>
-
-              {/* Biểu đồ 1: tổng quan Today / Week / Month / Year */}
-              <Card className="border-border bg-card">
-                <CardHeader>
-                  <CardTitle className="text-foreground">
-                    {t("revenue.trend.title")}
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground">
-                    {t("revenue.trend.subtitle")}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={350}>
-                    <AreaChart
-                      data={revenueChartData}
-                      margin={{ top: 40, right: 30, left: 40, bottom: 0 }}
-                    >
-                      <defs>
-                        <linearGradient
-                          id="fillRev"
-                          x1="0"
-                          y1="0"
-                          x2="0"
-                          y2="1"
-                        >
-                          <stop
-                            offset="5%"
-                            stopColor="var(--chart-1)"
-                            stopOpacity={0.8}
-                          />
-                          <stop
-                            offset="95%"
-                            stopColor="var(--chart-1)"
-                            stopOpacity={0.1}
-                          />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb33" />
-                      <XAxis dataKey="label" stroke="#9ca3af" />
-                      <YAxis
-                        stroke="#9ca3af"
-                        tickFormatter={(value) => `${value} VNĐ`}
-                      />
-                      <Tooltip
-                        cursor={false}
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--popover))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                        labelStyle={{ color: "hsl(var(--popover-foreground))" }}
-                        itemStyle={{
-                          color: "hsl(var(--foreground))",
-                          fontWeight: 500,
-                        }}
-                        formatter={(value) =>
-                          formatCurrency(Number(value), locale)
-                        }
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="revenue"
-                        stroke="var(--chart-1)"
-                        fill="url(#fillRev)"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              {/* Biểu đồ 2: trend theo filter (daily / weekly / monthly) */}
-              <Card className="border-border bg-card">
-                <CardHeader>
-                  <CardTitle className="text-foreground">
-                    {t("revenue.trendByRange.title")}
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground">
-                    {t("revenue.trendByRange.subtitle", {
-                      granularity: revenueTrendGranularityLabel,
-                    })}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={350}>
-                    <BarChart
-                      data={revenueTrendData}
-                      margin={{ top: 40, right: 24, left: 40, bottom: 0 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb33" />
-                      <XAxis dataKey="label" stroke="#9ca3af" />
-                      <YAxis
-                        stroke="#9ca3af"
-                        tickFormatter={(value) => `${value} VNĐ`}
-                      />
-                      <Tooltip
-                        cursor={false}
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--popover))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                        labelStyle={{
-                          color: "hsl(var(--popover-foreground))",
-                        }}
-                        itemStyle={{
-                          color: "hsl(var(--foreground))",
-                          fontWeight: 500,
-                        }}
-                        formatter={(value) =>
-                          formatCurrency(Number(value), locale)
-                        }
-                      />
-                      <Bar
-                        dataKey="amount"
-                        fill="var(--chart-4)"
-                        radius={[8, 8, 0, 0]}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* ===== Users Tab ===== */}
-            <TabsContent value="users" className="mt-6 space-y-6 px-0 pb-8">
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <MetricCard
-                  label={t("users.metrics.total.label")}
-                  value={formatInteger(overview.users.totalUsers)}
-                  change={`${t("users.metrics.total.changePrefix")} ${formatInteger(
-                    overview.users.newUsersInRange
-                  )}`}
-                  icon={<UsersIcon className="h-5 w-5" />}
-                />
-                <MetricCard
-                  label={t("users.metrics.active7days.label")}
-                  value={formatInteger(overview.users.activeUsersLast7Days)}
-                  change=""
-                  icon={<CheckCircle2 className="h-5 w-5" />}
-                />
-                <MetricCard
-                  label={t("users.metrics.newRange.label")}
-                  value={formatInteger(overview.users.newUsersInRange)}
-                  change=""
-                  icon={<Star className="h-5 w-5" />}
-                />
-              </div>
-
-              {/* Biểu đồ 1: tổng / trong khoảng / active 7 ngày */}
-              <Card className="border-border bg-card">
-                <CardHeader>
-                  <CardTitle className="text-foreground">
-                    {t("users.trend.title")}
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground">
-                    {t("users.trend.subtitle")}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={350}>
-                    <LineChart
-                      data={usersChartData}
-                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb33" />
-                      <XAxis dataKey="label" stroke="#9ca3af" />
-                      <YAxis stroke="#9ca3af" />
-                      <Tooltip
-                        cursor={false}
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--popover))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                        labelStyle={{ color: "hsl(var(--popover-foreground))" }}
-                        itemStyle={{
-                          color: "hsl(var(--foreground))",
-                          fontWeight: 500,
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="users"
-                        stroke="var(--chart-2)"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              {/* Biểu đồ 2: Users trend theo filter (daily/weekly/monthly) */}
-              <Card className="border-border bg-card">
-                <CardHeader>
-                  <CardTitle className="text-foreground">
-                    {t("users.trendByRange.title")}
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground">
-                    {t("users.trendByRange.subtitle", {
-                      granularity: usersTrendGranularityLabel,
-                    })}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={350}>
-                    <BarChart
-                      data={usersTrendData}
-                      margin={{ top: 10, right: 24, left: 40, bottom: 0 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb33" />
-                      <XAxis dataKey="label" stroke="#9ca3af" />
-                      <YAxis stroke="#9ca3af" />
-                      <Tooltip
-                        cursor={false}
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--popover))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                        labelStyle={{
-                          color: "hsl(var(--popover-foreground))",
-                        }}
-                        itemStyle={{
-                          color: "hsl(var(--foreground))",
-                          fontWeight: 500,
-                        }}
-                        formatter={(value) => formatInteger(Number(value))}
-                      />
-                      <Bar
-                        dataKey="count"
-                        fill="var(--chart-3)"
-                        radius={[8, 8, 0, 0]}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* ===== Events Tab ===== */}
-            <TabsContent value="events" className="mt-6 space-y-6 px-0 pb-8">
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <MetricCard
-                  label={t("events.metrics.total.label")}
-                  value={formatInteger(overview.events.totalEvents)}
-                  change=""
-                  icon={<MapPin className="h-5 w-5" />}
-                />
-                <MetricCard
-                  label={t("events.metrics.upcoming.label")}
-                  value={formatInteger(overview.events.upcomingEvents)}
-                  change=""
-                  icon={<Bell className="h-5 w-5" />}
-                />
-                <MetricCard
-                  label={t("events.metrics.completed.label")}
-                  value={formatInteger(overview.events.completedEvents)}
-                  change=""
-                  icon={<CheckCircle2 className="h-5 w-5" />}
-                />
-              </div>
-
-              {/* Biểu đồ 1: tổng / upcoming / completed / registrations */}
-              <Card className="border-border bg-card">
-                <CardHeader>
-                  <CardTitle className="text-foreground">
-                    {t("events.trend.title")}
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground">
-                    {t("events.trend.subtitle")}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={350}>
-                    <LineChart
-                      data={eventsChartData}
-                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb33" />
-                      <XAxis dataKey="label" stroke="#9ca3af" />
-                      <YAxis stroke="#9ca3af" />
-                      <Tooltip
-                        cursor={false}
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--popover))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                        labelStyle={{ color: "hsl(var(--popover-foreground))" }}
-                        itemStyle={{
-                          color: "hsl(var(--foreground))",
-                          fontWeight: 500,
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="events"
-                        stroke="var(--chart-3)"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              {/* Biểu đồ 2: Events trend theo filter (daily/weekly/monthly) */}
-              <Card className="border-border bg-card">
-                <CardHeader>
-                  <CardTitle className="text-foreground">
-                    {t("events.trendByRange.title")}
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground">
-                    {t("events.trendByRange.subtitle", {
-                      granularity: eventsTrendGranularityLabel,
-                    })}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={350}>
-                    <BarChart
-                      data={eventsTrendData}
-                      margin={{ top: 10, right: 24, left: 40, bottom: 0 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb33" />
-                      <XAxis dataKey="label" stroke="#9ca3af" />
-                      <YAxis stroke="#9ca3af" />
-                      <Tooltip
-                        cursor={false}
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--popover))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                        labelStyle={{
-                          color: "hsl(var(--popover-foreground))",
-                        }}
-                        itemStyle={{
-                          color: "hsl(var(--foreground))",
-                          fontWeight: 500,
-                        }}
-                        formatter={(value) => formatInteger(Number(value))}
-                      />
-                      <Bar
-                        dataKey="count"
-                        fill="var(--chart-5)"
-                        radius={[8, 8, 0, 0]}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* ===== Content Tab ===== */}
-            <TabsContent value="content" className="mt-6 space-y-6 px-0 pb-8">
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-                <MetricCard
-                  label={t("content.metrics.activeSubscriptions.label")}
-                  value={formatInteger(
-                    overview.subscriptions.activeSubscriptions
-                  )}
-                  change={`${t(
-                    "content.metrics.activeSubscriptions.changePrefix"
-                  )} ${formatInteger(
-                    overview.subscriptions.newSubscriptionsInRange
-                  )}`}
-                  icon={<Package className="h-5 w-5" />}
-                />
-                <MetricCard
-                  label={t("content.metrics.socialPosts.label")}
-                  value={formatInteger(overview.social.totalPosts)}
-                  change={`${t(
-                    "content.metrics.socialPosts.changePrefix"
-                  )} ${formatInteger(overview.social.postsInRange)}`}
-                  icon={<MessageCircle className="h-5 w-5" />}
-                />
-                <MetricCard
-                  label={t("content.metrics.reports.label")}
-                  value={formatInteger(overview.reports.totalReports)}
-                  change={`${t(
-                    "content.metrics.reports.changePrefix"
-                  )} ${formatInteger(overview.reports.pendingReports)}`}
-                  icon={<Flag className="h-5 w-5" />}
-                />
-              </div>
-
-              <Card className="border-border bg-card">
-                <CardHeader>
-                  <CardTitle className="text-foreground">
-                    {t("content.subscriptionPlans.title")}
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground">
-                    {t("content.subscriptionPlans.subtitle")}
-                  </CardDescription>
-
-                  {mostUsedSubscriptionPlan && (
-                    <p className="mt-3 text-md text-muted-foreground font-bold">
-                      {t("content.subscriptionPlans.mostUsed", {
-                        name: mostUsedSubscriptionPlan.name,
-                        count: formatInteger(mostUsedSubscriptionPlan.count),
-                      })}
-                    </p>
-                  )}
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={350}>
-                    <PieChart>
-                      <Tooltip
-                        cursor={false}
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--popover))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                        labelStyle={{
-                          color: "hsl(var(--popover-foreground))",
-                        }}
-                        itemStyle={{
-                          color: "hsl(var(--foreground))",
-                          fontWeight: 500,
-                        }}
-                      />
-                      <Pie
-                        data={subscriptionPieData}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={120}
-                        dataKey="value"
-                        label={({ name, value }) => `${name}: ${value}`}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+            {activeTab === "events" && (
+              <EventsTab
+                overview={overview}
+                timeRangeLabel={timeRangeLabel}
+                onSelectRange={handleSelectRange}
+              />
+            )}
+          </>
         )}
       </div>
     </div>
