@@ -363,3 +363,59 @@ export type UpdateEventRatingBodyType = z.infer<
 export type CreateEventRatingBodyType = z.infer<
   typeof CreateEventRatingBodySchema
 >;
+
+// ============== AI SUMMARY SCHEMAS ==============
+export const VocabularyItemSchema = z.object({
+  word: z.string(),
+  meaning: z.string(),
+  context: z.string(),
+  examples: z.array(z.string()).default([]),
+});
+
+export const TranscriptionItemSchema = z.object({
+  id: z.string(),
+  speakerId: z.string(),
+  speakerName: z.string(),
+  originalText: z.string(),
+  translatedText: z.string().nullable().optional(),
+  targetLanguage: z.string().nullable().optional(),
+  createdAt: z.iso.datetime(),
+});
+
+export const EventSummarySchema = z.object({
+  id: z.string().nullable().optional(),
+  eventId: z.string(),
+  hasSummary: z.boolean(),
+  summary: z.string(),
+  keyPoints: z.array(z.string()).default([]),
+  vocabulary: z.array(VocabularyItemSchema).default([]),
+  actionItems: z.array(z.string()).default([]),
+  createdAt: z.iso.datetime().nullable().optional(),
+});
+
+export const EventSummaryResSchema = z.object({
+  data: EventSummarySchema,
+  message: z.string(),
+});
+
+export const EventTranscriptionsResSchema = z.object({
+  data: z.array(TranscriptionItemSchema),
+  message: z.string(),
+});
+
+export const EventTranscriptionsQuerySchema = z.object({
+  pageNumber: z.number().optional().default(1),
+  pageSize: z.number().optional().default(100),
+});
+
+// AI Summary Types
+export type VocabularyItemType = z.infer<typeof VocabularyItemSchema>;
+export type TranscriptionItemType = z.infer<typeof TranscriptionItemSchema>;
+export type EventSummaryType = z.infer<typeof EventSummarySchema>;
+export type EventSummaryResType = z.infer<typeof EventSummaryResSchema>;
+export type EventTranscriptionsResType = z.infer<
+  typeof EventTranscriptionsResSchema
+>;
+export type EventTranscriptionsQueryType = z.infer<
+  typeof EventTranscriptionsQuerySchema
+>;
