@@ -29,6 +29,30 @@ interface UseWebRTCProps {
   onRoomEnded?: () => void;
 }
 
+interface TranscriptionMessage {
+  id: string;
+  speakerId: string;
+  senderName: string;
+  originalText: string;
+  translatedText: string;
+  targetLanguage: string;
+  timestamp: Date;
+}
+
+interface VocabularyItem {
+  word: string;
+  meaning: string;
+  context: string;
+  examples: string[];
+}
+
+interface MeetingSummary {
+  summary: string;
+  keyPoints: string[];
+  vocabulary: VocabularyItem[];
+  actionItems: string[];
+}
+
 interface ExtendedRTCPeerConnection extends RTCPeerConnection {
   _pendingRemoteCandidates?: RTCIceCandidateInit[];
   _applyPendingCandidates?: () => Promise<void>;
@@ -60,6 +84,16 @@ export function useWebRTC({
       timestamp: Date;
     }>
   >([]);
+  const [transcriptions, setTranscriptions] = useState<TranscriptionMessage[]>(
+    []
+  );
+  const [isTranscriptionEnabled, setIsTranscriptionEnabled] = useState(false); // Microphone transcription (sending)
+  const [isCaptionsEnabled, setIsCaptionsEnabled] = useState(false); // Live captions (receiving)
+  const [targetLanguage, setTargetLanguage] = useState("vi");
+  const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(
+    null
+  );
+  const [isSummaryGenerating, setIsSummaryGenerating] = useState(false);
 
   const peerConnectionsRef = useRef<Map<string, ExtendedRTCPeerConnection>>(
     new Map()
@@ -71,6 +105,8 @@ export function useWebRTC({
   >([]);
   const myConnectionIdRef = useRef<string>("");
   const callStartedRef = useRef<boolean>(false);
+  const recognitionRef = useRef<any>(null);
+  const targetLanguageRef = useRef<string>("vi");
 
   const connectionInitializedRef = useRef<boolean>(false);
   const isJoiningRef = useRef<boolean>(false);
@@ -103,6 +139,10 @@ export function useWebRTC({
   useEffect(() => {
     userIdRef.current = userId;
   }, [userId]);
+
+  useEffect(() => {
+    targetLanguageRef.current = targetLanguage;
+  }, [targetLanguage]);
 
   // ✅ FIX: Cleanup function để stop tất cả tracks
   const stopAllTracks = useCallback(() => {
@@ -667,6 +707,82 @@ export function useWebRTC({
           }
         });
         return newMap;
+      });
+    });
+
+    // ============ AI MODULES HANDLERS ============
+
+    hubConnection.on(
+      "ReceiveTranscription",
+      async (
+        speakerId: string,
+        speakerName: string,
+        originalText: string,
+        translatedText: string,
+        sourceLanguage: string,
+        timestamp: Date
+      ) => {
+        console.log(
+          `[SignalR] ReceiveTranscription from ${speakerName}:`,
+          originalText
+        );
+
+        // Get current target language from ref to avoid stale closure
+        const currentTargetLang = targetLanguageRef.current;
+
+        // Translate to user's preferred language
+        let localTranslatedText = originalText;
+        if (currentTargetLang && currentTargetLang !== sourceLanguage) {
+          try {
+            const { translateText: translate } = await import(
+              "@/lib/translation"
+            );
+            localTranslatedText = await translate(
+              originalText,
+              currentTargetLang,
+              sourceLanguage || "en"
+            );
+            console.log(
+              `[Transcription] Translated to ${currentTargetLang}:`,
+              localTranslatedText
+            );
+          } catch (err) {
+            console.warn("[Transcription] Local translation failed:", err);
+            localTranslatedText = originalText;
+          }
+        }
+
+        setTranscriptions((prev) => [
+          ...prev,
+          {
+            id: `${Date.now()}-${Math.random()}`,
+            speakerId,
+            senderName: speakerName,
+            originalText,
+            translatedText: localTranslatedText,
+            targetLanguage: currentTargetLang,
+            timestamp: new Date(timestamp),
+          },
+        ]);
+      }
+    );
+
+    hubConnection.on("ReceiveMeetingSummary", (summary: MeetingSummary) => {
+      console.log("[SignalR] ReceiveMeetingSummary:", summary);
+      setMeetingSummary(summary);
+      setIsSummaryGenerating(false);
+    });
+
+    hubConnection.on("SummaryGenerating", () => {
+      console.log("[SignalR] Summary is generating...");
+      setIsSummaryGenerating(true);
+    });
+
+    hubConnection.on("SummaryError", (error: string) => {
+      console.error("[SignalR] SummaryError:", error);
+      setIsSummaryGenerating(false);
+      import("sonner").then(({ toast }) => {
+        toast.error(`Summary Error: ${error}`);
       });
     });
 
@@ -1442,6 +1558,159 @@ export function useWebRTC({
     }
   }, []);
 
+  // ============ AI MODULES FUNCTIONS ============
+
+  // Start microphone transcription (your voice will be transcribed and sent to others)
+  const startTranscription = useCallback(
+    async (language: string = "vi") => {
+      // Check if browser supports Web Speech API
+      const SpeechRecognition =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        console.error("[Transcription] Speech Recognition not supported");
+        import("sonner").then(({ toast }) => {
+          toast.error(
+            "Your browser doesn't support speech recognition. Please use Chrome or Edge."
+          );
+        });
+        return;
+      }
+
+      setTargetLanguage(language);
+
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = "en-US"; // Auto-detect or set source language
+
+      recognition.onresult = async (event: any) => {
+        const result = event.results[event.results.length - 1];
+        const transcript = result[0].transcript;
+
+        if (result.isFinal) {
+          console.log("[Transcription] Final transcript:", transcript);
+
+          // Get source language from recognition
+          const sourceLanguage = recognition.lang?.split("-")[0] || "en";
+
+          // Broadcast original text to all participants via SignalR
+          // Each participant will translate to their preferred language locally
+          try {
+            if (
+              connectionRef.current?.state ===
+              signalR.HubConnectionState.Connected
+            ) {
+              await connectionRef.current.invoke(
+                "BroadcastTranscription",
+                eventIdRef.current,
+                myConnectionIdRef.current,
+                transcript,
+                transcript, // Send original as translated (will be translated locally by each client)
+                sourceLanguage // Send source language instead of target
+              );
+              console.log(
+                "[Transcription] ✓ Sent transcription with source language:",
+                sourceLanguage
+              );
+            }
+          } catch (error) {
+            console.error("[Transcription] ✗ Failed to send:", error);
+          }
+        }
+      };
+
+      recognition.onerror = (event: any) => {
+        console.error("[Transcription] Error:", event.error);
+      };
+
+      recognition.onend = () => {
+        console.log("[Transcription] Recognition ended");
+        if (isTranscriptionEnabled) {
+          // Auto-restart if still enabled
+          recognition.start();
+        }
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+      setIsTranscriptionEnabled(true);
+      console.log("[Transcription] ✓ Started");
+    },
+    [isTranscriptionEnabled]
+  );
+
+  // Stop transcription (microphone)
+  const stopTranscription = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
+      setIsTranscriptionEnabled(false);
+      console.log("[Transcription] ✓ Microphone transcription stopped");
+    }
+  }, []);
+
+  // Enable captions (viewing only - no microphone)
+  const enableCaptions = useCallback(() => {
+    setIsCaptionsEnabled(true);
+    console.log("[Captions] ✓ Live captions enabled");
+  }, []);
+
+  // Disable captions (viewing only)
+  const disableCaptions = useCallback(() => {
+    setIsCaptionsEnabled(false);
+    console.log("[Captions] ✓ Live captions disabled");
+  }, []);
+
+  // Translation function using the translation utility
+  const translateText = async (
+    text: string,
+    targetLang: string
+  ): Promise<string> => {
+    try {
+      const { translateText: translate } = await import("@/lib/translation");
+      return await translate(text, targetLang, "en"); // Source = English
+    } catch (error) {
+      console.error("[Translation] Failed:", error);
+      return text; // Return original on error
+    }
+  };
+
+  // Request meeting summary (host only)
+  const requestMeetingSummary = useCallback(async () => {
+    if (!connectionRef.current) return;
+    try {
+      await connectionRef.current.invoke(
+        "RequestMeetingSummary",
+        eventIdRef.current
+      );
+      console.log("[SignalR] ✓ Requested meeting summary");
+      import("sonner").then(({ toast }) => {
+        toast.info("Generating meeting summary...");
+      });
+    } catch (error) {
+      console.error("[SignalR] ✗ Failed to request summary:", error);
+      import("sonner").then(({ toast }) => {
+        toast.error("Failed to generate meeting summary");
+      });
+    }
+  }, []);
+
+  // Get existing summary
+  const getMeetingSummary = useCallback(async () => {
+    if (!connectionRef.current) return;
+    try {
+      await connectionRef.current.invoke(
+        "GetMeetingSummary",
+        eventIdRef.current
+      );
+      console.log("[SignalR] ✓ Retrieved meeting summary");
+    } catch (error) {
+      console.error("[SignalR] ✗ Failed to get summary:", error);
+    }
+  }, []);
+
   // Toggle audio
   const toggleAudio = useCallback(() => {
     if (!localStreamRef.current) return undefined;
@@ -1577,5 +1846,19 @@ export function useWebRTC({
     muteAllParticipants,
     turnOffAllCameras,
     lowerAllHands,
+    // AI Modules
+    transcriptions,
+    isTranscriptionEnabled, // Microphone is recording & sending
+    isCaptionsEnabled, // Viewing captions on screen
+    targetLanguage,
+    meetingSummary,
+    isSummaryGenerating,
+    startTranscription, // Start microphone recording
+    stopTranscription, // Stop microphone recording
+    enableCaptions, // Start viewing captions
+    disableCaptions, // Stop viewing captions
+    requestMeetingSummary,
+    getMeetingSummary,
+    setTargetLanguage,
   };
 }

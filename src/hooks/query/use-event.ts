@@ -5,6 +5,7 @@ import {
   CancelEventBodyType,
   CreateEventBodyType,
   EventRatingsQueryType,
+  EventTranscriptionsQueryType,
   GetEventByIdQueryType,
   GetEventsQueryType,
   KickParticipantBodyType,
@@ -84,6 +85,17 @@ type CreateEventRatingResponse = Awaited<
 >;
 
 type PayoutEventResponse = Awaited<ReturnType<typeof eventApiRequest.payout>>;
+
+// AI Summary response types
+type GetEventSummaryResponse = Awaited<
+  ReturnType<typeof eventApiRequest.getEventSummary>
+>;
+type GenerateEventSummaryResponse = Awaited<
+  ReturnType<typeof eventApiRequest.generateEventSummary>
+>;
+type GetEventTranscriptionsResponse = Awaited<
+  ReturnType<typeof eventApiRequest.getEventTranscriptions>
+>;
 
 // ============= QUERIES =============
 export const useGetRecommendedEvents = (
@@ -452,5 +464,54 @@ export const usePayoutEventMutation = (options?: {
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
+  });
+};
+
+// ============== AI SUMMARY HOOKS ==============
+
+// Get event summary (Host or Attended participants)
+export const useGetEventSummary = (
+  eventId: string,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery<GetEventSummaryResponse>({
+    queryKey: ["events", "summary", eventId],
+    queryFn: () => eventApiRequest.getEventSummary(eventId),
+    enabled: options?.enabled && !!eventId,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+};
+
+// Generate event summary mutation (Host only)
+export const useGenerateEventSummaryMutation = (options?: {
+  onSuccess?: (data: GenerateEventSummaryResponse) => void;
+  onError?: (error: unknown) => void;
+}) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (eventId: string) =>
+      eventApiRequest.generateEventSummary(eventId),
+    onSuccess: (data, eventId) => {
+      // Invalidate summary cache to refetch new data
+      queryClient.invalidateQueries({
+        queryKey: ["events", "summary", eventId],
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
+  });
+};
+
+// Get event transcriptions (Host or Attended participants)
+export const useGetEventTranscriptions = (
+  eventId: string,
+  query?: EventTranscriptionsQueryType,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery<GetEventTranscriptionsResponse>({
+    queryKey: ["events", "transcriptions", eventId, query],
+    queryFn: () => eventApiRequest.getEventTranscriptions(eventId, query),
+    enabled: options?.enabled && !!eventId,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 };

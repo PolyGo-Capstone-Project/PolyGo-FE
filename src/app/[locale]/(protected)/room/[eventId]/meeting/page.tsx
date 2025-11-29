@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  CaptionsOverlay,
   ChatPanel,
   DeviceSettings,
   MeetingControls,
@@ -83,6 +84,16 @@ export default function MeetingRoomPage() {
     muteAllParticipants,
     turnOffAllCameras,
     lowerAllHands,
+    // AI Features
+    transcriptions,
+    isTranscriptionEnabled,
+    isCaptionsEnabled,
+    targetLanguage,
+    startTranscription,
+    stopTranscription,
+    enableCaptions,
+    disableCaptions,
+    setTargetLanguage,
   } = useWebRTC({
     eventId,
     userName: currentUser?.name || "Guest",
@@ -306,6 +317,26 @@ export default function MeetingRoomPage() {
     toast.success("Turned off all cameras");
   };
 
+  // Handle captions toggle (viewing only)
+  const handleCaptionsToggle = (enabled: boolean) => {
+    if (enabled) {
+      enableCaptions();
+    } else {
+      disableCaptions();
+    }
+  };
+
+  // Handle microphone transcription toggle (sending)
+  const handleMicTranscriptionToggle = (enabled: boolean) => {
+    if (enabled) {
+      console.log("[Meeting] Starting microphone transcription...");
+      startTranscription();
+    } else {
+      console.log("[Meeting] Stopping microphone transcription...");
+      stopTranscription();
+    }
+  };
+
   if (isLoading || !isInitialized) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -378,8 +409,8 @@ export default function MeetingRoomPage() {
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      {/* Video Grid */}
-      <div className="flex-1 overflow-hidden">
+      {/* Video Grid with Captions Overlay */}
+      <div className="flex-1 overflow-hidden relative">
         <VideoGrid
           participants={participantsList}
           localStream={localStream}
@@ -391,6 +422,14 @@ export default function MeetingRoomPage() {
           hostId={hostId} // ✅ ADD: Pass hostId prop
           isHost={isHost}
         />
+
+        {/* Floating Captions Overlay (Google Meet style) */}
+        {isCaptionsEnabled && (
+          <CaptionsOverlay
+            transcriptions={transcriptions}
+            showOriginal={false}
+          />
+        )}
       </div>
 
       {/* Controls */}
@@ -409,7 +448,6 @@ export default function MeetingRoomPage() {
         onToggleChat={toggleChat}
         onToggleParticipants={toggleParticipants}
         onToggleSettings={toggleSettings}
-        onToggleTranscript={() => toast.info("Coming soon!")}
         onLeave={() => setShowLeaveDialog(true)}
         onStartEvent={handleStartEvent}
         onEndEvent={() => setShowEndEventDialog(true)}
@@ -450,7 +488,15 @@ export default function MeetingRoomPage() {
       {/* Settings Panel */}
       <Sheet open={controls.isSettingsOpen} onOpenChange={toggleSettings}>
         <SheetContent side="right" className="w-full sm:max-w-md p-0">
-          <DeviceSettings onClose={toggleSettings} />
+          <DeviceSettings
+            onClose={toggleSettings}
+            targetLanguage={targetLanguage}
+            onLanguageChange={setTargetLanguage}
+            captionsEnabled={isCaptionsEnabled}
+            onCaptionsToggle={handleCaptionsToggle}
+            micTranscriptionEnabled={isTranscriptionEnabled}
+            onMicTranscriptionToggle={handleMicTranscriptionToggle}
+          />
         </SheetContent>
       </Sheet>
 
