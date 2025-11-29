@@ -443,7 +443,9 @@ export default function EventDetailPage() {
             {/* Event Details Section */}
             <Card className="shadow-md hover:shadow-lg transition-shadow animate-in fade-in slide-in-from-left-7 duration-[900ms]">
               <CardHeader>
-                <CardTitle className="text-xl">Event Details</CardTitle>
+                <CardTitle className="text-xl">
+                  {t("eventDetailsTitle")}
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -701,21 +703,21 @@ export default function EventDetailPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <IconSparkles className="h-5 w-5 text-primary" />
-                  AI Meeting Summary
+                  {t("aiSummary.title")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-sm text-muted-foreground">
                   {isHost
-                    ? "View and generate AI-powered summary, key vocabulary, and action items from this meeting."
-                    : "View the AI-generated summary, key points, vocabulary, and action items from this meeting."}
+                    ? t("aiSummary.hostDescription")
+                    : t("aiSummary.guestDescription")}
                 </p>
                 <Button
                   onClick={() => setShowSummaryDialog(true)}
                   className="w-full gap-2"
                 >
                   <IconSparkles className="h-4 w-4" />
-                  View Meeting Summary & Vocabulary
+                  {t("aiSummary.viewButton")}
                 </Button>
               </CardContent>
             </Card>

@@ -324,7 +324,14 @@
         "shareOnSocial": "Share on Social",
         "comingSoon": "Social sharing coming soon"
       },
-      "hostInfo": "View Host Profile"
+      "hostInfo": "View Host Profile",
+      "aiSummary": {
+        "title": "AI Meeting Summary",
+        "hostDescription": "View and generate AI-powered summary, key vocabulary, and action items from this meeting.",
+        "guestDescription": "View the AI-generated summary, key points, vocabulary, and action items from this meeting.",
+        "viewButton": "View Meeting Summary & Vocabulary"
+      },
+      "eventDetailsTitle": "Event Details"
     },
     "myEvent": {
       "title": "My Events",

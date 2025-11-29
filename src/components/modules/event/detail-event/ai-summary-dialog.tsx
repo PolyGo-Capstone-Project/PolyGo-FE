@@ -45,9 +45,11 @@ interface AISummaryDialogProps {
 function VocabularyCard({
   item,
   index,
+  t,
 }: {
   item: VocabularyItemType;
   index: number;
+  t: (key: string) => string;
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -74,11 +76,11 @@ function VocabularyCard({
       </div>
 
       {expanded && (
-        <div className="mt-3 pt-3 border-t space-y-3">
+        <div className=" border-t space-y-3">
           {item.context && (
             <div>
               <p className="text-xs font-medium text-muted-foreground uppercase mb-1">
-                Context
+                {t("vocabulary.context")}
               </p>
               <p className="text-sm italic text-foreground/80">
                 &ldquo;{item.context}&rdquo;
@@ -88,7 +90,7 @@ function VocabularyCard({
           {item.examples && item.examples.length > 0 && (
             <div>
               <p className="text-xs font-medium text-muted-foreground uppercase mb-1">
-                Examples
+                {t("vocabulary.examples")}
               </p>
               <ul className="text-sm space-y-1">
                 {item.examples.map((ex, i) => (
@@ -112,6 +114,7 @@ export function AISummaryDialog({
   eventId,
   isHost,
 }: AISummaryDialogProps) {
+  const t = useTranslations("meeting.aiSummary");
   const tError = useTranslations("Error");
 
   // Fetch existing summary
@@ -124,7 +127,7 @@ export function AISummaryDialog({
   // Generate summary mutation
   const generateMutation = useGenerateEventSummaryMutation({
     onSuccess: () => {
-      toast.success("Meeting summary generated successfully!");
+      toast.success(t("success"));
       refetchSummary();
     },
     onError: (err) => handleErrorApi({ error: err, tError }),
@@ -143,36 +146,32 @@ export function AISummaryDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <IconSparkles className="h-5 w-5 text-primary" />
-            AI Meeting Summary & Vocabulary
+            {t("title")}
           </DialogTitle>
-          <DialogDescription>
-            AI-generated insights from your meeting transcriptions
-          </DialogDescription>
+          <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 overflow-y-auto max-h-[60vh] pr-2">
           {/* Loading State */}
           {isLoadingSummary && (
-            <div className="flex items-center justify-center py-12">
+            <div className="flex items-center justify-center ">
               <IconLoader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="ml-3 text-muted-foreground">
-                Loading summary...
-              </span>
+              <span className="ml-3 text-muted-foreground">{t("loading")}</span>
             </div>
           )}
 
           {/* No Summary Yet */}
           {!isLoadingSummary && !hasSummary && (
             <Card className="border-dashed">
-              <CardContent className="py-12 text-center">
+              <CardContent className=" text-center">
                 <IconFileText className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
                 <h3 className="text-lg font-semibold mb-2">
-                  No Summary Available
+                  {t("noSummary.title")}
                 </h3>
                 <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
                   {isHost
-                    ? "Generate an AI summary from the meeting transcriptions. This will analyze conversations, extract key vocabulary, and identify action items."
-                    : "The host has not generated a summary for this meeting yet. Please check back later."}
+                    ? t("noSummary.hostDescription")
+                    : t("noSummary.guestDescription")}
                 </p>
                 {isHost && (
                   <Button
@@ -183,12 +182,12 @@ export function AISummaryDialog({
                     {generateMutation.isPending ? (
                       <>
                         <IconLoader2 className="h-4 w-4 animate-spin" />
-                        Generating...
+                        {t("generating")}
                       </>
                     ) : (
                       <>
                         <IconSparkles className="h-4 w-4" />
-                        Generate AI Summary
+                        {t("generate")}
                       </>
                     )}
                   </Button>
@@ -205,7 +204,7 @@ export function AISummaryDialog({
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg flex items-center gap-2">
                     <IconFileText className="h-5 w-5 text-blue-500" />
-                    Meeting Summary
+                    {t("summary.title")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -221,7 +220,7 @@ export function AISummaryDialog({
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
                       <IconBulb className="h-5 w-5 text-yellow-500" />
-                      Key Points
+                      {t("keyPoints.title")}
                       <Badge variant="secondary" className="ml-2">
                         {summary.keyPoints.length}
                       </Badge>
@@ -248,16 +247,21 @@ export function AISummaryDialog({
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
                       <IconBook2 className="h-5 w-5 text-purple-500" />
-                      Key Vocabulary
+                      {t("vocabulary.title")}
                       <Badge variant="secondary" className="ml-2">
-                        {summary.vocabulary.length} words
+                        {summary.vocabulary.length} {t("vocabulary.words")}
                       </Badge>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-3">
                       {summary.vocabulary.map((item, index) => (
-                        <VocabularyCard key={index} item={item} index={index} />
+                        <VocabularyCard
+                          key={index}
+                          item={item}
+                          index={index}
+                          t={t}
+                        />
                       ))}
                     </div>
                   </CardContent>
@@ -270,7 +274,7 @@ export function AISummaryDialog({
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
                       <IconListCheck className="h-5 w-5 text-green-500" />
-                      Action Items
+                      {t("actionItems.title")}
                       <Badge variant="secondary" className="ml-2">
                         {summary.actionItems.length}
                       </Badge>
@@ -296,7 +300,7 @@ export function AISummaryDialog({
               {/* Metadata */}
               {summary.createdAt && (
                 <div className="text-xs text-muted-foreground text-center pt-2">
-                  Summary generated:{" "}
+                  {t("generatedAt")}{" "}
                   {new Date(summary.createdAt).toLocaleString()}
                 </div>
               )}
@@ -306,10 +310,10 @@ export function AISummaryDialog({
 
         <Separator />
 
-        <DialogFooter className="gap-2 sm:gap-0">
+        <DialogFooter className="gap-4 sm:gap-0">
           {isHost && hasSummary && (
             <Button
-              variant="outline"
+              variant="default"
               onClick={handleGenerateSummary}
               disabled={generateMutation.isPending}
               className="gap-2"
@@ -319,11 +323,15 @@ export function AISummaryDialog({
               ) : (
                 <IconRefresh className="h-4 w-4" />
               )}
-              Regenerate
+              {t("regenerate")}
             </Button>
           )}
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Close
+          <Button
+            className="ml-4"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+          >
+            {t("close")}
           </Button>
         </DialogFooter>
       </DialogContent>
