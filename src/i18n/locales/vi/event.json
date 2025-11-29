@@ -325,7 +325,14 @@
         "shareOnSocial": "Chia sẻ lên Social",
         "comingSoon": "Tính năng chia sẻ mạng xã hội sắp ra mắt"
       },
-      "hostInfo": "Xem hồ sơ chủ sự kiện"
+      "hostInfo": "Xem hồ sơ chủ sự kiện",
+      "aiSummary": {
+        "title": "Tóm tắt AI Cuộc họp",
+        "hostDescription": "Xem và tạo tóm tắt AI, từ vựng quan trọng và các mục hành động từ cuộc họp này.",
+        "guestDescription": "Xem tóm tắt AI, điểm chính, từ vựng và các mục hành động từ cuộc họp này.",
+        "viewButton": "Xem Tóm tắt & Từ vựng"
+      },
+      "eventDetailsTitle": "Thông tin sự kiện"
     },
     "myEvent": {
       "title": "Sự kiện của tôi",

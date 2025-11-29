@@ -107,6 +107,7 @@ export function useWebRTC({
   const callStartedRef = useRef<boolean>(false);
   const recognitionRef = useRef<any>(null);
   const targetLanguageRef = useRef<string>("vi");
+  const isTranscriptionEnabledRef = useRef<boolean>(false);
 
   const connectionInitializedRef = useRef<boolean>(false);
   const isJoiningRef = useRef<boolean>(false);
@@ -127,6 +128,10 @@ export function useWebRTC({
   useEffect(() => {
     onRoomEndedRef.current = onRoomEnded;
   }, [onRoomEnded]);
+
+  useEffect(() => {
+    isTranscriptionEnabledRef.current = isTranscriptionEnabled;
+  }, [isTranscriptionEnabled]);
 
   useEffect(() => {
     userNameRef.current = userName;
@@ -715,10 +720,10 @@ export function useWebRTC({
     hubConnection.on(
       "ReceiveTranscription",
       async (
+        transcriptionId: string,
         speakerId: string,
         speakerName: string,
         originalText: string,
-        translatedText: string,
         sourceLanguage: string,
         timestamp: Date
       ) => {
@@ -730,32 +735,34 @@ export function useWebRTC({
         // Get current target language from ref to avoid stale closure
         const currentTargetLang = targetLanguageRef.current;
 
-        // Translate to user's preferred language
         let localTranslatedText = originalText;
+
+        // Request translation from server if needed
         if (currentTargetLang && currentTargetLang !== sourceLanguage) {
           try {
-            const { translateText: translate } = await import(
-              "@/lib/translation"
-            );
-            localTranslatedText = await translate(
-              originalText,
-              currentTargetLang,
-              sourceLanguage || "en"
-            );
-            console.log(
-              `[Transcription] Translated to ${currentTargetLang}:`,
-              localTranslatedText
-            );
+            if (hubConnection.state === signalR.HubConnectionState.Connected) {
+              // Server-side translation with cache
+              localTranslatedText = await hubConnection.invoke(
+                "RequestTranslation",
+                transcriptionId,
+                currentTargetLang
+              );
+
+              console.log(
+                `[Transcription] Server translated to ${currentTargetLang}:`,
+                localTranslatedText
+              );
+            }
           } catch (err) {
-            console.warn("[Transcription] Local translation failed:", err);
-            localTranslatedText = originalText;
+            console.warn("[Transcription] Server translation failed:", err);
+            localTranslatedText = originalText; // Fallback to original
           }
         }
 
         setTranscriptions((prev) => [
           ...prev,
           {
-            id: `${Date.now()}-${Math.random()}`,
+            id: transcriptionId,
             speakerId,
             senderName: speakerName,
             originalText,
@@ -1562,7 +1569,7 @@ export function useWebRTC({
 
   // Start microphone transcription (your voice will be transcribed and sent to others)
   const startTranscription = useCallback(
-    async (language: string = "vi") => {
+    async (language: string = "vi", silent: boolean = false) => {
       // Check if browser supports Web Speech API
       const SpeechRecognition =
         (window as any).SpeechRecognition ||
@@ -1570,11 +1577,13 @@ export function useWebRTC({
 
       if (!SpeechRecognition) {
         console.error("[Transcription] Speech Recognition not supported");
-        import("sonner").then(({ toast }) => {
-          toast.error(
-            "Your browser doesn't support speech recognition. Please use Chrome or Edge."
-          );
-        });
+        if (!silent) {
+          import("sonner").then(({ toast }) => {
+            toast.error(
+              "Your browser doesn't support speech recognition. Please use Chrome or Edge."
+            );
+          });
+        }
         return;
       }
 
@@ -1596,7 +1605,7 @@ export function useWebRTC({
           const sourceLanguage = recognition.lang?.split("-")[0] || "en";
 
           // Broadcast original text to all participants via SignalR
-          // Each participant will translate to their preferred language locally
+          // Server will handle translation on-demand per client
           try {
             if (
               connectionRef.current?.state ===
@@ -1607,8 +1616,7 @@ export function useWebRTC({
                 eventIdRef.current,
                 myConnectionIdRef.current,
                 transcript,
-                transcript, // Send original as translated (will be translated locally by each client)
-                sourceLanguage // Send source language instead of target
+                sourceLanguage
               );
               console.log(
                 "[Transcription] ✓ Sent transcription with source language:",
@@ -1627,9 +1635,14 @@ export function useWebRTC({
 
       recognition.onend = () => {
         console.log("[Transcription] Recognition ended");
-        if (isTranscriptionEnabled) {
-          // Auto-restart if still enabled
-          recognition.start();
+        // Use ref to check latest state, not closure variable
+        if (isTranscriptionEnabledRef.current) {
+          console.log("[Transcription] Restarting after end...");
+          try {
+            recognition.start();
+          } catch (err) {
+            console.error("[Transcription] Failed to restart:", err);
+          }
         }
       };
 
