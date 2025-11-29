@@ -29,8 +29,8 @@ import {
   useUserLanguagesLearningQuery,
   useUserLanguagesSpeakingQuery,
 } from "@/hooks";
+import { useUserLevelsQuery } from "@/hooks/query/use-level";
 
-// Mock data for features not yet implemented
 const MOCK_STATS = {
   totalSessions: 45,
   averageRating: 4.8,
@@ -45,7 +45,6 @@ export default function ProfilePage() {
   const lang = useMemo(() => (locale ? locale.split("-")[0] : "en"), [locale]);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
-  // Get presence context for online status
   const { isUserOnline } = useUserCommunicationHubContext();
 
   // Fetch user data
@@ -57,21 +56,27 @@ export default function ProfilePage() {
   const { data: interestsData, isLoading: isLoadingInterests } =
     useUserInterestsQuery({ params: { lang } });
 
-  // Fetch subscription to get planType
+  // Subscription / planType
   const { data: subscriptionData, isLoading: isLoadingSubscription } =
     useCurrentSubscriptionQuery({
       params: { lang: locale },
     });
 
-  // Fetch user badges
+  // User badges
   const { data: badgesData, isLoading: isLoadingBadges } = useUserBadgesQuery({
     params: { lang: locale, pageNumber: 1, pageSize: 100 },
   });
 
-  // Fetch received gifts (only accepted ones - isRead: true)
+  // Gifts
   const { data: receivedGiftsData, isLoading: isLoadingGifts } =
     useMyPurchasedGiftsQuery({
       params: { lang: locale, pageNumber: 1, pageSize: 20 },
+    });
+
+  // Levels của user (để biết còn quà chưa nhận)
+  const { data: userLevelsData, isLoading: isLoadingLevels } =
+    useUserLevelsQuery({
+      params: { lang, pageNumber: -1, pageSize: -1 },
     });
 
   const isLoading =
@@ -81,7 +86,8 @@ export default function ProfilePage() {
     isLoadingInterests ||
     isLoadingGifts ||
     isLoadingSubscription ||
-    isLoadingBadges;
+    isLoadingBadges ||
+    isLoadingLevels;
 
   if (isLoading) {
     return (
@@ -100,10 +106,8 @@ export default function ProfilePage() {
     iconUrl: badge.iconUrl ?? null,
   }));
 
-  // Get planType from subscription
   const planType = subscriptionData?.payload.data?.planType;
 
-  // Transform gifts to match ProfileGiftsSection format
   const transformedGifts =
     receivedGiftsData?.payload.data?.items.map((gift) => ({
       id: gift.id,
@@ -119,6 +123,12 @@ export default function ProfilePage() {
       </div>
     );
   }
+
+  // Tính xem có quà level chưa claim hay không
+  const levels = userLevelsData?.payload?.data?.items ?? [];
+  const hasUnclaimedLevelRewards = levels.some(
+    (level) => level.order <= user.level && level.isClaimed === false
+  );
 
   return (
     <div className="container mx-auto max-w-7xl space-y-6 p-4 md:p-4">
@@ -144,35 +154,33 @@ export default function ProfilePage() {
         {/* Overview Tab */}
         <TabsContent value="overview" className="mt-6">
           <div className="grid gap-6 lg:grid-cols-3">
-            {/* Left Column - Main Info */}
+            {/* Left Column */}
             <div className="space-y-6 lg:col-span-2">
-              {/* Languages */}
               <ProfileLanguagesSection
                 nativeLanguages={nativeLanguages}
                 learningLanguages={learningLanguages}
               />
 
-              {/* Interests */}
               <ProfileInterestsSection interests={interests} />
 
-              {/* Badges */}
               <ProfileBadgesSection badges={badges} />
 
-              {/* Gifts */}
               <ProfileGiftsSection gifts={transformedGifts} />
             </div>
 
             {/* Right Column - Stats & XP */}
             <div className="space-y-6">
-              {/* XP & Level */}
               <ProfileInfoSection
                 experiencePoints={user.experiencePoints}
                 merit={user.merit}
                 streakDays={user.streakDays}
                 longestStreakDays={user.longestStreakDays}
                 nextUnbannedAt={user.nextUnbannedAt}
+                level={user.level}
+                xpInCurrentLevel={user.xpInCurrentLevel}
+                xpToNextLevel={user.xpToNextLevel}
+                hasUnclaimedLevelRewards={hasUnclaimedLevelRewards}
               />
-              {/* Stats */}
               <ProfileStats
                 totalSessions={MOCK_STATS.totalSessions}
                 averageRating={MOCK_STATS.averageRating}
@@ -207,7 +215,7 @@ export default function ProfilePage() {
               />
             </div>
 
-            {/* Right Column - Stats & XP (same as overview) */}
+            {/* Right Column - Stats & XP */}
             <div className="space-y-6">
               <ProfileStats
                 totalSessions={MOCK_STATS.totalSessions}
@@ -224,13 +232,16 @@ export default function ProfilePage() {
                 streakDays={user.streakDays}
                 longestStreakDays={user.longestStreakDays}
                 nextUnbannedAt={user.nextUnbannedAt}
+                level={user.level}
+                xpInCurrentLevel={user.xpInCurrentLevel}
+                xpToNextLevel={user.xpToNextLevel}
+                hasUnclaimedLevelRewards={hasUnclaimedLevelRewards}
               />
             </div>
           </div>
         </TabsContent>
       </Tabs>
 
-      {/* Edit Profile Dialog */}
       <EditProfileDialog
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}

@@ -55,7 +55,9 @@
     "xp": {
       "toNextLevel": "XP đến cấp độ tiếp theo",
       "label": "XP",
-      "untilLevel": "XP để đạt Cấp"
+      "untilLevel": "XP để đạt Cấp",
+      "unclaimedRewards": "Bạn có quà chưa nhận",
+      "goToLevel": "Xem cấp độ & phần thưởng của bạn"
     },
     "streak": {
       "day": "Ngày",
