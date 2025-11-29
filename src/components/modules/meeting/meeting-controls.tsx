@@ -4,7 +4,6 @@ import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import {
   IconHandStop,
-  IconLanguage,
   IconMessage,
   IconMicrophone,
   IconMicrophoneOff,
@@ -25,7 +24,6 @@ interface MeetingControlsProps {
   isChatOpen: boolean;
   isParticipantsOpen: boolean;
   isSettingsOpen: boolean;
-  isTranscriptOpen?: boolean;
   isHost: boolean;
   hasStartedEvent: boolean;
   onToggleAudio: () => void;
@@ -34,7 +32,6 @@ interface MeetingControlsProps {
   onToggleChat: () => void;
   onToggleParticipants: () => void;
   onToggleSettings: () => void;
-  onToggleTranscript?: () => void;
   onLeave: () => void;
   onStartEvent?: () => void;
   onEndEvent?: () => void;
@@ -50,7 +47,6 @@ export function MeetingControls({
   isChatOpen,
   isParticipantsOpen,
   isSettingsOpen,
-  isTranscriptOpen = false,
   isHost,
   hasStartedEvent,
   onToggleAudio,
@@ -59,7 +55,6 @@ export function MeetingControls({
   onToggleChat,
   onToggleParticipants,
   onToggleSettings,
-  onToggleTranscript,
   onLeave,
   onStartEvent,
   onEndEvent,
@@ -194,17 +189,6 @@ export function MeetingControls({
           className="h-12 w-12 rounded-full"
         >
           <IconSettings className="h-5 w-5" />
-        </Button>
-
-        {/* Live Transcript */}
-        <Button
-          variant={isTranscriptOpen ? "default" : "outline"}
-          size="icon"
-          onClick={onToggleTranscript}
-          title="Live Script Translate"
-          className="h-12 w-12 rounded-full"
-        >
-          <IconLanguage className="h-5 w-5" />
         </Button>
 
         {/* Leave/End */}

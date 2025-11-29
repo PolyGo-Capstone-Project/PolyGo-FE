@@ -31,6 +31,7 @@ import {
   Textarea,
 } from "@/components";
 import {
+  AISummaryDialog,
   EventAllRatingsSection,
   EventYourRatingSection,
   RegistrationSuccessDialog,
@@ -61,6 +62,7 @@ import {
   IconLoader2,
   IconMapPin,
   IconShare3,
+  IconSparkles,
   IconUsers,
   IconVideo,
 } from "@tabler/icons-react";
@@ -88,6 +90,7 @@ export default function EventDetailPage() {
   const [isRatingDialogOpen, setIsRatingDialogOpen] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [showReportDialog, setShowReportDialog] = useState(false);
+  const [showSummaryDialog, setShowSummaryDialog] = useState(false);
 
   const { data, isLoading, error } = useGetEventById(eventId, { lang: locale });
   const { data: balanceData } = useUserWallet();
@@ -691,6 +694,34 @@ export default function EventDetailPage() {
           </Card>
         </div>
 
+        {/* AI Summary for Host and Attended Participants */}
+        {eventEnd && (isHost || isRegistered) && (
+          <div className="space-y-4 mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <Card className="shadow-md hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <IconSparkles className="h-5 w-5 text-primary" />
+                  AI Meeting Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  {isHost
+                    ? "View and generate AI-powered summary, key vocabulary, and action items from this meeting."
+                    : "View the AI-generated summary, key points, vocabulary, and action items from this meeting."}
+                </p>
+                <Button
+                  onClick={() => setShowSummaryDialog(true)}
+                  className="w-full gap-2"
+                >
+                  <IconSparkles className="h-4 w-4" />
+                  View Meeting Summary & Vocabulary
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
         {/* Your Rating */}
         {eventEnd && isRegistered && !isHost && (
           <EventYourRatingSection
@@ -893,6 +924,14 @@ export default function EventDetailPage() {
           targetId={event.id}
         />
       )}
+
+      {/* AI Summary Dialog */}
+      <AISummaryDialog
+        open={showSummaryDialog}
+        onOpenChange={setShowSummaryDialog}
+        eventId={eventId}
+        isHost={isHost}
+      />
     </>
   );
 }

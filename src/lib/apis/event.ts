@@ -7,6 +7,9 @@ import {
   EventMyRatingResType,
   EventRatingsQueryType,
   EventRatingsResType,
+  EventSummaryResType,
+  EventTranscriptionsQueryType,
+  EventTranscriptionsResType,
   GetEventByIdQueryType,
   GetEventByIdResType,
   GetEventStatResType,
@@ -104,6 +107,33 @@ const eventApiRequest = {
   // POST payout host for an event
   payout: (eventId: string) =>
     http.post<MessageResType>(`${prefix}/${eventId}/host-payout`, null),
+
+  // ============== AI SUMMARY APIs ==============
+  // GET event summary (Host or Attended participants)
+  getEventSummary: (eventId: string) =>
+    http.get<EventSummaryResType>(`${prefix}/${eventId}/summary`),
+
+  // POST generate event summary (Host only)
+  generateEventSummary: (eventId: string) =>
+    http.post<EventSummaryResType>(
+      `${prefix}/${eventId}/summary/generate`,
+      null
+    ),
+
+  // GET event transcriptions (Host or Attended participants)
+  getEventTranscriptions: (
+    eventId: string,
+    query?: EventTranscriptionsQueryType
+  ) => {
+    const params = new URLSearchParams();
+    if (query?.pageNumber)
+      params.append("pageNumber", query.pageNumber.toString());
+    if (query?.pageSize) params.append("pageSize", query.pageSize.toString());
+    const queryString = params.toString();
+    return http.get<EventTranscriptionsResType>(
+      `${prefix}/${eventId}/transcriptions${queryString ? `?${queryString}` : ""}`
+    );
+  },
 };
 
 export default eventApiRequest;

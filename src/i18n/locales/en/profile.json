@@ -55,7 +55,9 @@
     "xp": {
       "toNextLevel": "XP to next level",
       "label": "XP",
-      "untilLevel": "XP until Level"
+      "untilLevel": "XP until Level",
+      "unclaimedRewards": "Rewards waiting to claim",
+      "goToLevel": "View your levels & rewards"
     },
     "streak": {
       "day": "Day",

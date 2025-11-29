@@ -1,0 +1,46 @@
+{
+  "levels": {
+    "title": "Level & Rewards",
+    "subtitle": "Track your level progress and claim rewards when you level up.",
+    "backToProfile": "Back to Profile",
+
+    "errors": {
+      "loadUserFailed": "Failed to load user data."
+    },
+
+    "xpSummary": {
+      "title": "Your Progress",
+      "description": "Earn XP by joining sessions, events, and contributing to the community.",
+      "totalXp": "Total XP",
+      "currentLevel": "Current level",
+      "levelLabel": "Level",
+      "maxLevel": "Max level",
+      "maxLevelReached": "You have reached the maximum level.",
+      "progressTexts": "{xp}/{target} XP to next level"
+    },
+
+    "levelsList": {
+      "title": "Level Rewards"
+    },
+
+    "levelBadge": "Level {order}",
+
+    "requiredXp": {
+      "label": "Required XP"
+    },
+
+    "status": {
+      "locked": "Locked",
+      "lockedShort": "Locked",
+      "claimed": "Claimed",
+      "claimedShort": "Claimed",
+      "readyToClaim": "Ready to claim",
+      "reached": "You reached this level",
+      "needMoreXp": "Keep earning XP to unlock this level"
+    },
+
+    "actions": {
+      "claim": "Claim"
+    }
+  }
+}
