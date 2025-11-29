@@ -90,6 +90,37 @@
       "endEventMessage": "Điều này sẽ kết thúc sự kiện cho tất cả người tham gia. Bạn có chắc chắn?",
       "endEventConfirm": "Kết thúc Sự kiện",
       "endEventCancel": "Hủy"
+    },
+    "aiSummary": {
+      "title": "Tóm tắt & Từ vựng AI",
+      "description": "Phân tích AI từ các bản ghi cuộc họp",
+      "loading": "Đang tải tóm tắt...",
+      "noSummary": {
+        "title": "Chưa có Tóm tắt",
+        "hostDescription": "Tạo tóm tắt AI từ bản ghi cuộc họp. Điều này sẽ phân tích cuộc trò chuyện, trích xuất từ vựng quan trọng và xác định các mục hành động.",
+        "guestDescription": "Người tổ chức chưa tạo tóm tắt cho cuộc họp này. Vui lòng quay lại sau."
+      },
+      "generate": "Tạo Tóm tắt AI",
+      "generating": "Đang tạo...",
+      "regenerate": "Tạo lại",
+      "close": "Đóng",
+      "success": "Tạo tóm tắt cuộc họp thành công!",
+      "summary": {
+        "title": "Tóm tắt Cuộc họp"
+      },
+      "keyPoints": {
+        "title": "Điểm chính"
+      },
+      "vocabulary": {
+        "title": "Từ vựng Quan trọng",
+        "words": "từ",
+        "context": "Ngữ cảnh",
+        "examples": "Ví dụ"
+      },
+      "actionItems": {
+        "title": "Mục Hành động"
+      },
+      "generatedAt": "Tóm tắt được tạo:"
     }
   }
 }

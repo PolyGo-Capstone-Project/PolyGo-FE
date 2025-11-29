@@ -231,6 +231,13 @@ export default function MeetingRoomPage() {
         status: EventStatus.Live,
       });
       setHasStartedEvent(true);
+
+      // Auto-start transcription for host when starting event
+      if (!isTranscriptionEnabled) {
+        console.log("[Meeting] Auto-starting host transcription...");
+        startTranscription();
+      }
+
       toast.success(tControls("startEvent"));
     } catch (error) {
       console.error("[Meeting] Start event error:", error);
@@ -262,7 +269,8 @@ export default function MeetingRoomPage() {
       // Small delay to ensure cleanup completes
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      router.push(`/${locale}/dashboard`);
+      // Redirect to event detail page, not dashboard
+      router.push(`/${locale}/event/${eventId}`);
     }
   };
 

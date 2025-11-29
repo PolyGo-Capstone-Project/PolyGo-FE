@@ -90,6 +90,37 @@
       "endEventMessage": "This will end the event for all participants. Are you sure?",
       "endEventConfirm": "End Event",
       "endEventCancel": "Cancel"
+    },
+    "aiSummary": {
+      "title": "AI Meeting Summary & Vocabulary",
+      "description": "AI-generated insights from your meeting transcriptions",
+      "loading": "Loading summary...",
+      "noSummary": {
+        "title": "No Summary Available",
+        "hostDescription": "Generate an AI summary from the meeting transcriptions. This will analyze conversations, extract key vocabulary, and identify action items.",
+        "guestDescription": "The host has not generated a summary for this meeting yet. Please check back later."
+      },
+      "generate": "Generate AI Summary",
+      "generating": "Generating...",
+      "regenerate": "Regenerate",
+      "close": "Close",
+      "success": "Meeting summary generated successfully!",
+      "summary": {
+        "title": "Meeting Summary"
+      },
+      "keyPoints": {
+        "title": "Key Points"
+      },
+      "vocabulary": {
+        "title": "Key Vocabulary",
+        "words": "words",
+        "context": "Context",
+        "examples": "Examples"
+      },
+      "actionItems": {
+        "title": "Action Items"
+      },
+      "generatedAt": "Summary generated:"
     }
   }
 }
