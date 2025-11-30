@@ -29,13 +29,11 @@ export function ChatPanel({
 }: ChatPanelProps) {
   const t = useTranslations("meeting.chat");
   const [inputMessage, setInputMessage] = useState("");
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto scroll to bottom
+  // Auto scroll to bottom when new messages arrive
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSend = () => {
@@ -65,31 +63,35 @@ export function ChatPanel({
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-        <div className="space-y-4">
-          {messages.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              {t("noMessages")}
-            </div>
-          ) : (
-            messages.map((msg) => (
-              <div key={msg.id} className="space-y-1">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-semibold">
-                    {msg.senderName}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {format(msg.timestamp, "HH:mm")}
-                  </span>
-                </div>
-                <div className="bg-secondary/50 rounded-lg px-3 py-2">
-                  <p className="text-sm break-words">{msg.message}</p>
-                </div>
+      <div className="flex-1 overflow-hidden">
+        <ScrollArea className="h-full p-4">
+          <div className="space-y-4">
+            {messages.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">
+                {t("noMessages")}
               </div>
-            ))
-          )}
-        </div>
-      </ScrollArea>
+            ) : (
+              messages.map((msg) => (
+                <div key={msg.id} className="space-y-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-sm font-semibold">
+                      {msg.senderName}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {format(msg.timestamp, "HH:mm")}
+                    </span>
+                  </div>
+                  <div className="bg-secondary/50 rounded-lg px-3 py-2">
+                    <p className="text-sm break-words">{msg.message}</p>
+                  </div>
+                </div>
+              ))
+            )}
+            {/* Scroll anchor */}
+            <div ref={messagesEndRef} />
+          </div>
+        </ScrollArea>
+      </div>
 
       {/* Input */}
       <div className="p-4 border-t">

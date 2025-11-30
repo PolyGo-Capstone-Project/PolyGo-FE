@@ -801,6 +801,100 @@ export function useWebRTC({
         if (audioTrack) {
           audioTrack.enabled = enabled;
           setLocalAudioEnabled(enabled);
+
+          // ✅ FIX: Auto-stop transcription when host mutes participant
+          if (!enabled && isTranscriptionEnabledRef.current) {
+            console.log(
+              "[Transcription] 🔇 Auto-stopping transcription (host muted mic)"
+            );
+            if (recognitionRef.current) {
+              recognitionRef.current.stop();
+              recognitionRef.current = null;
+              setIsTranscriptionEnabled(false);
+            }
+          }
+
+          // ✅ FIX: Auto-start transcription when host unmutes participant
+          if (enabled && !isTranscriptionEnabledRef.current) {
+            console.log(
+              "[Transcription] 🔊 Auto-starting transcription (host unmuted mic)"
+            );
+            setTimeout(() => {
+              const SpeechRecognition =
+                (window as any).SpeechRecognition ||
+                (window as any).webkitSpeechRecognition;
+
+              if (!SpeechRecognition) {
+                console.warn(
+                  "[Transcription] Speech Recognition not supported"
+                );
+                return;
+              }
+
+              const recognition = new SpeechRecognition();
+              recognition.continuous = true;
+              recognition.interimResults = true;
+              recognition.lang = "en-US";
+
+              recognition.onresult = async (event: any) => {
+                const result = event.results[event.results.length - 1];
+                const transcript = result[0].transcript;
+
+                if (result.isFinal) {
+                  const currentAudioTrack =
+                    localStreamRef.current?.getAudioTracks()[0];
+                  if (!currentAudioTrack || !currentAudioTrack.enabled) {
+                    return;
+                  }
+
+                  const sourceLanguage =
+                    recognition.lang?.split("-")[0] || "en";
+
+                  try {
+                    if (
+                      hubConnection.state ===
+                      signalR.HubConnectionState.Connected
+                    ) {
+                      await hubConnection.invoke(
+                        "BroadcastTranscription",
+                        eventIdRef.current,
+                        myConnectionIdRef.current,
+                        transcript,
+                        sourceLanguage
+                      );
+                    }
+                  } catch (error) {
+                    console.error("[Transcription] ✗ Failed to send:", error);
+                  }
+                }
+              };
+
+              recognition.onerror = (event: any) => {
+                console.error("[Transcription] Error:", event.error);
+              };
+
+              recognition.onend = () => {
+                if (isTranscriptionEnabledRef.current) {
+                  const currentAudioTrack =
+                    localStreamRef.current?.getAudioTracks()[0];
+                  if (!currentAudioTrack || !currentAudioTrack.enabled) {
+                    setIsTranscriptionEnabled(false);
+                    recognitionRef.current = null;
+                    return;
+                  }
+                  try {
+                    recognition.start();
+                  } catch (err) {
+                    console.error("[Transcription] Failed to restart:", err);
+                  }
+                }
+              };
+
+              recognitionRef.current = recognition;
+              recognition.start();
+              setIsTranscriptionEnabled(true);
+            }, 100);
+          }
         }
       }
     });
@@ -1570,6 +1664,36 @@ export function useWebRTC({
   // Start microphone transcription (your voice will be transcribed and sent to others)
   const startTranscription = useCallback(
     async (language: string = "vi", silent: boolean = false) => {
+      // ✅ FIX: Check if WebRTC microphone is enabled first
+      if (!localStreamRef.current) {
+        console.error(
+          "[Transcription] ✗ No local stream available. Please enable microphone first."
+        );
+        if (!silent) {
+          import("sonner").then(({ toast }) => {
+            toast.error(
+              "Please enable your microphone first to use live translation."
+            );
+          });
+        }
+        return;
+      }
+
+      const audioTrack = localStreamRef.current.getAudioTracks()[0];
+      if (!audioTrack || !audioTrack.enabled) {
+        console.error(
+          "[Transcription] ✗ Microphone is muted. Cannot start transcription."
+        );
+        if (!silent) {
+          import("sonner").then(({ toast }) => {
+            toast.error(
+              "Please unmute your microphone to use live translation."
+            );
+          });
+        }
+        return;
+      }
+
       // Check if browser supports Web Speech API
       const SpeechRecognition =
         (window as any).SpeechRecognition ||
@@ -1600,6 +1724,15 @@ export function useWebRTC({
 
         if (result.isFinal) {
           console.log("[Transcription] Final transcript:", transcript);
+
+          // ✅ FIX: Check if microphone is still enabled before broadcasting
+          const currentAudioTrack = localStreamRef.current?.getAudioTracks()[0];
+          if (!currentAudioTrack || !currentAudioTrack.enabled) {
+            console.warn(
+              "[Transcription] ⚠️ Microphone is muted, skipping broadcast"
+            );
+            return;
+          }
 
           // Get source language from recognition
           const sourceLanguage = recognition.lang?.split("-")[0] || "en";
@@ -1637,6 +1770,17 @@ export function useWebRTC({
         console.log("[Transcription] Recognition ended");
         // Use ref to check latest state, not closure variable
         if (isTranscriptionEnabledRef.current) {
+          // ✅ FIX: Check if microphone is still enabled before restarting
+          const currentAudioTrack = localStreamRef.current?.getAudioTracks()[0];
+          if (!currentAudioTrack || !currentAudioTrack.enabled) {
+            console.log(
+              "[Transcription] ⚠️ Microphone is muted, stopping transcription"
+            );
+            setIsTranscriptionEnabled(false);
+            recognitionRef.current = null;
+            return;
+          }
+
           console.log("[Transcription] Restarting after end...");
           try {
             recognition.start();
@@ -1649,9 +1793,11 @@ export function useWebRTC({
       recognitionRef.current = recognition;
       recognition.start();
       setIsTranscriptionEnabled(true);
-      console.log("[Transcription] ✓ Started");
+      console.log(
+        "[Transcription] ✓ Started (synchronized with WebRTC microphone)"
+      );
     },
-    [isTranscriptionEnabled]
+    []
   );
 
   // Stop transcription (microphone)
@@ -1725,13 +1871,37 @@ export function useWebRTC({
   }, []);
 
   // Toggle audio
-  const toggleAudio = useCallback(() => {
+  const toggleAudio = useCallback(async () => {
     if (!localStreamRef.current) return undefined;
     const audioTrack = localStreamRef.current.getAudioTracks()[0];
     if (audioTrack) {
       audioTrack.enabled = !audioTrack.enabled;
       setLocalAudioEnabled(audioTrack.enabled);
       broadcastMediaState("audio", audioTrack.enabled);
+
+      // ✅ FIX: Auto-stop transcription when muting microphone
+      if (!audioTrack.enabled && isTranscriptionEnabledRef.current) {
+        console.log(
+          "[Transcription] 🔇 Auto-stopping transcription (mic muted)"
+        );
+        if (recognitionRef.current) {
+          recognitionRef.current.stop();
+          recognitionRef.current = null;
+          setIsTranscriptionEnabled(false);
+        }
+      }
+
+      // ✅ FIX: Auto-start transcription when unmuting microphone
+      if (audioTrack.enabled && !isTranscriptionEnabledRef.current) {
+        console.log(
+          "[Transcription] 🔊 Auto-starting transcription (mic unmuted)"
+        );
+        // Use setTimeout to ensure state is updated first
+        setTimeout(() => {
+          startTranscription(targetLanguageRef.current, true); // silent = true (no toast)
+        }, 100);
+      }
+
       console.log(
         "[Media]",
         audioTrack.enabled ? "✓ Unmuted" : "✗ Muted",
@@ -1740,7 +1910,7 @@ export function useWebRTC({
       return audioTrack.enabled;
     }
     return undefined;
-  }, [broadcastMediaState]);
+  }, [broadcastMediaState, startTranscription]);
 
   // ✅ FIX: Simplified and more reliable toggleVideo
   const toggleVideo = useCallback(async () => {
