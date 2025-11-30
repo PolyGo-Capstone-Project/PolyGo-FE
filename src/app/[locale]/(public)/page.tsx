@@ -101,10 +101,10 @@ export default function HomePage() {
           </p>
           <div className="flex flex-wrap items-center gap-4">
             <Button asChild size="lg">
-              <Link href="/signup">{t("getStarted")}</Link>
+              <Link href={`/${locale}/register`}>{t("getStarted")}</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link href="/demo">{t("Demo")}</Link>
+              <Link href={`/${locale}/register`}>{t("Demo")}</Link>
             </Button>
           </div>
 
@@ -182,7 +182,7 @@ export default function HomePage() {
           <p className="opacity-90">{t("bannerSubtitle")}</p>
           <div className="flex flex-wrap gap-4">
             <Button asChild size="lg" variant="secondary">
-              <Link href="/signup">{t("bannerButtonOne")}</Link>
+              <Link href={`/${locale}/register`}>{t("bannerButtonOne")}</Link>
             </Button>
             <Button
               asChild
