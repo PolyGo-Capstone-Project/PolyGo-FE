@@ -24,6 +24,7 @@ import {
   SheetContent,
 } from "@/components/ui";
 import { EventStatus } from "@/constants";
+import { useGenerateEventSummaryMutation } from "@/hooks/query/use-event";
 import { useEventMeeting } from "@/hooks/reusable/use-event-meeting";
 import { useMeetingControls } from "@/hooks/reusable/use-meeting-controls";
 import { useWebRTC } from "@/hooks/reusable/use-webrtc";
@@ -53,8 +54,22 @@ export default function MeetingRoomPage() {
   const [hasStartedEvent, setHasStartedEvent] = useState(false);
   const [chatMessages, setChatMessages] = useState<MeetingChatMessage[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
 
   const isMobileDevice = useMobileDevice();
+
+  // Generate event summary mutation
+  const generateSummaryMutation = useGenerateEventSummaryMutation({
+    onSuccess: () => {
+      console.log("[Meeting] ✓ Event summary generated successfully");
+      setIsGeneratingSummary(false);
+    },
+    onError: (error) => {
+      console.error("[Meeting] ✗ Failed to generate summary:", error);
+      setIsGeneratingSummary(false);
+      toast.error("Failed to generate event summary");
+    },
+  });
 
   const { event, currentUser, isHost, canJoin, isLoading } =
     useEventMeeting(eventId);
@@ -250,26 +265,32 @@ export default function MeetingRoomPage() {
     if (!isHost || !event) return;
 
     try {
-      // 2. Update event status in database
+      // 1. Update event status in database
       await eventApiRequest.updateEventStatusByHost({
         eventId,
         status: EventStatus.Completed,
       });
-      // 1. End room via SignalR - this broadcasts to ALL participants
+
+      // 2. End room via SignalR - this broadcasts to ALL participants
       await endRoom();
 
       toast.success(tControls("endEvent"));
+
+      // 3. Start generating summary (run in background)
+      setIsGeneratingSummary(true);
+      generateSummaryMutation.mutate(eventId);
     } catch (error) {
       console.error("[Meeting] End event error:", error);
       toast.error("Failed to end event");
+      setIsGeneratingSummary(false);
     } finally {
-      // 3. Cleanup local resources (always run this)
+      // 4. Cleanup local resources (always run this)
       removeSettingMediaFromLocalStorage();
 
       // Small delay to ensure cleanup completes
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // Redirect to event detail page, not dashboard
+      // 5. Redirect to event detail page (summary will continue generating in background)
       router.push(`/${locale}/event/${eventId}`);
     }
   };
@@ -544,6 +565,34 @@ export default function MeetingRoomPage() {
               {tDialogs("endEventConfirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Generating Summary Dialog */}
+      <AlertDialog open={isGeneratingSummary}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-3">
+              <IconLoader2 className="h-5 w-5 animate-spin text-primary" />
+              Generating Event Summary
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <p>
+                We are analyzing the event transcriptions and generating a
+                comprehensive summary with:
+              </p>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                <li>Key discussion points</li>
+                <li>Important vocabulary</li>
+                <li>Action items</li>
+                <li>Meeting highlights</li>
+              </ul>
+              <p className="text-xs text-muted-foreground mt-3">
+                This may take a few moments. You can safely navigate away - the
+                summary will be available on the event page.
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
         </AlertDialogContent>
       </AlertDialog>
     </div>

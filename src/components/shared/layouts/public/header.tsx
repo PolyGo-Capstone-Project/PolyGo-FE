@@ -1,15 +1,15 @@
 "use client";
 
-import { Menu } from "lucide-react";
-import Link from "next/link";
+import { Menu, ZapIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import { useState } from "react";
 
 import {
-  ModeToggle,
-LanguageSwitcher,
   Button,
+  LanguageSwitcher,
   Logo,
+  ModeToggle,
   Sheet,
   SheetContent,
   SheetTrigger,
@@ -45,7 +45,12 @@ export function Header() {
                 <Link href={`/${locale}/login`}>{t("login")}</Link>
               </Button>
               <Button asChild>
-                <Link href={`/${locale}/register`}>{t("getStarted")}</Link>
+                <Link href={`/${locale}/register`}>
+                  <>
+                    {t("getStarted")}
+                    <ZapIcon className="text-orange-500 fill-orange-500" />
+                  </>
+                </Link>
               </Button>
             </>
           ) : (
@@ -92,7 +97,10 @@ export function Header() {
                           onClick={() => setIsOpen(false)}
                         >
                           <Link href={`/${locale}/register`}>
-                            {t("getStarted")}
+                            <>
+                              {t("getStarted")}
+                              <ZapIcon className="size-3.5 ml-1.5 text-orange-500 fill-orange-500" />
+                            </>
                           </Link>
                         </Button>
                       </>
