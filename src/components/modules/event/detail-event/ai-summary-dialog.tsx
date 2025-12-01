@@ -27,7 +27,6 @@ import {
   IconFileText,
   IconListCheck,
   IconLoader2,
-  IconRefresh,
   IconSparkles,
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
@@ -311,7 +310,7 @@ export function AISummaryDialog({
         <Separator />
 
         <DialogFooter className="gap-4 sm:gap-0">
-          {isHost && hasSummary && (
+          {/* {isHost && hasSummary && (
             <Button
               variant="default"
               onClick={handleGenerateSummary}
@@ -325,7 +324,7 @@ export function AISummaryDialog({
               )}
               {t("regenerate")}
             </Button>
-          )}
+          )} */}
           <Button
             className="ml-4"
             variant="outline"

@@ -250,7 +250,8 @@ export default function MeetingRoomPage() {
       // Auto-start transcription for host when starting event
       if (!isTranscriptionEnabled) {
         console.log("[Meeting] Auto-starting host transcription...");
-        startTranscription();
+        // Pass event language as source, user's target language for translation
+        startTranscription(event.language.code, targetLanguage);
       }
 
       toast.success(tControls("startEvent"));
@@ -276,22 +277,20 @@ export default function MeetingRoomPage() {
 
       toast.success(tControls("endEvent"));
 
-      // 3. Start generating summary (run in background)
+      // 3. Show generating summary dialog and wait for completion
       setIsGeneratingSummary(true);
-      generateSummaryMutation.mutate(eventId);
+      await generateSummaryMutation.mutateAsync(eventId);
+
+      // 4. Cleanup local resources after summary is done
+      removeSettingMediaFromLocalStorage();
+
+      // 5. Redirect to event detail page
+      router.push(`/${locale}/event/${eventId}`);
     } catch (error) {
       console.error("[Meeting] End event error:", error);
       toast.error("Failed to end event");
-      setIsGeneratingSummary(false);
     } finally {
-      // 4. Cleanup local resources (always run this)
-      removeSettingMediaFromLocalStorage();
-
-      // Small delay to ensure cleanup completes
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // 5. Redirect to event detail page (summary will continue generating in background)
-      router.push(`/${locale}/event/${eventId}`);
+      setIsGeneratingSummary(false);
     }
   };
 
@@ -359,7 +358,8 @@ export default function MeetingRoomPage() {
   const handleMicTranscriptionToggle = (enabled: boolean) => {
     if (enabled) {
       console.log("[Meeting] Starting microphone transcription...");
-      startTranscription();
+      // Pass event language as source, user's target language for translation
+      startTranscription(event?.language.code || "en", targetLanguage);
     } else {
       console.log("[Meeting] Stopping microphone transcription...");
       stopTranscription();
