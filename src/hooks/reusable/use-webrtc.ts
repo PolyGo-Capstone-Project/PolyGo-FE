@@ -21,6 +21,26 @@ const DEFAULT_ICE_SERVERS: RTCIceServer[] = [
   },
 ];
 
+// Mapping from 2-letter language code to Speech Recognition locale
+const SPEECH_RECOGNITION_LOCALES: Record<string, string> = {
+  en: "en-US",
+  vi: "vi-VN",
+  ja: "ja-JP",
+  ko: "ko-KR",
+  zh: "zh-CN",
+  fr: "fr-FR",
+  de: "de-DE",
+  es: "es-ES",
+  it: "it-IT",
+  pt: "pt-BR",
+  ru: "ru-RU",
+  th: "th-TH",
+  id: "id-ID",
+  ms: "ms-MY",
+  ar: "ar-SA",
+  hi: "hi-IN",
+};
+
 interface UseWebRTCProps {
   eventId: string;
   userName: string;
@@ -107,6 +127,7 @@ export function useWebRTC({
   const callStartedRef = useRef<boolean>(false);
   const recognitionRef = useRef<any>(null);
   const targetLanguageRef = useRef<string>("vi");
+  const sourceLanguageRef = useRef<string>("en"); // Event language for speech recognition
   const isTranscriptionEnabledRef = useRef<boolean>(false);
 
   const connectionInitializedRef = useRef<boolean>(false);
@@ -1662,8 +1683,17 @@ export function useWebRTC({
   // ============ AI MODULES FUNCTIONS ============
 
   // Start microphone transcription (your voice will be transcribed and sent to others)
+  // sourceLanguage: the language being spoken (event language, e.g., "ja" for Japanese)
+  // targetLanguage: the language to translate to (user's preferred language, e.g., "vi")
   const startTranscription = useCallback(
-    async (language: string = "vi", silent: boolean = false) => {
+    async (
+      sourceLanguage: string = "en",
+      targetLanguage: string = "vi",
+      silent: boolean = false
+    ) => {
+      // Save languages to refs for later use (e.g., when toggling audio)
+      sourceLanguageRef.current = sourceLanguage;
+      targetLanguageRef.current = targetLanguage;
       // ✅ FIX: Check if WebRTC microphone is enabled first
       if (!localStreamRef.current) {
         console.error(
@@ -1711,12 +1741,18 @@ export function useWebRTC({
         return;
       }
 
-      setTargetLanguage(language);
+      setTargetLanguage(targetLanguage);
 
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
-      recognition.lang = "en-US"; // Auto-detect or set source language
+      // Use proper locale for speech recognition based on event language
+      recognition.lang =
+        SPEECH_RECOGNITION_LOCALES[sourceLanguage] ||
+        `${sourceLanguage}-${sourceLanguage.toUpperCase()}`;
+      console.log(
+        `[Transcription] Speech recognition language set to: ${recognition.lang}`
+      );
 
       recognition.onresult = async (event: any) => {
         const result = event.results[event.results.length - 1];
@@ -1898,7 +1934,12 @@ export function useWebRTC({
         );
         // Use setTimeout to ensure state is updated first
         setTimeout(() => {
-          startTranscription(targetLanguageRef.current, true); // silent = true (no toast)
+          // Use saved source language from previous transcription session
+          startTranscription(
+            sourceLanguageRef.current,
+            targetLanguageRef.current,
+            true
+          ); // silent = true (no toast)
         }, 100);
       }
 
