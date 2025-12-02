@@ -179,14 +179,13 @@
       "description": "Nhập số tiền bạn muốn nạp vào ví",
       "amountLabel": "Số tiền",
       "amountPlaceholder": "Nhập số tiền (VND)",
-      "amountHint": "Tối thiểu: 2.000 VND - Tối đa: 5.000.000 VND",
+      "amountHint": "Tối thiểu: 10.000 VND",
       "cancel": "Hủy",
       "confirm": "Xác nhận nạp tiền",
       "processing": "Đang xử lý...",
       "validation": {
         "required": "Vui lòng nhập số tiền",
-        "min": "Số tiền nạp tối thiểu là 2.000 VND",
-        "max": "Số tiền nạp tối đa là 5.000.000 VND"
+        "min": "Số tiền nạp tối thiểu là 10.000 VND"
       }
     },
     "payment": {
@@ -241,7 +240,7 @@
         "selectAccountPlaceholder": "Chọn tài khoản ngân hàng",
         "selectAccountHint": "Chọn tài khoản để nhận tiền rút",
         "amount": "Số tiền rút",
-        "amountHint": "Tối thiểu: {min} - Tối đa: {max}",
+        "amountHint": "Tối thiểu: {min}",
         "submit": "Yêu cầu rút tiền",
         "submitting": "Đang xử lý...",
         "sendingOTP": "Đang gửi OTP...",
@@ -250,8 +249,7 @@
       "errors": {
         "amount": {
           "required": "Vui lòng nhập số tiền rút",
-          "min": "Số tiền rút tối thiểu là 10.000 VND",
-          "max": "Số tiền rút tối đa là 10.000.000 VND"
+          "min": "Số tiền rút tối thiểu là 50.000 VND"
         },
         "bankNumber": {
           "required": "Vui lòng chọn tài khoản ngân hàng"

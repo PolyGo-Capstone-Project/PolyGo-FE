@@ -33,7 +33,14 @@ export function CaptionsOverlay({
   }, [transcriptions]);
 
   // Only show last 3 captions to avoid clutter
-  const recentTranscriptions = transcriptions.slice(-3);
+  // Filter out empty transcriptions
+  const recentTranscriptions = transcriptions
+    .filter(
+      (t) =>
+        (t.translatedText && t.translatedText.trim() !== "") ||
+        (t.originalText && t.originalText.trim() !== "")
+    )
+    .slice(-3);
 
   if (recentTranscriptions.length === 0) {
     return null;
