@@ -62,12 +62,9 @@ export default function MeetingRoomPage() {
   const generateSummaryMutation = useGenerateEventSummaryMutation({
     onSuccess: () => {
       console.log("[Meeting] ✓ Event summary generated successfully");
-      setIsGeneratingSummary(false);
     },
     onError: (error) => {
       console.error("[Meeting] ✗ Failed to generate summary:", error);
-      setIsGeneratingSummary(false);
-      toast.error("Failed to generate event summary");
     },
   });
 
@@ -265,6 +262,9 @@ export default function MeetingRoomPage() {
   const handleEndEvent = async () => {
     if (!isHost || !event) return;
 
+    // Close the confirmation dialog first
+    setShowEndEventDialog(false);
+
     try {
       // 1. Update event status in database
       await eventApiRequest.updateEventStatusByHost({
@@ -279,17 +279,18 @@ export default function MeetingRoomPage() {
 
       // 3. Show generating summary dialog and wait for completion
       setIsGeneratingSummary(true);
+
+      // Wait for summary generation to complete
       await generateSummaryMutation.mutateAsync(eventId);
 
       // 4. Cleanup local resources after summary is done
       removeSettingMediaFromLocalStorage();
 
-      // 5. Redirect to event detail page
+      // 5. Redirect to event detail page (only after summary is complete)
       router.push(`/${locale}/event/${eventId}`);
     } catch (error) {
       console.error("[Meeting] End event error:", error);
       toast.error("Failed to end event");
-    } finally {
       setIsGeneratingSummary(false);
     }
   };
@@ -574,22 +575,18 @@ export default function MeetingRoomPage() {
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-3">
               <IconLoader2 className="h-5 w-5 animate-spin text-primary" />
-              Generating Event Summary
+              {tDialogs("generatingSummaryTitle")}
             </AlertDialogTitle>
             <AlertDialogDescription className="space-y-2">
-              <p>
-                We are analyzing the event transcriptions and generating a
-                comprehensive summary with:
-              </p>
+              <p>{tDialogs("generatingSummaryDescription")}</p>
               <ul className="list-disc list-inside space-y-1 text-sm">
-                <li>Key discussion points</li>
-                <li>Important vocabulary</li>
-                <li>Action items</li>
-                <li>Meeting highlights</li>
+                <li>{tDialogs("generatingSummaryKeyPoints")}</li>
+                <li>{tDialogs("generatingSummaryVocabulary")}</li>
+                <li>{tDialogs("generatingSummaryActionItems")}</li>
+                <li>{tDialogs("generatingSummaryHighlights")}</li>
               </ul>
               <p className="text-xs text-muted-foreground mt-3">
-                This may take a few moments. You can safely navigate away - the
-                summary will be available on the event page.
+                {tDialogs("generatingSummaryWait")}
               </p>
             </AlertDialogDescription>
           </AlertDialogHeader>

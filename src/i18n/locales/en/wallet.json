@@ -244,7 +244,8 @@
         "amountHint": "Min: {min} - Max: {max}",
         "submit": "Request Withdrawal",
         "submitting": "Processing...",
-        "sendingOTP": "Sending OTP..."
+        "sendingOTP": "Sending OTP...",
+        "addAccount": "Add Bank Account"
       },
       "errors": {
         "amount": {

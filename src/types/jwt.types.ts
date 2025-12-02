@@ -8,6 +8,7 @@ export interface TokenPayload {
   Role: RoleType;
   Mail: string;
   IsNew: boolean;
-  tokenType: TokenTypeValue;
+  Merit: string;
+  NextUnbannedAt: string;
   exp: number;
 }

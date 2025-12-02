@@ -213,17 +213,17 @@ export function WithdrawForm({
 
         {/* No Bank Account Warning - Show Add Account Dialog */}
         {!hasAccounts && (
-          <Alert>
-            <Info className="h-4 w-4" />
-            <AlertDescription className="flex items-center justify-between">
-              <span>{t("form.noAccounts")}</span>
-              <ManageBankAccountDialog>
-                <Button size="sm" variant="default">
-                  <Building2 className="mr-2 h-4 w-4" />
-                  {t("form.addAccount")}
-                </Button>
-              </ManageBankAccountDialog>
-            </AlertDescription>
+          <Alert className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Info className="h-4 w-4" />
+              <AlertDescription>{t("form.noAccounts")}</AlertDescription>
+            </div>
+            <ManageBankAccountDialog>
+              <Button size="sm" variant="default">
+                <Building2 className="mr-2 h-4 w-4" />
+                {t("form.addAccount")}
+              </Button>
+            </ManageBankAccountDialog>
           </Alert>
         )}
 
