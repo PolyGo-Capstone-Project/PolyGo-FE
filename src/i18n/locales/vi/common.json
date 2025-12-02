@@ -104,7 +104,8 @@
     "EventsOverlapping": "Bạn có một sự kiện khác trùng thời gian với sự kiện này.",
     "VoiceCallLimitExceeded": "Bạn đã vượt quá giới hạn cuộc gọi thoại. Vui lòng nâng cấp gói đăng ký của bạn.",
     "TranslationLimitExceeded": "Bạn đã vượt quá giới hạn dịch thuật. Vui lòng nâng cấp gói đăng ký của bạn.",
-    "EventRegistrationLimitExceeded": "Bạn đã vượt quá giới hạn đăng ký sự kiện. Vui lòng nâng cấp gói đăng ký của bạn."
+    "EventRegistrationLimitExceeded": "Bạn đã vượt quá giới hạn đăng ký sự kiện. Vui lòng nâng cấp gói đăng ký của bạn.",
+    "VideoCallLimitExceeded": "Bạn đã vượt quá giới hạn cuộc gọi video. Vui lòng nâng cấp gói đăng ký của bạn."
   },
   "header": {
     "products": "Sản phẩm",

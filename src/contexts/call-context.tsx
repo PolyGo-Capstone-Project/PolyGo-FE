@@ -93,6 +93,9 @@ export function CallProvider({ children }: CallProviderProps) {
     // Call failed event
     onCallFailed: useCallback((reason: string) => {
       console.log("⚠️ [CallContext] Call failed:", reason);
+      setIsInCall(false);
+      setCurrentCallUserId(null);
+      setCurrentCallUserName(null);
       setIncomingCall(null);
       toast.error(reason);
     }, []),
@@ -100,8 +103,23 @@ export function CallProvider({ children }: CallProviderProps) {
     // Call declined event
     onCallDeclined: useCallback(() => {
       console.log("❌ [CallContext] Call declined");
+      setIsInCall(false);
+      setCurrentCallUserId(null);
+      setCurrentCallUserName(null);
       setIncomingCall(null);
       toast.error("The call was declined.");
+    }, []),
+
+    // Call duration exceeded event (auto-disconnect for free users)
+    onCallDurationExceeded: useCallback((reason: string) => {
+      console.log("⏱️ [CallContext] Call duration exceeded:", reason);
+      setIsInCall(false);
+      setCurrentCallUserId(null);
+      setCurrentCallUserName(null);
+      setIncomingCall(null);
+      toast.warning(
+        "Call ended: Time limit reached for free users. Upgrade to Premium for unlimited calls!"
+      );
     }, []),
   });
 

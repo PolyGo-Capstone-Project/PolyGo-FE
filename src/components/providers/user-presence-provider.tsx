@@ -4,6 +4,7 @@ import { useUserCommunicationHub } from "@/hooks";
 import {
   CallAcceptedData,
   CallDeclinedData,
+  CallDurationExceededData,
   CallFailedData,
   IncomingCallData,
   MediaStateUpdate,
@@ -50,6 +51,7 @@ interface UserPresenceContextValue {
     onCallDeclined?: (data: CallDeclinedData) => void;
     onCallFailed?: (data: CallFailedData) => void;
     onCallEnded?: () => void;
+    onCallDurationExceeded?: (data: CallDurationExceededData) => void;
     onMediaStateUpdate?: (data: MediaStateUpdate) => void;
     onReceiveOffer?: (sdp: string) => void;
     onReceiveAnswer?: (sdp: string) => void;
@@ -100,6 +102,7 @@ export function UserPresenceProvider({ children }: UserPresenceProviderProps) {
     onCallDeclined?: (data: CallDeclinedData) => void;
     onCallFailed?: (data: CallFailedData) => void;
     onCallEnded?: () => void;
+    onCallDurationExceeded?: (data: CallDurationExceededData) => void;
     onMediaStateUpdate?: (data: MediaStateUpdate) => void;
     onReceiveOffer?: (sdp: string) => void;
     onReceiveAnswer?: (sdp: string) => void;
@@ -142,6 +145,11 @@ export function UserPresenceProvider({ children }: UserPresenceProviderProps) {
     () => callCallbacksRef.current.onCallEnded?.(),
     []
   );
+  const handleCallDurationExceeded = useCallback(
+    (data: CallDurationExceededData) =>
+      callCallbacksRef.current.onCallDurationExceeded?.(data),
+    []
+  );
   const handleMediaStateUpdate = useCallback(
     (data: MediaStateUpdate) =>
       callCallbacksRef.current.onMediaStateUpdate?.(data),
@@ -170,6 +178,7 @@ export function UserPresenceProvider({ children }: UserPresenceProviderProps) {
     onCallDeclined: handleCallDeclined,
     onCallFailed: handleCallFailed,
     onCallEnded: handleCallEnded,
+    onCallDurationExceeded: handleCallDurationExceeded,
     onMediaStateUpdate: handleMediaStateUpdate,
     onReceiveOffer: handleReceiveOffer,
     onReceiveAnswer: handleReceiveAnswer,

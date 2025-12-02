@@ -26,6 +26,7 @@ export function CallModal({
 }: CallModalProps) {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteAudioRef = useRef<HTMLAudioElement>(null);
   const [callDuration, setCallDuration] = useState(0);
   const callDurationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -37,11 +38,55 @@ export function CallModal({
     }
   }, [callState.localStream]);
 
+  // Force local video element to re-render when video enabled state changes
+  useEffect(() => {
+    if (localVideoRef.current && callState.localStream) {
+      const videoTrack = callState.localStream.getVideoTracks()[0];
+      if (videoTrack) {
+        console.log("📹 [CallModal] Local video track state changed:", {
+          enabled: videoTrack.enabled,
+          readyState: videoTrack.readyState,
+          localVideoEnabled: callState.localVideoEnabled,
+        });
+
+        // Force video element to update by re-attaching the stream
+        if (callState.localVideoEnabled && videoTrack.enabled) {
+          localVideoRef.current.srcObject = null;
+          localVideoRef.current.srcObject = callState.localStream;
+          console.log("📹 [CallModal] Local video element refreshed");
+        }
+      }
+    }
+  }, [callState.localVideoEnabled, callState.localStream]);
+
   // Update remote video element when stream changes
   useEffect(() => {
     if (remoteVideoRef.current && callState.remoteStream) {
       remoteVideoRef.current.srcObject = callState.remoteStream;
-      console.log("📹 [CallModal] Remote stream attached to video element");
+
+      const tracks = callState.remoteStream.getTracks();
+      console.log(
+        "📹 [CallModal] Remote stream attached - tracks:",
+        tracks.map(
+          (t) => `${t.kind}:enabled=${t.enabled},readyState=${t.readyState}`
+        )
+      );
+    }
+  }, [
+    callState.remoteStream,
+    callState.remoteVideoEnabled,
+    callState.remoteAudioEnabled,
+  ]);
+
+  // Update remote audio element for voice calls
+  useEffect(() => {
+    if (remoteAudioRef.current && callState.remoteStream) {
+      remoteAudioRef.current.srcObject = callState.remoteStream;
+      // Force play to handle autoplay restrictions
+      remoteAudioRef.current.play().catch((err) => {
+        console.warn("⚠️ [CallModal] Autoplay blocked for remote audio:", err);
+      });
+      console.log("🔊 [CallModal] Remote audio stream attached");
     }
   }, [callState.remoteStream]);
 
@@ -180,6 +225,10 @@ export function CallModal({
         ) : (
           /* Voice Call UI - Centered with gradient background */
           <div className="w-full h-full flex items-center justify-center px-4 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+            {/* Hidden audio element for voice call remote stream */}
+            <audio ref={remoteAudioRef} autoPlay playsInline>
+              <track kind="captions" />
+            </audio>
             <div className="text-center">
               {/* Large Avatar with animated ring */}
               <div className="relative inline-block mb-6 md:mb-8">
