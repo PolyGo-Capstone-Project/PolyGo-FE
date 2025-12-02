@@ -57,6 +57,7 @@ interface UseCallOptions {
   onCallEnded?: () => void;
   onCallFailed?: (reason: string) => void;
   onCallDeclined?: () => void;
+  onCallDurationExceeded?: (reason: string) => void;
 }
 
 interface ExtendedRTCPeerConnection extends RTCPeerConnection {
@@ -86,6 +87,11 @@ export const useCall = (options?: UseCallOptions) => {
   const makingOfferRef = useRef<boolean>(false);
   const ignoreOfferRef = useRef<boolean>(false);
   const isCallerRef = useRef<boolean>(false);
+  // Store current call info in ref to avoid stale closure issues
+  const currentCallInfoRef = useRef<{
+    peerId: string | null;
+    isVideoCall: boolean;
+  }>({ peerId: null, isVideoCall: false });
 
   // ==================== USE SHARED CONNECTION ====================
   // Get the shared communication hub from context (prevents multiple connections!)
@@ -102,6 +108,12 @@ export const useCall = (options?: UseCallOptions) => {
           "Name:",
           data.callerName
         );
+
+        // Update ref to avoid stale closure in callbacks
+        currentCallInfoRef.current = {
+          peerId: data.callerId,
+          isVideoCall: data.isVideoCall,
+        };
 
         setCallState((prev) => ({
           ...prev,
@@ -127,9 +139,9 @@ export const useCall = (options?: UseCallOptions) => {
         if (isCallerRef.current) {
           console.log("[Call] 📞 We are caller, initializing WebRTC...");
 
-          // Get current peer ID and video call state
-          const currentPeerId = callState.peerId;
-          const currentIsVideoCall = callState.isVideoCall;
+          // Use ref instead of state to avoid stale closure issues
+          const currentPeerId = currentCallInfoRef.current.peerId;
+          const currentIsVideoCall = currentCallInfoRef.current.isVideoCall;
 
           if (currentPeerId) {
             // Initialize WebRTC connection - this will create and send the offer
@@ -189,6 +201,20 @@ export const useCall = (options?: UseCallOptions) => {
         options?.onCallEnded?.();
       },
 
+      // Handle call duration exceeded (auto-disconnect for free users)
+      onCallDurationExceeded: (data: { reason: string }) => {
+        console.log("⏱️ [Call] Call duration exceeded:", data.reason);
+
+        cleanupCall();
+        setCallState((prev) => ({
+          ...prev,
+          status: "ended",
+          peerId: null,
+        }));
+
+        options?.onCallDurationExceeded?.(data.reason);
+      },
+
       // Handle media state update
       onMediaStateUpdate: (data: MediaStateUpdate) => {
         console.log(
@@ -223,7 +249,8 @@ export const useCall = (options?: UseCallOptions) => {
     return () => {
       communicationHub.registerCallCallbacks({});
     };
-  }, [options]); // Re-register when options change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [options]); // communicationHub is stable from context, callbacks are defined inline
 
   // ==================== WEBRTC HELPERS ====================
 
@@ -328,11 +355,21 @@ export const useCall = (options?: UseCallOptions) => {
           event.streams[0].getTracks().map((t) => `${t.kind}:${t.enabled}`)
         );
 
-        remoteStreamRef.current = event.streams[0];
-        setCallState((prev) => ({
-          ...prev,
-          remoteStream: event.streams[0],
-        }));
+        // Only update remoteStream if it's not already set or if it's a different stream
+        // This prevents overwriting when multiple tracks arrive (audio + video)
+        if (
+          !remoteStreamRef.current ||
+          remoteStreamRef.current.id !== event.streams[0].id
+        ) {
+          remoteStreamRef.current = event.streams[0];
+          setCallState((prev) => ({
+            ...prev,
+            remoteStream: event.streams[0],
+          }));
+          console.log("[PC] ✓ Remote stream updated");
+        } else {
+          console.log("[PC] ℹ️ Remote stream already set, skipping update");
+        }
       };
 
       // Connection state handlers
@@ -387,7 +424,8 @@ export const useCall = (options?: UseCallOptions) => {
 
       return pc;
     },
-    [] // No dependencies - communicationHub.sendIceCandidate is stable
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [] // communicationHub is stable from context
   );
 
   // Initialize WebRTC connection
@@ -477,7 +515,8 @@ export const useCall = (options?: UseCallOptions) => {
         throw error;
       }
     },
-    [getLocalStream, createPeerConnection] // cleanupCall defined later, inlined in catch
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [getLocalStream, createPeerConnection] // communicationHub is stable from context
   );
 
   // Handle receive offer
@@ -543,7 +582,8 @@ export const useCall = (options?: UseCallOptions) => {
         console.error("[PC] ✗ Failed to handle offer:", error);
       }
     },
-    [getLocalStream, callState.isVideoCall, callState.peerId]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [getLocalStream, callState.isVideoCall, callState.peerId] // communicationHub is stable
   );
 
   // Handle receive answer
@@ -618,6 +658,7 @@ export const useCall = (options?: UseCallOptions) => {
     // Reset refs
     makingOfferRef.current = false;
     ignoreOfferRef.current = false;
+    currentCallInfoRef.current = { peerId: null, isVideoCall: false };
 
     console.log("[Call] ✓ Cleanup complete");
   }, []);
@@ -645,6 +686,12 @@ export const useCall = (options?: UseCallOptions) => {
         // Mark as caller
         isCallerRef.current = true;
 
+        // Update ref to avoid stale closure in callbacks
+        currentCallInfoRef.current = {
+          peerId: userId,
+          isVideoCall: isVideoCall,
+        };
+
         setCallState((prev) => ({
           ...prev,
           status: "calling",
@@ -669,7 +716,8 @@ export const useCall = (options?: UseCallOptions) => {
         throw error;
       }
     },
-    [getLocalStream] // communicationHub is from context, stable
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [getLocalStream] // communicationHub is stable from context
   );
 
   /**
@@ -703,12 +751,14 @@ export const useCall = (options?: UseCallOptions) => {
       console.error("[Call] ✗ Failed to accept call:", error);
       throw error;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     callState.peerId,
     callState.isVideoCall,
     getLocalStream,
     initializeWebRTCConnection,
   ]);
+  // communicationHub is stable from context
 
   /**
    * Decline an incoming call
@@ -735,7 +785,8 @@ export const useCall = (options?: UseCallOptions) => {
       console.error("[Call] ✗ Failed to decline call:", error);
       throw error;
     }
-  }, [callState.peerId, cleanupCall]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [callState.peerId, cleanupCall]); // communicationHub is stable from context
 
   /**
    * End the current call
@@ -762,7 +813,8 @@ export const useCall = (options?: UseCallOptions) => {
       console.error("[Call] ✗ Failed to end call:", error);
       throw error;
     }
-  }, [cleanupCall]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cleanupCall]); // communicationHub is stable from context
 
   /**
    * Toggle microphone
@@ -787,7 +839,8 @@ export const useCall = (options?: UseCallOptions) => {
       return newState;
     }
     return undefined;
-  }, [callState.localVideoEnabled]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [callState.localVideoEnabled]); // communicationHub is stable from context
 
   /**
    * Toggle camera
@@ -825,11 +878,42 @@ export const useCall = (options?: UseCallOptions) => {
       // Case 2: Enabling video
       if (!callState.localVideoEnabled) {
         console.log("[Media] 🟢 Enabling video...");
+        console.log(
+          "[Media] Current video track state:",
+          videoTrack
+            ? {
+                id: videoTrack.id,
+                enabled: videoTrack.enabled,
+                readyState: videoTrack.readyState,
+                muted: videoTrack.muted,
+              }
+            : "no track"
+        );
 
         // If video track exists but is disabled, just enable it
-        if (videoTrack) {
+        if (videoTrack && videoTrack.readyState === "live") {
           videoTrack.enabled = true;
           console.log("[Media] ✓ Video enabled (track enabled)");
+        } else if (videoTrack && videoTrack.readyState === "ended") {
+          console.log("[Media] ⚠️ Video track ended, need to recreate");
+          // Track ended, need new track
+          const newVideoStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false,
+          });
+          const newVideoTrack = newVideoStream.getVideoTracks()[0];
+
+          // Replace old track
+          const senders = pc.getSenders();
+          const videoSender = senders.find((s) => s.track?.kind === "video");
+          if (videoSender) {
+            await videoSender.replaceTrack(newVideoTrack);
+            // Remove old track from stream
+            localStreamRef.current.removeTrack(videoTrack);
+            // Add new track
+            localStreamRef.current.addTrack(newVideoTrack);
+            console.log("[PC] ✓ Replaced ended video track");
+          }
         } else {
           // No video track exists (audio-only call), need to add video track
           console.log(
@@ -885,7 +969,8 @@ export const useCall = (options?: UseCallOptions) => {
       }));
       return undefined;
     }
-  }, [callState.localAudioEnabled, callState.localVideoEnabled]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [callState.localAudioEnabled, callState.localVideoEnabled]); // communicationHub is stable
 
   return {
     // State

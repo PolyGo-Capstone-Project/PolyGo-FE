@@ -36,6 +36,10 @@ export interface MediaStateUpdate {
   camOn: boolean;
 }
 
+export interface CallDurationExceededData {
+  reason: string;
+}
+
 interface useUserCommunicationHubOptions {
   onUserStatusChanged?: (data: UserStatusChangedType) => void;
   // Call events
@@ -44,6 +48,7 @@ interface useUserCommunicationHubOptions {
   onCallDeclined?: (data: CallDeclinedData) => void;
   onCallFailed?: (data: CallFailedData) => void;
   onCallEnded?: () => void;
+  onCallDurationExceeded?: (data: CallDurationExceededData) => void;
   onMediaStateUpdate?: (data: MediaStateUpdate) => void;
   // WebRTC signaling events
   onReceiveOffer?: (sdp: string) => void;
@@ -303,6 +308,12 @@ export const useUserCommunicationHub = (
       options?.onCallEnded?.();
     };
 
+    // Call duration exceeded (auto-disconnect for free users)
+    const handleCallDurationExceeded = (reason: string) => {
+      console.log("⏱️ [Call] Call duration exceeded:", reason);
+      options?.onCallDurationExceeded?.({ reason });
+    };
+
     // Media state update
     const handleUpdateMediaState = (
       userId: string,
@@ -321,6 +332,7 @@ export const useUserCommunicationHub = (
     connection.on("CallDeclined", handleCallDeclined);
     connection.on("CallFailed", handleCallFailed);
     connection.on("CallEnded", handleCallEnded);
+    connection.on("CallDurationExceeded", handleCallDurationExceeded);
     connection.on("UpdateMediaState", handleUpdateMediaState);
 
     return () => {
@@ -329,6 +341,7 @@ export const useUserCommunicationHub = (
       connection.off("CallDeclined", handleCallDeclined);
       connection.off("CallFailed", handleCallFailed);
       connection.off("CallEnded", handleCallEnded);
+      connection.off("CallDurationExceeded", handleCallDurationExceeded);
       connection.off("UpdateMediaState", handleUpdateMediaState);
     };
   }, [connection, options]);
