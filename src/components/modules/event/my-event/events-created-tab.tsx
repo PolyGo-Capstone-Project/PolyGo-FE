@@ -22,11 +22,12 @@ import {
   Skeleton,
 } from "@/components/ui";
 import { EventStatus } from "@/constants";
+import { useAuthMe } from "@/hooks";
 import {
   useCancelEventMutation,
   useGetHostedEvents,
 } from "@/hooks/query/use-event";
-import { handleErrorApi, showSuccessToast } from "@/lib/utils";
+import { handleErrorApi, showErrorToast, showSuccessToast } from "@/lib/utils";
 import {
   IconCalendarEvent,
   IconCheck,
@@ -183,7 +184,13 @@ export function EventsCreatedTab() {
     setShowStatsDialog(true);
   };
 
+  const me = useAuthMe();
+
   const handleCreateEvent = () => {
+    if (me.data?.payload.data.planType !== "Plus") {
+      showErrorToast("OnlyPlusUserCanCreateEvent", tError);
+      return;
+    }
     router.push(`/${locale}/event/create`);
   };
 

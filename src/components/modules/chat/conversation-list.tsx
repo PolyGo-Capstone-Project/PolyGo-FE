@@ -177,9 +177,9 @@ export function ConversationList({
   };
 
   return (
-    <div className="flex h-full w-full flex-col border-r">
+    <div className="flex h-full w-full flex-col overflow-hidden border-r">
       {/* Header */}
-      <div className="border-b p-3 md:p-4">
+      <div className="shrink-0 border-b p-3 md:p-4">
         <div className="mb-3 flex items-center justify-between md:mb-4">
           <h2 className="text-lg font-semibold md:text-xl">{t("title")}</h2>
           {totalUnreadCount > 0 && (
@@ -206,7 +206,7 @@ export function ConversationList({
       </div>
 
       {/* Conversations List */}
-      <ScrollArea className="flex-1">
+      <ScrollArea className="min-h-0 flex-1">
         {sortedConversations.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-6 text-center md:p-8">
             <p className="text-muted-foreground text-xs md:text-sm">

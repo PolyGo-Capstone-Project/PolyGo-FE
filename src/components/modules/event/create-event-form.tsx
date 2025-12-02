@@ -266,12 +266,12 @@ export function CreateEventForm() {
               </Tooltip>
             </div>
             {bannerPreview ? (
-              <div className="relative w-full h-48 rounded-lg overflow-hidden border">
+              <div className="relative w-full aspect-[16/9] rounded-lg overflow-hidden border bg-muted">
                 <Image
                   src={bannerPreview}
                   alt="Banner preview"
                   fill
-                  className="object-cover"
+                  className="object-contain"
                 />
                 <Button
                   type="button"

@@ -6,12 +6,18 @@ import {
   EventCardCompact,
   EventFilters,
 } from "@/components/modules/event";
-import { useGetRecommendedEvents, useGetUpcomingEvents } from "@/hooks";
+import {
+  useAuthMe,
+  useGetRecommendedEvents,
+  useGetUpcomingEvents,
+} from "@/hooks";
+import { showErrorToast } from "@/lib";
 import type { SearchEventsQueryType } from "@/models";
 import { IconPlus, IconSearch, IconSparkles } from "@tabler/icons-react";
 import { CalendarDays } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 const UPCOMING_PAGE_SIZE = 6;
@@ -44,6 +50,7 @@ function getTimeRangeFromFilter(filter?: TimeFilterType): Date | undefined {
 
 export default function EventListPage() {
   const t = useTranslations("event");
+  const tError = useTranslations("Error");
   const locale = useLocale();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -58,6 +65,8 @@ export default function EventListPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loadedEvents, setLoadedEvents] = useState<any[]>([]);
   const [isLoadMorePending, setIsLoadMorePending] = useState(false);
+  const router = useRouter();
+  const me = useAuthMe();
 
   // Debounce search
   useEffect(() => {
@@ -176,6 +185,14 @@ export default function EventListPage() {
 
   const isSearching = searchQuery !== debouncedSearch && searchQuery.length > 0;
 
+  const handleCreateEvent = () => {
+    if (me.data?.payload.data.planType !== "Plus") {
+      showErrorToast("OnlyPlusUserCanCreateEvent", tError);
+      return;
+    }
+    router.push(`/${locale}/event/create`);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
@@ -185,12 +202,10 @@ export default function EventListPage() {
           <p className="text-muted-foreground mt-1">{t("discoverAndJoin")}</p>
         </div>
         <div className="flex gap-4">
-          <Link href={`/${locale}/event/create`}>
-            <Button className="gap-2">
-              <IconPlus className="h-4 w-4" />
-              {t("createEvent")}
-            </Button>
-          </Link>
+          <Button className="gap-2" onClick={handleCreateEvent}>
+            <IconPlus className="h-4 w-4" />
+            {t("createEvent")}
+          </Button>
           <Link href={`/${locale}/my-event`}>
             <Button className="gap-2" variant="outline">
               <CalendarDays className="h-4 w-4" />

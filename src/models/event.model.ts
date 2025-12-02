@@ -197,7 +197,7 @@ export const GetEventStatResSchema = z.object({
 
 // METHOD POST =================================================================
 
-//Create event - host
+// Create event - host
 export const CreateEventBodySchema = EventSchema.pick({
   bannerUrl: true,
   notesUrl: true,
