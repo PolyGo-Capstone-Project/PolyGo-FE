@@ -101,7 +101,10 @@
     "InvalidOTP": "Invalid OTP. Please try again.",
     "export": "Failed to export data. Please try again.",
     "SendTransactionInquiry": "Failed to send transaction inquiry. Please try again.",
-    "EventsOverlapping": "You have another event that overlaps with this time."
+    "EventsOverlapping": "You have another event that overlaps with this time.",
+    "VoiceCallLimitExceeded": "You have exceeded your voice call limit. Please upgrade your subscription.",
+    "TranslationLimitExceeded": "You have exceeded your translation limit. Please upgrade your subscription.",
+    "EventRegistrationLimitExceeded": "You have exceeded your event registration limit. Please upgrade your subscription."
   },
   "header": {
     "products": "Products",

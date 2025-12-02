@@ -97,7 +97,15 @@ export function ManageBankAccountDialog({
       bankNumber: "",
       accountName: "",
     },
+    mode: "onChange", // Thêm dòng này để validate khi thay đổi
   });
+
+  // Thêm watch để theo dõi giá trị form
+  const watchedValues = form.watch();
+  const isFormValid =
+    watchedValues.bankName?.trim() !== "" &&
+    watchedValues.bankNumber?.trim() !== "" &&
+    watchedValues.accountName?.trim() !== "";
 
   // Fetch banks on mount
   useEffect(() => {
@@ -116,6 +124,15 @@ export function ManageBankAccountDialog({
   }, [tError]);
 
   const onSubmit = async (values: CreateAccountBankBodyType) => {
+    // Thêm validation thủ công
+    if (
+      !values.bankName?.trim() ||
+      !values.bankNumber?.trim() ||
+      !values.accountName?.trim()
+    ) {
+      return;
+    }
+
     try {
       await createMutation.mutateAsync(values);
       showSuccessToast("Create", tSuccess);
@@ -370,7 +387,11 @@ export function ManageBankAccountDialog({
                       <Button
                         type="submit"
                         className="flex-1"
-                        disabled={createMutation.isPending || isLoadingBanks}
+                        disabled={
+                          createMutation.isPending ||
+                          isLoadingBanks ||
+                          !isFormValid
+                        }
                       >
                         {createMutation.isPending ? (
                           <>

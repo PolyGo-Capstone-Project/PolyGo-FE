@@ -1,16 +1,16 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
+  Button,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+  Input,
+  Label,
+} from "@/components";
 import { useDepositUrl } from "@/hooks";
 import { formatCurrency, getPaymentUrls, showErrorToast } from "@/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
@@ -40,13 +40,8 @@ export function DepositDialog({ open, onOpenChange }: DepositDialogProps) {
       return;
     }
 
-    if (numAmount < 2000) {
+    if (numAmount < 10000) {
       toast.error(t("validation.min"));
-      return;
-    }
-
-    if (numAmount > 5000000) {
-      toast.error(t("validation.max"));
       return;
     }
 

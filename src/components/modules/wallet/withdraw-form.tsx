@@ -146,7 +146,17 @@ export function WithdrawForm({
       bankNumber: "",
       accountName: "",
     },
+    mode: "onChange", // Thêm validation khi thay đổi
   });
+
+  // Thêm watch để theo dõi giá trị form
+  const watchedValues = form.watch();
+  const isFormValid =
+    watchedValues.bankName?.trim() !== "" &&
+    watchedValues.bankNumber?.trim() !== "" &&
+    watchedValues.accountName?.trim() !== "" &&
+    watchedValues.amount >= 50000 &&
+    watchedValues.amount <= balance;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN").format(amount) + " VND";
@@ -163,6 +173,17 @@ export function WithdrawForm({
   };
 
   const handleSubmit = async (data: WithdrawalRequestBodyType) => {
+    // Thêm validation thủ công
+    if (
+      !data.bankName?.trim() ||
+      !data.bankNumber?.trim() ||
+      !data.accountName?.trim() ||
+      data.amount < 50000 ||
+      data.amount > balance
+    ) {
+      return;
+    }
+
     try {
       const result = await withdrawalRequestMutation.mutateAsync(data);
       showSuccessToast(result?.payload?.message, tSuccess);
@@ -322,18 +343,16 @@ export function WithdrawForm({
                   <FormControl>
                     <Input
                       type="number"
-                      step={10000}
-                      min={10000}
+                      step={50000}
                       max={balance}
-                      placeholder="10,000"
+                      placeholder="50,000"
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
                   <FormDescription>
                     {t("form.amountHint", {
-                      min: formatCurrency(10000),
-                      max: formatCurrency(10000000),
+                      min: formatCurrency(50000),
                     })}
                   </FormDescription>
                   <FormMessage />
@@ -348,6 +367,7 @@ export function WithdrawForm({
               disabled={
                 !canWithdraw ||
                 !hasAccounts ||
+                !isFormValid ||
                 withdrawalRequestMutation.isPending
               }
             >
