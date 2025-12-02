@@ -13,7 +13,19 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Button, Checkbox, Input, Label, Separator } from "@/components/ui";
+import {
+  Button,
+  Checkbox,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Input,
+  Label,
+  Separator,
+} from "@/components/ui";
 import { Role } from "@/constants";
 import { useAuthStore, useLoginMutation, useSearchParamsLoader } from "@/hooks";
 import { decodeToken, handleErrorApi, showSuccessToast } from "@/lib/utils";
@@ -26,6 +38,13 @@ export default function LoginForm() {
   const locale = useLocale();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [showBanDialog, setShowBanDialog] = useState(false);
+  const [banInfo, setBanInfo] = useState<{
+    unbanDate: Date;
+    daysRemaining: number;
+    hoursRemaining: number;
+    minutesRemaining: number;
+  } | null>(null);
   const router = useRouter();
   const { searchParams, setSearchParams } = useSearchParamsLoader();
   const clearTokens = searchParams?.get("clearTokens");
@@ -37,6 +56,7 @@ export default function LoginForm() {
   const errorMessages = useTranslations("auth.login.errors");
   const tSuccess = useTranslations("Success");
   const tError = useTranslations("Error");
+  const tBan = useTranslations("auth.login.accountBanned");
 
   const resolver = useMemo(
     () =>
@@ -86,11 +106,39 @@ export default function LoginForm() {
           localStorage.removeItem(REMEMBER_MAIL_KEY);
         }
       }
-      showSuccessToast(result.payload?.message, tSuccess);
       const decoded = decodeToken(result.payload.data);
+
+      // Check if account is banned
+      if (decoded.NextUnbannedAt) {
+        const unbanDate = new Date(decoded.NextUnbannedAt);
+        const now = new Date();
+        const diffMs = unbanDate.getTime() - now.getTime();
+
+        if (diffMs > 0) {
+          // Account is still banned
+          const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+          const hours = Math.floor(
+            (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+          setBanInfo({
+            unbanDate,
+            daysRemaining: days,
+            hoursRemaining: hours,
+            minutesRemaining: minutes,
+          });
+          setShowBanDialog(true);
+
+          // Clear tokens and prevent login
+          setRole();
+          return;
+        }
+      }
+
+      showSuccessToast(result.payload?.message, tSuccess);
       setRole(decoded.Role);
       const isNew = String(decoded.IsNew).toLowerCase() === "true";
-      // setSocket(generateSocketInstance(result.payload.data.accessToken));
       if (isNew) {
         setIsNewUser(true);
         router.push(`/${locale}/setup-profile`);
@@ -250,6 +298,69 @@ export default function LoginForm() {
           </Link>
         </p>
       </div>
+
+      {/* Ban Dialog */}
+      <Dialog open={showBanDialog} onOpenChange={setShowBanDialog}>
+        <DialogContent showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle className="text-destructive">
+              {tBan("title")}
+            </DialogTitle>
+            <DialogDescription>{tBan("message")}</DialogDescription>
+          </DialogHeader>
+
+          {banInfo && (
+            <div className="space-y-4 py-4">
+              {/* Time Remaining */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="font-medium">
+                    {banInfo.daysRemaining > 0
+                      ? tBan("daysRemaining", { days: banInfo.daysRemaining })
+                      : banInfo.hoursRemaining > 0
+                        ? tBan("hoursRemaining", {
+                            hours: banInfo.hoursRemaining,
+                          })
+                        : tBan("minutesRemaining", {
+                            minutes: banInfo.minutesRemaining,
+                          })}
+                  </span>
+                </div>
+              </div>
+
+              {/* Unban Date */}
+              <div className="rounded-lg bg-muted p-4">
+                <p className="text-sm font-medium mb-2">
+                  {tBan("willBeUnbannedOn")}
+                </p>
+                <p className="text-lg font-semibold">
+                  {banInfo.unbanDate.toLocaleString(locale, {
+                    dateStyle: "full",
+                    timeStyle: "short",
+                  })}
+                </p>
+              </div>
+
+              {/* Contact Support */}
+              <p className="text-xs text-muted-foreground text-center">
+                {tBan("contactSupport")}
+              </p>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button
+              onClick={() => {
+                setShowBanDialog(false);
+                setBanInfo(null);
+              }}
+              className="w-full"
+            >
+              {tBan("understand")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </form>
   );
 }

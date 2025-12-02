@@ -56,10 +56,8 @@ export default function WalletPage() {
   const recentTransactions = transactionsData?.payload.data.items ?? [];
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
+    const formatted = new Intl.NumberFormat("vi-VN").format(Math.abs(amount));
+    return amount >= 0 ? `+${formatted} VND` : `-${formatted} VND`;
   };
 
   const formatDate = (dateString: string) => {
@@ -164,7 +162,7 @@ export default function WalletPage() {
                       >
                         <div className="mb-2 flex items-start justify-between gap-2">
                           <div className="flex-1 space-y-1">
-                            <p className="font-medium leading-tight">
+                            <p className="truncate font-medium leading-tight">
                               {transaction.description ||
                                 transaction.transactionType}
                             </p>
@@ -224,7 +222,7 @@ export default function WalletPage() {
                             <TableCell className="whitespace-nowrap text-sm">
                               {formatDate(transaction.createdAt)}
                             </TableCell>
-                            <TableCell className="font-medium">
+                            <TableCell className="max-w-[200px] truncate font-medium">
                               {transaction.description ||
                                 transaction.transactionType}
                             </TableCell>
