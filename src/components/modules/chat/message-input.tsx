@@ -49,6 +49,7 @@ export function MessageInput({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const isCancelledRef = useRef(false);
 
   const isBusy = disabled || isSending || isUploading || isRecording;
 
@@ -159,6 +160,7 @@ export function MessageInput({
 
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
+      isCancelledRef.current = false;
 
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
@@ -167,6 +169,15 @@ export function MessageInput({
       };
 
       mediaRecorder.onstop = async () => {
+        // Stop all tracks first
+        stream.getTracks().forEach((track) => track.stop());
+
+        // If cancelled, don't send
+        if (isCancelledRef.current) {
+          audioChunksRef.current = [];
+          return;
+        }
+
         const audioBlob = new Blob(audioChunksRef.current, {
           type: "audio/webm",
         });
@@ -183,9 +194,6 @@ export function MessageInput({
         } finally {
           setIsUploading(false);
         }
-
-        // Stop all tracks
-        stream.getTracks().forEach((track) => track.stop());
       };
 
       mediaRecorder.start();
@@ -217,21 +225,14 @@ export function MessageInput({
 
   const cancelRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
+      isCancelledRef.current = true;
       mediaRecorderRef.current.stop();
       setIsRecording(false);
       setRecordingTime(0);
-      audioChunksRef.current = [];
 
       if (recordingIntervalRef.current) {
         clearInterval(recordingIntervalRef.current);
         recordingIntervalRef.current = null;
-      }
-
-      // Stop all tracks without sending
-      if (mediaRecorderRef.current.stream) {
-        mediaRecorderRef.current.stream
-          .getTracks()
-          .forEach((track) => track.stop());
       }
     }
   };
