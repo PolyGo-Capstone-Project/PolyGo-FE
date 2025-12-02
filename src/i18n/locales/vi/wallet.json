@@ -244,7 +244,8 @@
         "amountHint": "Tối thiểu: {min} - Tối đa: {max}",
         "submit": "Yêu cầu rút tiền",
         "submitting": "Đang xử lý...",
-        "sendingOTP": "Đang gửi OTP..."
+        "sendingOTP": "Đang gửi OTP...",
+        "addAccount": "Thêm tài khoản ngân hàng"
       },
       "errors": {
         "amount": {
