@@ -550,8 +550,8 @@ function EditWordsetDialog({
               <Label>
                 {t("create.language.label", { default: "Language" })}
               </Label>
-              <Select value={languageId} onValueChange={setLanguageId}>
-                <SelectTrigger className="w-full">
+              <Select value={languageId} onValueChange={setLanguageId} disabled>
+                <SelectTrigger className="w-full" disabled>
                   <SelectValue
                     placeholder={t("filters.language", { default: "Language" })}
                   />
@@ -568,8 +568,8 @@ function EditWordsetDialog({
 
             <div className="grid gap-2">
               <Label>{t("filters.category", { default: "Category" })}</Label>
-              <Select value={interestId} onValueChange={setInterestId}>
-                <SelectTrigger className="w-full">
+              <Select value={interestId} onValueChange={setInterestId} disabled>
+                <SelectTrigger className="w-full" disabled>
                   <SelectValue
                     placeholder={t("filters.category", { default: "Category" })}
                   />

@@ -37,13 +37,7 @@ type ReportDialogProps = {
 };
 
 const REASON_KEYS = {
-  [ReportEnum.Event]: [
-    "negative_content",
-    "spam",
-    "unreasonable_price",
-    "violation",
-    "other",
-  ],
+  [ReportEnum.Event]: ["negative_content", "spam", "violation", "other"],
   [ReportEnum.Post]: [
     "negative_content",
     "spam",

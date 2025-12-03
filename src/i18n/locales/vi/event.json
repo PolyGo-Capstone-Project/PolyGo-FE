@@ -426,6 +426,7 @@
           "registeredAt": "Đăng ký lúc",
           "viewProfile": "Xem hồ sơ",
           "kick": "Xóa",
+          "report": "Báo cáo",
           "kickDialog": {
             "title": "Xóa người tham gia",
             "description": "Bạn có chắc chắn muốn xóa người tham gia này khỏi sự kiện?",
