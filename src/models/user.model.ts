@@ -72,8 +72,7 @@ export const UpdateProfileBodySchema = SetupProfileBodySchema;
 
 // PUT /users/set-restriction
 export const SetRestrictionsBodySchema = z.object({
-  id: z.string(),
-  merit: z.number().min(0).max(100),
+  merit: z.number().min(-100).max(100),
 });
 
 // Get All Users

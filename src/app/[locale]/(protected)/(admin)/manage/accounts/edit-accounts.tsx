@@ -52,8 +52,7 @@ type EditAccountsProps = {
 };
 
 const DEFAULT_VALUES: SetRestrictionsBodyType = {
-  id: "",
-  merit: 80,
+  merit: 0, // Đổi default thành 0 vì giờ là cộng/trừ
 };
 
 export function EditAccounts({
@@ -88,10 +87,10 @@ export function EditAccounts({
       return;
     }
 
+    // Luôn reset về 0 khi mở sheet vì giờ là nhập số cộng/trừ
     if (user && userId) {
       form.reset({
-        id: String(user.id),
-        merit: user.merit,
+        merit: 0,
       });
     }
   }, [form, user, userId, open]);
@@ -109,6 +108,11 @@ export function EditAccounts({
   };
 
   const isFormDisabled = isSubmitting || isLoading || !userId;
+
+  // Tính merit dự kiến sau khi thay đổi
+  const currentMerit = user?.merit ?? 0;
+  const meritChange = form.watch("merit") ?? 0;
+  const expectedMerit = Math.max(0, Math.min(100, currentMerit + meritChange));
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -144,6 +148,10 @@ export function EditAccounts({
               <span className="text-muted-foreground text-xs">
                 {safeTranslate("userIdLabel", "ID")}: {user.id}
               </span>
+              <span className="text-muted-foreground text-xs">
+                {safeTranslate("currentMeritLabel", "Merit hiện tại")}:{" "}
+                {user.merit}
+              </span>
             </div>
           </div>
         )}
@@ -159,19 +167,25 @@ export function EditAccounts({
               control={form.control}
               name="merit"
               render={({ field }) => {
-                const currentMerit = field.value ?? 80;
-                const meritLabel = getMeritLabel(currentMerit);
+                const meritLabel = getMeritLabel(expectedMerit);
                 return (
                   <FormItem>
                     <FormLabel className="mb-2">
-                      {safeTranslate("form.meritLabel", "Merit")}
+                      {safeTranslate(
+                        "form.meritChangeLabel",
+                        "Điều chỉnh Merit"
+                      )}
                     </FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-2">
                         <Input
                           type="number"
-                          min={0}
+                          min={-100}
                           max={100}
+                          placeholder={safeTranslate(
+                            "form.meritChangePlaceholder",
+                            "Nhập số dương để cộng, số âm để trừ"
+                          )}
                           disabled={isFormDisabled}
                           {...field}
                           onChange={(e) => {
@@ -183,6 +197,40 @@ export function EditAccounts({
                         <div className="rounded-md border bg-muted/40 p-3">
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-medium">
+                              {safeTranslate(
+                                "form.currentMerit",
+                                "Merit hiện tại"
+                              )}
+                              :
+                            </span>
+                            <span className="text-sm">{currentMerit}</span>
+                          </div>
+                          <div className="flex items-center justify-between mt-1">
+                            <span className="text-sm font-medium">
+                              {safeTranslate("form.meritChange", "Thay đổi")}:
+                            </span>
+                            <span
+                              className={`text-sm font-semibold ${meritChange > 0 ? "text-green-600" : meritChange < 0 ? "text-red-600" : ""}`}
+                            >
+                              {meritChange > 0
+                                ? `+${meritChange}`
+                                : meritChange}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between mt-1 pt-1 border-t">
+                            <span className="text-sm font-medium">
+                              {safeTranslate(
+                                "form.expectedMerit",
+                                "Merit sau thay đổi"
+                              )}
+                              :
+                            </span>
+                            <span className="text-sm font-bold">
+                              {expectedMerit}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between mt-2">
+                            <span className="text-sm font-medium">
                               {safeTranslate("form.meritStatus", "Trạng thái")}:
                             </span>
                             <span className="text-sm font-semibold">
@@ -190,7 +238,7 @@ export function EditAccounts({
                             </span>
                           </div>
                           <div className="mt-2 text-xs text-muted-foreground">
-                            {currentMerit >= 71 && currentMerit <= 100 && (
+                            {expectedMerit >= 71 && expectedMerit <= 100 && (
                               <span>
                                 {safeTranslate(
                                   "form.meritDesc.reliable",
@@ -198,7 +246,7 @@ export function EditAccounts({
                                 )}
                               </span>
                             )}
-                            {currentMerit >= 41 && currentMerit <= 70 && (
+                            {expectedMerit >= 41 && expectedMerit <= 70 && (
                               <span>
                                 {safeTranslate(
                                   "form.meritDesc.stable",
@@ -206,7 +254,7 @@ export function EditAccounts({
                                 )}
                               </span>
                             )}
-                            {currentMerit >= 0 && currentMerit <= 40 && (
+                            {expectedMerit >= 0 && expectedMerit <= 40 && (
                               <span>
                                 {safeTranslate(
                                   "form.meritDesc.banned",
@@ -220,8 +268,8 @@ export function EditAccounts({
                     </FormControl>
                     <FormDescription className="mt-2">
                       {safeTranslate(
-                        "form.meritHint",
-                        "Nhập điểm merit từ 0-100 để đặt quyền truy cập."
+                        "form.meritChangeHint",
+                        "Nhập số dương để cộng điểm, số âm để trừ điểm merit."
                       )}
                     </FormDescription>
                     <FormMessage />

@@ -114,6 +114,7 @@ export const SearchEventsQuerySchema = GetEventsQuerySchema.extend({
   time: z.iso.datetime().optional(),
   languageIds: z.union([z.string(), z.array(z.string())]).optional(),
   interestIds: z.union([z.string(), z.array(z.string())]).optional(),
+  status: z.enum(EventStatus).optional(),
 });
 
 // METHOD GET ==================================================================

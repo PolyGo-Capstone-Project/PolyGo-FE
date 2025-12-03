@@ -129,6 +129,10 @@
         "title": "Action Items"
       },
       "generatedAt": "Summary generated:"
+    },
+    "captions": {
+      "collapse": "Collapse",
+      "viewPrevious": "View {count} previous captions"
     }
   }
 }

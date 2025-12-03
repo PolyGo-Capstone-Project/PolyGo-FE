@@ -51,12 +51,18 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 
-type TabType = "upcoming" | "past";
+type TabType =
+  | "pending"
+  | "approved"
+  | "live"
+  | "completed"
+  | "cancelled"
+  | "rejected";
 
 export default function ManageEvents() {
   const t = useTranslations("admin.events");
   const locale = useLocale();
-  const [activeTab, setActiveTab] = useState<TabType>("upcoming");
+  const [activeTab, setActiveTab] = useState<TabType>("pending");
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
 
@@ -94,6 +100,21 @@ export default function ManageEvents() {
       baseQuery.time = selectedTime.toISOString();
     }
 
+    // Add status filter based on active tab
+    if (activeTab === "pending") {
+      baseQuery.status = EventStatus.Pending;
+    } else if (activeTab === "approved") {
+      baseQuery.status = EventStatus.Approved;
+    } else if (activeTab === "live") {
+      baseQuery.status = EventStatus.Live;
+    } else if (activeTab === "completed") {
+      baseQuery.status = EventStatus.Completed;
+    } else if (activeTab === "cancelled") {
+      baseQuery.status = EventStatus.Cancelled;
+    } else if (activeTab === "rejected") {
+      baseQuery.status = EventStatus.Rejected;
+    }
+
     return baseQuery;
   }, [
     page,
@@ -103,18 +124,26 @@ export default function ManageEvents() {
     selectedLanguage,
     selectedFee,
     selectedTime,
+    activeTab,
   ]);
 
-  // Queries
+  // Queries - use upcoming for pending/approved/live, past for completed/cancelled/rejected
+  const isUpcomingTab =
+    activeTab === "pending" || activeTab === "approved" || activeTab === "live";
+  const isPastTab =
+    activeTab === "completed" ||
+    activeTab === "cancelled" ||
+    activeTab === "rejected";
+
   const upcomingQuery = useGetUpcomingEvents(query, {
-    enabled: activeTab === "upcoming",
+    enabled: isUpcomingTab,
   });
 
   const pastQuery = useGetPastEvents(query, {
-    enabled: activeTab === "past",
+    enabled: isPastTab,
   });
 
-  const activeQuery = activeTab === "upcoming" ? upcomingQuery : pastQuery;
+  const activeQuery = isUpcomingTab ? upcomingQuery : pastQuery;
 
   const events = activeQuery.data?.payload?.data?.items ?? [];
   const totalPages = activeQuery.data?.payload?.data?.totalPages ?? 1;
@@ -149,7 +178,9 @@ export default function ManageEvents() {
       case EventStatus.Cancelled:
         return "outline";
       case EventStatus.Completed:
-        return "secondary";
+        return "outline";
+      case EventStatus.Cancelled:
+        return "destructive";
       default:
         return "outline";
     }
@@ -166,18 +197,46 @@ export default function ManageEvents() {
       {/* Tabs */}
       <div className="flex gap-2 border-b overflow-x-auto">
         <Button
-          variant={activeTab === "upcoming" ? "default" : "ghost"}
-          onClick={() => setActiveTab("upcoming")}
+          variant={activeTab === "pending" ? "default" : "ghost"}
+          onClick={() => setActiveTab("pending")}
           className="rounded-b-none whitespace-nowrap"
         >
-          {t("upcomingTab")}
+          {t("pendingTab")}
         </Button>
         <Button
-          variant={activeTab === "past" ? "default" : "ghost"}
-          onClick={() => setActiveTab("past")}
+          variant={activeTab === "approved" ? "default" : "ghost"}
+          onClick={() => setActiveTab("approved")}
           className="rounded-b-none whitespace-nowrap"
         >
-          {t("pastTab")}
+          {t("approvedTab")}
+        </Button>
+        <Button
+          variant={activeTab === "live" ? "default" : "ghost"}
+          onClick={() => setActiveTab("live")}
+          className="rounded-b-none whitespace-nowrap"
+        >
+          {t("liveTab")}
+        </Button>
+        <Button
+          variant={activeTab === "completed" ? "default" : "ghost"}
+          onClick={() => setActiveTab("completed")}
+          className="rounded-b-none whitespace-nowrap"
+        >
+          {t("completedTab")}
+        </Button>
+        <Button
+          variant={activeTab === "cancelled" ? "default" : "ghost"}
+          onClick={() => setActiveTab("cancelled")}
+          className="rounded-b-none whitespace-nowrap"
+        >
+          {t("cancelledTab")}
+        </Button>
+        <Button
+          variant={activeTab === "rejected" ? "default" : "ghost"}
+          onClick={() => setActiveTab("rejected")}
+          className="rounded-b-none whitespace-nowrap"
+        >
+          {t("rejectedTab")}
         </Button>
       </div>
 
@@ -419,7 +478,9 @@ export default function ManageEvents() {
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-1">
                             <EventStats eventId={event.id} />
-                            {activeTab === "upcoming" && (
+                            {(activeTab === "pending" ||
+                              activeTab === "approved" ||
+                              activeTab === "live") && (
                               <UpdateStatusDialog eventId={event.id} />
                             )}
                           </div>

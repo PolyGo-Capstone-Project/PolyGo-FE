@@ -266,31 +266,44 @@ export default function MeetingRoomPage() {
     setShowEndEventDialog(false);
 
     try {
-      // 1. Update event status in database
+      // ✅ FIX: End room via SignalR FIRST - this validates minimum duration
+      // If it fails (too early), it will throw error and stop execution
+      await endRoom();
+
+      // ✅ Only proceed if endRoom succeeded (didn't throw)
+      console.log("[Meeting] ✓ EndRoom successful, updating status...");
+
+      // 2. Update event status in database
       await eventApiRequest.updateEventStatusByHost({
         eventId,
         status: EventStatus.Completed,
       });
-
-      // 2. End room via SignalR - this broadcasts to ALL participants
-      await endRoom();
 
       toast.success(tControls("endEvent"));
 
       // 3. Show generating summary dialog and wait for completion
       setIsGeneratingSummary(true);
 
-      // Wait for summary generation to complete
-      await generateSummaryMutation.mutateAsync(eventId);
+      try {
+        // Wait for summary generation to complete
+        await generateSummaryMutation.mutateAsync(eventId);
+        console.log("[Meeting] ✓ Summary generated successfully");
+      } catch (summaryError) {
+        // ✅ If generate summary fails (400 or other error), continue anyway
+        console.error("[Meeting] ⚠️ Summary generation failed:", summaryError);
+        toast.warning(
+          "Meeting ended but summary generation failed. You can still view the event details."
+        );
+      }
 
-      // 4. Cleanup local resources after summary is done
+      // 4. Cleanup local resources after summary is done (or failed)
       removeSettingMediaFromLocalStorage();
 
-      // 5. Redirect to event detail page (only after summary is complete)
+      // 5. Redirect to event detail page (always redirect, even if summary failed)
       router.push(`/${locale}/event/${eventId}`);
     } catch (error) {
       console.error("[Meeting] End event error:", error);
-      toast.error("Failed to end event");
+      // ✅ Error toast already shown by endRoom() function
       setIsGeneratingSummary(false);
     }
   };
@@ -367,6 +380,67 @@ export default function MeetingRoomPage() {
     }
   };
 
+  // ✅ FIX: Check authorization BEFORE checking initialization
+  // This prevents stuck "Connecting..." for unauthorized users
+  if (!isLoading && (!event || !currentUser || !canJoin)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="max-w-md w-full">
+          <CardContent className="pt-6 space-y-4">
+            <div className="flex justify-center">
+              <div className="rounded-full bg-destructive/10 p-3">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="48"
+                  height="48"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-destructive"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+            </div>
+            <div className="text-center space-y-2">
+              <h3 className="text-lg font-semibold">Access Denied</h3>
+              <p className="text-sm text-muted-foreground">
+                {!event
+                  ? "Event not found."
+                  : !canJoin
+                    ? "You are not registered for this event. Please register first to join the meeting."
+                    : tError("notAuthorized")}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => router.push(`/${locale}/dashboard`)}
+              >
+                Go to Dashboard
+              </Button>
+              {event && !canJoin && (
+                <Button
+                  className="flex-1"
+                  onClick={() => router.push(`/${locale}/event/${eventId}`)}
+                >
+                  View Event Details
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // ✅ Show loading state AFTER authorization check
   if (isLoading || !isInitialized) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -374,20 +448,6 @@ export default function MeetingRoomPage() {
           <IconLoader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
           <p className="text-muted-foreground">Connecting...</p>
         </div>
-      </div>
-    );
-  }
-
-  if (!event || !currentUser || !canJoin) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-4">
-        <Card className="max-w-md">
-          <CardContent className="pt-6">
-            <p className="text-destructive text-center">
-              {tError("notAuthorized")}
-            </p>
-          </CardContent>
-        </Card>
       </div>
     );
   }
@@ -418,6 +478,12 @@ export default function MeetingRoomPage() {
         </Card>
       </div>
     );
+  }
+
+  // ✅ TypeScript assertion: At this point, event and currentUser are guaranteed to exist
+  // because we already checked authorization above
+  if (!event || !currentUser) {
+    return null; // This should never happen due to earlier checks
   }
 
   // Show waiting message for attendees if event not started
