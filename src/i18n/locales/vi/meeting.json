@@ -129,6 +129,10 @@
         "title": "Mục Hành động"
       },
       "generatedAt": "Tóm tắt được tạo:"
+    },
+    "captions": {
+      "collapse": "Thu gọn",
+      "viewPrevious": "Xem {count} caption trước"
     }
   }
 }
