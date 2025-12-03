@@ -425,6 +425,7 @@
           "registeredAt": "Registered at",
           "viewProfile": "View Profile",
           "kick": "Kick",
+          "report": "Report",
           "kickDialog": {
             "title": "Kick Participant",
             "description": "Are you sure you want to remove this participant from the event?",

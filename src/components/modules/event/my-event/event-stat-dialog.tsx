@@ -1,23 +1,6 @@
 "use client";
 
-import {
-  IconCalendar,
-  IconCash,
-  IconCheck,
-  IconClock,
-  IconLoader2,
-  IconMapPin,
-  IconStar,
-  IconTrendingUp,
-  IconUser,
-  IconUsers,
-  IconX,
-} from "@tabler/icons-react";
-import { format } from "date-fns";
-import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
-import { useMemo, useState } from "react";
-
+import { ReportDialog } from "@/components/modules/report";
 import {
   Avatar,
   AvatarFallback,
@@ -47,6 +30,24 @@ import {
   usePayoutEventMutation,
 } from "@/hooks";
 import { formatCurrency, handleErrorApi, showSuccessToast } from "@/lib";
+import {
+  IconCalendar,
+  IconCash,
+  IconCheck,
+  IconClock,
+  IconFlag2,
+  IconLoader2,
+  IconMapPin,
+  IconStar,
+  IconTrendingUp,
+  IconUser,
+  IconUsers,
+  IconX,
+} from "@tabler/icons-react";
+import { format } from "date-fns";
+import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
+import { useMemo, useState } from "react";
 
 type EventStatDialogProps = {
   eventId: string | null;
@@ -73,6 +74,12 @@ export function EventStatDialog({
   const [kickReason, setKickReason] = useState("");
   const [allowRejoin, setAllowRejoin] = useState(true);
   const [showPayoutSuccessDialog, setShowPayoutSuccessDialog] = useState(false);
+  const [reportDialogOpen, setReportDialogOpen] = useState(false);
+  const [selectedParticipantForReport, setSelectedParticipantForReport] =
+    useState<{
+      id: string;
+      name: string;
+    } | null>(null);
 
   const { data, isLoading, error, refetch } = useGetEventStats(
     eventId || "",
@@ -112,6 +119,11 @@ export function EventStatDialog({
   const handleKickClick = (participant: { id: string; name: string }) => {
     setSelectedParticipant(participant);
     setShowKickDialog(true);
+  };
+
+  const handleReportClick = (participant: { id: string; name: string }) => {
+    setSelectedParticipantForReport(participant);
+    setReportDialogOpen(true);
   };
 
   const handleKickConfirm = () => {
@@ -537,6 +549,21 @@ export function EventStatDialog({
                                       {t("kick")}
                                     </Button>
                                   )}
+                                  {!canKickParticipants && (
+                                    <Button
+                                      variant="destructive"
+                                      size="sm"
+                                      onClick={() =>
+                                        handleReportClick({
+                                          id: participant.id,
+                                          name: participant.name,
+                                        })
+                                      }
+                                    >
+                                      <IconFlag2 className="h-4 w-4 mr-1" />
+                                      {t("report")}
+                                    </Button>
+                                  )}
                                 </div>
                               </div>
                             ))}
@@ -745,6 +772,14 @@ export function EventStatDialog({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Report Participant Dialog */}
+      <ReportDialog
+        open={reportDialogOpen}
+        onOpenChange={setReportDialogOpen}
+        reportType="User"
+        targetId={selectedParticipantForReport?.id || ""}
+      />
     </>
   );
 }

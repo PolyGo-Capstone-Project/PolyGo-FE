@@ -28,7 +28,6 @@
       "event": {
         "negative_content": "Negative content (violence, sensitive, discrimination, offensive, ...)",
         "spam": "Spam / Advertising / Scam",
-        "unreasonable_price": "Unreasonable pricing",
         "violation": "Legal violation / Platform policy violation (content not related to language culture, ...)",
         "other": "Other reason"
       },

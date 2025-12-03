@@ -28,7 +28,6 @@
       "event": {
         "negative_content": "Nội dung tiêu cực (bạo lực, nhạy cảm, phân biệt, xúc phạm, ...)",
         "spam": "Spam / Quảng cáo / Lừa đảo",
-        "unreasonable_price": "Giá cả không hợp lý",
         "violation": "Vi phạm pháp luật / Chính sách nền tảng (nội dung không liên quan văn hóa ngôn ngữ, ...)",
         "other": "Lý do khác"
       },
