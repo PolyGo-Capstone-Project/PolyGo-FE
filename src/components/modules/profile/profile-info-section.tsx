@@ -34,6 +34,7 @@ type ProfileInfoSectionProps = {
   xpInCurrentLevel: number;
   xpToNextLevel: number;
   hasUnclaimedLevelRewards?: boolean;
+  showLevelLink?: boolean;
 };
 
 export function ProfileInfoSection({
@@ -46,6 +47,7 @@ export function ProfileInfoSection({
   xpInCurrentLevel,
   xpToNextLevel,
   hasUnclaimedLevelRewards,
+  showLevelLink = false,
 }: ProfileInfoSectionProps) {
   const t = useTranslations("profile");
   const tXp = useTranslations("profile");
@@ -255,17 +257,19 @@ export function ProfileInfoSection({
           </p>
         </div>
 
-        {/* Nút chuyển tới trang Level (đưa xuống dưới thanh XP) */}
-        <div className="flex justify-center pt-1">
-          <button
-            type="button"
-            onClick={() => router.push(`/${locale}/level`)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-primary/60 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary shadow-sm transition hover:bg-primary/10 hover:shadow md:px-4 md:text-sm"
-          >
-            <IconSparkles className="h-4 w-4" />
-            {tXp("xp.goToLevel", { default: "View levels & rewards" })}
-          </button>
-        </div>
+        {/* ✅ Nút đi tới trang Level – chỉ hiện nếu showLevelLink = true */}
+        {showLevelLink && (
+          <div className="flex justify-center pt-1">
+            <button
+              type="button"
+              onClick={() => router.push(`/${locale}/level`)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-primary/60 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary shadow-sm transition hover:bg-primary/10 hover:shadow md:px-4 md:text-sm"
+            >
+              <IconSparkles className="h-4 w-4" />
+              {tXp("xp.goToLevel", { default: "View levels & rewards" })}
+            </button>
+          </div>
+        )}
 
         {/* Streak Section - Enhanced Design */}
         <div className="space-y-3 pt-2">

@@ -37,12 +37,12 @@ export function NotificationBell() {
   const router = useRouter();
   const t = useTranslations("userNotification");
 
-  // Chỉ lấy 5 noti mới nhất
+  // 🔹 Cho load tối đa 100 noti để đếm số chưa đọc
   const queryParams = React.useMemo(
     () => ({
       lang: locale,
       pageNumber: 1,
-      pageSize: 5,
+      pageSize: 100,
     }),
     [locale]
   );
@@ -53,10 +53,15 @@ export function NotificationBell() {
   // data từ http.get: { status, payload }
   const notificationsPayload = notificationsQuery.data?.payload as any;
   const pagination = notificationsPayload?.data;
-  const rawItems = (pagination?.items ?? []) as NotificationItem[];
-  const notifications = rawItems.slice(0, 5); // đảm bảo không vượt quá 5
 
-  const unreadNotificationCount = notifications.filter((n) => !n.isRead).length;
+  // rawItems: tối đa 100 thông báo
+  const rawItems = (pagination?.items ?? []) as NotificationItem[];
+
+  // Dropdown vẫn chỉ show tối đa 5 thông báo mới nhất
+  const notifications = rawItems.slice(0, 5);
+
+  // 🔹 Số notification chưa đọc = đếm trên toàn bộ rawItems (tối đa 100), KHÔNG chỉ 5 cái
+  const unreadNotificationCount = rawItems.filter((n) => !n.isRead).length;
 
   // Số hiển thị trên icon chuông = chỉ số notification chưa đọc
   const unreadBellCount = unreadNotificationCount;
@@ -202,7 +207,7 @@ export function NotificationBell() {
               </DropdownMenuItem>
             )}
 
-            {/* Notifications từ API */}
+            {/* Notifications từ API (dropdown vẫn giới hạn 5) */}
             {notifications.map((n) => (
               <DropdownMenuItem
                 key={n.id}
