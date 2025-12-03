@@ -191,5 +191,8 @@
     "of": "of",
     "items": "items",
     "perPage": "/ page"
+  },
+  "CreateWordPuzzleSet": {
+    "fromEventDescription": "The word set is created from the event vocabulary"
   }
 }

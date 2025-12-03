@@ -112,6 +112,7 @@
       "regenerate": "Regenerate",
       "close": "Close",
       "success": "Meeting summary generated successfully!",
+      "createGame": "Create Game",
       "summary": {
         "title": "Meeting Summary"
       },

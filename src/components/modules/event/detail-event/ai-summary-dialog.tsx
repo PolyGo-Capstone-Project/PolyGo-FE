@@ -24,12 +24,14 @@ import {
   IconCheck,
   IconChevronDown,
   IconChevronUp,
+  IconDeviceGamepad,
   IconFileText,
   IconListCheck,
   IconLoader2,
   IconSparkles,
 } from "@tabler/icons-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -38,6 +40,9 @@ interface AISummaryDialogProps {
   onOpenChange: (open: boolean) => void;
   eventId: string;
   isHost: boolean;
+  eventTitle?: string;
+  languageId?: string;
+  interestId?: string;
 }
 
 // Vocabulary Item Component
@@ -112,9 +117,14 @@ export function AISummaryDialog({
   onOpenChange,
   eventId,
   isHost,
+  eventTitle,
+  languageId,
+  interestId,
 }: AISummaryDialogProps) {
   const t = useTranslations("meeting.aiSummary");
   const tError = useTranslations("Error");
+  const router = useRouter();
+  const locale = useLocale();
 
   // Fetch existing summary
   const {
@@ -244,13 +254,46 @@ export function AISummaryDialog({
               {summary.vocabulary && summary.vocabulary.length > 0 && (
                 <Card>
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <IconBook2 className="h-5 w-5 text-purple-500" />
-                      {t("vocabulary.title")}
-                      <Badge variant="secondary" className="ml-2">
-                        {summary.vocabulary.length} {t("vocabulary.words")}
-                      </Badge>
-                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <IconBook2 className="h-5 w-5 text-purple-500" />
+                        {t("vocabulary.title")}
+                        <Badge variant="secondary" className="ml-2">
+                          {summary.vocabulary.length} {t("vocabulary.words")}
+                        </Badge>
+                      </CardTitle>
+                      {isHost && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-2"
+                          onClick={() => {
+                            // Encode vocabulary data to pass via URL
+                            const vocabData = summary.vocabulary.map((v) => ({
+                              word: v.word,
+                              definition: v.meaning,
+                              hint: v.context || undefined,
+                            }));
+                            const params = new URLSearchParams();
+                            params.set("fromEvent", eventId);
+                            if (eventTitle) params.set("title", eventTitle);
+                            if (languageId)
+                              params.set("languageId", languageId);
+                            if (interestId)
+                              params.set("interestId", interestId);
+                            params.set("vocabs", JSON.stringify(vocabData));
+
+                            router.push(
+                              `/${locale}/game/create-set?${params.toString()}`
+                            );
+                            onOpenChange(false);
+                          }}
+                        >
+                          <IconDeviceGamepad className="h-4 w-4" />
+                          {t("createGame")}
+                        </Button>
+                      )}
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-3">
