@@ -156,6 +156,8 @@ export default function SocialContent({ locale }: ContentProps) {
           .join("")
           .toUpperCase()
           .slice(0, 2),
+        merit: user.merit ?? 0,
+        planType: user.planType ?? "Free",
       }));
   }, [suggestedUsersData]);
 

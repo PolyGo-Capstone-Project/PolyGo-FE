@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Gamepad } from "lucide-react";
+import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 
 type Props = {
   t: ReturnType<typeof import("next-intl").useTranslations>;
@@ -12,6 +14,13 @@ type Props = {
 export default function SuggestedGamesCard({ t, games }: Props) {
   const scrollNeeded = games.length > 6;
   const isEmpty = games.length === 0;
+
+  const locale = useLocale();
+  const router = useRouter();
+
+  const handlePlay = (wordsetId: string) => {
+    router.push(`/${locale}/game/${wordsetId}/leaderboard`);
+  };
 
   return (
     <div className="hidden lg:block overflow-hidden">
@@ -27,7 +36,9 @@ export default function SuggestedGamesCard({ t, games }: Props) {
           </CardTitle>
         </CardHeader>
         <CardContent
-          className={`space-y-3 ${scrollNeeded ? "overflow-y-auto" : "overflow-visible"}`}
+          className={`space-y-3 ${
+            scrollNeeded ? "overflow-y-auto" : "overflow-visible"
+          }`}
           style={scrollNeeded ? { maxHeight: "calc(100vh - 200px)" } : {}}
         >
           {isEmpty ? (
@@ -43,7 +54,7 @@ export default function SuggestedGamesCard({ t, games }: Props) {
             games.map((game) => (
               <div
                 key={game.id}
-                className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition-all cursor-pointer group border border-transparent hover:border-primary/20"
+                className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition-all group border border-transparent hover:border-primary/20"
               >
                 <div
                   className={`flex-shrink-0 flex items-center justify-center h-10 w-12 text-xs font-bold rounded-lg border-2 ${game.iconColor} bg-gradient-to-br from-primary/10 to-primary/5 group-hover:scale-110 transition-transform`}
@@ -62,6 +73,7 @@ export default function SuggestedGamesCard({ t, games }: Props) {
                   variant="outline"
                   size="sm"
                   className="flex-shrink-0 text-xs py-1 h-auto hover:bg-primary hover:text-primary-foreground transition-all hover:scale-105"
+                  onClick={() => handlePlay(game.id)}
                 >
                   {t("leftSidebar.games.play", { defaultValue: "Chơi" })}
                 </Button>
