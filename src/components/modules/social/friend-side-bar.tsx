@@ -3,12 +3,30 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserPlus, Users } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Crown, ShieldCheck, UserPlus, Users } from "lucide-react";
+import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
+
+type SuggestedFriend = {
+  id: string;
+  name: string;
+  avatar: string;
+  initials: string;
+  merit: number;
+  planType?: string; // "Free" | "Plus" | ...
+};
+
+type OnlineFriend = {
+  name: string;
+  avatar: string;
+  initials: string;
+};
 
 type Props = {
   t: ReturnType<typeof import("next-intl").useTranslations>;
-  suggestedFriends: { name: string; avatar: string; initials: string }[];
-  onlineFriends: { name: string; avatar: string; initials: string }[];
+  suggestedFriends: SuggestedFriend[];
+  onlineFriends: OnlineFriend[];
 };
 
 export default function FriendSidebar({
@@ -19,6 +37,32 @@ export default function FriendSidebar({
   const onlineScrollNeeded = onlineFriends.length > 5;
   const hasSuggestions = suggestedFriends.length > 0;
   const hasOnlineFriends = onlineFriends.length > 0;
+
+  const locale = useLocale();
+  const router = useRouter();
+
+  const handleAddFriend = (userId: string) => {
+    router.push(`/${locale}/matching/${userId}`);
+  };
+
+  const getMeritConfig = (score: number) => {
+    if (score <= 40) {
+      return {
+        color: "text-red-500",
+        bg: "bg-red-500/10",
+      };
+    }
+    if (score <= 70) {
+      return {
+        color: "text-blue-500",
+        bg: "bg-blue-500/10",
+      };
+    }
+    return {
+      color: "text-emerald-500",
+      bg: "bg-emerald-500/10",
+    };
+  };
 
   return (
     <div className="hidden lg:flex flex-col gap-6 overflow-hidden">
@@ -34,31 +78,60 @@ export default function FriendSidebar({
         </CardHeader>
         <CardContent className="space-y-3">
           {hasSuggestions ? (
-            suggestedFriends.map((friend) => (
-              <div
-                key={friend.initials}
-                className="flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-accent/50 transition-all group"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <Avatar className="h-9 w-9 ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all">
-                    <AvatarImage src={friend.avatar || "/placeholder.svg"} />
-                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-xs">
-                      {friend.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm font-medium truncate group-hover:text-primary transition-colors">
-                    {friend.name}
-                  </span>
-                </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="text-xs py-1 h-auto shrink-0 hover:bg-primary hover:text-primary-foreground transition-all"
+            suggestedFriends.map((friend) => {
+              const meritCfg = getMeritConfig(friend.merit);
+
+              return (
+                <div
+                  key={friend.id}
+                  className="flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-accent/50 transition-all group"
                 >
-                  {t("rightSidebar.suggestions.add", { defaultValue: "Thêm" })}
-                </Button>
-              </div>
-            ))
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Avatar className="h-9 w-9 ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all">
+                      <AvatarImage src={friend.avatar || "/placeholder.svg"} />
+                      <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-xs">
+                        {friend.initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex flex-col gap-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium truncate group-hover:text-primary transition-colors">
+                          {friend.name}
+                        </span>
+                        {friend.planType === "Plus" && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 px-2 py-0.5 text-[10px] font-semibold text-white shadow-sm">
+                            <Crown className="h-3 w-3" />
+                            Plus
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Merit / trust score */}
+                      <div
+                        className={cn(
+                          "inline-flex items-start gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium",
+
+                          meritCfg.color
+                        )}
+                      >
+                        <ShieldCheck className="h-3 w-3" />
+                        <span>{friend.merit}/100</span>
+                      </div>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-xs py-1 h-auto shrink-0 hover:bg-primary hover:text-primary-foreground transition-all"
+                    onClick={() => handleAddFriend(friend.id)}
+                  >
+                    {t("rightSidebar.suggestions.add", {
+                      defaultValue: "Thêm",
+                    })}
+                  </Button>
+                </div>
+              );
+            })
           ) : (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <UserPlus className="h-12 w-12 text-muted-foreground/50 mb-3" />
@@ -87,7 +160,11 @@ export default function FriendSidebar({
           </CardTitle>
         </CardHeader>
         <CardContent
-          className={`space-y-2 ${hasOnlineFriends && onlineScrollNeeded ? "overflow-y-auto flex-1" : ""}`}
+          className={`space-y-2 ${
+            hasOnlineFriends && onlineScrollNeeded
+              ? "overflow-y-auto flex-1"
+              : ""
+          }`}
           style={onlineScrollNeeded ? { maxHeight: "calc(100vh - 400px)" } : {}}
         >
           {hasOnlineFriends ? (
