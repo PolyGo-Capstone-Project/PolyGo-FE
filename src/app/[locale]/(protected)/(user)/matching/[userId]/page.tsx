@@ -35,11 +35,11 @@ import { useMemo, useState } from "react";
 
 // Mock data for features not yet implemented
 const MOCK_STATS = {
-  totalSessions: 45,
-  averageRating: 4.8,
-  responseRate: 95,
-  totalHours: 150,
-  eventsHosted: 2,
+  totalSessions: 0,
+  averageRating: 0,
+  responseRate: 0,
+  totalHours: 0,
+  eventsHosted: 0,
 };
 
 export default function UserProfilePage() {

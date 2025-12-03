@@ -50,22 +50,25 @@ export function ProfileStats({
   const stats: StatItem[] = [
     {
       label: t("stats.totalSessions"),
-      value: totalSessions,
+      value: "--",
       icon: <IconChartBar className="h-4 w-4" />,
     },
     {
       label: t("stats.averageRating"),
-      value: averageRating.toFixed(1),
+      // value: averageRating.toFixed(1),
+      value: "--",
       icon: <IconStar className="h-4 w-4" />,
     },
     {
       label: t("stats.responseRate"),
-      value: `${responseRate}%`,
+      // value: `${responseRate}%`,
+      value: `--`,
       icon: <IconTrendingUp className="h-4 w-4" />,
     },
     {
       label: t("stats.totalHours"),
-      value: `${totalHours}h`,
+      // value: `${totalHours}h`,
+      value: `--`,
       icon: <IconClock className="h-4 w-4" />,
     },
     {
@@ -75,7 +78,8 @@ export function ProfileStats({
     },
     {
       label: t("stats.eventsHosted"),
-      value: eventsHosted,
+      // value: eventsHosted,
+      value: `--`,
       icon: <IconCalendarEvent className="h-4 w-4" />,
     },
   ];
