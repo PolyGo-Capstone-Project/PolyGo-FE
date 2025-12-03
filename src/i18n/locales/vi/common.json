@@ -191,5 +191,8 @@
     "of": "trong tổng số",
     "items": "mục",
     "perPage": "/ trang"
+  },
+  "CreateWordPuzzleSet": {
+    "fromEventDescription": "Bộ từ vựng được tạo từ từ vựng cuộc họp"
   }
 }

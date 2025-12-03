@@ -6,8 +6,8 @@ import CreateHeader from "@/components/modules/game/create-set/create-header";
 import SubmitPanel from "@/components/modules/game/create-set/submit-panel";
 import WordsEditor from "@/components/modules/game/create-set/word-editor";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 import { useCreateWordsetMutation } from "@/hooks";
 import { showErrorToast, showSuccessToast } from "@/lib/utils";
@@ -31,21 +31,58 @@ type Vocab = {
 };
 
 export default function CreateWordPuzzleSetPage() {
-  const t = useTranslations();
+  const t = useTranslations("CreateWordPuzzleSet");
   const tSuccess = useTranslations("Success");
   const tError = useTranslations("Error");
   const router = useRouter();
   const locale = useLocale();
+  const searchParams = useSearchParams();
 
-  // form state
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  // Parse prefill data from URL (from AI Summary)
+  const prefillData = useMemo(() => {
+    const fromEvent = searchParams.get("fromEvent");
+    const title = searchParams.get("title");
+    const languageId = searchParams.get("languageId");
+    const interestId = searchParams.get("interestId");
+    const vocabsJson = searchParams.get("vocabs");
+
+    let vocabs: { word: string; definition: string; hint?: string }[] = [];
+    if (vocabsJson) {
+      try {
+        vocabs = JSON.parse(vocabsJson);
+      } catch {
+        vocabs = [];
+      }
+    }
+
+    return {
+      fromEvent,
+      title: title || "",
+      languageId: languageId || null,
+      interestId: interestId || null,
+      vocabs,
+    };
+  }, [searchParams]);
+
+  // form state - initialize with prefill data if available
+  const [title, setTitle] = useState(prefillData.title);
+  const [description, setDescription] = useState(
+    prefillData.fromEvent
+      ? t("fromEventDescription", {
+          default: "Word set created from meeting vocabulary",
+        })
+      : ""
+  );
 
   // BasicInfo -> chọn từ API: languageId
-  const [languageId, setLanguageId] = useState<string | null>(null);
+  const [languageId, setLanguageId] = useState<string | null>(
+    prefillData.languageId
+  );
 
   // CatDiff -> enum-driven
-  const [categoryId, setCategoryId] = useState<string | null>(null);
+  const [categoryId, setCategoryId] = useState<string | null>(
+    prefillData.interestId
+  );
   const [difficulty, setDifficulty] = useState<WordsetDifficulty>("Easy");
 
   const [autoEstimate, setAutoEstimate] = useState(true);
@@ -54,6 +91,33 @@ export default function CreateWordPuzzleSetPage() {
   // Words
   const [vocabs, setVocabs] = useState<Vocab[]>([]);
   const wordCount = vocabs.length;
+
+  // Prefill vocabs for WordsEditor
+  const initialVocabs = useMemo(() => {
+    if (prefillData.vocabs.length > 0) {
+      return prefillData.vocabs.map((v) => ({
+        word: v.word,
+        definition: v.definition,
+        hint: v.hint,
+        pronunciation: undefined,
+        imageUrl: undefined,
+      }));
+    }
+    return undefined;
+  }, [prefillData.vocabs]);
+
+  // Update title when prefillData changes (for SSR hydration)
+  useEffect(() => {
+    if (prefillData.title && !title) {
+      setTitle(prefillData.title);
+    }
+    if (prefillData.languageId && !languageId) {
+      setLanguageId(prefillData.languageId);
+    }
+    if (prefillData.interestId && !categoryId) {
+      setCategoryId(prefillData.interestId);
+    }
+  }, [prefillData, title, languageId, categoryId]);
 
   // computed
   const computedMin = useMemo(
@@ -144,6 +208,7 @@ export default function CreateWordPuzzleSetPage() {
         minutes={displayMinutes}
         onChange={setVocabs}
         minRequired={5}
+        initialVocabs={initialVocabs}
       />
 
       <SubmitPanel
