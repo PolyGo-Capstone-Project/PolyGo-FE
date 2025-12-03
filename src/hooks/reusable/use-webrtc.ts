@@ -95,6 +95,8 @@ export function useWebRTC({
   const [localAudioEnabled, setLocalAudioEnabled] = useState(true);
   const [localVideoEnabled, setLocalVideoEnabled] = useState(true);
   const [isHandRaised, setIsHandRaised] = useState(false);
+  const [isAudioLockedByHost, setIsAudioLockedByHost] = useState(false);
+  const [isVideoLockedByHost, setIsVideoLockedByHost] = useState(false);
   const [chatMessages, setChatMessages] = useState<
     Array<{
       id: string;
@@ -134,6 +136,7 @@ export function useWebRTC({
   const isJoiningRef = useRef<boolean>(false);
   const hasJoinedRef = useRef<boolean>(false);
   const initiatedPeersRef = useRef<Set<string>>(new Set());
+  const isEndingRoomRef = useRef<boolean>(false); // Track when host is ending room
 
   // Refs cho callbacks to avoid closures
   const eventIdRef = useRef(eventId);
@@ -817,6 +820,10 @@ export function useWebRTC({
     // ✅ Host control handlers
     hubConnection.on("ToggleMicCommand", (enabled: boolean) => {
       console.log(`[SignalR] ToggleMicCommand: ${enabled}`);
+
+      // ✅ LOCK: Set lock state when host controls the mic
+      setIsAudioLockedByHost(!enabled);
+
       if (localStreamRef.current) {
         const audioTrack = localStreamRef.current.getAudioTracks()[0];
         if (audioTrack) {
@@ -922,6 +929,10 @@ export function useWebRTC({
 
     hubConnection.on("ToggleCamCommand", (enabled: boolean) => {
       console.log(`[SignalR] ToggleCamCommand: ${enabled}`);
+
+      // ✅ LOCK: Set lock state when host controls the camera
+      setIsVideoLockedByHost(!enabled);
+
       if (localStreamRef.current) {
         const videoTrack = localStreamRef.current.getVideoTracks()[0];
         if (videoTrack) {
@@ -1138,6 +1149,36 @@ export function useWebRTC({
     hubConnection.on("RoomEnded", () => {
       console.log("[SignalR] 🔴 RoomEnded - cleaning up");
 
+      // ✅ FIX: If host is ending room (initiated EndRoom), skip callback
+      // Host will handle cleanup manually after updating status and generating summary
+      if (isEndingRoomRef.current && isHostRef.current) {
+        console.log(
+          "[SignalR] 🏠 Host initiated end - skipping callback, will cleanup manually"
+        );
+
+        // Still do basic cleanup but don't trigger onRoomEnded callback
+        peerConnectionsRef.current.forEach((pc) => pc.close());
+        peerConnectionsRef.current.clear();
+        initiatedPeersRef.current.clear();
+
+        if (localStreamRef.current) {
+          localStreamRef.current.getTracks().forEach((track) => {
+            console.log(`[Media] 🛑 Stopping track: ${track.kind}`);
+            track.stop();
+          });
+          localStreamRef.current = null;
+          setLocalStream(null);
+        }
+
+        setParticipants(new Map());
+        setIsConnected(false);
+        callStartedRef.current = false;
+        isJoiningRef.current = false;
+        hasJoinedRef.current = false;
+        return;
+      }
+
+      // For attendees or when host didn't initiate (kicked out, etc)
       peerConnectionsRef.current.forEach((pc) => pc.close());
       peerConnectionsRef.current.clear();
       initiatedPeersRef.current.clear();
@@ -1170,7 +1211,8 @@ export function useWebRTC({
           "JoinRoom",
           eventIdRef.current,
           userNameRef.current,
-          isHostRef.current
+          isHostRef.current,
+          userIdRef.current
         );
         console.log("[SignalR] ✓ Re-joined room after reconnection");
 
@@ -1270,15 +1312,39 @@ export function useWebRTC({
         return joinRoom();
       }
 
-      // Pass isHost (new BE parameter) so server knows whether this client is host
-      await conn.invoke("JoinRoom", eventIdRef.current, userName, isHost);
-      console.log(
-        "[SignalR] ✓ Joined room:",
-        eventIdRef.current,
-        "as",
-        userName
-      );
-      hasJoinedRef.current = true;
+      // Pass isHost and userId (new BE parameters) so server can validate registration
+      try {
+        await conn.invoke(
+          "JoinRoom",
+          eventIdRef.current,
+          userName,
+          isHost,
+          userId
+        );
+        console.log(
+          "[SignalR] ✓ Joined room:",
+          eventIdRef.current,
+          "as",
+          userName,
+          "userId:",
+          userId
+        );
+        hasJoinedRef.current = true;
+      } catch (joinError: any) {
+        console.error("[SignalR] ✗ JoinRoom failed:", joinError);
+        hasJoinedRef.current = false;
+
+        // Extract error message from HubException
+        const errorMessage = joinError?.message || "Failed to join room";
+
+        // Show error toast
+        import("sonner").then(({ toast }) => {
+          toast.error(errorMessage);
+        });
+
+        // Re-throw to be caught by outer catch
+        throw new Error(errorMessage);
+      }
 
       // Confirm join to update user status to "Attended"
       if (userId) {
@@ -1481,48 +1547,41 @@ export function useWebRTC({
       eventId: eventIdRef.current,
     });
 
-    try {
-      // Try to send EndRoom signal if connected
-      if (conn && conn.state === signalR.HubConnectionState.Connected) {
-        try {
-          await conn.invoke("EndRoom", eventIdRef.current);
-          console.log("[SignalR] ✓ Ended room - broadcast sent");
-        } catch (invokeError) {
-          console.error(
-            "[SignalR] ⚠️ Failed to invoke EndRoom (continuing cleanup):",
-            invokeError
-          );
-          // Continue with cleanup even if invoke fails
-        }
-      } else {
-        console.warn(
-          "[SignalR] ⚠️ Connection not available or not connected, skipping EndRoom invoke"
+    // Try to send EndRoom signal if connected
+    if (conn && conn.state === signalR.HubConnectionState.Connected) {
+      try {
+        // ✅ Mark that host is initiating end room
+        isEndingRoomRef.current = true;
+
+        await conn.invoke("EndRoom", eventIdRef.current);
+        console.log("[SignalR] ✓ Ended room - broadcast sent");
+
+        // ✅ FIX: Don't cleanup here - RoomEnded event will do basic cleanup
+        // but won't trigger onRoomEnded callback, allowing host to continue with status update
+        console.log(
+          "[SignalR] ⏳ RoomEnded event will handle cleanup without redirect..."
         );
+      } catch (invokeError: any) {
+        console.error("[SignalR] ⚠️ Failed to invoke EndRoom:", invokeError);
+        // Reset flag on error
+        isEndingRoomRef.current = false;
+
+        // ✅ Extract error message from HubException
+        const errorMessage = invokeError?.message || "Failed to end room";
+
+        // Show toast error
+        import("sonner").then(({ toast }) => {
+          toast.error(errorMessage);
+        });
+
+        // ✅ FIX: Re-throw error so caller knows EndRoom failed
+        throw new Error(errorMessage);
       }
-
-      // ✅ FIX: Host also needs to cleanup immediately after ending room
-      console.log("[SignalR] 🧹 Host cleanup after ending room...");
-
-      peerConnectionsRef.current.forEach((pc) => pc.close());
-      peerConnectionsRef.current.clear();
-      initiatedPeersRef.current.clear();
-
-      // Stop all tracks
-      stopAllTracks();
-
-      setParticipants(new Map());
-      setIsConnected(false);
-      callStartedRef.current = false;
-      isJoiningRef.current = false;
-      hasJoinedRef.current = false;
-
-      console.log("[SignalR] ✓ Host cleanup complete");
-    } catch (error) {
-      console.error("[SignalR] ✗ End room error:", error);
-      // ✅ Don't throw - still allow cleanup to complete
-      // Just log the error and continue
+    } else {
+      console.warn("[SignalR] ⚠️ Connection not available or not connected");
+      throw new Error("Cannot end room - not connected to SignalR");
     }
-  }, [stopAllTracks]);
+  }, []);
 
   // ✅ Send chat message
   const sendChatMessage = useCallback(
@@ -1909,14 +1968,28 @@ export function useWebRTC({
   // Toggle audio
   const toggleAudio = useCallback(async () => {
     if (!localStreamRef.current) return undefined;
+
     const audioTrack = localStreamRef.current.getAudioTracks()[0];
     if (audioTrack) {
-      audioTrack.enabled = !audioTrack.enabled;
-      setLocalAudioEnabled(audioTrack.enabled);
-      broadcastMediaState("audio", audioTrack.enabled);
+      const newState = !audioTrack.enabled;
+
+      // ✅ LOCK: Check if host has locked the microphone (force-muted)
+      if (newState === true && isAudioLockedByHost) {
+        console.warn(
+          "[Media] ⚠️ Cannot unmute - Host has locked your microphone"
+        );
+        import("sonner").then(({ toast }) => {
+          toast.warning("Host has muted your microphone");
+        });
+        return false;
+      }
+
+      audioTrack.enabled = newState;
+      setLocalAudioEnabled(newState);
+      broadcastMediaState("audio", newState);
 
       // ✅ FIX: Auto-stop transcription when muting microphone
-      if (!audioTrack.enabled && isTranscriptionEnabledRef.current) {
+      if (!newState && isTranscriptionEnabledRef.current) {
         console.log(
           "[Transcription] 🔇 Auto-stopping transcription (mic muted)"
         );
@@ -1928,7 +2001,7 @@ export function useWebRTC({
       }
 
       // ✅ FIX: Auto-start transcription when unmuting microphone
-      if (audioTrack.enabled && !isTranscriptionEnabledRef.current) {
+      if (newState && !isTranscriptionEnabledRef.current) {
         console.log(
           "[Transcription] 🔊 Auto-starting transcription (mic unmuted)"
         );
@@ -1943,15 +2016,11 @@ export function useWebRTC({
         }, 100);
       }
 
-      console.log(
-        "[Media]",
-        audioTrack.enabled ? "✓ Unmuted" : "✗ Muted",
-        "audio"
-      );
-      return audioTrack.enabled;
+      console.log("[Media]", newState ? "✓ Unmuted" : "✗ Muted", "audio");
+      return newState;
     }
     return undefined;
-  }, [broadcastMediaState, startTranscription]);
+  }, [broadcastMediaState, startTranscription, isAudioLockedByHost]);
 
   // ✅ FIX: Simplified and more reliable toggleVideo
   const toggleVideo = useCallback(async () => {
@@ -1975,6 +2044,17 @@ export function useWebRTC({
 
       // Case 2: Enabling video (track exists but is disabled)
       if (currentVideoTrack && !currentVideoTrack.enabled) {
+        // ✅ LOCK: Check if host has locked the camera (force-disabled)
+        if (isVideoLockedByHost) {
+          console.warn(
+            "[Media] ⚠️ Cannot enable camera - Host has locked your camera"
+          );
+          import("sonner").then(({ toast }) => {
+            toast.warning("Host has disabled your camera");
+          });
+          return false;
+        }
+
         console.log("[Media] 🟢 Enabling video...");
 
         // Check if the track is still live
@@ -1992,6 +2072,17 @@ export function useWebRTC({
       }
 
       // Case 3: Need to get a new video track (no track or track ended)
+      // ✅ LOCK: Check if host has locked the camera before requesting new stream
+      if (isVideoLockedByHost) {
+        console.warn(
+          "[Media] ⚠️ Cannot enable camera - Host has locked your camera"
+        );
+        import("sonner").then(({ toast }) => {
+          toast.warning("Host has disabled your camera");
+        });
+        return false;
+      }
+
       console.log("[Media] 🎥 Requesting new video stream...");
       const newStream = await navigator.mediaDevices.getUserMedia({
         video: true,
@@ -2043,7 +2134,7 @@ export function useWebRTC({
       setLocalVideoEnabled(false);
       return undefined;
     }
-  }, [broadcastMediaState, updatePeerConnectionTracks]);
+  }, [broadcastMediaState, updatePeerConnectionTracks, isVideoLockedByHost]);
 
   return {
     isConnected,
@@ -2053,6 +2144,8 @@ export function useWebRTC({
     localStream,
     localAudioEnabled,
     localVideoEnabled,
+    isAudioLockedByHost,
+    isVideoLockedByHost,
     isHandRaised,
     chatMessages,
     joinRoom,
