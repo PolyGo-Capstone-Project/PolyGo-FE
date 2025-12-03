@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Flame, Star } from "lucide-react";
+import { Flame, Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export function WelcomeBanner({
@@ -40,10 +40,10 @@ export function WelcomeBanner({
           <Flame className="w-4 h-4 text-orange-300" />
           <span>{t("streak", { count: streakDays })}</span>
         </div>
-        <div className="w-px h-4 bg-white/30" />
+        {/* <div className="w-px h-4 bg-white/30" /> */}
         <div className="flex items-center gap-2">
-          <BookOpen className="w-4 h-4 text-sky-300" />
-          <span>{totalHours}h learning</span>
+          {/* <BookOpen className="w-4 h-4 text-sky-300" />
+          <span>{totalHours}h learning</span> */}
         </div>
       </div>
     </div>

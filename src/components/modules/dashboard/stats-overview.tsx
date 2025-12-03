@@ -35,18 +35,18 @@ export function StatsOverviewCard({
           label={t("stats.xp", { defaultValue: "XP" })}
           value={xpPoints}
         />
-        <RowStat
+        {/* <RowStat
           label={t("stats.hours", { defaultValue: "Giờ đã học" })}
           value={totalHours}
-        />
+        /> */}
         <RowStat
           label={t("stats.streak", { defaultValue: "Chuỗi ngày" })}
           value={streakDays}
         />
-        <RowStat
+        {/* <RowStat
           label={t("stats.rating", { defaultValue: "Đánh giá" })}
           value={rating}
-        />
+        /> */}
 
         <div className="pt-4 border-t space-y-2">
           <div className="flex items-center justify-between text-sm">

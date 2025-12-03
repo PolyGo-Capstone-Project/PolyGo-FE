@@ -522,22 +522,28 @@ export default function EventDetailPage() {
                 <div className="flex items-center justify-between">
                   <CardTitle>{t("registrationInfo")}</CardTitle>
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-2"
-                      onClick={() => setShowShareDialog(true)}
-                    >
-                      <IconShare3 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="gap-2"
-                      onClick={() => setShowReportDialog(true)}
-                    >
-                      <IconFlag className="h-4 w-4" />
-                    </Button>
+                    {!pending && (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-2"
+                          onClick={() => setShowShareDialog(true)}
+                        >
+                          <IconShare3 className="h-4 w-4" />
+                        </Button>
+                        {!isHost && (
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            className="gap-2"
+                            onClick={() => setShowReportDialog(true)}
+                          >
+                            <IconFlag className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
               </CardHeader>
