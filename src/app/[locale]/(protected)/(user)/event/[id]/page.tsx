@@ -933,6 +933,9 @@ export default function EventDetailPage() {
         onOpenChange={setShowSummaryDialog}
         eventId={eventId}
         isHost={isHost}
+        eventTitle={event.title}
+        languageId={event.language?.id}
+        interestId={event.categories?.[0]?.id}
       />
     </>
   );

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertCircle, CircleHelp, Plus, Timer, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Vocab = {
   id: string;
@@ -24,13 +24,29 @@ export default function WordsEditor({
   minutes,
   onChange,
   minRequired = 5,
+  initialVocabs,
 }: {
   minutes: number;
   onChange: (vocabs: Vocab[]) => void;
   minRequired?: number;
+  initialVocabs?: Omit<Vocab, "id">[];
 }) {
   const t = useTranslations();
   const [vocabs, setVocabs] = useState<Vocab[]>([]);
+  const [initialized, setInitialized] = useState(false);
+
+  // Initialize with initialVocabs if provided (only once)
+  useEffect(() => {
+    if (initialVocabs && initialVocabs.length > 0 && !initialized) {
+      const vocabsWithIds = initialVocabs.map((v) => ({
+        ...v,
+        id: uid(),
+      }));
+      setVocabs(vocabsWithIds);
+      onChange(vocabsWithIds);
+      setInitialized(true);
+    }
+  }, [initialVocabs, initialized, onChange]);
 
   const sync = (next: Vocab[]) => {
     setVocabs(next);
