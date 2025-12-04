@@ -8,14 +8,14 @@
     "getStarted": "Get Started for Free",
     "usersCount": "50K+",
     "users": "Learners",
-    "languageCount": "30+",
+    "languageCount": "10+",
     "language": "Languages",
     "eventsCount": "100+",
     "events": "Events/Month",
     "whyTitle": "Why Choose PolyGo?",
     "whySubtitle": "A comprehensive language learning platform with AI technology and a global community",
     "bannerTitle": "Ready to Start Your Language Learning Journey?",
-    "bannerSubtitle": "Join a community of over 50,000 learners worldwide",
+    "bannerSubtitle": "Join a community of worldwide learner",
     "bannerButtonOne": "Sign Up for Free",
     "bannerButtonTwo": "Already have an account? Log In",
     "live": "Live with Anna",
@@ -36,7 +36,7 @@
       "description": "Algorithm finds a suitable partner based on your interests and goals"
     },
     "fifthCard": {
-      "name": "30+ Languages",
+      "name": "10+ Languages",
       "description": "From English, French, Japanese, Korean to less common languages"
     },
     "sixthCard": {

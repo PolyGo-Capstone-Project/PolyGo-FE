@@ -697,15 +697,17 @@ export default function PostCard({
               <IconShare3 size={16} />
               {t("post.share.title")}
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="gap-1"
-              onClick={() => setReportDialogOpen(true)}
-            >
-              <IconFlag size={16} />
-              {t("post.report")}
-            </Button>
+            {!isMyPost && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1"
+                onClick={() => setReportDialogOpen(true)}
+              >
+                <IconFlag size={16} />
+                {t("post.report")}
+              </Button>
+            )}
           </div>
         </div>
 
