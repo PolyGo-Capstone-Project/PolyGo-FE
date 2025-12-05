@@ -20,6 +20,8 @@ import {
   Button,
   Card,
   CardContent,
+  Input,
+  Label,
   Sheet,
   SheetContent,
 } from "@/components/ui";
@@ -53,6 +55,14 @@ export default function MeetingRoomPage() {
   const [hasStartedEvent, setHasStartedEvent] = useState(false);
   const [chatMessages, setChatMessages] = useState<MeetingChatMessage[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
+
+  // ✅ Kick user dialog state
+  const [showKickDialog, setShowKickDialog] = useState(false);
+  const [kickTarget, setKickTarget] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+  const [kickReason, setKickReason] = useState("");
 
   const isMobileDevice = useMobileDevice();
 
@@ -88,12 +98,14 @@ export default function MeetingRoomPage() {
     transcriptions,
     isTranscriptionEnabled,
     isCaptionsEnabled,
+    sourceLanguage,
+    setSourceLanguage,
     targetLanguage,
+    setTargetLanguage,
     startTranscription,
     stopTranscription,
     enableCaptions,
     disableCaptions,
-    setTargetLanguage,
   } = useWebRTC({
     eventId,
     userName: currentUser?.name || "Guest",
@@ -144,6 +156,15 @@ export default function MeetingRoomPage() {
     if (!isLoading && event && currentUser && canJoin && !isInitialized) {
       const init = async () => {
         try {
+          // ✅ Check if event has started (only for attendees)
+          if (!isHost && event.status !== EventStatus.Live) {
+            toast.error(
+              "Event has not started yet. Please wait for the host to start the event."
+            );
+            router.push(`/${locale}/room/${eventId}`);
+            return;
+          }
+
           console.log("[Meeting] Getting local stream before joining...");
           await getLocalStream();
           console.log("[Meeting] ✓ Local stream ready, joining room...");
@@ -171,6 +192,10 @@ export default function MeetingRoomPage() {
     getLocalStream,
     joinRoom,
     tError,
+    isHost,
+    router,
+    locale,
+    eventId,
   ]);
 
   // Auto start call when participants join or when participant list changes
@@ -309,7 +334,38 @@ export default function MeetingRoomPage() {
 
   const handleKickParticipant = async (participantId: string) => {
     if (!isHost) return;
-    await kickUser(participantId);
+
+    // Get participant info
+    const participant = Array.from(webrtcParticipants.values()).find(
+      (p) => p.id === participantId
+    );
+    const participantName = participant?.name || "this participant";
+
+    // ✅ Show confirmation dialog (shadcn AlertDialog)
+    setKickTarget({ id: participantId, name: participantName });
+    setKickReason("");
+    setShowKickDialog(true);
+  };
+
+  // ✅ Confirm kick action
+  const confirmKickParticipant = async () => {
+    if (!kickTarget) return;
+
+    try {
+      // ✅ Call kickUser with optional reason
+      await kickUser(kickTarget.id, kickReason || undefined);
+
+      // ✅ Show success toast
+      toast.success(`${kickTarget.name} has been removed from the event`);
+
+      // Close dialog
+      setShowKickDialog(false);
+      setKickTarget(null);
+      setKickReason("");
+    } catch (error) {
+      console.error("Failed to kick user:", error);
+      toast.error("Failed to remove user from event");
+    }
   };
 
   const handleLowerAllHands = async () => {
@@ -332,8 +388,9 @@ export default function MeetingRoomPage() {
   };
 
   // Handle captions toggle (viewing only)
-  const handleCaptionsToggle = (enabled: boolean) => {
-    if (enabled) {
+  const handleCaptionsToggle = (enabled?: boolean) => {
+    const shouldEnable = enabled !== undefined ? enabled : !isCaptionsEnabled;
+    if (shouldEnable) {
       enableCaptions();
     } else {
       disableCaptions();
@@ -477,7 +534,7 @@ export default function MeetingRoomPage() {
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      {/* Video Grid with Captions Overlay */}
+      {/* Video Grid */}
       <div className="flex-1 overflow-hidden relative">
         <VideoGrid
           participants={participantsList}
@@ -490,15 +547,26 @@ export default function MeetingRoomPage() {
           hostId={hostId} // ✅ ADD: Pass hostId prop
           isHost={isHost}
         />
-
-        {/* Floating Captions Overlay (Google Meet style) */}
-        {isCaptionsEnabled && (
-          <CaptionsOverlay
-            transcriptions={transcriptions}
-            showOriginal={false}
-          />
-        )}
       </div>
+
+      {/* Captions Panel (Separate from video) */}
+      {isCaptionsEnabled && (
+        <CaptionsOverlay
+          transcriptions={transcriptions}
+          showOriginal={false}
+          sourceLanguage={sourceLanguage}
+          targetLanguage={targetLanguage}
+          isTranscriptionEnabled={isTranscriptionEnabled}
+          onSourceLanguageChange={setSourceLanguage}
+          onTargetLanguageChange={setTargetLanguage}
+          onClose={() => {
+            // Disable captions when closing
+            if (isCaptionsEnabled) {
+              handleCaptionsToggle(false);
+            }
+          }}
+        />
+      )}
 
       {/* Controls */}
       <MeetingControls
@@ -508,6 +576,7 @@ export default function MeetingRoomPage() {
         isChatOpen={controls.isChatOpen}
         isParticipantsOpen={controls.isParticipantsOpen}
         isSettingsOpen={controls.isSettingsOpen}
+        isCaptionsEnabled={isCaptionsEnabled}
         isHost={isHost}
         hasStartedEvent={hasStartedEvent}
         onToggleAudio={handleToggleAudio}
@@ -516,6 +585,7 @@ export default function MeetingRoomPage() {
         onToggleChat={toggleChat}
         onToggleParticipants={toggleParticipants}
         onToggleSettings={toggleSettings}
+        onToggleCaptions={handleCaptionsToggle}
         onLeave={() => setShowLeaveDialog(true)}
         onStartEvent={handleStartEvent}
         onEndEvent={() => setShowEndEventDialog(true)}
@@ -558,10 +628,6 @@ export default function MeetingRoomPage() {
         <SheetContent side="right" className="w-full sm:max-w-md p-0">
           <DeviceSettings
             onClose={toggleSettings}
-            targetLanguage={targetLanguage}
-            onLanguageChange={setTargetLanguage}
-            captionsEnabled={isCaptionsEnabled}
-            onCaptionsToggle={handleCaptionsToggle}
             micTranscriptionEnabled={isTranscriptionEnabled}
             onMicTranscriptionToggle={handleMicTranscriptionToggle}
           />
@@ -602,6 +668,51 @@ export default function MeetingRoomPage() {
             <AlertDialogCancel>{tDialogs("endEventCancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={handleEndEvent}>
               {tDialogs("endEventConfirm")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Kick User Dialog */}
+      <AlertDialog open={showKickDialog} onOpenChange={setShowKickDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Participant</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove{" "}
+              <strong>{kickTarget?.name}</strong> from this event?
+              <br />
+              <br />
+              They will not be able to rejoin after being removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="py-4">
+            <Label htmlFor="kickReason" className="text-sm font-medium">
+              Reason (optional)
+            </Label>
+            <Input
+              id="kickReason"
+              placeholder="Enter reason for removal..."
+              value={kickReason}
+              onChange={(e) => setKickReason(e.target.value)}
+              className="mt-2"
+            />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setShowKickDialog(false);
+                setKickTarget(null);
+                setKickReason("");
+              }}
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmKickParticipant}
+              className="bg-destructive hover:bg-destructive/90"
+            >
+              Remove Participant
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

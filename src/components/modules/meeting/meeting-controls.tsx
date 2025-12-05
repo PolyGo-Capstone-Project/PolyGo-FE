@@ -4,6 +4,7 @@ import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import {
   IconHandStop,
+  IconLanguage,
   IconMessage,
   IconMicrophone,
   IconMicrophoneOff,
@@ -24,6 +25,7 @@ interface MeetingControlsProps {
   isChatOpen: boolean;
   isParticipantsOpen: boolean;
   isSettingsOpen: boolean;
+  isCaptionsEnabled: boolean;
   isHost: boolean;
   hasStartedEvent: boolean;
   onToggleAudio: () => void;
@@ -32,6 +34,7 @@ interface MeetingControlsProps {
   onToggleChat: () => void;
   onToggleParticipants: () => void;
   onToggleSettings: () => void;
+  onToggleCaptions: () => void;
   onLeave: () => void;
   onStartEvent?: () => void;
   onEndEvent?: () => void;
@@ -47,6 +50,7 @@ export function MeetingControls({
   isChatOpen,
   isParticipantsOpen,
   isSettingsOpen,
+  isCaptionsEnabled,
   isHost,
   hasStartedEvent,
   onToggleAudio,
@@ -55,6 +59,7 @@ export function MeetingControls({
   onToggleChat,
   onToggleParticipants,
   onToggleSettings,
+  onToggleCaptions,
   onLeave,
   onStartEvent,
   onEndEvent,
@@ -178,6 +183,17 @@ export function MeetingControls({
           className="h-12 w-12 rounded-full"
         >
           <IconUsers className="h-5 w-5" />
+        </Button>
+
+        {/* Captions Toggle */}
+        <Button
+          variant={isCaptionsEnabled ? "default" : "outline"}
+          size="icon"
+          onClick={onToggleCaptions}
+          title={isCaptionsEnabled ? "Hide captions" : "Show captions"}
+          className="h-12 w-12 rounded-full"
+        >
+          <IconLanguage className="h-5 w-5" />
         </Button>
 
         {/* Settings */}
