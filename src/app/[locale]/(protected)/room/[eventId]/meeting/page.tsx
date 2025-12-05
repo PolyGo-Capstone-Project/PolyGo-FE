@@ -88,12 +88,14 @@ export default function MeetingRoomPage() {
     transcriptions,
     isTranscriptionEnabled,
     isCaptionsEnabled,
+    sourceLanguage,
+    setSourceLanguage,
     targetLanguage,
+    setTargetLanguage,
     startTranscription,
     stopTranscription,
     enableCaptions,
     disableCaptions,
-    setTargetLanguage,
   } = useWebRTC({
     eventId,
     userName: currentUser?.name || "Guest",
@@ -332,8 +334,9 @@ export default function MeetingRoomPage() {
   };
 
   // Handle captions toggle (viewing only)
-  const handleCaptionsToggle = (enabled: boolean) => {
-    if (enabled) {
+  const handleCaptionsToggle = (enabled?: boolean) => {
+    const shouldEnable = enabled !== undefined ? enabled : !isCaptionsEnabled;
+    if (shouldEnable) {
       enableCaptions();
     } else {
       disableCaptions();
@@ -477,7 +480,7 @@ export default function MeetingRoomPage() {
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      {/* Video Grid with Captions Overlay */}
+      {/* Video Grid */}
       <div className="flex-1 overflow-hidden relative">
         <VideoGrid
           participants={participantsList}
@@ -490,15 +493,26 @@ export default function MeetingRoomPage() {
           hostId={hostId} // ✅ ADD: Pass hostId prop
           isHost={isHost}
         />
-
-        {/* Floating Captions Overlay (Google Meet style) */}
-        {isCaptionsEnabled && (
-          <CaptionsOverlay
-            transcriptions={transcriptions}
-            showOriginal={false}
-          />
-        )}
       </div>
+
+      {/* Captions Panel (Separate from video) */}
+      {isCaptionsEnabled && (
+        <CaptionsOverlay
+          transcriptions={transcriptions}
+          showOriginal={false}
+          sourceLanguage={sourceLanguage}
+          targetLanguage={targetLanguage}
+          isTranscriptionEnabled={isTranscriptionEnabled}
+          onSourceLanguageChange={setSourceLanguage}
+          onTargetLanguageChange={setTargetLanguage}
+          onClose={() => {
+            // Disable captions when closing
+            if (isCaptionsEnabled) {
+              handleCaptionsToggle(false);
+            }
+          }}
+        />
+      )}
 
       {/* Controls */}
       <MeetingControls
@@ -508,6 +522,7 @@ export default function MeetingRoomPage() {
         isChatOpen={controls.isChatOpen}
         isParticipantsOpen={controls.isParticipantsOpen}
         isSettingsOpen={controls.isSettingsOpen}
+        isCaptionsEnabled={isCaptionsEnabled}
         isHost={isHost}
         hasStartedEvent={hasStartedEvent}
         onToggleAudio={handleToggleAudio}
@@ -516,6 +531,7 @@ export default function MeetingRoomPage() {
         onToggleChat={toggleChat}
         onToggleParticipants={toggleParticipants}
         onToggleSettings={toggleSettings}
+        onToggleCaptions={handleCaptionsToggle}
         onLeave={() => setShowLeaveDialog(true)}
         onStartEvent={handleStartEvent}
         onEndEvent={() => setShowEndEventDialog(true)}
@@ -558,10 +574,6 @@ export default function MeetingRoomPage() {
         <SheetContent side="right" className="w-full sm:max-w-md p-0">
           <DeviceSettings
             onClose={toggleSettings}
-            targetLanguage={targetLanguage}
-            onLanguageChange={setTargetLanguage}
-            captionsEnabled={isCaptionsEnabled}
-            onCaptionsToggle={handleCaptionsToggle}
             micTranscriptionEnabled={isTranscriptionEnabled}
             onMicTranscriptionToggle={handleMicTranscriptionToggle}
           />

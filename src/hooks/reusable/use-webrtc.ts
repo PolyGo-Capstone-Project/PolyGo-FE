@@ -111,7 +111,8 @@ export function useWebRTC({
   );
   const [isTranscriptionEnabled, setIsTranscriptionEnabled] = useState(false); // Microphone transcription (sending)
   const [isCaptionsEnabled, setIsCaptionsEnabled] = useState(false); // Live captions (receiving)
-  const [targetLanguage, setTargetLanguage] = useState("vi");
+  const [sourceLanguage, setSourceLanguage] = useState("en"); // Language user is SPEAKING
+  const [targetLanguage, setTargetLanguage] = useState("vi"); // Language user wants to HEAR
   const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(
     null
   );
@@ -129,7 +130,7 @@ export function useWebRTC({
   const callStartedRef = useRef<boolean>(false);
   const recognitionRef = useRef<any>(null);
   const targetLanguageRef = useRef<string>("vi");
-  const sourceLanguageRef = useRef<string>("en"); // Event language for speech recognition
+  const sourceLanguageRef = useRef<string>("en"); // User's speaking language for speech recognition
   const isTranscriptionEnabledRef = useRef<boolean>(false);
 
   const connectionInitializedRef = useRef<boolean>(false);
@@ -172,6 +173,10 @@ export function useWebRTC({
   useEffect(() => {
     targetLanguageRef.current = targetLanguage;
   }, [targetLanguage]);
+
+  useEffect(() => {
+    sourceLanguageRef.current = sourceLanguage;
+  }, [sourceLanguage]);
 
   // ✅ FIX: Cleanup function để stop tất cả tracks
   const stopAllTracks = useCallback(() => {
@@ -848,79 +853,12 @@ export function useWebRTC({
               "[Transcription] 🔊 Auto-starting transcription (host unmuted mic)"
             );
             setTimeout(() => {
-              const SpeechRecognition =
-                (window as any).SpeechRecognition ||
-                (window as any).webkitSpeechRecognition;
-
-              if (!SpeechRecognition) {
-                console.warn(
-                  "[Transcription] Speech Recognition not supported"
-                );
-                return;
-              }
-
-              const recognition = new SpeechRecognition();
-              recognition.continuous = true;
-              recognition.interimResults = true;
-              recognition.lang = "en-US";
-
-              recognition.onresult = async (event: any) => {
-                const result = event.results[event.results.length - 1];
-                const transcript = result[0].transcript;
-
-                if (result.isFinal) {
-                  const currentAudioTrack =
-                    localStreamRef.current?.getAudioTracks()[0];
-                  if (!currentAudioTrack || !currentAudioTrack.enabled) {
-                    return;
-                  }
-
-                  const sourceLanguage =
-                    recognition.lang?.split("-")[0] || "en";
-
-                  try {
-                    if (
-                      hubConnection.state ===
-                      signalR.HubConnectionState.Connected
-                    ) {
-                      await hubConnection.invoke(
-                        "BroadcastTranscription",
-                        eventIdRef.current,
-                        myConnectionIdRef.current,
-                        transcript,
-                        sourceLanguage
-                      );
-                    }
-                  } catch (error) {
-                    console.error("[Transcription] ✗ Failed to send:", error);
-                  }
-                }
-              };
-
-              recognition.onerror = (event: any) => {
-                console.error("[Transcription] Error:", event.error);
-              };
-
-              recognition.onend = () => {
-                if (isTranscriptionEnabledRef.current) {
-                  const currentAudioTrack =
-                    localStreamRef.current?.getAudioTracks()[0];
-                  if (!currentAudioTrack || !currentAudioTrack.enabled) {
-                    setIsTranscriptionEnabled(false);
-                    recognitionRef.current = null;
-                    return;
-                  }
-                  try {
-                    recognition.start();
-                  } catch (err) {
-                    console.error("[Transcription] Failed to restart:", err);
-                  }
-                }
-              };
-
-              recognitionRef.current = recognition;
-              recognition.start();
-              setIsTranscriptionEnabled(true);
+              // Use the common startTranscription function with saved languages
+              startTranscription(
+                sourceLanguageRef.current, // User's speaking language
+                targetLanguageRef.current, // User's listening language
+                true // silent = true (no toast)
+              );
             }, 100);
           }
         }
@@ -1419,7 +1357,7 @@ export function useWebRTC({
     } finally {
       isJoiningRef.current = false;
     }
-  }, [userName, isHost]);
+  }, [userName, isHost, userId]);
 
   // Start call
   const startCall = useCallback(async () => {
@@ -1742,17 +1680,21 @@ export function useWebRTC({
   // ============ AI MODULES FUNCTIONS ============
 
   // Start microphone transcription (your voice will be transcribed and sent to others)
-  // sourceLanguage: the language being spoken (event language, e.g., "ja" for Japanese)
-  // targetLanguage: the language to translate to (user's preferred language, e.g., "vi")
+  // userSourceLanguage: the language user is SPEAKING (e.g., "ja" for Japanese)
+  // userTargetLanguage: the language user wants to HEAR (e.g., "vi" for Vietnamese)
   const startTranscription = useCallback(
     async (
-      sourceLanguage: string = "en",
-      targetLanguage: string = "vi",
+      userSourceLanguage?: string,
+      userTargetLanguage?: string,
       silent: boolean = false
     ) => {
+      // Use provided languages or fall back to current state
+      const speakingLang = userSourceLanguage || sourceLanguageRef.current;
+      const listeningLang = userTargetLanguage || targetLanguageRef.current;
+
       // Save languages to refs for later use (e.g., when toggling audio)
-      sourceLanguageRef.current = sourceLanguage;
-      targetLanguageRef.current = targetLanguage;
+      sourceLanguageRef.current = speakingLang;
+      targetLanguageRef.current = listeningLang;
       // ✅ FIX: Check if WebRTC microphone is enabled first
       if (!localStreamRef.current) {
         console.error(
@@ -1800,17 +1742,18 @@ export function useWebRTC({
         return;
       }
 
-      setTargetLanguage(targetLanguage);
+      // Update state with listening language (for UI display)
+      setTargetLanguage(listeningLang);
 
       const recognition = new SpeechRecognition();
       recognition.continuous = true;
       recognition.interimResults = true;
-      // Use proper locale for speech recognition based on event language
+      // Use proper locale for speech recognition based on USER's speaking language
       recognition.lang =
-        SPEECH_RECOGNITION_LOCALES[sourceLanguage] ||
-        `${sourceLanguage}-${sourceLanguage.toUpperCase()}`;
+        SPEECH_RECOGNITION_LOCALES[speakingLang] ||
+        `${speakingLang}-${speakingLang.toUpperCase()}`;
       console.log(
-        `[Transcription] Speech recognition language set to: ${recognition.lang}`
+        `[Transcription] 🎤 Speech recognition set to: ${recognition.lang} (Speaking: ${speakingLang}, Listening: ${listeningLang})`
       );
 
       recognition.onresult = async (event: any) => {
@@ -1829,11 +1772,11 @@ export function useWebRTC({
             return;
           }
 
-          // Get source language from recognition
-          const sourceLanguage = recognition.lang?.split("-")[0] || "en";
+          // Get user's speaking language from ref (supports dynamic N-to-N)
+          const userSpeakingLanguage = sourceLanguageRef.current;
 
           // Broadcast original text to all participants via SignalR
-          // Server will handle translation on-demand per client
+          // Server will handle translation on-demand per client (N-to-N support)
           try {
             if (
               connectionRef.current?.state ===
@@ -1844,11 +1787,11 @@ export function useWebRTC({
                 eventIdRef.current,
                 myConnectionIdRef.current,
                 transcript,
-                sourceLanguage
+                userSpeakingLanguage // Dynamic source language per user
               );
               console.log(
                 "[Transcription] ✓ Sent transcription with source language:",
-                sourceLanguage
+                userSpeakingLanguage
               );
             }
           } catch (error) {
@@ -2007,12 +1950,12 @@ export function useWebRTC({
         );
         // Use setTimeout to ensure state is updated first
         setTimeout(() => {
-          // Use saved source language from previous transcription session
+          // Use saved languages from refs (supports dynamic N-to-N)
           startTranscription(
-            sourceLanguageRef.current,
-            targetLanguageRef.current,
-            true
-          ); // silent = true (no toast)
+            sourceLanguageRef.current, // User's speaking language
+            targetLanguageRef.current, // User's listening language
+            true // silent = true (no toast)
+          );
         }, 100);
       }
 
@@ -2167,7 +2110,10 @@ export function useWebRTC({
     transcriptions,
     isTranscriptionEnabled, // Microphone is recording & sending
     isCaptionsEnabled, // Viewing captions on screen
-    targetLanguage,
+    sourceLanguage, // Language user is SPEAKING
+    setSourceLanguage, // Change speaking language
+    targetLanguage, // Language user wants to HEAR
+    setTargetLanguage, // Change listening language
     meetingSummary,
     isSummaryGenerating,
     startTranscription, // Start microphone recording
@@ -2176,6 +2122,5 @@ export function useWebRTC({
     disableCaptions, // Stop viewing captions
     requestMeetingSummary,
     getMeetingSummary,
-    setTargetLanguage,
   };
 }

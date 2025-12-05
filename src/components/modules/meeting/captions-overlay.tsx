@@ -1,10 +1,10 @@
 "use client";
 
-import { Button, Card, ScrollArea } from "@/components";
+import { Button, ScrollArea } from "@/components";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { X } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { LanguageSelector } from "./language-selector";
 
 interface TranscriptionMessage {
   id: string;
@@ -19,15 +19,25 @@ interface TranscriptionMessage {
 interface CaptionsOverlayProps {
   transcriptions: TranscriptionMessage[];
   showOriginal?: boolean;
+  sourceLanguage: string;
+  targetLanguage: string;
+  isTranscriptionEnabled: boolean;
+  onSourceLanguageChange: (language: string) => void;
+  onTargetLanguageChange: (language: string) => void;
+  onClose?: () => void;
 }
 
 export function CaptionsOverlay({
   transcriptions,
   showOriginal = false,
+  sourceLanguage,
+  targetLanguage,
+  isTranscriptionEnabled,
+  onSourceLanguageChange,
+  onTargetLanguageChange,
+  onClose,
 }: CaptionsOverlayProps) {
-  const t = useTranslations("meeting.captions");
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
 
   // Filter out empty transcriptions
   const filteredTranscriptions = transcriptions.filter(
@@ -36,92 +46,100 @@ export function CaptionsOverlay({
       (t.originalText && t.originalText.trim() !== "")
   );
 
-  // Show last 2 when collapsed, all when expanded
-  const displayedTranscriptions = isExpanded
-    ? filteredTranscriptions
-    : filteredTranscriptions.slice(-2);
-
-  // Auto-scroll to latest caption
+  // Auto-scroll to latest caption (using setTimeout to ensure DOM is updated)
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [transcriptions, isExpanded]);
+    const scrollToBottom = () => {
+      if (scrollRef.current) {
+        const scrollContainer = scrollRef.current.querySelector(
+          "[data-radix-scroll-area-viewport]"
+        );
+        if (scrollContainer) {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        }
+      }
+    };
 
-  if (filteredTranscriptions.length === 0) {
-    return null;
-  }
+    // Small delay to ensure content is rendered
+    setTimeout(scrollToBottom, 100);
+  }, [filteredTranscriptions]);
 
   return (
-    <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-full max-w-3xl px-4 z-10">
-      {/* Expand/Collapse button */}
-      {filteredTranscriptions.length > 2 && (
-        <div className="flex justify-center mb-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="bg-black/60 hover:bg-black/80 text-white border-none h-6 px-3 text-xs"
-          >
-            {isExpanded ? (
-              <>
-                <ChevronDown className="h-3 w-3 mr-1" />
-                {t("collapse")}
-              </>
-            ) : (
-              <>
-                <ChevronUp className="h-3 w-3 mr-1" />
-                {t("viewPrevious", {
-                  count: filteredTranscriptions.length - 2,
-                })}
-              </>
-            )}
-          </Button>
+    <div className="border-t border-border bg-background">
+      {/* Header with Language Selector and Close */}
+      <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+        <div className="flex items-center gap-3">
+          {/* Language Selector */}
+          <LanguageSelector
+            sourceLanguage={sourceLanguage}
+            targetLanguage={targetLanguage}
+            onSourceLanguageChange={onSourceLanguageChange}
+            onTargetLanguageChange={onTargetLanguageChange}
+            isTranscriptionEnabled={isTranscriptionEnabled}
+          />
         </div>
-      )}
 
-      <ScrollArea
-        className={`${
-          isExpanded ? "h-64" : "max-h-32"
-        } ${isExpanded ? "pointer-events-auto" : "pointer-events-none"}`}
-      >
-        <div ref={scrollRef} className="space-y-2 pr-4">
-          <AnimatePresence mode="popLayout">
-            {displayedTranscriptions.map((transcription) => (
-              <motion.div
-                key={transcription.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card className="bg-black/80 backdrop-blur-sm border-none shadow-lg px-4 py-2 pointer-events-auto">
-                  <div className="text-center">
-                    {/* Speaker name */}
-                    <p className="text-xs text-gray-400 mb-1">
-                      {transcription.senderName}
-                    </p>
+        {/* Close button */}
+        {onClose && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="h-8 w-8 p-0"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
 
-                    {/* Translated text (main) */}
-                    <p className="text-white text-lg font-medium leading-tight">
-                      {transcription.translatedText ||
-                        transcription.originalText}
-                    </p>
+      {/* Captions ScrollArea */}
+      <ScrollArea className="h-32" ref={scrollRef}>
+        <div className="px-4 py-2 space-y-2">
+          {filteredTranscriptions.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground text-sm">
+                No captions yet. Start speaking to see translations...
+              </p>
+            </div>
+          ) : (
+            <AnimatePresence mode="popLayout">
+              {filteredTranscriptions.map((transcription) => (
+                <motion.div
+                  key={transcription.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="bg-muted/50 rounded-lg px-4 py-2 border">
+                    <div className="flex items-start gap-3">
+                      {/* Speaker name */}
+                      <p className="text-xs text-muted-foreground font-medium min-w-[80px] pt-0.5">
+                        {transcription.senderName}
+                      </p>
 
-                    {/* Original text (optional, smaller) */}
-                    {showOriginal &&
-                      transcription.translatedText &&
-                      transcription.translatedText !==
-                        transcription.originalText && (
-                        <p className="text-gray-400 text-sm mt-1 italic">
-                          {transcription.originalText}
+                      <div className="flex-1">
+                        {/* Translated text (main) */}
+                        <p className="text-sm leading-tight">
+                          {transcription.translatedText ||
+                            transcription.originalText}
                         </p>
-                      )}
+
+                        {/* Original text (optional, smaller) */}
+                        {showOriginal &&
+                          transcription.translatedText &&
+                          transcription.translatedText !==
+                            transcription.originalText && (
+                            <p className="text-muted-foreground text-xs mt-1 italic">
+                              {transcription.originalText}
+                            </p>
+                          )}
+                      </div>
+                    </div>
                   </div>
-                </Card>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          )}
         </div>
       </ScrollArea>
     </div>
