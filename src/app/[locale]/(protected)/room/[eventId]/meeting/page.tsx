@@ -24,7 +24,6 @@ import {
   SheetContent,
 } from "@/components/ui";
 import { EventStatus } from "@/constants";
-import { useGenerateEventSummaryMutation } from "@/hooks/query/use-event";
 import { useEventMeeting } from "@/hooks/reusable/use-event-meeting";
 import { useMeetingControls } from "@/hooks/reusable/use-meeting-controls";
 import { useWebRTC } from "@/hooks/reusable/use-webrtc";
@@ -54,19 +53,8 @@ export default function MeetingRoomPage() {
   const [hasStartedEvent, setHasStartedEvent] = useState(false);
   const [chatMessages, setChatMessages] = useState<MeetingChatMessage[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
 
   const isMobileDevice = useMobileDevice();
-
-  // Generate event summary mutation
-  const generateSummaryMutation = useGenerateEventSummaryMutation({
-    onSuccess: () => {
-      console.log("[Meeting] ✓ Event summary generated successfully");
-    },
-    onError: (error) => {
-      console.error("[Meeting] ✗ Failed to generate summary:", error);
-    },
-  });
 
   const { event, currentUser, isHost, canJoin, isLoading } =
     useEventMeeting(eventId);
@@ -281,30 +269,14 @@ export default function MeetingRoomPage() {
 
       toast.success(tControls("endEvent"));
 
-      // 3. Show generating summary dialog and wait for completion
-      setIsGeneratingSummary(true);
-
-      try {
-        // Wait for summary generation to complete
-        await generateSummaryMutation.mutateAsync(eventId);
-        console.log("[Meeting] ✓ Summary generated successfully");
-      } catch (summaryError) {
-        // ✅ If generate summary fails (400 or other error), continue anyway
-        console.error("[Meeting] ⚠️ Summary generation failed:", summaryError);
-        toast.warning(
-          "Meeting ended but summary generation failed. You can still view the event details."
-        );
-      }
-
-      // 4. Cleanup local resources after summary is done (or failed)
+      // 3. Cleanup local resources
       removeSettingMediaFromLocalStorage();
 
-      // 5. Redirect to event detail page (always redirect, even if summary failed)
+      // 4. Redirect to event detail page
       router.push(`/${locale}/event/${eventId}`);
     } catch (error) {
       console.error("[Meeting] End event error:", error);
       // ✅ Error toast already shown by endRoom() function
-      setIsGeneratingSummary(false);
     }
   };
 
@@ -632,30 +604,6 @@ export default function MeetingRoomPage() {
               {tDialogs("endEventConfirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Generating Summary Dialog */}
-      <AlertDialog open={isGeneratingSummary}>
-        <AlertDialogContent className="max-w-md">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-3">
-              <IconLoader2 className="h-5 w-5 animate-spin text-primary" />
-              {tDialogs("generatingSummaryTitle")}
-            </AlertDialogTitle>
-            <AlertDialogDescription className="space-y-2">
-              <p>{tDialogs("generatingSummaryDescription")}</p>
-              <ul className="list-disc list-inside space-y-1 text-sm">
-                <li>{tDialogs("generatingSummaryKeyPoints")}</li>
-                <li>{tDialogs("generatingSummaryVocabulary")}</li>
-                <li>{tDialogs("generatingSummaryActionItems")}</li>
-                <li>{tDialogs("generatingSummaryHighlights")}</li>
-              </ul>
-              <p className="text-xs text-muted-foreground mt-3">
-                {tDialogs("generatingSummaryWait")}
-              </p>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
         </AlertDialogContent>
       </AlertDialog>
     </div>

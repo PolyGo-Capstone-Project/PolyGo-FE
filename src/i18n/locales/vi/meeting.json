@@ -89,14 +89,7 @@
       "endEventTitle": "Kết thúc sự kiện?",
       "endEventMessage": "Điều này sẽ kết thúc sự kiện cho tất cả người tham gia. Bạn có chắc chắn?",
       "endEventConfirm": "Kết thúc Sự kiện",
-      "endEventCancel": "Hủy",
-      "generatingSummaryTitle": "Đang Tạo Tóm Tắt Sự Kiện",
-      "generatingSummaryDescription": "Chúng tôi đang phân tích bản ghi sự kiện và tạo tóm tắt toàn diện với:",
-      "generatingSummaryKeyPoints": "Các điểm thảo luận chính",
-      "generatingSummaryVocabulary": "Từ vựng quan trọng",
-      "generatingSummaryActionItems": "Mục hành động",
-      "generatingSummaryHighlights": "Điểm nổi bật cuộc họp",
-      "generatingSummaryWait": "Quá trình này có thể mất vài phút. Vui lòng đợi..."
+      "endEventCancel": "Hủy"
     },
     "aiSummary": {
       "title": "Tóm tắt & Từ vựng AI",
