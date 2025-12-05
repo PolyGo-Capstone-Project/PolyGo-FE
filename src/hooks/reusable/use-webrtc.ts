@@ -910,9 +910,19 @@ export function useWebRTC({
       });
     });
 
-    hubConnection.on("KickedFromRoom", (roomName: string) => {
-      console.log("[SignalR] KickedFromRoom:", roomName);
-      alert("You have been kicked from the room by the host.");
+    hubConnection.on("KickedFromRoom", (roomName: string, reason?: string) => {
+      console.log("[SignalR] KickedFromRoom:", roomName, "Reason:", reason);
+
+      const displayReason =
+        reason || "You have been removed from this event by the host.";
+
+      // ✅ Show toast notification instead of alert
+      import("sonner").then(({ toast }) => {
+        toast.error(displayReason, {
+          duration: 10000, // Show for 10 seconds
+        });
+      });
+
       // Trigger cleanup
       if (onRoomEndedRef.current) {
         onRoomEndedRef.current();
@@ -1604,19 +1614,24 @@ export function useWebRTC({
   );
 
   // ✅ Host: Kick user
-  const kickUser = useCallback(async (targetConnId: string) => {
-    if (!connectionRef.current) return;
-    try {
-      await connectionRef.current.invoke(
-        "KickUser",
-        eventIdRef.current,
-        targetConnId
-      );
-      console.log(`[SignalR] ✓ Host kicked user: ${targetConnId}`);
-    } catch (error) {
-      console.error("[SignalR] ✗ Failed to kick user:", error);
-    }
-  }, []);
+  const kickUser = useCallback(
+    async (targetConnId: string, reason?: string) => {
+      if (!connectionRef.current) return;
+      try {
+        await connectionRef.current.invoke(
+          "KickUser",
+          eventIdRef.current,
+          targetConnId,
+          reason || "" // ✅ Pass reason to backend
+        );
+        console.log(`[SignalR] ✓ Host kicked user: ${targetConnId}`, reason);
+      } catch (error) {
+        console.error("[SignalR] ✗ Failed to kick user:", error);
+        throw error; // ✅ Throw error so component can handle it
+      }
+    },
+    []
+  );
 
   // ✅ Host: Mute all participants
   const muteAllParticipants = useCallback(async () => {
