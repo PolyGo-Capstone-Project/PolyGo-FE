@@ -41,7 +41,7 @@ type FormData = {
 };
 
 export function SetupProfileForm() {
-  const { data: authData } = useAuthMe();
+  const { data: authData, refetch: refetchAuth } = useAuthMe();
   const t = useTranslations("setupProfile");
   const tError = useTranslations("Error");
   const tSuccess = useTranslations("Success");
@@ -53,7 +53,6 @@ export function SetupProfileForm() {
   const updateMeMutation = useUpdateMeMutation();
   const setupProfileMutation = useSetupProfileMutation();
 
-  const errorMessages = useTranslations("setupProfile.errors");
   const setIsNewUser = useAuthStore((state) => state.setIsNewUser);
   const personalInfoForm = useForm<UpdateMeBodyType>({
     resolver: zodResolver(UpdateMeBodySchema),
@@ -227,7 +226,12 @@ export function SetupProfileForm() {
       const response = await setupProfileMutation.mutateAsync(setupData);
       showSuccessToast(response.payload.message, tSuccess);
       setIsNewUser(false);
-      router.push(`/${locale}/dashboard`);
+
+      // Refetch auth data to get updated isNewUser status from server
+      await refetchAuth();
+
+      // Use window.location for hard refresh to clear all cached states
+      window.location.href = `/${locale}/dashboard`;
     } catch (error) {
       handleErrorApi({
         error,
@@ -335,9 +339,8 @@ export function SetupProfileForm() {
             <KnownLanguagesStep
               selected={formData.knownLanguages}
               onSelect={(languages) =>
-                updateFormData({ knownLanguages: languages })
+                setFormData((prev) => ({ ...prev, knownLanguages: languages }))
               }
-              targetLanguages={formData.targetLanguages}
             />
           )}
           {currentStep === 4 && (

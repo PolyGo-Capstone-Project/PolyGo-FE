@@ -13,8 +13,6 @@ type TargetLanguageStepProps = {
   onSelect: (languages: string[]) => void;
 };
 
-const MAX_SELECTION = 3;
-
 export function TargetLanguageStep({
   selected,
   onSelect,
@@ -31,12 +29,10 @@ export function TargetLanguageStep({
   const toggleLanguage = (languageId: string) => {
     if (selected.includes(languageId)) {
       onSelect(selected.filter((id) => id !== languageId));
-    } else if (selected.length < MAX_SELECTION) {
+    } else {
       onSelect([...selected, languageId]);
     }
   };
-
-  const isMaxReached = selected.length >= MAX_SELECTION;
 
   if (isLoading) {
     return (
@@ -62,7 +58,6 @@ export function TargetLanguageStep({
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {languages.map((language) => {
           const isSelected = selected.includes(language.id);
-          const isDisabled = !isSelected && isMaxReached;
 
           return (
             <button
@@ -72,12 +67,9 @@ export function TargetLanguageStep({
                 "group relative flex flex-col items-center gap-3 rounded-xl border-2 p-5 transition-all hover:shadow-md",
                 isSelected
                   ? "border-primary bg-primary/10 shadow-sm"
-                  : "border-border hover:border-primary/50",
-                isDisabled &&
-                  "cursor-not-allowed opacity-40 hover:border-border hover:shadow-none"
+                  : "border-border hover:border-primary/50"
               )}
               onClick={() => toggleLanguage(language.id)}
-              disabled={isDisabled}
             >
               {isSelected && (
                 <div className="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md">
@@ -109,14 +101,9 @@ export function TargetLanguageStep({
           <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
             <span className="text-lg font-bold">{selected.length}</span>
           </div>
-          <div className="text-sm">
-            <p className="font-medium">
-              {t("selected", { count: selected.length })}
-            </p>
-            {isMaxReached && (
-              <p className="text-xs text-primary">{t("maxReached")}</p>
-            )}
-          </div>
+          <p className="text-sm font-medium">
+            {t("selected", { count: selected.length })}
+          </p>
         </div>
         {selected.length > 0 && (
           <Button

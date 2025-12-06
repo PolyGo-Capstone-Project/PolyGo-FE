@@ -47,7 +47,7 @@
     "SendTransactionInquiry": "Đã gửi yêu cầu giao dịch thành công!",
     "ReplyTransactionInquiry": "Đã trả lời yêu cầu giao dịch thành công!",
     "Timeout": "OTP hết hạn. Vui lòng yêu cầu OTP mới.",
-    "InvalidOTP": "OTP không hợp lệ. Vui lòng thử lại.",
+    "InvalidOtp": "OTP không hợp lệ. Vui lòng thử lại.",
     "export": "Xuất dữ liệu thành công!",
     "translateMessage": "Dịch tin nhắn thành công!"
   },
