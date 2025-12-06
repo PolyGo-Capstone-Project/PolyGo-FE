@@ -91,7 +91,7 @@ export default function RegisterForm() {
       setOtpSent(true);
 
       // Start countdown
-      setCountdown(180);
+      setCountdown(300);
       const timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
@@ -116,12 +116,24 @@ export default function RegisterForm() {
     try {
       const response = await registerMutation.mutateAsync(data);
       setIsNewUser(true);
-      await loginMutation.mutateAsync({
-        mail: data.mail,
-        password: data.password,
-      });
-      showSuccessToast(response.payload.message, tSuccess);
-      router.push(`/${locale}/setup-profile`);
+      // Lưu vào sessionStorage để persist qua navigation
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("isNewUser", "true");
+      }
+
+      try {
+        await loginMutation.mutateAsync({
+          mail: data.mail,
+          password: data.password,
+        });
+        showSuccessToast(response.payload.message, tSuccess);
+        // Thêm small delay để đảm bảo cookie/state được set
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        router.replace(`/${locale}/setup-profile`);
+      } catch (loginError) {
+        showSuccessToast(response.payload.message, tSuccess);
+        router.replace(`/${locale}/login`);
+      }
     } catch (error) {
       handleErrorApi({
         error,

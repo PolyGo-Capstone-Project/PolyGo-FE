@@ -20,7 +20,7 @@ import {
   useSetupProfileMutation,
   useUpdateMeMutation,
 } from "@/hooks";
-import { handleErrorApi } from "@/lib/utils";
+import { handleErrorApi, showSuccessToast } from "@/lib/utils";
 import {
   SetupProfileBodySchema,
   SetupProfileBodyType,
@@ -225,7 +225,7 @@ export function SetupProfileForm() {
 
     try {
       const response = await setupProfileMutation.mutateAsync(setupData);
-      toast.success(response.payload.message || tSuccess("setupComplete"));
+      showSuccessToast(response.payload.message, tSuccess);
       setIsNewUser(false);
       router.push(`/${locale}/dashboard`);
     } catch (error) {

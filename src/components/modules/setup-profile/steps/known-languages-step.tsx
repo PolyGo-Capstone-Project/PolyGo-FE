@@ -84,6 +84,8 @@ export function KnownLanguagesStep({
                 <Image
                   src={language.iconUrl}
                   alt={language.name}
+                  width={48}
+                  height={48}
                   className="size-12 rounded-full object-cover"
                 />
               ) : (
