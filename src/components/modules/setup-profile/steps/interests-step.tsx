@@ -84,6 +84,8 @@ export function InterestsStep({
                 <Image
                   src={interest.iconUrl}
                   alt={interest.name}
+                  width={48}
+                  height={48}
                   className="size-10 rounded-full object-cover"
                 />
               ) : (

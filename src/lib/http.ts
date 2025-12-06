@@ -12,6 +12,8 @@ import { LoginResType } from "@/models";
 
 const ENTITY_ERROR_STATUS = 422 as const;
 const AUTHENTICATION_ERROR_STATUS = 401 as const;
+const FORBIDDEN_ERROR_STATUS = 403 as const;
+
 type ValidationError = {
   origin?: string;
   code: string;
@@ -145,7 +147,10 @@ const request = async <Response>(
           payload: EntityErrorPayload;
         }
       );
-    } else if (res.status === AUTHENTICATION_ERROR_STATUS) {
+    } else if (
+      res.status === AUTHENTICATION_ERROR_STATUS ||
+      res.status === FORBIDDEN_ERROR_STATUS
+    ) {
       if (isClient) {
         if (!clientLogoutRequest) {
           clientLogoutRequest = fetch("/api/auth/logout", {

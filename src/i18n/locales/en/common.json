@@ -98,7 +98,7 @@
     "fetchBanksError": "Failed to fetch bank list. Please try again.",
     "requestError": "Failed to create withdrawal request. Please try again.",
     "Timeout": "OTP timeout. Please request a new OTP.",
-    "InvalidOTP": "Invalid OTP. Please try again.",
+    "InvalidOtp": "Invalid OTP. Please try again.",
     "export": "Failed to export data. Please try again.",
     "SendTransactionInquiry": "Failed to send transaction inquiry. Please try again.",
     "EventsOverlapping": "You have another event that overlaps with this time.",

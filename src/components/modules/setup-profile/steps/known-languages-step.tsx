@@ -11,13 +11,11 @@ import Image from "next/image";
 type KnownLanguagesStepProps = {
   selected: string[];
   onSelect: (languages: string[]) => void;
-  targetLanguages: string[];
 };
 
 export function KnownLanguagesStep({
   selected,
   onSelect,
-  targetLanguages,
 }: KnownLanguagesStepProps) {
   const t = useTranslations("setupProfile.steps.knownLanguages");
   const locale = useLocale();
@@ -26,10 +24,7 @@ export function KnownLanguagesStep({
     params: { lang: locale, pageSize: 100 },
   });
 
-  const allLanguages = data?.payload.data.items || [];
-  const availableLanguages = allLanguages.filter(
-    (lang) => !targetLanguages.includes(lang.id)
-  );
+  const languages = data?.payload.data.items || [];
 
   const toggleLanguage = (languageId: string) => {
     if (selected.includes(languageId)) {
@@ -47,7 +42,7 @@ export function KnownLanguagesStep({
     );
   }
 
-  if (isError || availableLanguages.length === 0) {
+  if (isError || languages.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <p className="text-lg font-semibold">{t("noLanguagesFound")}</p>
@@ -61,7 +56,7 @@ export function KnownLanguagesStep({
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        {availableLanguages.map((language) => {
+        {languages.map((language) => {
           const isSelected = selected.includes(language.id);
           return (
             <button
@@ -84,6 +79,8 @@ export function KnownLanguagesStep({
                 <Image
                   src={language.iconUrl}
                   alt={language.name}
+                  width={48}
+                  height={48}
                   className="size-12 rounded-full object-cover"
                 />
               ) : (
