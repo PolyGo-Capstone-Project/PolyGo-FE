@@ -15,6 +15,7 @@ export interface Participant {
   status: ParticipantStatus;
   audioEnabled: boolean;
   videoEnabled: boolean;
+  chatEnabled: boolean;
   isHandRaised: boolean;
   stream?: MediaStream;
 }
