@@ -43,6 +43,7 @@ export function VideoGrid({
         status: "connected",
         audioEnabled: localAudioEnabled,
         videoEnabled: localVideoEnabled,
+        chatEnabled: true,
         isHandRaised: false,
         stream: localStream || undefined,
       };

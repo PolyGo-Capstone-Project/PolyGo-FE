@@ -18,6 +18,7 @@ interface ChatPanelProps {
   messages: MeetingChatMessage[];
   onSendMessage: (message: string) => void;
   onClose: () => void;
+  isChatDisabled?: boolean;
   className?: string;
 }
 
@@ -25,6 +26,7 @@ export function ChatPanel({
   messages,
   onSendMessage,
   onClose,
+  isChatDisabled = false,
   className,
 }: ChatPanelProps) {
   const t = useTranslations("meeting.chat");
@@ -95,22 +97,28 @@ export function ChatPanel({
 
       {/* Input */}
       <div className="p-4 border-t">
-        <div className="flex items-center gap-2">
-          <Input
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder={t("placeholder")}
-            className="flex-1"
-          />
-          <Button
-            size="icon"
-            onClick={handleSend}
-            disabled={!inputMessage.trim()}
-          >
-            <IconSend className="h-4 w-4" />
-          </Button>
-        </div>
+        {isChatDisabled ? (
+          <div className="text-center py-3 text-sm text-muted-foreground bg-secondary/30 rounded-lg">
+            {t("chatDisabled") || "Chat has been disabled by the host"}
+          </div>
+        ) : (
+          <div className="flex items-center gap-2">
+            <Input
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder={t("placeholder")}
+              className="flex-1"
+            />
+            <Button
+              size="icon"
+              onClick={handleSend}
+              disabled={!inputMessage.trim()}
+            >
+              <IconSend className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

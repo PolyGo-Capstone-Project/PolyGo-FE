@@ -42,6 +42,7 @@
       "lowerAllHands": "Hạ Tất cả Tay",
       "muteParticipant": "Tắt tiếng người tham gia",
       "disableVideo": "Tắt video",
+      "disableChat": "Cấm chat",
       "kickParticipant": "Đuổi người tham gia"
     },
     "settings": {
@@ -60,7 +61,8 @@
       "description": "Gửi và nhận tin nhắn với những người tham gia khác",
       "noMessages": "Chưa có tin nhắn",
       "placeholder": "Nhập tin nhắn...",
-      "send": "Gửi"
+      "send": "Gửi",
+      "chatDisabled": "Trò chuyện đã bị vô hiệu hóa bởi người tổ chức"
     },
     "errors": {
       "permissionDenied": "Quyền truy cập Camera/Microphone bị từ chối",
