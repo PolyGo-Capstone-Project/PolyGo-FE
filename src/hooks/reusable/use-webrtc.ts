@@ -97,6 +97,7 @@ export function useWebRTC({
   const [isHandRaised, setIsHandRaised] = useState(false);
   const [isAudioLockedByHost, setIsAudioLockedByHost] = useState(false);
   const [isVideoLockedByHost, setIsVideoLockedByHost] = useState(false);
+  const [isChatLockedByHost, setIsChatLockedByHost] = useState(false);
   const [chatMessages, setChatMessages] = useState<
     Array<{
       id: string;
@@ -539,6 +540,7 @@ export function useWebRTC({
             status: "connecting" as ParticipantStatus,
             audioEnabled: true,
             videoEnabled: true,
+            chatEnabled: true,
             isHandRaised: false,
           });
           console.log("[SignalR] ✓ Added host to participants:", hostName);
@@ -568,6 +570,7 @@ export function useWebRTC({
             status: "connecting" as ParticipantStatus,
             audioEnabled: true,
             videoEnabled: true,
+            chatEnabled: true,
             isHandRaised: false,
           });
           return newMap;
@@ -904,6 +907,35 @@ export function useWebRTC({
           newMap.set(connId, {
             ...participant,
             videoEnabled: enabled,
+          });
+        }
+        return newMap;
+      });
+    });
+
+    hubConnection.on("ToggleChatCommand", (enabled: boolean) => {
+      console.log(`[SignalR] ToggleChatCommand: ${enabled}`);
+
+      // ✅ LOCK: Set lock state when host controls the chat
+      setIsChatLockedByHost(!enabled);
+
+      if (!enabled) {
+        // Show toast when chat is disabled by host
+        import("sonner").then(({ toast }) => {
+          toast.warning("Host has disabled your chat");
+        });
+      }
+    });
+
+    hubConnection.on("ChatStateChanged", (connId: string, enabled: boolean) => {
+      console.log(`[SignalR] ChatStateChanged: ${connId} = ${enabled}`);
+      setParticipants((prev) => {
+        const newMap = new Map(prev);
+        const participant = newMap.get(connId);
+        if (participant) {
+          newMap.set(connId, {
+            ...participant,
+            chatEnabled: enabled,
           });
         }
         return newMap;
@@ -1320,6 +1352,7 @@ export function useWebRTC({
                 status: "connecting" as ParticipantStatus,
                 audioEnabled: true,
                 videoEnabled: true,
+                chatEnabled: true,
                 isHandRaised: false,
               });
             }
@@ -1535,6 +1568,18 @@ export function useWebRTC({
   const sendChatMessage = useCallback(
     async (message: string) => {
       if (!connectionRef.current || !message.trim()) return;
+
+      // ✅ LOCK: Check if host has locked the chat
+      if (isChatLockedByHost) {
+        console.warn(
+          "[SignalR] ⚠️ Cannot send message - Host has disabled your chat"
+        );
+        import("sonner").then(({ toast }) => {
+          toast.warning("Host has disabled your chat");
+        });
+        return;
+      }
+
       try {
         await connectionRef.current.invoke(
           "SendChatMessage",
@@ -1547,7 +1592,7 @@ export function useWebRTC({
         console.error("[SignalR] ✗ Failed to send chat message:", error);
       }
     },
-    [userName]
+    [userName, isChatLockedByHost]
   );
 
   // ✅ Toggle hand raise
@@ -1608,6 +1653,27 @@ export function useWebRTC({
         );
       } catch (error) {
         console.error("[SignalR] ✗ Failed to toggle cam:", error);
+      }
+    },
+    []
+  );
+
+  // ✅ Host: Toggle participant chat
+  const hostToggleChat = useCallback(
+    async (targetConnId: string, enabled: boolean) => {
+      if (!connectionRef.current) return;
+      try {
+        await connectionRef.current.invoke(
+          "ToggleChat",
+          eventIdRef.current,
+          targetConnId,
+          enabled
+        );
+        console.log(
+          `[SignalR] ✓ Host toggled chat for ${targetConnId}: ${enabled}`
+        );
+      } catch (error) {
+        console.error("[SignalR] ✗ Failed to toggle chat:", error);
       }
     },
     []
@@ -2104,6 +2170,7 @@ export function useWebRTC({
     localVideoEnabled,
     isAudioLockedByHost,
     isVideoLockedByHost,
+    isChatLockedByHost,
     isHandRaised,
     chatMessages,
     joinRoom,
@@ -2117,6 +2184,7 @@ export function useWebRTC({
     toggleHandRaise,
     hostToggleMic,
     hostToggleCam,
+    hostToggleChat,
     kickUser,
     muteAllParticipants,
     turnOffAllCameras,

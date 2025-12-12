@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { Participant } from "@/types";
 import {
   IconHandStop,
+  IconMessageOff,
   IconMicrophoneOff,
   IconUserOff,
   IconVideoOff,
@@ -25,6 +26,7 @@ interface ParticipantListProps {
   myConnectionId: string;
   onMuteParticipant?: (participantId: string, enabled: boolean) => void;
   onDisableVideoParticipant?: (participantId: string, enabled: boolean) => void;
+  onDisableChatParticipant?: (participantId: string, enabled: boolean) => void;
   onKickParticipant?: (participantId: string) => void;
   onLowerAllHands?: () => void;
   onClose: () => void;
@@ -37,6 +39,7 @@ export function ParticipantList({
   myConnectionId,
   onMuteParticipant,
   onDisableVideoParticipant,
+  onDisableChatParticipant,
   onKickParticipant,
   onLowerAllHands,
   onClose,
@@ -128,6 +131,9 @@ export function ParticipantList({
                       {!participant.videoEnabled && (
                         <IconVideoOff className="h-3 w-3 text-muted-foreground" />
                       )}
+                      {!participant.chatEnabled && (
+                        <IconMessageOff className="h-3 w-3 text-muted-foreground" />
+                      )}
                       {participant.isHandRaised && (
                         <IconHandStop className="h-3 w-3 text-yellow-600" />
                       )}
@@ -173,6 +179,24 @@ export function ParticipantList({
                       }
                     >
                       <IconVideoOff className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() =>
+                        onDisableChatParticipant?.(
+                          participant.id,
+                          !participant.chatEnabled
+                        )
+                      }
+                      title={
+                        participant.chatEnabled
+                          ? t("disableChat")
+                          : "Enable chat"
+                      }
+                    >
+                      <IconMessageOff className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="ghost"

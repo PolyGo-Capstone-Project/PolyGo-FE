@@ -78,6 +78,7 @@ export default function MeetingRoomPage() {
     localAudioEnabled,
     localVideoEnabled,
     isHandRaised,
+    isChatLockedByHost,
     chatMessages: webrtcChatMessages,
     joinRoom,
     startCall,
@@ -90,6 +91,7 @@ export default function MeetingRoomPage() {
     toggleHandRaise: webrtcToggleHandRaise,
     hostToggleMic,
     hostToggleCam,
+    hostToggleChat,
     kickUser,
     muteAllParticipants,
     turnOffAllCameras,
@@ -330,6 +332,14 @@ export default function MeetingRoomPage() {
   ) => {
     if (!isHost) return;
     await hostToggleCam(participantId, enabled);
+  };
+
+  const handleDisableChatParticipant = async (
+    participantId: string,
+    enabled: boolean
+  ) => {
+    if (!isHost) return;
+    await hostToggleChat(participantId, enabled);
   };
 
   const handleKickParticipant = async (participantId: string) => {
@@ -605,6 +615,7 @@ export default function MeetingRoomPage() {
             myConnectionId={myConnectionId}
             onMuteParticipant={handleMuteParticipant}
             onDisableVideoParticipant={handleDisableVideoParticipant}
+            onDisableChatParticipant={handleDisableChatParticipant}
             onKickParticipant={handleKickParticipant}
             onLowerAllHands={handleLowerAllHands}
             onClose={toggleParticipants}
@@ -618,6 +629,7 @@ export default function MeetingRoomPage() {
           <ChatPanel
             messages={chatMessages}
             onSendMessage={handleSendMessage}
+            isChatDisabled={isChatLockedByHost}
             onClose={toggleChat}
           />
         </SheetContent>

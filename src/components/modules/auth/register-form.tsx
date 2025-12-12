@@ -142,6 +142,7 @@ export default function RegisterForm() {
       });
     }
   };
+
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       {/* Mail Field with OTP */}

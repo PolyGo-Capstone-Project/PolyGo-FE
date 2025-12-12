@@ -42,6 +42,7 @@
       "lowerAllHands": "Lower All Hands",
       "muteParticipant": "Mute participant",
       "disableVideo": "Disable video",
+      "disableChat": "Disable chat",
       "kickParticipant": "Kick participant"
     },
     "settings": {
@@ -60,7 +61,8 @@
       "description": "Send and receive messages with other participants",
       "noMessages": "No messages yet",
       "placeholder": "Type a message...",
-      "send": "Send"
+      "send": "Send",
+      "chatDisabled": "Chat has been disabled by the host"
     },
     "errors": {
       "permissionDenied": "Camera/Microphone permission denied",
