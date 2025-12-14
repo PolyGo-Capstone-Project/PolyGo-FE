@@ -32,7 +32,7 @@ type FormData = {
   // Step 1: Personal Info
   name: string;
   gender: "Male" | "Female" | "Other" | null;
-  introduction: string | null;
+  introduction: string;
   avatarUrl: string | null;
   // Step 2-4: Profile Setup
   targetLanguages: string[];
@@ -59,7 +59,7 @@ export function SetupProfileForm() {
     defaultValues: {
       name: "",
       gender: null,
-      introduction: null,
+      introduction: "",
       avatarUrl: null,
     },
   });
@@ -77,7 +77,7 @@ export function SetupProfileForm() {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     gender: null,
-    introduction: null,
+    introduction: "",
     avatarUrl: null,
     targetLanguages: [],
     knownLanguages: [],
@@ -91,7 +91,7 @@ export function SetupProfileForm() {
         ...prev,
         name: user.name || "",
         gender: user.gender || null,
-        introduction: user.introduction || null,
+        introduction: user.introduction || "",
         avatarUrl: user.avatarUrl || null,
       }));
 
@@ -99,7 +99,7 @@ export function SetupProfileForm() {
       personalInfoForm.reset({
         name: user.name || "",
         gender: user.gender || null,
-        introduction: user.introduction || null,
+        introduction: user.introduction || "",
         avatarUrl: user.avatarUrl || null,
       });
     }
@@ -167,7 +167,7 @@ export function SetupProfileForm() {
       const personalInfoData: UpdateMeBodyType = {
         name: formData.name,
         gender: formData.gender,
-        introduction: formData.introduction,
+        introduction: formData.introduction || "",
         avatarUrl: formData.avatarUrl,
       };
 
@@ -310,12 +310,12 @@ export function SetupProfileForm() {
             <PersonalInfoStep
               name={formData.name}
               gender={formData.gender}
-              introduction={formData.introduction}
+              introduction={formData.introduction || null}
               avatarUrl={formData.avatarUrl}
               onNameChange={(name) => updateFormData({ name })}
               onGenderChange={(gender) => updateFormData({ gender })}
               onIntroductionChange={(introduction) =>
-                updateFormData({ introduction })
+                updateFormData({ introduction: introduction || "" })
               }
               onAvatarChange={(avatarUrl) => updateFormData({ avatarUrl })}
               errors={{
