@@ -73,3 +73,20 @@ export const useMarkNotificationReadMutation = (
     },
   });
 };
+
+export const useNotificationReadAllMutation = (
+  params?: PaginationLangQueryType,
+  options?: {
+    onSuccess?: MutationSuccessHandler;
+  }
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => notificationApiRequest.readAll(),
+    onSuccess: (data, variables, context) => {
+      defaultOnSuccess(queryClient, params)?.();
+      options?.onSuccess?.(data);
+    },
+  });
+};

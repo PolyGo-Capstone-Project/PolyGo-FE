@@ -9,6 +9,7 @@ import { Button, Card, CardContent } from "@/components/ui";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   useMarkNotificationReadMutation,
+  useNotificationReadAllMutation,
   useNotificationsQuery,
 } from "@/hooks";
 import { cn } from "@/lib/utils";
@@ -42,6 +43,7 @@ export default function NotificationPage() {
   );
 
   const markAsReadMutation = useMarkNotificationReadMutation(dropdownParams);
+  const readAllMutation = useNotificationReadAllMutation(dropdownParams);
 
   // pagination kiểu "load more"
   const [page, setPage] = useState(1);
@@ -169,6 +171,21 @@ export default function NotificationPage() {
     navigateByNotification(n);
   };
 
+  const handleReadAll = () => {
+    if (unreadCount === 0) return;
+
+    // cập nhật UI local
+    setLocallyReadIds((prev) => {
+      const next = new Set(prev);
+      notifications.forEach((n) => {
+        if (!n.isRead) next.add(n.id);
+      });
+      return next;
+    });
+
+    readAllMutation.mutate();
+  };
+
   const handleLoadMore = () => {
     if (!hasMore || isLoading || isFetching || isLoadMorePending) return;
     setIsLoadMorePending(true);
@@ -194,6 +211,24 @@ export default function NotificationPage() {
             </p>
           )}
         </div>
+
+        {unreadCount > 0 && (
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleReadAll}
+            disabled={readAllMutation.isPending}
+          >
+            {readAllMutation.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {/* {t("reading")} */}
+              </>
+            ) : (
+              t("readAll")
+            )}
+          </Button>
+        )}
 
         {/* Nội dung */}
         <Card className="border-border/70">

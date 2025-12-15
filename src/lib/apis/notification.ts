@@ -16,6 +16,9 @@ export const notificationApiRequest = {
 
   // PUT /notifications/{id}  => mark as read
   markAsRead: (id: string) => http.put<MessageResType>(`${prefix}/${id}`, {}),
+
+  // PUT /notifications read all
+  readAll: () => http.put<MessageResType>(`${prefix}`, {}),
 };
 
 export default notificationApiRequest;
