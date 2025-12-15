@@ -8,6 +8,7 @@
     "chatUnreadMultiple": "{count} tin nhắn chưa đọc",
     "clickToView": "Nhấn để xem",
     "viewAll": "Xem tất cả thông báo",
+    "readAll": "Đánh dấu tất cả là đã đọc",
     "time": {
       "justNow": "Vừa xong",
       "minutesAgo": "{value} phút trước",

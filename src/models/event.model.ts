@@ -33,7 +33,7 @@ export const EventSchema = z.object({
   allowLateRegister: z.boolean().default(false),
 
   // 💰 Quy mô & phí
-  capacity: z.number().min(0).max(12),
+  capacity: z.number().min(5).max(12),
   fee: z.number().min(0).default(0),
 
   // 👤 Người liên quan
@@ -43,7 +43,7 @@ export const EventSchema = z.object({
   startAt: z.iso.datetime(),
   endAt: z.iso.datetime().nullable(),
   registerDeadline: z.iso.datetime(),
-  expectedDurationInMinutes: z.number().min(0).default(0),
+  expectedDurationInMinutes: z.number().min(15).max(300).default(15),
 });
 
 export const EventInterestsSchema = z.object({
@@ -220,7 +220,38 @@ export const CreateEventBodySchema = EventSchema.pick({
     interestIds: z.array(z.string()).min(1),
     requiredPlanType: z.enum(PlanTypeEnum).default("Free"),
   })
-  .strict();
+  .strict()
+  .refine(
+    (data) => {
+      if (!data.startAt) return true;
+      const startDate = new Date(data.startAt);
+      const now = new Date();
+      const threeDaysFromNow = new Date(
+        now.getTime() + 3 * 24 * 60 * 60 * 1000
+      );
+      return startDate >= threeDaysFromNow;
+    },
+    {
+      message: "Events must be created at least 3 days prior to the start date",
+      path: ["startAt"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (!data.startAt) return true;
+      const startDate = new Date(data.startAt);
+      const now = new Date();
+      const threeMonthsFromNow = new Date(
+        now.getTime() + 3 * 30 * 24 * 60 * 60 * 1000
+      );
+      return startDate <= threeMonthsFromNow;
+    },
+    {
+      message:
+        "An event cannot be created if its scheduled date is more than 3 months after the creation date",
+      path: ["startAt"],
+    }
+  );
 
 // cancel event - host
 export const CancelEventBodySchema = z
