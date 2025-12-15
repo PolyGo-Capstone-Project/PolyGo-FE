@@ -1,7 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconHelp, IconLoader2, IconUpload } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconHelp,
+  IconLoader2,
+  IconUpload,
+  IconX,
+} from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -25,6 +31,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  Separator,
   Skeleton,
   Tooltip,
   TooltipContent,
@@ -56,6 +63,7 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
   const router = useRouter();
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const [isUploadingBanner, setIsUploadingBanner] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   // Fetch event data
   const {
@@ -117,7 +125,7 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
 
   // Populate form with event data
   useEffect(() => {
-    if (eventData?.payload?.data) {
+    if (eventData?.payload?.data && !isDataLoaded) {
       const event = eventData.payload.data;
 
       // Set banner preview
@@ -147,10 +155,13 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
         interestIds: categoryIds,
         requiredPlanType: event.planType || PlanTypeEnum.FREE,
       });
+
+      setIsDataLoaded(true);
     }
-  }, [eventData, form, userId]);
+  }, [eventData, isDataLoaded, form, userId]);
 
   const isPublic = useWatch({ control: form.control, name: "isPublic" });
+  const startAt = useWatch({ control: form.control, name: "startAt" });
 
   const handleStartAtChange = (date: Date | undefined) => {
     if (!date) return;
@@ -267,6 +278,24 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
     form.handleSubmit(onSubmit)(e);
   };
 
+  // Don't render form until data is loaded
+  if (!isDataLoaded) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-8 w-48" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-48 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleFormSubmit} className="space-y-6">
       <Card>
@@ -299,10 +328,11 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
               control={form.control}
               render={({ field }) => (
                 <MDXEditorWrapper
+                  key={`mdx-${eventId}`}
                   value={field.value || ""}
                   onChange={field.onChange}
                   placeholder={tCreate("fields.description.placeholder")}
-                  minHeight="300px"
+                  minHeight="400px"
                 />
               )}
             />
@@ -329,23 +359,24 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
               </Tooltip>
             </div>
             {bannerPreview ? (
-              <div className="relative w-full h-48 rounded-lg overflow-hidden border">
+              <div className="relative w-full aspect-[16/9] rounded-lg overflow-hidden border bg-muted">
                 <Image
                   src={bannerPreview}
                   alt="Banner preview"
                   fill
-                  className="object-cover"
+                  className="object-contain"
                 />
                 <Button
                   type="button"
-                  variant="secondary"
+                  variant="destructive"
                   size="sm"
                   className="absolute top-2 right-2"
                   onClick={() => {
-                    document.getElementById("banner-upload")?.click();
+                    setBannerPreview(null);
+                    form.setValue("bannerUrl", "");
                   }}
                 >
-                  {tCreate("fields.banner.changeImage")}
+                  <IconX className="h-4 w-4" />
                 </Button>
               </div>
             ) : (
@@ -402,7 +433,7 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
               control={form.control}
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue
                       placeholder={tCreate("fields.language.placeholder")}
                     />
@@ -431,34 +462,45 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
               name="interestIds"
               control={form.control}
               render={({ field }) => (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {interests.map((interest) => (
-                    <div
-                      key={interest.id}
-                      className="flex items-center space-x-2"
-                    >
-                      <Checkbox
-                        id={`interest-${interest.id}`}
-                        checked={field.value?.includes(interest.id)}
-                        onCheckedChange={(checked) => {
-                          const current = field.value || [];
-                          if (checked) {
-                            field.onChange([...current, interest.id]);
-                          } else {
-                            field.onChange(
-                              current.filter((id) => id !== interest.id)
-                            );
-                          }
-                        }}
-                      />
-                      <label
-                        htmlFor={`interest-${interest.id}`}
-                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {interests.map((interest) => {
+                    const isSelected = field.value?.includes(interest.id);
+                    const handleToggle = () => {
+                      const current = field.value || [];
+                      if (isSelected) {
+                        field.onChange(
+                          current.filter((id) => id !== interest.id)
+                        );
+                      } else {
+                        field.onChange([...current, interest.id]);
+                      }
+                    };
+
+                    return (
+                      <div
+                        key={interest.id}
+                        className={`flex items-center space-x-2 p-3 border rounded-lg cursor-pointer transition-colors ${
+                          isSelected
+                            ? "border-primary bg-primary/5"
+                            : "border-border hover:border-primary/50"
+                        }`}
+                        onClick={handleToggle}
                       >
-                        {interest.name}
-                      </label>
-                    </div>
-                  ))}
+                        <div
+                          className={`size-4 shrink-0 rounded-[4px] border transition-colors flex items-center justify-center ${
+                            isSelected
+                              ? "bg-primary border-primary text-primary-foreground"
+                              : "border-input"
+                          }`}
+                        >
+                          {isSelected && <IconCheck className="size-3.5" />}
+                        </div>
+                        <Label className="cursor-pointer flex-1">
+                          {interest.name}
+                        </Label>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             />
@@ -487,6 +529,17 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
                 <DateTimePicker
                   value={field.value ? new Date(field.value) : undefined}
                   onChange={handleStartAtChange}
+                  placeholder={tCreate("fields.startDate.placeholder")}
+                  disabledDates={(date) => {
+                    const now = new Date();
+                    const threeDaysFromNow = new Date(
+                      now.getTime() + 3 * 24 * 60 * 60 * 1000
+                    );
+                    const threeMonthsFromNow = new Date(
+                      now.getTime() + 3 * 30 * 24 * 60 * 60 * 1000
+                    );
+                    return date < threeDaysFromNow || date > threeMonthsFromNow;
+                  }}
                 />
               )}
             />
@@ -528,6 +581,23 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
                     if (date) {
                       field.onChange(date.toISOString());
                     }
+                  }}
+                  placeholder={tCreate("fields.registerDeadline.placeholder")}
+                  disabledDates={(date) => {
+                    const now = new Date();
+                    now.setHours(0, 0, 0, 0);
+
+                    // Disable past dates
+                    if (date < now) return true;
+
+                    // If startAt is set, disable dates after or equal to startAt
+                    if (startAt) {
+                      const startDate = new Date(startAt);
+                      startDate.setHours(0, 0, 0, 0);
+                      return date >= startDate;
+                    }
+
+                    return false;
                   }}
                 />
               )}
@@ -578,33 +648,46 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
         <CardHeader>
           <CardTitle>{tCreate("settings")}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
           {/* Public/Private */}
-          <div className="space-y-2">
+          <div className="space-y-3">
+            <Label>Event Privacy</Label>
             <Controller
               name="isPublic"
               control={form.control}
               render={({ field }) => (
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="isPublic"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                  <div className="space-y-1">
-                    <Label htmlFor="isPublic" className="cursor-pointer">
-                      {tCreate("fields.isPublic.label")}
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      {tCreate("fields.isPublic.description")}
-                    </p>
+                <RadioGroup
+                  value={field.value ? "public" : "private"}
+                  onValueChange={(value) => field.onChange(value === "public")}
+                >
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                    <RadioGroupItem value="public" id="public" />
+                    <div className="flex-1">
+                      <Label htmlFor="public" className="cursor-pointer">
+                        {tCreate("fields.isPublic.label")}
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        {tCreate("fields.isPublic.description")}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
+                    <RadioGroupItem value="private" id="private" />
+                    <div className="flex-1">
+                      <Label htmlFor="private" className="cursor-pointer">
+                        {tCreate("fields.isPrivate.label")}
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        {tCreate("fields.isPrivate.description")}
+                      </p>
+                    </div>
+                  </div>
+                </RadioGroup>
               )}
             />
           </div>
 
-          {/* Password if Private */}
+          {/* Password (only for private events) */}
           {!isPublic && (
             <div className="space-y-2">
               <Label htmlFor="password">
@@ -624,63 +707,73 @@ export function EditEventForm({ eventId }: EditEventFormProps) {
             </div>
           )}
 
+          <Separator />
+
           {/* Allow Late Registration */}
-          <div className="space-y-2">
+          <div className="flex items-start space-x-2">
             <Controller
               name="allowLateRegister"
               control={form.control}
               render={({ field }) => (
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="allowLateRegister"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                  <div className="space-y-1">
-                    <Label
-                      htmlFor="allowLateRegister"
-                      className="cursor-pointer"
-                    >
-                      {tCreate("fields.allowLateRegister.label")}
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      {tCreate("fields.allowLateRegister.description")}
-                    </p>
-                  </div>
-                </div>
+                <Checkbox
+                  id="allowLateRegister"
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
               )}
             />
+            <div className="flex-1">
+              <Label htmlFor="allowLateRegister" className="cursor-pointer">
+                {tCreate("fields.allowLateRegister.label")}
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                {tCreate("fields.allowLateRegister.description")}
+              </p>
+            </div>
           </div>
 
+          <Separator />
+
           {/* Required Plan Type */}
-          <div className="space-y-2">
-            <Label>{tCreate("fields.requiredPlanType.label")}</Label>
-            <p className="text-sm text-muted-foreground mb-2">
-              {tCreate("fields.requiredPlanType.description")}
-            </p>
+          <div className="space-y-3">
+            <div>
+              <Label>{tCreate("fields.requiredPlanType.label")}</Label>
+              <p className="text-sm text-muted-foreground">
+                {tCreate("fields.requiredPlanType.description")}
+              </p>
+            </div>
             <Controller
               name="requiredPlanType"
               control={form.control}
               render={({ field }) => (
                 <RadioGroup value={field.value} onValueChange={field.onChange}>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
                     <RadioGroupItem value={PlanTypeEnum.FREE} id="plan-free" />
-                    <Label htmlFor="plan-free" className="cursor-pointer">
+                    <Label
+                      htmlFor="plan-free"
+                      className="cursor-pointer flex-1"
+                    >
                       {tCreate("fields.requiredPlanType.free")}
                     </Label>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 p-3 border rounded-lg">
                     <RadioGroupItem value={PlanTypeEnum.PLUS} id="plan-plus" />
-                    <Label htmlFor="plan-plus" className="cursor-pointer">
+                    <Label
+                      htmlFor="plan-plus"
+                      className="cursor-pointer flex-1"
+                    >
                       {tCreate("fields.requiredPlanType.plus")}
                     </Label>
                   </div>
-                  {/* <div className="flex items-center space-x-2">
+                  {/* <div className="flex items-center space-x-2 p-3 border rounded-lg">
                     <RadioGroupItem
                       value={PlanTypeEnum.PREMIUM}
                       id="plan-premium"
                     />
-                    <Label htmlFor="plan-premium" className="cursor-pointer">
+                    <Label
+                      htmlFor="plan-premium"
+                      className="cursor-pointer flex-1"
+                    >
                       {tCreate("fields.requiredPlanType.premium")}
                     </Label>
                   </div> */}
