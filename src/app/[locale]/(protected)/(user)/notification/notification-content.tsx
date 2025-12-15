@@ -198,26 +198,27 @@ export default function NotificationPage() {
     <div className="min-h-screen bg-background">
       <div className="max-w-5xl mx-auto w-full px-4 py-6 space-y-6 md:py-8">
         {/* Header */}
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-            {t("pageTitle")}
-          </h1>
-          <p className="text-sm text-muted-foreground md:text-base">
-            {t("pageDescription")}
-          </p>
-          {unreadCount > 0 && (
+        <div className="w-full flex justify-between items-center">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+              {t("pageTitle")}
+            </h1>
+            <p className="text-sm text-muted-foreground md:text-base">
+              {t("pageDescription")}
+            </p>
+            {/* {unreadCount > 0 && (
             <p className="text-xs font-medium text-primary md:text-sm">
               {t("summary", { count: unreadCount })}
             </p>
-          )}
-        </div>
+          )} */}
+          </div>
 
-        {unreadCount > 0 && (
           <Button
             variant="default"
             size="sm"
             onClick={handleReadAll}
             disabled={readAllMutation.isPending}
+            className="shrink-0"
           >
             {readAllMutation.isPending ? (
               <>
@@ -228,7 +229,7 @@ export default function NotificationPage() {
               t("readAll")
             )}
           </Button>
-        )}
+        </div>
 
         {/* Nội dung */}
         <Card className="border-border/70">
