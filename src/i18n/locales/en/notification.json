@@ -8,6 +8,7 @@
     "chatUnreadMultiple": "{count} unread messages",
     "clickToView": "Click to view",
     "viewAll": "View all notifications",
+    "readAll": "Mark all as read",
     "time": {
       "justNow": "Just now",
       "minutesAgo": "{value}m ago",
