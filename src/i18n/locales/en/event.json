@@ -172,7 +172,9 @@
         },
         "startAt": {
           "required": "Start date is required.",
-          "invalid": "Invalid date format."
+          "invalid": "Invalid date format.",
+          "tooSoon": "Events must be created at least 3 days prior to the start date.",
+          "tooFar": "An event cannot be created if its scheduled date is more than 3 months from now."
         },
         "endAt": {
           "invalid": "End date must be after start date."
@@ -183,7 +185,7 @@
         },
         "capacity": {
           "required": "Capacity is required.",
-          "min": "Capacity must be at least 1."
+          "min": "Capacity must be at least 5."
         },
         "fee": {
           "required": "Fee is required.",
@@ -191,7 +193,8 @@
         },
         "expectedDurationInMinutes": {
           "required": "Duration is required.",
-          "min": "Duration must be at least 1 minute."
+          "min": "Duration must be at least 15 minute.",
+          "max": "Duration must be at most 300 minutes."
         },
         "password": {
           "required": "Password is required for private events.",
@@ -202,6 +205,16 @@
     },
     "edit": {
       "title": "Edit Event",
+      "purposeDialog": {
+        "title": "📚 Welcome to PolyGo Event Creation",
+        "description": "Before you create your event, please remember:",
+        "point1": "PolyGo is a platform for cultural exchange and language learning",
+        "point2": "All events should focus on language practice, cultural sharing, or educational activities",
+        "point3": "Events unrelated to language learning or cultural exchange may be removed",
+        "point4": "Let's create a meaningful event that brings people together to learn and grow!",
+        "understand": "I Understand",
+        "cancel": "Cancel"
+      },
       "description": "Update your event information",
       "submit": "Update Event",
       "submitting": "Updating...",

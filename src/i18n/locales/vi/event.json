@@ -172,7 +172,9 @@
         },
         "startAt": {
           "required": "Ngày bắt đầu là bắt buộc.",
-          "invalid": "Định dạng ngày không hợp lệ."
+          "invalid": "Định dạng ngày không hợp lệ.",
+          "tooSoon": "Sự kiện phải được tạo ít nhất 3 ngày trước ngày bắt đầu.",
+          "tooFar": "Không thể tạo sự kiện có ngày diễn ra quá 3 tháng kể từ bây giờ."
         },
         "endAt": {
           "invalid": "Ngày kết thúc phải sau ngày bắt đầu."
@@ -183,7 +185,7 @@
         },
         "capacity": {
           "required": "Sức chứa là bắt buộc.",
-          "min": "Sức chứa phải ít nhất là 1."
+          "min": "Sức chứa phải ít nhất là 5."
         },
         "fee": {
           "required": "Phí tham gia là bắt buộc.",
@@ -191,7 +193,8 @@
         },
         "expectedDurationInMinutes": {
           "required": "Thời lượng là bắt buộc.",
-          "min": "Thời lượng phải ít nhất 1 phút."
+          "min": "Thời lượng phải ít nhất 15 phút.",
+          "max": "Thời lượng không được quá 300 phút."
         },
         "password": {
           "required": "Mật khẩu là bắt buộc cho sự kiện riêng tư.",
@@ -202,6 +205,16 @@
     },
     "edit": {
       "title": "Chỉnh sửa sự kiện",
+      "purposeDialog": {
+        "title": "📚 Chào mừng đến với Tạo Sự kiện PolyGo",
+        "description": "Trước khi tạo sự kiện, vui lòng lưu ý:",
+        "point1": "PolyGo là nền tảng giao lưu văn hóa và học tập ngôn ngữ",
+        "point2": "Tất cả sự kiện nên tập trung vào thực hành ngôn ngữ, chia sẻ văn hóa hoặc hoạt động giáo dục",
+        "point3": "Các sự kiện không liên quan đến học ngôn ngữ hoặc giao lưu văn hóa có thể bị xóa",
+        "point4": "Hãy cùng tạo một sự kiện ý nghĩa để mọi người cùng học hỏi và phát triển!",
+        "understand": "Tôi hiểu",
+        "cancel": "Hủy"
+      },
       "description": "Cập nhật thông tin sự kiện của bạn",
       "submit": "Cập nhật sự kiện",
       "submitting": "Đang cập nhật...",

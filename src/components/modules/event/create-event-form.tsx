@@ -97,7 +97,7 @@ export function CreateEventForm() {
       status: EventStatus.Pending,
       isPublic: true,
       allowLateRegister: false,
-      capacity: 5,
+      capacity: 0,
       fee: 0,
       hostId: "", // Will be set from auth
       startAt: "",
@@ -111,6 +111,7 @@ export function CreateEventForm() {
 
   // Use useWatch instead of form.watch to avoid re-render loops
   const isPublic = useWatch({ control: form.control, name: "isPublic" });
+  const startAt = useWatch({ control: form.control, name: "startAt" });
 
   // Auto-fill endAt (+2h) and registerDeadline (-12h) when startAt changes
   const handleStartAtChange = (date: Date | undefined) => {
@@ -435,6 +436,16 @@ export function CreateEventForm() {
                     }
                   }}
                   placeholder={t("fields.startDate.placeholder")}
+                  disabledDates={(date) => {
+                    const now = new Date();
+                    const threeDaysFromNow = new Date(
+                      now.getTime() + 3 * 24 * 60 * 60 * 1000
+                    );
+                    const threeMonthsFromNow = new Date(
+                      now.getTime() + 3 * 30 * 24 * 60 * 60 * 1000
+                    );
+                    return date < threeDaysFromNow || date > threeMonthsFromNow;
+                  }}
                 />
               )}
             />
@@ -478,6 +489,22 @@ export function CreateEventForm() {
                     field.onChange(date ? date.toISOString() : "");
                   }}
                   placeholder={t("fields.registerDeadline.placeholder")}
+                  disabledDates={(date) => {
+                    const now = new Date();
+                    now.setHours(0, 0, 0, 0);
+
+                    // Disable past dates
+                    if (date < now) return true;
+
+                    // If startAt is set, disable dates after or equal to startAt
+                    if (startAt) {
+                      const startDate = new Date(startAt);
+                      startDate.setHours(0, 0, 0, 0);
+                      return date >= startDate;
+                    }
+
+                    return false;
+                  }}
                 />
               )}
             />
@@ -495,8 +522,6 @@ export function CreateEventForm() {
               <Input
                 id="capacity"
                 type="number"
-                min={1}
-                max={12}
                 placeholder={t("fields.capacity.placeholder")}
                 {...form.register("capacity", { valueAsNumber: true })}
               />
@@ -746,6 +771,19 @@ const translateEventError = (
 
   if (issue.code === "invalid_date") {
     return t(`${field}.invalid`);
+  }
+
+  // Handle custom validation (refine)
+  if (issue.code === "custom") {
+    // Check for specific date validation messages
+    if (field === "startAt") {
+      if (issue.message?.includes("at least 3 days prior")) {
+        return t("startAt.tooSoon");
+      }
+      if (issue.message?.includes("more than 3 months")) {
+        return t("startAt.tooFar");
+      }
+    }
   }
 
   // Field-specific handling
