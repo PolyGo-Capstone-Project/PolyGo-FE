@@ -19,6 +19,12 @@ type UseNotificationsQueryOptions = {
   params?: PaginationLangQueryType;
 };
 
+const notificationsKey = {
+  base: (lang?: string) => ["notifications", lang ?? "all"] as const,
+  list: (params?: PaginationLangQueryType | null) =>
+    [...notificationsKey.base(params?.lang), "list", params ?? null] as const,
+};
+
 /* ===== Hook: GET ALL notifications ===== */
 
 export const useNotificationsQuery = ({
@@ -26,7 +32,7 @@ export const useNotificationsQuery = ({
   params,
 }: UseNotificationsQueryOptions = {}) => {
   return useQuery<NotificationsQueryResponse>({
-    queryKey: ["notifications", params ?? null],
+    queryKey: notificationsKey.list(params ?? null),
     queryFn: () => notificationApiRequest.getAll(params),
     enabled,
     placeholderData: keepPreviousData,
@@ -35,13 +41,17 @@ export const useNotificationsQuery = ({
 
 /* ===== Helpers cho mutation ===== */
 
-const notificationsQueryKey = (params?: PaginationLangQueryType | null) => [
-  "notifications",
-  params ?? null,
-];
+// const notificationsQueryKey = (params?: PaginationLangQueryType | null) => [
+//   "notifications",
+//   params ?? null,
+// ];
 
-type MutationSuccessHandler = (
+type MutationReadSuccessHandler = (
   response: Awaited<ReturnType<typeof notificationApiRequest.markAsRead>>
+) => void;
+
+type MutationReadAllSuccessHandler = (
+  response: Awaited<ReturnType<typeof notificationApiRequest.readAll>>
 ) => void;
 
 const defaultOnSuccess = (
@@ -50,7 +60,7 @@ const defaultOnSuccess = (
 ) => {
   return () => {
     queryClient.invalidateQueries({
-      queryKey: notificationsQueryKey(params),
+      queryKey: notificationsKey.base(params?.lang),
     });
   };
 };
@@ -60,7 +70,7 @@ const defaultOnSuccess = (
 export const useMarkNotificationReadMutation = (
   params?: PaginationLangQueryType,
   options?: {
-    onSuccess?: MutationSuccessHandler;
+    onSuccess?: MutationReadSuccessHandler;
   }
 ) => {
   const queryClient = useQueryClient();
@@ -77,7 +87,7 @@ export const useMarkNotificationReadMutation = (
 export const useNotificationReadAllMutation = (
   params?: PaginationLangQueryType,
   options?: {
-    onSuccess?: MutationSuccessHandler;
+    onSuccess?: MutationReadAllSuccessHandler;
   }
 ) => {
   const queryClient = useQueryClient();
