@@ -1,6 +1,11 @@
 "use client";
 
-import { IconCalendar, IconClock, IconUsers } from "@tabler/icons-react";
+import {
+  IconCalendar,
+  IconCheck,
+  IconClock,
+  IconUsers,
+} from "@tabler/icons-react";
 import { format } from "date-fns";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -53,7 +58,7 @@ export function EventCardCompact({ event }: EventCardCompactProps) {
       <Card className="overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300 cursor-pointer group mb-4">
         <div className="flex gap-4 p-4">
           {/* Banner Thumbnail */}
-          <div className="relative h-24 w-24 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-primary/10 to-background">
+          <div className="relative h-24 w-24 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-primary/10 to-background border-2 border-primary/10">
             {hasBanner ? (
               <Image
                 src={event.bannerUrl}
@@ -66,21 +71,30 @@ export function EventCardCompact({ event }: EventCardCompactProps) {
                 <IconCalendar className="h-8 w-8 text-muted-foreground/30" />
               </div>
             )}
-            {/* Badges */}
-            <div className="absolute top-1.5 right-1.5 flex flex-col gap-1 items-end">
-              {event.isParticipant && (
-                <Badge className="bg-primary/90 text-white text-[10px] px-1.5 py-0 h-5 border-0 shadow-md">
-                  {t("alreadyRegistered")}
-                </Badge>
-              )}
+
+            {/* Registered Badge - Top Right Corner */}
+            {event.isParticipant && (
+              <div className="absolute top-1.5 right-1.5 z-10">
+                <div className="bg-primary rounded-full p-1 shadow-md">
+                  <IconCheck className="h-3 w-3 text-white" strokeWidth={2.5} />
+                </div>
+              </div>
+            )}
+
+            {/* Fee Badge - Bottom */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent backdrop-blur-[2px]">
               {event.fee === 0 ? (
-                <Badge className="bg-green-500/90 text-white text-[10px] px-1.5 py-0 h-5 border-0 shadow-md">
-                  {t("free")}
-                </Badge>
+                <div className="px-2 py-1 flex items-center justify-center gap-1">
+                  <span className="text-white text-[10px] font-bold tracking-wide">
+                    {t("free").toUpperCase()}
+                  </span>
+                </div>
               ) : (
-                <Badge className="bg-blue-500/90 text-white text-[10px] px-1.5 py-0 h-5 border-0 shadow-md">
-                  {formatCurrency(event.fee)}
-                </Badge>
+                <div className="px-2 py-1 flex items-center justify-center">
+                  <span className="text-white text-[10px] font-bold">
+                    {formatCurrency(event.fee)}
+                  </span>
+                </div>
               )}
             </div>
           </div>

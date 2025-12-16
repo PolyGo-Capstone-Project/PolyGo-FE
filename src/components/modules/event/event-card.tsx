@@ -104,24 +104,29 @@ export function EventCard({ event }: EventCardProps) {
         )}
 
         {/* Badges Overlay */}
-        <div className="absolute top-3 right-3 flex flex-col gap-2">
+        <div className="absolute top-3 right-3 flex flex-col gap-2 items-end">
           {event.isParticipant && (
-            <Badge className="bg-primary/90 hover:bg-primary text-white border-0 shadow-lg backdrop-blur-sm">
-              {t("alreadyRegistered")}
+            <Badge className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary text-white border-0 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-105 font-medium px-3 py-1">
+              ✓ {t("alreadyRegistered")}
+            </Badge>
+          )}
+          {event.planType === "Plus" && (
+            <Badge className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white border-0 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-105 font-semibold px-3 py-1">
+              ⭐ Plus
             </Badge>
           )}
           {event.fee === 0 ? (
-            <Badge className="bg-green-500/90 hover:bg-green-500 text-white border-0 shadow-lg backdrop-blur-sm">
-              {t("free")}
+            <Badge className="bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 text-white border-0 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-105 font-semibold px-3 py-1">
+              🎉 {t("free")}
             </Badge>
           ) : (
-            <Badge className="bg-blue-500/90 hover:bg-blue-500 text-white border-0 shadow-lg backdrop-blur-sm">
-              {formatCurrency(event.fee)}
+            <Badge className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white border-0 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-105 font-semibold px-3 py-1">
+              💰 {formatCurrency(event.fee)}
             </Badge>
           )}
           {isAlmostFull && (
-            <Badge className="bg-orange-500/90 hover:bg-orange-500 text-white border-0 shadow-lg backdrop-blur-sm">
-              {spotsLeft} {t("spotsLeft")}
+            <Badge className="bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white border-0 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-105 font-medium px-3 py-1 animate-pulse">
+              🔥 {spotsLeft} {t("spotsLeft")}
             </Badge>
           )}
         </div>
