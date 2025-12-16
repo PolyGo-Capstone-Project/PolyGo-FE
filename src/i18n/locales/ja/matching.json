@@ -1,0 +1,117 @@
+{
+  "matching": {
+    "title": "言語パートナーを探す",
+    "description": "世界中の言語学習者とつながる",
+    "loadMore": "さらに読み込む",
+    "showingResults": "{total}人中{current}人を表示",
+    "sorting": {
+      "label": "並べ替え",
+      "recommended": "おすすめ",
+      "newest": "新しい順",
+      "highestRating": "評価が高い順",
+      "onlineFirst": "オンライン優先"
+    },
+    "filters": {
+      "title": "フィルター",
+      "search": "名前で検索",
+      "searchPlaceholder": "名前を入力...",
+      "onlineOnly": "オンラインのみ",
+      "speakingLanguages": "話せる言語",
+      "learningLanguages": "学習中の言語",
+      "languages": "言語",
+      "languagesPlaceholder": "言語を選択",
+      "interests": "興味",
+      "interestsPlaceholder": "興味を選択",
+      "clear": "フィルターをクリア",
+      "apply": "適用",
+      "allLanguages": "すべての言語",
+      "allInterests": "すべての興味"
+    },
+    "card": {
+      "online": "オンライン",
+      "offline": "オフライン",
+      "addFriend": "友達を追加",
+      "pending": "保留中",
+      "acceptFriend": "承諾",
+      "rejectFriend": "拒否",
+      "friends": "友達",
+      "chat": "チャット",
+      "viewProfile": "プロフィールを表示",
+      "speaks": "話せる言語",
+      "learning": "学習中",
+      "interests": "興味",
+      "noIntroduction": "まだ自己紹介がありません",
+      "noLanguages": "まだ言語が追加されていません",
+      "noInterests": "まだ興味が追加されていません",
+      "gender": {
+        "Male": "男性",
+        "Female": "女性",
+        "Other": "その他"
+      }
+    },
+    "friends": {
+      "title": "友達リスト",
+      "myFriends": "マイフレンド",
+      "receivedRequests": "受信リクエスト",
+      "sentRequests": "送信リクエスト",
+      "noFriends": "まだ友達がいません",
+      "noReceivedRequests": "受信リクエストはありません",
+      "noSentRequests": "送信リクエストはありません",
+      "accept": "承諾",
+      "reject": "拒否",
+      "cancel": "キャンセル",
+      "viewProfile": "プロフィールを表示",
+      "unfriend": "友達解除",
+      "close": "閉じる",
+      "requestCount": "{count}件のリクエスト",
+      "requestCount_plural": "{count}件のリクエスト",
+      "confirmRemove": "{name}を友達から削除してもよろしいですか？",
+      "confirmRemoveDescription": "再接続するには新しい友達リクエストを送信する必要があります。",
+      "remove": "削除"
+    },
+    "profile": {
+      "title": "ユーザープロフィール",
+      "basicInfo": "基本情報",
+      "languages": "言語",
+      "interests": "興味",
+      "stats": "統計",
+      "share": "プロフィールを共有",
+      "linkCopied": "プロフィールリンクをクリップボードにコピーしました！",
+      "back": "マッチングに戻る",
+      "addFriend": "友達を追加",
+      "name": "名前",
+      "email": "メール",
+      "gender": "性別",
+      "meritLevel": "メリットレベル",
+      "introduction": "自己紹介",
+      "noIntroduction": "このユーザーはまだ自己紹介を書いていません。",
+      "speakingLanguages": "話せる言語",
+      "learningLanguages": "学習中の言語",
+      "noLanguages": "まだ言語が追加されていません",
+      "noInterests": "まだ興味が追加されていません",
+      "experiencePoints": "経験値",
+      "streakDays": "連続日数",
+      "balance": "残高",
+      "memberSince": "メンバー登録日"
+    },
+    "empty": {
+      "title": "ユーザーが見つかりません",
+      "description": "フィルターや検索条件を調整してみてください",
+      "noResults": "一致する結果がありません"
+    },
+    "loading": {
+      "default": "読み込み中",
+      "users": "ユーザーを読み込み中...",
+      "profile": "プロフィールを読み込み中...",
+      "more": "さらにユーザーを読み込み中..."
+    },
+    "error": {
+      "loadUsers": "ユーザーの読み込みに失敗しました",
+      "loadProfile": "プロフィールの読み込みに失敗しました",
+      "userNotFound": "ユーザーが見つかりません",
+      "userNotFoundDescription": "お探しのユーザーは存在しないか、削除されています。",
+      "backToMatching": "マッチングに戻る",
+      "retry": "再試行"
+    }
+  }
+}

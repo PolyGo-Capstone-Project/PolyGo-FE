@@ -1,0 +1,50 @@
+{
+  "dashboard": {
+    "welcome": "おかえりなさい、{name}さん！",
+    "dailyGoal": "今日はどの言語を征服しますか？",
+    "xpPoints": "XP",
+    "streak": "{count}日連続",
+    "seeAll": "すべて表示",
+    "profile": "プロフィール",
+    "chat": "チャット",
+
+    "stats": {
+      "title": "統計情報",
+      "xp": "合計XP",
+      "hours": "総学習時間",
+      "streak": "現在の連続記録",
+      "rating": "コミュニティ評価",
+      "levelProgress": "レベル進行状況"
+    },
+    "quickActions": {
+      "title": "クイックアクション",
+      "findPartner": "練習パートナーを探す",
+      "findPartnerDesc": "他の学習者と即座にマッチング。",
+      "startChat": "チャットを始める",
+      "startChatDesc": "友達やパートナーとメッセージを送る。",
+      "joinEvent": "イベントに参加",
+      "joinEventDesc": "ミートアップやワークショップを発見する。",
+      "myWallet": "ウォレット",
+      "myWalletDesc": "残高と取引を管理します。",
+      "games": "ゲーム",
+      "gamesDesc": "ゲームを通じて言語を学び、遊びます。",
+      "helpCenter": "ヘルプセンター"
+    },
+    "suggestedPartners": {
+      "title": "おすすめのパートナー"
+    },
+    "upcomingEvents": {
+      "title": "今後のイベント",
+      "viewDashboard": "すべて表示",
+      "join": "今すぐ参加"
+    },
+    "recentChats": {
+      "title": "最近のチャット"
+    },
+    "upgradePlus": {
+      "badge": "Plusにアップグレード",
+      "title": "無制限の通話と翻訳をアンロック",
+      "button": "今すぐアップグレード"
+    }
+  }
+}

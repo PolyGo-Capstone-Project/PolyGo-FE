@@ -1,0 +1,82 @@
+{
+  "pricing": {
+    "title": "プランを選択",
+    "subtitle": "言語学習の旅に最適なプランを選択してください",
+    "backToWallet": "ウォレットに戻る",
+    "free": {
+      "name": "無料",
+      "description": "始めるのに最適",
+      "price": "無料",
+      "duration": "永久",
+      "cta": "現在のプラン",
+      "features": {
+        "chat": "1日{count}メッセージ",
+        "translation": "1日{count}翻訳",
+        "voiceCall": "1日{count}音声通話",
+        "videoCall": "1日{count}ビデオ通話",
+        "eventParticipation": "週{count}イベント",
+        "basicSupport": "コミュニティサポート"
+      }
+    },
+    "plus": {
+      "name": "Plus",
+      "popular": "最も人気",
+      "description": "無制限の機能をアンロック",
+      "monthly": {
+        "name": "月額",
+        "price": "{price}",
+        "duration": "月額",
+        "save": ""
+      },
+      "quarterly": {
+        "name": "四半期",
+        "price": "{price}",
+        "duration": "3ヶ月ごと",
+        "save": "7%お得"
+      },
+      "yearly": {
+        "name": "年額",
+        "price": "{price}",
+        "duration": "年額",
+        "save": "25%お得"
+      },
+      "cta": "今すぐアップグレード",
+      "features": {
+        "chat": "1日{count}メッセージ",
+        "translation": "1日{count}翻訳",
+        "voiceCall": "1日{count}音声通話",
+        "videoCall": "1日{count}ビデオ通話",
+        "eventParticipation": "週{count}イベント",
+        "eventCreation": "週{count}イベント作成",
+        "advancedMatching": "高度なマッチング",
+        "premiumBadges": "プレミアムバッジ",
+        "analytics": "分析ダッシュボード",
+        "prioritySupport": "優先サポート"
+      }
+    },
+    "confirmPurchase": {
+      "title": "購入を確認",
+      "plan": "プラン",
+      "duration": "期間",
+      "price": "価格",
+      "currentBalance": "現在の残高",
+      "afterPurchase": "購入後の残高",
+      "insufficientBalance": "残高不足です。まず入金してください。",
+      "cancel": "キャンセル",
+      "confirm": "購入を確認",
+      "processing": "処理中..."
+    },
+    "toast": {
+      "purchaseSuccess": "サブスクリプションが正常にアップグレードされました！",
+      "purchaseError": "サブスクリプションのアップグレードに失敗しました",
+      "insufficientBalance": "残高不足"
+    },
+    "thankYou": {
+      "title": "ありがとうございます！",
+      "message": "サブスクリプションが正常にアップグレードされました",
+      "description": "すべてのプレミアム機能をお楽しみいただけます",
+      "backToWallet": "ウォレットに戻る",
+      "backHome": "ダッシュボードへ"
+    }
+  }
+}

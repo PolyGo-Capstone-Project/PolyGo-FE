@@ -1,0 +1,525 @@
+{
+  "event": {
+    "title": "イベント",
+    "upcomingEvents": "今後のイベント",
+    "recommendedEvents": "あなたへのおすすめ",
+    "createEvent": "イベントを作成",
+    "myEvents": "マイイベント",
+    "search": "イベントを検索...",
+    "searchUpcoming": "今後のイベントを検索...",
+    "searching": "検索中",
+    "noResults": "イベントが見つかりません",
+    "noRecommended": "おすすめはありません",
+    "loading": "イベントを読み込み中...",
+    "loadMore": "さらに読み込む",
+    "allLoaded": "すべてのイベントを読み込みました",
+    "loadError": "イベントの読み込みに失敗しました。もう一度お試しください。",
+    "recommendedError": "おすすめの読み込みに失敗しました",
+    "retry": "再試行",
+    "discoverAndJoin": "素晴らしいイベントを見つけて参加しよう",
+    "viewDetails": "詳細を見る",
+    "register": "登録する",
+    "registered": "登録済み",
+    "alreadyRegistered": "登録済み",
+    "participants": "参加者",
+    "capacity": "満員",
+    "spotsLeft": "残り枠",
+    "almostFull": "もうすぐ満員",
+    "hostedBy": "主催者",
+    "date": "日時",
+    "duration": "所要時間",
+    "language": "言語",
+    "free": "無料",
+    "paid": "有料",
+    "status": {
+      "pending": "承認待ち",
+      "approved": "承認済み",
+      "rejected": "却下",
+      "live": "開催中",
+      "cancelled": "キャンセル",
+      "completed": "完了"
+    },
+    "filters": {
+      "title": "フィルター",
+      "language": "言語",
+      "category": "カテゴリー",
+      "price": "価格",
+      "time": "時間",
+      "allTimes": "すべての時間",
+      "today": "今日",
+      "thisWeek": "今週",
+      "thisMonth": "今月",
+      "allLanguages": "すべての言語",
+      "allCategories": "すべてのカテゴリー",
+      "allPrices": "すべての価格",
+      "freeOnly": "無料",
+      "paidOnly": "有料",
+      "clearFilters": "フィルターをクリア",
+      "apply": "フィルターを適用"
+    },
+    "create": {
+      "title": "新しいイベントを作成",
+      "description": "イベントを作成して参加者を募集しましょう",
+      "purposeDialog": {
+        "title": "📚 PolyGoイベント作成へようこそ",
+        "description": "イベントを作成する前に、以下をご確認ください：",
+        "point1": "PolyGoは文化交流と語学学習のためのプラットフォームです",
+        "point2": "すべてのイベントは語学練習、文化共有、または教育活動に焦点を当てる必要があります",
+        "point3": "語学学習や文化交流と関係のないイベントは削除される場合があります",
+        "point4": "人々が一緒に学び成長できる意義のあるイベントを作成しましょう！",
+        "understand": "理解しました",
+        "cancel": "キャンセル"
+      },
+      "basicInfo": "基本情報",
+      "details": "イベント詳細",
+      "settings": "設定",
+      "submit": "イベントを作成",
+      "submitting": "作成中...",
+      "success": "イベントを作成しました！",
+      "fields": {
+        "title": {
+          "label": "イベントタイトル",
+          "placeholder": "イベントタイトルを入力"
+        },
+        "description": {
+          "label": "説明",
+          "placeholder": "イベントの説明を入力..."
+        },
+        "banner": {
+          "label": "イベントバナー",
+          "upload": "バナーをアップロード",
+          "uploading": "アップロード中...",
+          "changeImage": "画像を変更",
+          "tooltip": "推奨：16:9のアスペクト比（1920x1080px）。画像は全幅バナーとして表示されます。最良の結果を得るために横向きをご使用ください。"
+        },
+        "language": {
+          "label": "言語",
+          "placeholder": "言語を選択"
+        },
+        "categories": {
+          "label": "カテゴリー",
+          "placeholder": "カテゴリーを選択"
+        },
+        "startDate": {
+          "label": "開始日時",
+          "placeholder": "日時を選択"
+        },
+        "endDate": {
+          "label": "終了日時（任意）",
+          "placeholder": "日時を選択"
+        },
+        "duration": {
+          "label": "予定所要時間（分）",
+          "placeholder": "60"
+        },
+        "registerDeadline": {
+          "label": "登録締切",
+          "placeholder": "締切を選択"
+        },
+        "capacity": {
+          "label": "定員",
+          "placeholder": "最大参加者数"
+        },
+        "fee": {
+          "label": "参加費（VND）",
+          "placeholder": "0"
+        },
+        "isPublic": {
+          "label": "公開イベント",
+          "description": "誰でもこのイベントを見て参加できます"
+        },
+        "isPrivate": {
+          "label": "非公開イベント",
+          "description": "参加にはパスワードが必要です"
+        },
+        "password": {
+          "label": "イベントパスワード",
+          "placeholder": "パスワードを入力（最低6文字）"
+        },
+        "allowLateRegister": {
+          "label": "遅延登録を許可",
+          "description": "締切後の登録を許可します"
+        },
+        "requiredPlanType": {
+          "label": "必要なプラン",
+          "description": "参加に必要な最低サブスクリプションプラン",
+          "free": "無料",
+          "plus": "プラス",
+          "premium": "プレミアム"
+        }
+      },
+      "errors": {
+        "default": "この項目をご確認ください。",
+        "title": {
+          "required": "イベントタイトルは必須です。",
+          "min": "タイトルは3文字以上にしてください。",
+          "max": "タイトルは500文字以内にしてください。"
+        },
+        "description": {
+          "required": "説明は必須です。",
+          "min": "説明は10文字以上にしてください。",
+          "max": "説明は2000文字以内にしてください。"
+        },
+        "bannerUrl": {
+          "required": "イベントバナーは必須です。"
+        },
+        "languageId": {
+          "required": "言語は必須です。"
+        },
+        "interestIds": {
+          "required": "少なくとも1つのカテゴリーが必要です。",
+          "min": "少なくとも1つのカテゴリーが必要です。"
+        },
+        "startAt": {
+          "required": "開始日は必須です。",
+          "invalid": "無効な日付形式です。",
+          "tooSoon": "イベントは開始日の少なくとも3日前に作成する必要があります。",
+          "tooFar": "開始日が3ヶ月以上先のイベントは作成できません。"
+        },
+        "endAt": {
+          "invalid": "終了日は開始日より後である必要があります。"
+        },
+        "registerDeadline": {
+          "required": "登録締切は必須です。",
+          "invalid": "締切は開始日より前である必要があります。"
+        },
+        "capacity": {
+          "required": "定員は必須です。",
+          "min": "定員は5人以上にしてください。"
+        },
+        "fee": {
+          "required": "参加費は必須です。",
+          "min": "参加費は負の値にできません。"
+        },
+        "expectedDurationInMinutes": {
+          "required": "所要時間は必須です。",
+          "min": "所要時間は15分以上にしてください。",
+          "max": "所要時間は300分以内にしてください。"
+        },
+        "password": {
+          "required": "非公開イベントにはパスワードが必要です。",
+          "min": "パスワードは6文字以上にしてください。",
+          "max": "パスワードは100文字以内にしてください。"
+        }
+      }
+    },
+    "edit": {
+      "title": "イベントを編集",
+      "purposeDialog": {
+        "title": "📚 PolyGoイベント作成へようこそ",
+        "description": "イベントを作成する前に、以下をご確認ください：",
+        "point1": "PolyGoは文化交流と語学学習のためのプラットフォームです",
+        "point2": "すべてのイベントは語学練習、文化共有、または教育活動に焦点を当てる必要があります",
+        "point3": "語学学習や文化交流と関係のないイベントは削除される場合があります",
+        "point4": "人々が一緒に学び成長できる意義のあるイベントを作成しましょう！",
+        "understand": "理解しました",
+        "cancel": "キャンセル"
+      },
+      "description": "イベント情報を更新",
+      "submit": "イベントを更新",
+      "submitting": "更新中...",
+      "success": "イベントを更新しました！",
+      "loadingEvent": "イベントを読み込み中...",
+      "loadError": "イベントの読み込みに失敗しました"
+    },
+    "detail": {
+      "title": "イベント詳細",
+      "insufficientFunds": "残高不足",
+      "detail": "イベント情報",
+      "free": "無料",
+      "back": "イベント一覧に戻る",
+      "register": "イベントに登録",
+      "registered": "登録済み",
+      "registering": "登録中...",
+      "success": "登録に成功しました！",
+      "aboutEvent": "このイベントについて",
+      "host": "主催者",
+      "eventDetails": "イベント詳細",
+      "language": "言語",
+      "categories": "カテゴリー",
+      "startTime": "開始時間",
+      "endTime": "終了時間",
+      "duration": "所要時間",
+      "minutes": "分",
+      "registerBy": "登録締切",
+      "capacity": "定員",
+      "available": "空き",
+      "fee": "参加費",
+      "planRequired": "必要なプラン",
+      "registrationInfo": "登録情報",
+      "lateRegistrationAllowed": "遅延登録可能",
+      "confirmRegistration": "登録を確認",
+      "eventFee": "イベント参加費",
+      "currentBalance": "現在の残高",
+      "afterRegistration": "登録後の残高",
+      "confirmRegistrationMessage": "このイベントに登録してもよろしいですか？",
+      "cancel": "キャンセル",
+      "confirmAndPay": "確認して支払う",
+      "processing": "処理中...",
+      "eventFull": "満員",
+      "joinHost": "ミーティングルームに参加",
+      "join": "ミーティングに参加",
+      "waitingForHost": "主催者がイベントを開始するのを待っています...",
+      "hostCanJoinMessage": "イベント開始の1時間前からミーティングルームに参加できます",
+      "eventEnded": "このイベントは終了しました",
+      "eventPending": "このイベントは承認待ちです",
+      "yourBalance": "あなたの残高",
+      "password": {
+        "label": "イベントパスワード",
+        "placeholder": "イベントパスワードを入力",
+        "required": "この非公開イベントにはパスワードが必要です"
+      },
+      "errors": {
+        "loadFailed": "イベント詳細の読み込みに失敗しました",
+        "registerFailed": "イベントの登録に失敗しました"
+      },
+      "registrationSuccess": {
+        "title": "登録完了！",
+        "message": "イベントへの登録が完了しました。",
+        "messageWithTitle": "「{title}」への登録が完了しました。",
+        "nextSteps": "次のステップ",
+        "checkEmail": "イベント確認のメールをご確認ください",
+        "viewMyEvents": "マイイベントで登録済みイベントを確認できます",
+        "prepareForEvent": "イベントの準備をしてカレンダーに登録してください",
+        "close": "閉じる",
+        "viewMyEventsButton": "マイイベントを見る"
+      },
+      "ratings": {
+        "yourRatingTitle": "あなたの評価",
+        "allRatingsTitle": "参加者からの評価",
+        "loading": "評価を読み込み中...",
+        "loadingYourRating": "あなたの評価を読み込み中...",
+        "loadingReviews": "レビューを読み込み中...",
+        "noComment": "まだコメントがありません。",
+        "noRatingYet": "まだ評価がありません。",
+        "editRatingButton": "評価を編集",
+        "rateButton": "今すぐ評価",
+        "noRatingsFound": "評価が見つかりません。",
+        "noCommentAll": "（コメントなし）",
+        "yourStars": "あなたの評価",
+        "commentLabel": "コメント",
+        "saveButton": "評価を保存",
+        "commentPlaceholder": "コメントを入力してください...",
+        "editDialogTitle": "評価を編集",
+        "createDialogTitle": "評価を作成",
+        "dialogDescription": "星を選択し、コメントを残し、ギフトを送ることができます（任意）。",
+        "giftSelectLabel": "ギフトを選択（任意）",
+        "giftSelectPlaceholder": "ギフトを選択...",
+        "available": "利用可能",
+        "giftQuantityLabel": "ギフト数量",
+        "giftQuantityHelper": "最大：{max}個",
+        "noGifts": "ギフトがありません。",
+        "buyMore": "ギフトを購入",
+        "shareYourThoughts": "このイベントについての感想を共有してください",
+        "rateThisEvent": "このイベントを評価",
+        "filter": {
+          "all": "すべて",
+          "reviewCount": "{count}件のレビュー",
+          "reviewCount_plural": "{count}件のレビュー",
+          "reviewsTotal": "合計{count}件のレビュー",
+          "reviewsTotal_plural": "合計{count}件のレビュー",
+          "reviewsWith": "{stars}つ星のレビュー{count}件",
+          "reviewsWith_plural": "{stars}つ星のレビュー{count}件",
+          "noStarReviews": "{stars}つ星のレビューはまだありません",
+          "tryDifferentFilter": "別の評価フィルターを選択してください",
+          "clearFilter": "フィルターをクリア",
+          "beFirstToShare": "このイベントについての感想を最初に共有しましょう！"
+        },
+        "insufficientFunds": "残高不足",
+        "yourBalance": "あなたの残高"
+      },
+      "share": {
+        "button": "共有",
+        "title": "イベントを共有",
+        "description": "このイベントを友達やコミュニティと共有しましょう",
+        "copyLink": "イベントリンク",
+        "copied": "リンクをクリップボードにコピーしました！",
+        "shareOn": "SNSで共有",
+        "shareOnSocial": "SNSで共有",
+        "comingSoon": "SNS共有機能は近日公開"
+      },
+      "hostInfo": "主催者プロフィールを見る",
+      "aiSummary": {
+        "title": "AIミーティングサマリー",
+        "hostDescription": "AIによる要約、重要語彙、アクションアイテムを表示・生成します。",
+        "guestDescription": "AIが生成したミーティングの要約、重要ポイント、語彙、アクションアイテムを表示します。",
+        "viewButton": "ミーティングサマリーと語彙を見る"
+      },
+      "eventDetailsTitle": "イベント詳細"
+    },
+    "myEvent": {
+      "title": "マイイベント",
+      "back": "イベント一覧に戻る",
+      "sidebar": {
+        "all": "すべてのイベント",
+        "created": "作成したイベント",
+        "joined": "参加したイベント"
+      },
+      "calendar": {
+        "title": "イベントカレンダー",
+        "noEvents": "この日にイベントはありません",
+        "selectEvent": "イベントを選択して表示",
+        "today": "今日",
+        "goToToday": "今日に移動",
+        "weekDays": {
+          "sun": "日",
+          "mon": "月",
+          "tue": "火",
+          "wed": "水",
+          "thu": "木",
+          "fri": "金",
+          "sat": "土"
+        },
+        "loading": "カレンダーを読み込み中...",
+        "loadError": "イベントの読み込みに失敗しました",
+        "loadErrorMessage": "後でもう一度お試しください",
+        "retry": "再試行",
+        "noEventsYet": "まだイベントがありません",
+        "noEventsCreated": "まだイベントを作成していません。",
+        "noEventsJoined": "まだイベントに参加していません。",
+        "noEventsAll": "イベントがありません。",
+        "exploreEvents": "イベントを探す",
+        "moreEvents": "件以上",
+        "participants": "参加者",
+        "min": "分",
+        "eventsOn": "のイベント"
+      },
+      "created": {
+        "title": "作成したイベント",
+        "upcoming": "今後のイベント",
+        "past": "過去のイベント",
+        "noUpcoming": "まだ今後のイベントを作成していません",
+        "noPast": "過去のイベントはありません",
+        "createFirst": "最初のイベントを作成",
+        "createEvent": "イベントを作成",
+        "createNewEvent": "新しいイベントを作成",
+        "pastEventsDescription": "完了した過去のイベントがここに表示されます",
+        "edit": "編集",
+        "cancel": "イベントをキャンセル",
+        "viewDetail": "詳細を見る",
+        "viewStats": "統計を見る",
+        "eventCount": {
+          "singular": "件のイベント",
+          "plural": "件のイベント"
+        },
+        "cardStats": {
+          "totalEvents": "合計イベント数",
+          "upcomingEvents": "今後のイベント",
+          "completed": "完了済み",
+          "totalParticipants": "合計参加者数"
+        },
+        "search": {
+          "placeholder": "タイトルまたは説明でイベントを検索...",
+          "filterByStatus": "ステータスでフィルター",
+          "allStatus": "すべてのステータス",
+          "pending": "承認待ち",
+          "approved": "承認済み",
+          "live": "開催中"
+        },
+        "cancelDialog": {
+          "title": "イベントをキャンセル",
+          "description": "このイベントをキャンセルしてもよろしいですか？この操作は元に戻せません。",
+          "reason": "キャンセル理由",
+          "reasonPlaceholder": "イベントをキャンセルする理由を入力してください...",
+          "confirmButton": "イベントをキャンセル",
+          "cancelButton": "イベントを保持",
+          "cancelling": "キャンセル中...",
+          "success": "イベントをキャンセルしました",
+          "error": "イベントのキャンセルに失敗しました"
+        },
+        "stats": {
+          "title": "イベント統計",
+          "eventDetails": "イベント詳細",
+          "performance": "パフォーマンス",
+          "revenue": "収益",
+          "averageRating": "平均評価",
+          "reviews": "レビュー",
+          "recentFeedback": "最近のフィードバック",
+          "participants": "参加者一覧",
+          "registeredAt": "登録日時",
+          "viewProfile": "プロフィールを見る",
+          "kick": "退出させる",
+          "report": "報告",
+          "kickDialog": {
+            "title": "参加者を退出させる",
+            "description": "この参加者をイベントから退出させてもよろしいですか？",
+            "reason": "退出理由",
+            "reasonPlaceholder": "参加者を退出させる理由を入力してください...",
+            "confirmButton": "参加者を退出させる",
+            "cancelButton": "キャンセル",
+            "kicking": "退出中...",
+            "success": "参加者を退出させました",
+            "error": "参加者の退出に失敗しました",
+            "allowRejoin": "再参加を許可"
+          },
+          "noFeedback": "まだフィードバックがありません",
+          "close": "閉じる",
+          "metricsAvailableAfterCompletion": "パフォーマンス指標はイベント完了後に表示されます。",
+          "payout": {
+            "amount": "支払額",
+            "claim": "支払いを請求",
+            "claiming": "請求中...",
+            "claimed": "支払い完了",
+            "pending": "保留中",
+            "claimedAt": "請求日時",
+            "successDialog": {
+              "title": "支払いが完了しました！",
+              "description": "支払いが正常に処理されました。",
+              "message": "ウォレット残高に資金が追加されました。",
+              "close": "閉じる",
+              "goToWallet": "ウォレットに移動"
+            }
+          }
+        }
+      },
+      "joined": {
+        "title": "参加したイベント",
+        "upcoming": "今後のイベント",
+        "history": "履歴",
+        "noUpcoming": "まだ今後のイベントに参加していません",
+        "noHistory": "イベント履歴がありません",
+        "historyEventsDescription": "過去のイベントがここに表示されます",
+        "exploreEvents": "イベントを探す",
+        "viewDetail": "詳細を見る",
+        "viewButton": "表示",
+        "leaveButton": "退出",
+        "unregister": "登録解除",
+        "cannotUnregister": "イベント開始24時間以内は登録解除できません",
+        "eventCount": {
+          "singular": "件のイベント",
+          "plural": "件のイベント"
+        },
+        "cardStats": {
+          "totalJoined": "参加総数",
+          "upcomingEvents": "今後のイベント",
+          "attended": "出席済み",
+          "totalFeesPaid": "支払い総額"
+        },
+        "search": {
+          "placeholder": "タイトルまたは説明でイベントを検索...",
+          "sortBy": "並べ替え",
+          "sortByDate": "日付で並べ替え",
+          "sortByName": "名前で並べ替え"
+        },
+        "unregisterDialog": {
+          "title": "イベントの登録を解除",
+          "description": "このイベントの登録を解除してもよろしいですか？",
+          "reason": "登録解除の理由",
+          "reasonPlaceholder": "登録を解除する理由を入力してください...",
+          "confirmButton": "登録解除",
+          "cancelButton": "キャンセル",
+          "unregistering": "登録解除中...",
+          "success": "登録を解除しました",
+          "error": "登録解除に失敗しました"
+        }
+      }
+    },
+    "Success": {
+      "title": "成功"
+    },
+    "Error": {
+      "title": "エラー",
+      "unknown": "不明なエラーが発生しました"
+    }
+  }
+}

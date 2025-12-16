@@ -1,0 +1,146 @@
+{
+  "setupProfile": {
+    "steps": {
+      "personalInfo": {
+        "title": "個人情報",
+        "description": "自己紹介をしてください",
+        "avatarLabel": "プロフィール写真",
+        "avatarHint": "最大10MB、JPG/PNG/GIF",
+        "avatarUploadSuccess": "アバターが正常にアップロードされました！",
+        "avatarUploadError": "アバターのアップロードに失敗しました",
+        "avatarInvalidType": "画像ファイルを選択してください",
+        "avatarTooLarge": "ファイルサイズは10MB未満である必要があります",
+        "nameLabel": "フルネーム",
+        "namePlaceholder": "名前を入力",
+        "nameHint": "他の人があなたをこのように見ます",
+        "genderLabel": "性別",
+        "introductionLabel": "自己紹介",
+        "introductionPlaceholder": "自己紹介、興味、言語学習の理由を教えてください...",
+        "introductionHint": "任意 - 他の人があなたをよりよく知るのに役立ちます",
+        "skipNotice": "このステップをスキップして、後でプロフィール設定で完了することができます"
+      },
+      "targetLanguage": {
+        "title": "学習したい言語",
+        "description": "何を学びたいですか？",
+        "heading": "目標言語を選択",
+        "subheading": "PolyGoで学びたい最大3つの言語を選択してください",
+        "selected": "{count}件選択済み",
+        "maxReached": "最大3言語",
+        "clearAll": "すべてクリア",
+        "noLanguagesFound": "利用可能な言語がありません",
+        "noLanguagesDescription": "後でもう一度お試しください"
+      },
+      "knownLanguages": {
+        "title": "話せる言語",
+        "description": "既に知っている言語",
+        "heading": "既に知っている言語",
+        "subheading": "話せるすべての言語を選択してください。これにより、より良い会話パートナーを見つけるのに役立ちます。",
+        "selected": "{count}件選択済み",
+        "clearAll": "すべてクリア",
+        "noLanguagesFound": "利用可能な言語がありません",
+        "noLanguagesDescription": "後でもう一度お試しください"
+      },
+      "interests": {
+        "title": "あなたの興味",
+        "description": "話したいトピック",
+        "heading": "あなたの興味は何ですか？",
+        "subheading": "話したいトピックを選択してください。これにより、同じ考えを持つパートナーとマッチングするのに役立ちます。",
+        "selected": "{count}件選択済み",
+        "clearAll": "すべてクリア",
+        "noInterestsFound": "利用可能な興味がありません",
+        "noInterestsDescription": "後でもう一度お試しください",
+        "skipNotice": "このステップをスキップして、後で興味を追加することができます"
+      }
+    },
+    "navigation": {
+      "back": "戻る",
+      "continue": "続ける",
+      "complete": "設定を完了",
+      "skip": "ダッシュボードにスキップ",
+      "step": "ステップ{current} / {total}",
+      "saving": "保存中...",
+      "completing": "完了中..."
+    },
+    "proficiencyLevels": {
+      "beginner": {
+        "label": "初心者",
+        "description": "始めたばかり"
+      },
+      "elementary": {
+        "label": "初級",
+        "description": "基本的な理解"
+      },
+      "intermediate": {
+        "label": "中級",
+        "description": "会話ができる"
+      },
+      "advanced": {
+        "label": "上級",
+        "description": "流暢に話せる"
+      },
+      "native": {
+        "label": "ネイティブ",
+        "description": "母国語話者"
+      }
+    },
+    "interests": {
+      "travel": "旅行",
+      "food": "食べ物＆料理",
+      "music": "音楽",
+      "sports": "スポーツ",
+      "movies": "映画＆テレビ",
+      "books": "本＆読書",
+      "technology": "テクノロジー",
+      "art": "アート＆デザイン",
+      "business": "ビジネス",
+      "science": "科学",
+      "gaming": "ゲーム",
+      "fashion": "ファッション"
+    },
+    "availability": {
+      "morning": {
+        "label": "朝",
+        "time": "6:00 - 12:00"
+      },
+      "afternoon": {
+        "label": "午後",
+        "time": "12:00 - 18:00"
+      },
+      "evening": {
+        "label": "夕方",
+        "time": "18:00 - 22:00"
+      },
+      "night": {
+        "label": "夜",
+        "time": "22:00 - 6:00"
+      }
+    },
+    "weeklyHours": {
+      "1": "週1-2時間",
+      "3": "週3-5時間",
+      "6": "週6-10時間",
+      "11": "週10時間以上"
+    },
+    "errors": {
+      "name": {
+        "required": "名前は必須です",
+        "min": "名前は最低{length}文字必要です",
+        "max": "名前は最大{length}文字です"
+      },
+      "introduction": {
+        "max": "自己紹介は最大{length}文字です"
+      },
+      "learningLanguages": {
+        "required": "最低1つの学習言語を選択してください"
+      },
+      "speakingLanguages": {
+        "required": "最低1つの話せる言語を選択してください"
+      },
+      "interests": {
+        "required": "最低1つの興味を選択してください"
+      }
+    },
+    "personalInfoSaved": "個人情報が正常に保存されました！",
+    "setupComplete": "設定が正常に完了しました！"
+  }
+}
