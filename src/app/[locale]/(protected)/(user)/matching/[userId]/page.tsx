@@ -22,11 +22,11 @@ import { useUserCommunicationHubContext } from "@/components/providers";
 import { FriendStatus } from "@/constants";
 import {
   useAcceptFriendRequestMutation,
+  useAuthMe,
   useGetConversationsByUserId,
   useGetUserProfile,
   useRejectFriendRequestMutation,
   useSendFriendRequestMutation,
-  useUserLevelsQuery,
 } from "@/hooks";
 import { showErrorToast, showSuccessToast } from "@/lib";
 import { useLocale, useTranslations } from "next-intl";
@@ -62,6 +62,9 @@ export default function UserProfilePage() {
   // Get presence context for online status
   const { isUserOnline } = useUserCommunicationHubContext();
 
+  // Fetch current user (logged in user)
+  const { data: currentUserData } = useAuthMe();
+
   // Fetch user profile
   const {
     data: userData,
@@ -75,12 +78,6 @@ export default function UserProfilePage() {
     enabled:
       !!userId && userData?.payload.data.friendStatus === FriendStatus.Friends,
   });
-
-  // Levels của user (để biết còn quà chưa nhận)
-  const { data: userLevelsData, isLoading: isLoadingLevels } =
-    useUserLevelsQuery({
-      params: { lang, pageNumber: -1, pageSize: -1 },
-    });
 
   // Friend mutations
   const sendFriendRequestMutation = useSendFriendRequestMutation({
@@ -301,10 +298,10 @@ export default function UserProfilePage() {
                 <UserPostsList
                   userId={userId}
                   currentUserAuthor={{
-                    id: user.id,
-                    name: user.name || "",
-                    avatar: user.avatarUrl || "",
-                    initials: (user.name || "")
+                    id: currentUserData?.payload.data.id || "",
+                    name: currentUserData?.payload.data.name || "",
+                    avatar: currentUserData?.payload.data.avatarUrl || "",
+                    initials: (currentUserData?.payload.data.name || "")
                       .split(" ")
                       .map((n) => n[0])
                       .join("")

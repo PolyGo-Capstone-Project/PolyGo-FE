@@ -37,7 +37,6 @@ export function UserPostsList({
     {}
   );
 
-  // Use the appropriate hook based on whether userId is provided
   const {
     data: myPostsData,
     isLoading: isLoadingMyPosts,
