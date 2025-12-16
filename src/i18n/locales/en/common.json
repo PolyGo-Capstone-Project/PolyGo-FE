@@ -100,6 +100,8 @@
     "Timeout": "OTP timeout. Please request a new OTP.",
     "InvalidOtp": "Invalid OTP. Please try again.",
     "export": "Failed to export data. Please try again.",
+    "RequiredPlanTypePlus": "This feature requires a Plus subscription plan.",
+    "InsufficientBalance": "Insufficient balance. Please top up your wallet.",
     "SendTransactionInquiry": "Failed to send transaction inquiry. Please try again.",
     "EventsOverlapping": "You have another event that overlaps with this time.",
     "VoiceCallLimitExceeded": "You have exceeded your voice call limit. Please upgrade your subscription.",

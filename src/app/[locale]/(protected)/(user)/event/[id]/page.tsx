@@ -300,6 +300,17 @@ export default function EventDetailPage() {
   const hasInsufficientFunds = event.fee > 0 && balance < event.fee;
   const pending = event.status === EventStatus.Pending;
 
+  const canRegister =
+    !pending &&
+    !isFull &&
+    !hasInsufficientFunds &&
+    !isRegistered &&
+    !isHost &&
+    !eventEnd &&
+    (userData?.payload.data.planType === "Plus"
+      ? true
+      : event?.planType === "Free");
+
   // Handle join meeting
   const handleJoinMeeting = () => {
     router.push(`/${locale}/room/${eventId}/waiting`);
@@ -617,10 +628,9 @@ export default function EventDetailPage() {
                     size="lg"
                     onClick={handleRegisterClick}
                     disabled={
-                      isFull ||
+                      !canRegister ||
                       registerMutation.isPending ||
-                      (!event.isPublic && showPasswordInput && !password) ||
-                      hasInsufficientFunds
+                      (!event.isPublic && showPasswordInput && !password)
                     }
                   >
                     {registerMutation.isPending ? (

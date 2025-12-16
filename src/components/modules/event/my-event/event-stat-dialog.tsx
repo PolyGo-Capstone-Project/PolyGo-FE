@@ -381,9 +381,7 @@ export function EventStatDialog({
                             )}
                           </div>
                           <p className="text-2xl font-bold text-green-600 mb-2">
-                            {formatCurrency(
-                              event.fee * event.numberOfParticipants
-                            )}
+                            {formatCurrency(event.revenue)}
                           </p>
 
                           {/* Payout Section - Only show if event has fee */}

@@ -263,6 +263,7 @@
       "hostCanJoinMessage": "You can join the meeting room 1 hour before the event starts",
       "eventEnded": "This event has ended",
       "eventPending": "This event is pending approval",
+      "yourBalance": "Your Balance",
       "password": {
         "label": "Event Password",
         "placeholder": "Enter event password",
