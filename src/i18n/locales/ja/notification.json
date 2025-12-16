@@ -1,0 +1,30 @@
+{
+  "userNotification": {
+    "title": "通知",
+    "summary": "{count}件の新着",
+    "summaryWithChat": "{count}件の新着（チャット{chatCount}件）",
+    "noNew": "新しい通知はありません 🎉",
+    "chatUnreadSingle": "{count}件の未読メッセージ",
+    "chatUnreadMultiple": "{count}件の未読メッセージ",
+    "clickToView": "クリックして表示",
+    "viewAll": "すべての通知を表示",
+    "readAll": "すべて既読にする",
+    "time": {
+      "justNow": "たった今",
+      "minutesAgo": "{value}分前",
+      "hoursAgo": "{value}時間前",
+      "daysAgo": "{value}日前"
+    },
+
+    "pageTitle": "通知",
+    "pageDescription": "PolyGoでの最新のアクティビティを最新の状態に保ちます。",
+    "emptyTitle": "すべて確認済みです！",
+    "emptyDescription": "現在、通知はありません。新しい更新はここに表示されます。",
+    "error": "通知の読み込み中に問題が発生しました。",
+    "unread": "未読",
+    "read": "既読",
+    "loadingMore": "さらに通知を読み込んでいます...",
+    "noMore": "これ以上の通知はありません。",
+    "loadMore": "古い通知を表示"
+  }
+}

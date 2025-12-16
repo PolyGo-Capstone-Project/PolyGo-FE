@@ -1,0 +1,64 @@
+{
+  "social": {
+    "title": "PolyGoコミュニティ",
+    "subtitle": "世界中の人々とつながり、共有し、言語を練習しましょう。",
+    "onlineTime": "時間前",
+    "createPost": {
+      "placeholder": "今日何か共有しましょう...",
+      "photoButton": "写真",
+      "emojiButton": "絵文字",
+      "postButton": "投稿",
+      "posting": "投稿中...",
+      "title": "投稿を作成",
+      "description": "あなたの考えをコミュニティと共有しましょう"
+    },
+    "post": {
+      "reactions": "いいね",
+      "comment": "コメント",
+      "comments": "コメント",
+      "report": "報告",
+      "reply": "返信",
+      "commentPlaceholder": "コメントを書く...",
+      "justNow": "たった今",
+      "viewAllComments": "{count}件のコメントをすべて表示",
+      "delete": "投稿を削除",
+      "update": "投稿を更新",
+      "noPosts": "まだ投稿がありません",
+      "updatePost": "投稿を更新",
+      "updatePostDescription": "以下で投稿内容を編集してください",
+      "contentPlaceholder": "何か書く...",
+      "cancel": "キャンセル",
+      "updating": "更新中...",
+      "seeMore": "もっと見る",
+      "seeLess": "少なく表示",
+      "share": {
+        "title": "投稿を共有",
+        "description": "あなたの考えとともにこの投稿を共有",
+        "contentPlaceholder": "これについて何か言う...",
+        "shareButton": "共有",
+        "sharing": "共有中...",
+        "cancel": "キャンセル",
+        "success": "投稿が正常に共有されました！",
+        "error": "投稿の共有に失敗しました"
+      }
+    },
+    "leftSidebar": {
+      "games": {
+        "title": "練習ゲーム",
+        "play": "プレイ",
+        "empty": "利用可能なゲームがありません"
+      }
+    },
+    "rightSidebar": {
+      "suggestions": {
+        "title": "友達候補",
+        "add": "プロフィールを表示",
+        "empty": "候補がありません"
+      },
+      "online": {
+        "title": "オンラインの友達",
+        "empty": "オンラインの友達がいません"
+      }
+    }
+  }
+}

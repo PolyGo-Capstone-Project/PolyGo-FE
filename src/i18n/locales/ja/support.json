@@ -1,0 +1,61 @@
+{
+  "support": {
+    "title": "サポートリクエストを送信",
+    "success": "リクエストが正常に送信されました！すぐにご連絡いたします。",
+    "error": "リクエストに失敗しました。もう一度お試しください。",
+    "submit": "リクエストを送信",
+    "form": {
+      "title": "相談リクエストを送信",
+      "subtitle": "以下の情報を記入してください。24時間以内にご連絡いたします。",
+      "name": "氏名",
+      "namePlaceholder": "山田太郎",
+      "phone": "電話番号",
+      "phonePlaceholder": "+81 90 1234 5678",
+      "email": "メールアドレス",
+      "emailPlaceholder": "contact@company.com",
+      "company": "組織/会社名",
+      "companyPlaceholder": "会社名",
+      "businessType": "業種",
+      "businessTypePlaceholder": "業種を選択",
+      "size": "規模",
+      "sizePlaceholder": "規模を選択",
+      "package": "サービスパッケージ",
+      "packagePlaceholder": "パッケージを選択",
+      "message": "メッセージ",
+      "messagePlaceholder": "ニーズを詳しく説明してください...",
+      "submit": "相談リクエストを送信",
+      "sending": "送信中..."
+    },
+    "topic": "トピック",
+    "selectTopicPlaceholder": "トピックを選択",
+    "note": "24時間以内にご連絡いたします。",
+    "contact": {
+      "title": "お問い合わせ情報",
+      "description": "サポートチームに直接お問い合わせください",
+      "emailLabel": "メール",
+      "emailValue": "polygocorp@gmail.com",
+      "phone": "+84 834 564 869",
+      "addressLabel": "住所",
+      "addressValue": "ホーチミン市、ベトナム",
+      "hoursLabel": "営業時間",
+      "hoursValue": "月 - 金: 8:00 - 18:00 / 土: 8:00 - 12:00"
+    },
+    "actions": {
+      "bookDemo": {
+        "title": "デモを予約",
+        "desc": "専門家とのライブ1対1デモをご覧ください",
+        "cta": "今すぐ予約"
+      },
+      "liveChat": {
+        "title": "ライブチャットサポート",
+        "desc": "すぐにチャットで回答を得る",
+        "cta": "チャットを開始"
+      },
+      "faq": {
+        "title": "よくある質問",
+        "desc": "一般的な質問への回答を検索",
+        "cta": "FAQを見る"
+      }
+    }
+  }
+}

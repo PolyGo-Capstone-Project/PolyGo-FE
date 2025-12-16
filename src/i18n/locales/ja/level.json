@@ -1,0 +1,46 @@
+{
+  "levels": {
+    "title": "レベルと報酬",
+    "subtitle": "レベルの進行状況を追跡し、レベルアップ時に報酬を受け取ります。",
+    "backToProfile": "プロフィールに戻る",
+
+    "errors": {
+      "loadUserFailed": "ユーザーデータの読み込みに失敗しました。"
+    },
+
+    "xpSummary": {
+      "title": "進行状況",
+      "description": "セッション、イベントへの参加、コミュニティへの貢献でXPを獲得します。",
+      "totalXp": "合計XP",
+      "currentLevel": "現在のレベル",
+      "levelLabel": "レベル",
+      "maxLevel": "最大レベル",
+      "maxLevelReached": "最大レベルに達しました。",
+      "progressTexts": "次のレベルまで {xp}/{target} XP"
+    },
+
+    "levelsList": {
+      "title": "レベル報酬"
+    },
+
+    "levelBadge": "レベル {order}",
+
+    "requiredXp": {
+      "label": "必要XP"
+    },
+
+    "status": {
+      "locked": "ロック中",
+      "lockedShort": "ロック",
+      "claimed": "受取済",
+      "claimedShort": "受取済",
+      "readyToClaim": "受取可能",
+      "reached": "このレベルに到達しました",
+      "needMoreXp": "このレベルをアンロックするにはXPを獲得し続けてください"
+    },
+
+    "actions": {
+      "claim": "受け取る"
+    }
+  }
+}

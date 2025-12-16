@@ -1,0 +1,47 @@
+{
+  "home": {
+    "title": "PolyGo",
+    "clickMe": "クリックしてください",
+    "heroTitle": "実世界の体験を通じて言語を学ぶ",
+    "heroSubtitle": "ネイティブスピーカーと繋がり、エキサイティングな文化イベントに参加し、最も自然な方法で言語スキルを向上させましょう。",
+    "Demo": "デモを見る",
+    "getStarted": "無料で始める",
+    "usersCount": "50K+",
+    "users": "学習者",
+    "languageCount": "10+",
+    "language": "言語",
+    "eventsCount": "100+",
+    "events": "イベント/月",
+    "whyTitle": "PolyGoを選ぶ理由",
+    "whySubtitle": "AI技術とグローバルコミュニティを備えた包括的な言語学習プラットフォーム",
+    "bannerTitle": "言語学習の旅を始める準備はできましたか？",
+    "bannerSubtitle": "世界中の学習者のコミュニティに参加しましょう",
+    "bannerButtonOne": "無料でサインアップ",
+    "bannerButtonTwo": "すでにアカウントをお持ちですか？ログイン",
+    "live": "Annaとライブ",
+    "firstCard": {
+      "name": "スマートチャット",
+      "description": "AIがチャット中に自動的にエラーを修正し、自然な文を提案します"
+    },
+    "secondCard": {
+      "name": "1対1のビデオ通話",
+      "description": "高品質のビデオ通話でネイティブスピーカーと直接会話の練習ができます"
+    },
+    "thirdCard": {
+      "name": "文化イベント",
+      "description": "ワークショップ、映画鑑賞会、エキサイティングなアクティビティに参加しましょう"
+    },
+    "fourthCard": {
+      "name": "スマートマッチング",
+      "description": "アルゴリズムがあなたの興味と目標に基づいて最適なパートナーを見つけます"
+    },
+    "fifthCard": {
+      "name": "10以上の言語",
+      "description": "英語、フランス語、日本語、韓国語から、あまり一般的でない言語まで"
+    },
+    "sixthCard": {
+      "name": "ゲーミフィケーション",
+      "description": "XPシステム、バッジ、リーダーボードで学習のモチベーションを維持"
+    }
+  }
+}

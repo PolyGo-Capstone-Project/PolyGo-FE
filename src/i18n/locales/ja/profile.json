@@ -1,0 +1,211 @@
+{
+  "profile": {
+    "title": "プロフィール",
+    "edit": "プロフィールを編集",
+    "manageGift": "ギフトを管理",
+    "sendGift": "ギフトを送る",
+    "addFriend": "友達を追加",
+    "pending": "保留中",
+    "acceptFriend": "承諾",
+    "rejectFriend": "拒否",
+    "friends": "友達",
+    "chat": "チャット",
+    "share": "プロフィールを共有",
+    "gender": {
+      "Male": "男性",
+      "Female": "女性",
+      "Other": "その他"
+    },
+    "tabs": {
+      "overview": "概要",
+      "social": "ソーシャル"
+    },
+    "social": {
+      "noPosts": "まだ投稿がありません"
+    },
+    "stats": {
+      "title": "統計",
+      "totalSessions": "総セッション数",
+      "averageRating": "平均評価",
+      "responseRate": "応答率",
+      "totalHours": "総時間",
+      "streakDays": "連続日数",
+      "eventsHosted": "ホストしたイベント"
+    },
+    "sections": {
+      "introduction": "自己紹介",
+      "nativeLanguages": "母国語",
+      "learningLanguages": "学習中の言語",
+      "interests": "興味",
+      "experiencePoints": "経験値",
+      "level": "レベル",
+      "gifts": "コミュニティからのギフト",
+      "badges": "実績＆バッジ"
+    },
+    "info": {
+      "name": "名前",
+      "email": "メール",
+      "gender": "性別",
+      "meritLevel": "メリットレベル",
+      "role": "役割",
+      "balance": "残高",
+      "lastLogin": "最終ログイン",
+      "memberSince": "メンバー登録日"
+    },
+    "xp": {
+      "toNextLevel": "次のレベルまでの経験値",
+      "label": "経験値",
+      "untilLevel": "レベルまでの経験値",
+      "unclaimedRewards": "受け取り待ちの報酬",
+      "goToLevel": "レベルと報酬を表示"
+    },
+    "streak": {
+      "day": "日",
+      "days": "日",
+      "label": "連続日数！",
+      "keepItUp": "その調子で続けましょう！",
+      "currentStreak": "現在の連続日数",
+      "longestStreak": "最長連続日数",
+      "bannedStreak": "禁止された連続日数",
+      "record": "記録",
+      "warning": "警告",
+      "cold": "連続日数を開始しましょう！",
+      "warm": "続けて盛り上げましょう！",
+      "hot": "あなたは燃えています！"
+    },
+    "merit": {
+      "title": "メリットスコア",
+      "trustScore": "信頼スコア",
+      "banned": "制限中",
+      "stable": "安定",
+      "veryTrusted": "非常に信頼できる",
+      "bannedDesc": "制限されたアクセス",
+      "stableDesc": "良好な状態",
+      "veryTrustedDesc": "優れた評判"
+    },
+    "timeAgo": {
+      "today": "今日",
+      "yesterday": "昨日",
+      "daysAgo": "日前",
+      "weeksAgo": "週間前",
+      "monthsAgo": "ヶ月前"
+    },
+    "empty": {
+      "noLanguages": "言語が追加されていません",
+      "noInterests": "興味が追加されていません",
+      "noGifts": "まだギフトを受け取っていません"
+    },
+    "badges": {
+      "noBadges": "まだバッジを獲得していません"
+    },
+    "achievements": {
+      "unlocked": "ロック解除",
+      "firstChat": "最初のチャット",
+      "firstChatDesc": "最初の会話を行いました",
+      "tenHoursSpoken": "10時間話した",
+      "tenHoursSpokenDesc": "10時間以上話しました"
+    },
+    "gifts": {
+      "from": "送信者"
+    },
+    "editDialog": {
+      "title": "プロフィールを編集",
+      "description": "ここでプロフィールを変更してください。完了したら保存をクリックしてください。",
+      "tabs": {
+        "personalInfo": "個人情報",
+        "languagesAndInterests": "言語と興味",
+        "changePassword": "パスワードを変更"
+      },
+      "personalInfo": {
+        "name": "フルネーム",
+        "namePlaceholder": "フルネームを入力",
+        "introduction": "自己紹介",
+        "introductionPlaceholder": "自己紹介を入力...",
+        "gender": "性別",
+        "genderPlaceholder": "性別を選択",
+        "avatar": "プロフィール写真",
+        "changeAvatar": "アバターを変更"
+      },
+      "languagesAndInterests": {
+        "nativeLanguages": "母国語",
+        "nativeLanguagesPlaceholder": "母国語を選択",
+        "learningLanguages": "学習中の言語",
+        "learningLanguagesPlaceholder": "学習中の言語を選択",
+        "interests": "興味",
+        "interestsPlaceholder": "興味を選択"
+      },
+      "changePassword": {
+        "currentPassword": "現在のパスワード",
+        "currentPasswordPlaceholder": "現在のパスワードを入力",
+        "newPassword": "新しいパスワード",
+        "newPasswordPlaceholder": "新しいパスワードを入力",
+        "confirmPassword": "パスワード確認",
+        "confirmPasswordPlaceholder": "パスワードを確認"
+      },
+      "save": "変更を保存",
+      "cancel": "キャンセル",
+      "saving": "保存中...",
+      "errors": {
+        "default": "この項目を確認してください。",
+        "personalInfo": {
+          "name": {
+            "required": "フルネームは必須です。",
+            "min": "フルネームは最低{length}文字必要です。",
+            "max": "フルネームは最大{length}文字です。"
+          },
+          "introduction": {
+            "max": "自己紹介は最大{length}文字です。"
+          },
+          "gender": {
+            "required": "性別は必須です。",
+            "invalid": "有効な性別を選択してください。"
+          },
+          "avatarUrl": {
+            "invalid": "無効なアバターURLです。"
+          }
+        },
+        "languagesInterests": {
+          "speakingLanguageIds": {
+            "required": "最低1つの母国語を選択してください。",
+            "min": "最低{min}つの母国語を選択してください。"
+          },
+          "learningLanguageIds": {
+            "required": "最低1つの学習言語を選択してください。",
+            "min": "最低{min}つの学習言語を選択してください。"
+          },
+          "interestIds": {
+            "required": "最低1つの興味を選択してください。",
+            "min": "最低{min}つの興味を選択してください。"
+          }
+        },
+        "changePassword": {
+          "currentPassword": {
+            "required": "現在のパスワードは必須です。",
+            "min": "現在のパスワードは最低{length}文字必要です。",
+            "max": "現在のパスワードは最大{length}文字です。",
+            "format": "現在のパスワードには大文字、小文字、数字、特殊文字を含める必要があります。"
+          },
+          "newPassword": {
+            "required": "新しいパスワードは必須です。",
+            "min": "新しいパスワードは最低{length}文字必要です。",
+            "max": "新しいパスワードは最大{length}文字です。",
+            "format": "新しいパスワードには大文字、小文字、数字、特殊文字を含める必要があります。"
+          },
+          "confirmPassword": {
+            "required": "新しいパスワードを確認してください。",
+            "min": "パスワード確認は最低{length}文字必要です。",
+            "max": "パスワード確認は最大{length}文字です。",
+            "mismatch": "新しいパスワードとパスワード確認は一致する必要があります。"
+          }
+        }
+      },
+      "success": {
+        "personalInfoUpdated": "個人情報が正常に更新されました！",
+        "languagesInterestsUpdated": "言語と興味が正常に更新されました！",
+        "passwordChanged": "パスワードが正常に変更されました！"
+      }
+    },
+    "noData": "データがありません",
+    "loading": "プロフィールを読み込み中..."
+  }
+}

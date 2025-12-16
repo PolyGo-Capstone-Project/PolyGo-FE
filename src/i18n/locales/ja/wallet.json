@@ -1,0 +1,306 @@
+{
+  "wallet": {
+    "title": "マイウォレット",
+    "subtitle": "残高、サブスクリプション、取引を管理",
+    "balance": {
+      "title": "現在の残高",
+      "show": "残高を表示",
+      "hide": "残高を非表示",
+      "totalEarned": "総獲得額",
+      "totalSpent": "総支出額",
+      "totalWithdrawn": "総出金額",
+      "totalDeposit": "総入金額",
+      "pending": "保留中の残高"
+    },
+    "quickActions": {
+      "title": "クイックアクション",
+      "deposit": "入金",
+      "withdraw": "出金",
+      "viewTransactions": "取引履歴",
+      "buyGift": "ギフトを購入",
+      "upgradeSubscription": "サブスクリプションをアップグレード"
+    },
+    "subscription": {
+      "title": "現在のサブスクリプション",
+      "plan": "プラン",
+      "status": "ステータス",
+      "nextBilling": "次回請求日",
+      "autoRenew": "自動更新",
+      "free": "無料",
+      "plus": "Plus",
+      "premium": "プレミアム",
+      "active": "アクティブ",
+      "inactive": "非アクティブ",
+      "expired": "期限切れ",
+      "on": "オン",
+      "off": "オフ",
+      "daysRemaining": "残り{days}日",
+      "noSubscription": "アクティブなサブスクリプションがありません",
+      "usage": "使用状況",
+      "features": "機能",
+      "viewDetails": "詳細を表示",
+      "cancelSubscription": "サブスクリプションをキャンセル",
+      "manageSubscription": "サブスクリプションを管理",
+      "upgradeNow": "今すぐアップグレード"
+    },
+    "cancelSubscription": {
+      "title": "サブスクリプションをキャンセル",
+      "description": "退会いただくのは残念です。キャンセルの理由をお聞かせください：",
+      "reasons": {
+        "tooExpensive": "高すぎる",
+        "notUsingEnough": "十分に使用していない",
+        "foundAlternative": "代替品を見つけた",
+        "technicalIssues": "技術的な問題",
+        "lackOfFeatures": "機能不足",
+        "other": "その他（詳細を記入してください）"
+      },
+      "otherReasonPlaceholder": "理由について詳しく教えてください...",
+      "cancel": "サブスクリプションを維持",
+      "confirm": "サブスクリプションをキャンセル",
+      "processing": "処理中...",
+      "toast": {
+        "success": "サブスクリプションが正常にキャンセルされました",
+        "error": "サブスクリプションのキャンセルに失敗しました"
+      }
+    },
+    "autoRenew": {
+      "enable": {
+        "title": "自動更新を有効化",
+        "description": "サブスクリプションは期限切れ時に自動的に更新されます。いつでもキャンセルできます。",
+        "cancel": "キャンセル",
+        "confirm": "自動更新を有効化"
+      },
+      "disable": {
+        "title": "自動更新を無効化",
+        "description": "サブスクリプションは自動的に更新されません。期限切れ前に手動で更新できます。",
+        "cancel": "キャンセル",
+        "confirm": "自動更新を無効化"
+      },
+      "toast": {
+        "enableSuccess": "自動更新が正常に有効化されました",
+        "disableSuccess": "自動更新が正常に無効化されました",
+        "error": "自動更新の更新に失敗しました"
+      }
+    },
+    "transactions": {
+      "title": "取引履歴",
+      "subtitle": "すべての取引履歴を表示および管理",
+      "recentTitle": "最近の取引",
+      "recentDescription": "最新の取引アクティビティ",
+      "viewAll": "すべて表示",
+      "noTransactions": "まだ取引がありません",
+      "filter": {
+        "all": "すべての取引",
+        "deposits": "入金",
+        "purchases": "購入",
+        "withdrawals": "出金",
+        "refunds": "払い戻し",
+        "adjustments": "調整",
+        "allTypes": "すべてのタイプ",
+        "allMethods": "すべての方法",
+        "allStatus": "すべてのステータス"
+      },
+      "export": {
+        "button": "エクスポート",
+        "csv": "CSVとしてエクスポート",
+        "excel": "Excelとしてエクスポート"
+      },
+      "columns": {
+        "date": "日付",
+        "description": "説明",
+        "type": "タイプ",
+        "method": "方法",
+        "amount": "金額",
+        "status": "ステータス",
+        "actions": "アクション"
+      },
+      "type": {
+        "Deposit": "入金",
+        "Purchase": "購入",
+        "Refund": "払い戻し",
+        "Earn": "獲得",
+        "Withdraw": "出金",
+        "Gift": "ギフト",
+        "Adjustment": "調整",
+        "AutoRenew": "自動更新"
+      },
+      "status": {
+        "Completed": "完了",
+        "Pending": "保留中",
+        "Expired": "期限切れ",
+        "Cancelled": "キャンセル済み"
+      },
+      "empty": "取引が見つかりません",
+      "search": "取引を検索...",
+      "paymentMethod": "支払い方法",
+      "transactionType": "取引タイプ",
+      "reset": "リセット",
+      "actions": {
+        "viewDetails": "詳細",
+        "viewReceipt": "領収書",
+        "inquiry": "照会"
+      },
+      "receiptDialog": {
+        "title": "出金領収書",
+        "transactionId": "取引ID",
+        "amount": "金額",
+        "date": "日付",
+        "bankName": "銀行名",
+        "accountName": "口座名",
+        "transferReceipt": "振込領収書"
+      },
+      "inquiryDialog": {
+        "title": "照会を提出",
+        "transactionId": "取引ID",
+        "amount": "金額",
+        "type": "タイプ",
+        "notesLabel": "備考（任意）",
+        "notesPlaceholder": "問題や質問を説明...",
+        "cancel": "キャンセル",
+        "submit": "照会を提出",
+        "submitting": "提出中..."
+      },
+      "detailDialog": {
+        "title": "取引詳細",
+        "withdrawalReceipt": "出金領収書",
+        "inquiryInformation": "照会情報",
+        "inquiryBadge": "照会"
+      }
+    },
+    "toast": {
+      "exportSuccess": "正常にエクスポートされました",
+      "exportError": "エクスポートに失敗しました",
+      "comingSoon": "この機能は近日公開予定です",
+      "depositError": "入金の処理に失敗しました。もう一度お試しください。",
+      "cancelPaymentError": "支払いのキャンセルに失敗しました"
+    },
+    "deposit": {
+      "title": "入金",
+      "description": "ウォレットに入金する金額を入力してください",
+      "amountLabel": "金額",
+      "amountPlaceholder": "金額を入力（VND）",
+      "amountHint": "最低：10,000 VND",
+      "cancel": "キャンセル",
+      "confirm": "入金を確認",
+      "processing": "処理中...",
+      "validation": {
+        "required": "金額を入力してください",
+        "min": "最低入金額は10,000 VNDです"
+      }
+    },
+    "payment": {
+      "success": {
+        "title": "支払い成功！",
+        "description": "入金が正常に処理されました。金額はまもなくウォレットに追加されます。",
+        "redirectInfo": "5秒後にウォレットにリダイレクトされます...",
+        "backToWallet": "ウォレットに戻る"
+      },
+      "fail": {
+        "title": "支払い失敗",
+        "description": "支払いがキャンセルされたか、処理に失敗しました。",
+        "reasonInfo": "支払いをキャンセルした場合は、いつでも再試行できます。エラーが発生した場合は、サポートにお問い合わせください。",
+        "tryAgain": "もう一度試す",
+        "backToWallet": "ウォレットに戻る"
+      }
+    },
+    "bankAccount": {
+      "title": "銀行口座を管理",
+      "description": "出金用の銀行口座を追加または削除",
+      "currentAccounts": "現在の口座",
+      "noAccounts": "まだ銀行口座が追加されていません",
+      "addNew": "新しい口座を追加",
+      "bankName": "銀行名",
+      "accountName": "口座名義",
+      "bankNumber": "口座番号",
+      "selectBank": "銀行を選択",
+      "loadingBanks": "読み込み中...",
+      "searchPlaceholder": "銀行を検索...",
+      "noBanksFound": "銀行が見つかりません",
+      "accountNamePlaceholder": "口座名義を入力",
+      "bankNumberPlaceholder": "口座番号を入力",
+      "add": "追加",
+      "adding": "追加中...",
+      "reset": "リセット",
+      "maxAccountsReached": "銀行口座の上限である2つに達しました",
+      "deleteTitle": "削除の確認",
+      "deleteConfirm": "本当にこの銀行口座を削除しますか？この操作は元に戻せません。",
+      "cancel": "キャンセル",
+      "delete": "削除",
+      "deleting": "削除中..."
+    },
+    "withdraw": {
+      "title": "出金",
+      "subtitle": "ウォレットから資金の出金をリクエスト",
+      "form": {
+        "title": "出金情報",
+        "availableBalance": "利用可能残高",
+        "limitReached": "今月の最大出金回数に達しました。次回利用可能：{date}",
+        "noAccounts": "出金前に銀行口座を追加してください",
+        "selectAccount": "銀行口座",
+        "selectAccountPlaceholder": "銀行口座を選択",
+        "selectAccountHint": "出金を受け取る口座を選択",
+        "amount": "出金額",
+        "amountHint": "最低：{min}",
+        "submit": "出金をリクエスト",
+        "submitting": "処理中...",
+        "sendingOTP": "OTPを送信中...",
+        "addAccount": "銀行口座を追加"
+      },
+      "errors": {
+        "amount": {
+          "required": "出金額を入力してください",
+          "min": "最低出金額は50,000 VNDです"
+        },
+        "bankNumber": {
+          "required": "銀行口座を選択してください"
+        },
+        "bankName": {
+          "required": "銀行口座を選択してください"
+        },
+        "accountName": {
+          "required": "銀行口座を選択してください"
+        },
+        "default": "無効な入力"
+      },
+      "otp": {
+        "title": "OTPを確認",
+        "description": "メールに送信された6桁のOTPコードを入力してください",
+        "otpLabel": "OTPコード",
+        "cancel": "キャンセル",
+        "confirm": "確認",
+        "confirming": "確認中...",
+        "success": "出金リクエストが正常に作成されました",
+        "error": "出金の確認に失敗しました",
+        "timeout": "OTP確認がタイムアウトしました。もう一度お試しください。"
+      },
+      "success": {
+        "title": "出金リクエストが提出されました！",
+        "description": "出金リクエストが正常に作成され、処理中です。",
+        "whatNext": {
+          "title": "次に何が起こりますか？",
+          "processing": "処理時間：30分〜24時間（営業時間のみ）",
+          "notification": "完了時にメールとアプリ内通知を受け取ります",
+          "checkHistory": "取引履歴でリクエストを追跡"
+        },
+        "backToWallet": "ウォレットに戻る",
+        "viewHistory": "履歴を表示"
+      },
+      "terms": {
+        "title": "利用規約",
+        "processingTime": {
+          "title": "処理時間",
+          "duration": "処理には30分〜24時間かかります",
+          "weekdays": "月〜金：午前9:00〜午後12:00＆午後1:00〜午後6:00",
+          "saturday": "土曜日：午前9:00〜午後12:00のみ",
+          "notification": "完了時にメールとアプリ内通知"
+        },
+        "limits": {
+          "title": "出金制限",
+          "monthly": "月に最大2回の出金",
+          "min": "最低：10,000 VND",
+          "max": "最高：10,000,000 VND"
+        }
+      }
+    }
+  }
+}

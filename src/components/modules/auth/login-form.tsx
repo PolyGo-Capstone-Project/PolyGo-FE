@@ -210,9 +210,7 @@ export default function LoginForm() {
           </p>
         )}
         {!form.formState.errors.password && form.watch("password") && (
-          <p className="text-xs text-muted-foreground">
-            Must include uppercase, lowercase, number, and special character
-          </p>
+          <p className="text-xs text-muted-foreground">{t("passwordHint")}</p>
         )}
       </div>
 
