@@ -1,0 +1,153 @@
+{
+  "gift": {
+    "title": "ギフト",
+    "description": "言語パートナーとつながり、喜びを広げるための意味のあるギフトを送りましょう",
+    "badge": "ギフトストア",
+    "tabs": {
+      "available": "ギフトストア",
+      "purchased": "マイギフト在庫",
+      "sent": "送信したギフト",
+      "received": "受け取ったギフト"
+    },
+    "available": {
+      "title": "利用可能なギフト",
+      "description": "購入するギフトを選択してください",
+      "price": "価格",
+      "buy": "ギフトを購入",
+      "buyNow": "今すぐ購入",
+      "empty": "現在利用可能なギフトはありません"
+    },
+    "purchased": {
+      "title": "マイギフト在庫",
+      "description": "購入したギフトと受け取ったギフトの現在の在庫",
+      "quantity": "数量",
+      "empty": "まだギフトを購入していません",
+      "emptyDescription": "ギフト在庫は空です",
+      "browseGifts": "利用可能なギフトを閲覧",
+      "totalItems": "合計アイテム数",
+      "giftTypes": "ギフトタイプ",
+      "totalValue": "合計価値",
+      "inventoryValue": "在庫価値",
+      "item": "アイテム",
+      "items": "アイテム",
+      "unitPrice": "単価",
+      "itemTotalValue": "合計価値",
+      "sendAsGift": "ギフトとして送る",
+      "noGiftsFound": "ギフトが見つかりません",
+      "tryAdjustingSearch": "検索語を調整してみてください"
+    },
+    "sent": {
+      "title": "送信したギフト",
+      "description": "他の人に送ったギフト",
+      "to": "宛先",
+      "message": "メッセージ",
+      "anonymous": "匿名",
+      "empty": "まだギフトを送っていません"
+    },
+    "received": {
+      "title": "受け取ったギフト",
+      "description": "他の人から受け取ったギフト",
+      "from": "送信者",
+      "accept": "承諾",
+      "reject": "拒否",
+      "accepted": "承諾済み",
+      "rejected": "拒否済み",
+      "empty": "まだギフトを受け取っていません",
+      "anonymous": "匿名"
+    },
+    "purchase": {
+      "title": "ギフトを購入",
+      "selectGift": "ギフトを選択",
+      "quantity": "数量",
+      "paymentMethod": "支払い方法",
+      "notes": "備考（任意）",
+      "notesPlaceholder": "購入に関する備考を追加...",
+      "total": "合計",
+      "confirm": "購入を確認",
+      "cancel": "キャンセル",
+      "purchasing": "購入中..."
+    },
+    "present": {
+      "title": "ギフトを送る",
+      "selectGift": "送るギフトを選択",
+      "noGifts": "送るギフトがありません",
+      "buyMore": "さらにギフトを購入",
+      "sendingTo": "送信先",
+      "quantity": "数量",
+      "message": "メッセージ（任意）",
+      "messagePlaceholder": "受取人へのメッセージを書く...",
+      "anonymous": "匿名で送信",
+      "confirm": "ギフトを送る",
+      "cancel": "キャンセル",
+      "sending": "送信中...",
+      "available": "利用可能"
+    },
+    "accept": {
+      "title": "ギフトを承諾",
+      "description": "このギフトを承諾しますか？",
+      "from": "送信者",
+      "message": "メッセージ",
+      "confirm": "承諾",
+      "cancel": "キャンセル"
+    },
+    "reject": {
+      "title": "ギフトを拒否",
+      "description": "本当にこのギフトを拒否しますか？",
+      "from": "送信者",
+      "confirm": "拒否",
+      "cancel": "キャンセル"
+    },
+    "history": {
+      "title": "購入履歴",
+      "transactionId": "取引ID",
+      "giftName": "ギフト名",
+      "quantity": "数量",
+      "unitPrice": "単価",
+      "totalAmount": "合計金額",
+      "status": "ステータス",
+      "paymentMethod": "支払い方法",
+      "createdAt": "作成日時",
+      "completedAt": "完了日時",
+      "notes": "備考",
+      "empty": "購入履歴はありません"
+    },
+    "toast": {
+      "purchaseSuccess": "ギフトの購入に成功しました！",
+      "purchaseError": "ギフトの購入に失敗しました",
+      "presentSuccess": "ギフトの送信に成功しました！",
+      "presentError": "ギフトの送信に失敗しました",
+      "acceptSuccess": "ギフトを承諾しました！",
+      "acceptError": "ギフトの承諾に失敗しました",
+      "rejectSuccess": "ギフトを拒否しました",
+      "rejectError": "ギフトの拒否に失敗しました"
+    },
+    "validation": {
+      "giftRequired": "ギフトを選択してください",
+      "quantityMin": "数量は最低1である必要があります",
+      "quantityMax": "数量は利用可能な数を超えることはできません",
+      "messageMax": "メッセージは最大500文字です",
+      "notesMax": "備考は最大500文字です"
+    },
+    "common": {
+      "loading": "読み込み中...",
+      "noData": "データがありません",
+      "search": "ギフトを検索...",
+      "filter": "フィルター",
+      "sort": "並べ替え",
+      "date": "日付",
+      "price": "価格",
+      "name": "名前",
+      "page": "ページ",
+      "of": "の",
+      "items": "アイテム",
+      "previous": "前へ",
+      "next": "次へ"
+    },
+    "visibility": {
+      "changeVisibility": "表示を変更",
+      "visible": "表示",
+      "hidden": "非表示",
+      "pinned": "ピン留め"
+    }
+  }
+}

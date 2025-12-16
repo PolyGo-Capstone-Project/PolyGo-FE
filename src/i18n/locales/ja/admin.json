@@ -1,0 +1,770 @@
+{
+  "admin": {
+    "dashboard": {
+      "title": "管理ダッシュボード",
+      "description": "プラットフォームの統計と最近のアクティビティの概要。"
+    },
+    "languages": {
+      "title": "言語",
+      "description": "PolyGoプラットフォームで利用可能な言語を管理します。",
+      "confirmDelete": "{name}を削除してもよろしいですか？",
+      "error": "言語を読み込めません。",
+      "errorTitle": "エラーが発生しました",
+      "retry": "再試行",
+      "emptyTitle": "まだ言語がありません",
+      "emptyDescription": "新しい言語を追加して開始してください。",
+      "createButton": "言語を作成",
+      "languageIdLabel": "内部ID",
+      "edit": "編集",
+      "delete": "削除",
+      "tableTitle": "言語カタログ",
+      "tableDescription": "利用可能な言語を確認、追加、更新します。",
+      "languageFilter": "ロケール",
+      "pageSize": "ページサイズ",
+      "refresh": "更新",
+      "fallbackName": "フォールバック名",
+      "deleting": "削除中...",
+      "columns": {
+        "no": "番号",
+        "id": "ID",
+        "name": "表示名",
+        "code": "コード",
+        "flag": "国旗アイコン",
+        "actions": "操作",
+        "createdAt": "作成日時",
+        "lastUpdatedAt": "最終更新日時",
+        "flagAlt": "言語の国旗画像"
+      },
+      "pagination": {
+        "summary": "{total}件中{start}～{end}件を表示",
+        "empty": "表示する言語がありません",
+        "previous": "前へ",
+        "page": "{total}ページ中{page}ページ",
+        "next": "次へ"
+      },
+      "form": {
+        "codeLabel": "言語コード",
+        "codePlaceholder": "例：EN",
+        "langLabel": "翻訳ロケール",
+        "langPlaceholder": "例：en",
+        "nameLabel": "表示名",
+        "namePlaceholder": "英語",
+        "flagLabel": "国旗アイコン",
+        "flagPlaceholder": "ファイルが選択されていません",
+        "flagPreviewAlt": "国旗プレビュー",
+        "flagRemove": "削除",
+        "flagHint": "言語の国旗として正方形の画像（PNG、JPG、SVG）をアップロードしてください。",
+        "cancel": "キャンセル",
+        "submitCreate": "作成",
+        "submitUpdate": "変更を保存"
+      },
+      "sheet": {
+        "createTitle": "言語を作成",
+        "createDescription": "言語コードと表示名を定義します。",
+        "editTitle": "言語を編集",
+        "editDescription": "選択したロケールの言語情報を更新します。"
+      },
+      "deleteDialog": {
+        "title": "言語を削除",
+        "description": "{name}を削除してもよろしいですか？この操作は取り消せません。",
+        "cancel": "キャンセル",
+        "confirm": "削除"
+      }
+    },
+    "filters": {
+      "search": "検索",
+      "status": "ステータス",
+      "role": "役割",
+      "dateRange": "期間",
+      "apply": "適用",
+      "reset": "リセット",
+      "wordset": {
+        "difficulty": {
+          "easy": "簡単",
+          "medium": "中級",
+          "hard": "難しい"
+        }
+      }
+    },
+    "gifts": {
+      "title": "ギフト",
+      "description": "PolyGoプラットフォームで利用可能なギフトを管理します。",
+      "confirmDelete": "{name}を削除してもよろしいですか？",
+      "error": "ギフトを読み込めません。",
+      "errorTitle": "エラーが発生しました",
+      "retry": "再試行",
+      "emptyTitle": "まだギフトがありません",
+      "emptyDescription": "新しいギフトを追加して開始してください。",
+      "createButton": "ギフトを作成",
+      "giftIdLabel": "内部ID",
+      "edit": "編集",
+      "delete": "削除",
+      "viewDetails": "詳細を表示",
+      "tableTitle": "ギフトカタログ",
+      "tableDescription": "利用可能なギフトを確認、追加、更新します。",
+      "languageFilter": "ロケール",
+      "pageSize": "ページサイズ",
+      "refresh": "更新",
+      "fallbackName": "このギフト",
+      "deleting": "削除中...",
+      "columns": {
+        "no": "番号",
+        "name": "ギフト名",
+        "price": "価格",
+        "description": "説明",
+        "icon": "アイコン",
+        "createdAt": "作成日時",
+        "lastUpdatedAt": "最終更新日時",
+        "actions": "操作",
+        "iconAlt": "ギフトアイコン画像"
+      },
+      "pagination": {
+        "summary": "{total}件中{start}～{end}件を表示",
+        "empty": "表示するギフトがありません",
+        "previous": "前へ",
+        "page": "{total}ページ中{page}ページ",
+        "next": "次へ"
+      },
+      "form": {
+        "langLabel": "翻訳ロケール",
+        "langPlaceholder": "例：en",
+        "nameLabel": "ギフト名",
+        "namePlaceholder": "例：プレミアムバッジ",
+        "descriptionLabel": "説明",
+        "descriptionPlaceholder": "このギフトを説明してください",
+        "priceLabel": "価格（VND）",
+        "pricePlaceholder": "例：50000",
+        "priceHint": "ベトナムドン（VND）での価格",
+        "iconLabel": "ギフトアイコン",
+        "iconPlaceholder": "ファイルが選択されていません",
+        "iconPreviewAlt": "アイコンプレビュー",
+        "iconRemove": "削除",
+        "iconHint": "このギフトを表す画像（PNG、JPG、SVG）または絵文字🎁をアップロードしてください。",
+        "cancel": "キャンセル",
+        "submitCreate": "作成",
+        "submitUpdate": "変更を保存"
+      },
+      "sheet": {
+        "createTitle": "ギフトを作成",
+        "createDescription": "新しいギフトの名前、価格、説明、アイコンを定義します。",
+        "editTitle": "ギフトを編集",
+        "editDescription": "選択したギフトの情報を更新するか、新しい翻訳を追加します。"
+      },
+      "deleteDialog": {
+        "title": "ギフトを削除",
+        "description": "{name}を削除してもよろしいですか？この操作は取り消せません。",
+        "cancel": "キャンセル",
+        "confirm": "削除"
+      },
+      "detailDialog": {
+        "title": "ギフト詳細",
+        "name": "名前",
+        "price": "価格",
+        "description": "説明",
+        "locale": "ロケール",
+        "icon": "アイコン",
+        "createdAt": "作成日時",
+        "lastUpdatedAt": "最終更新日時",
+        "noDescription": "説明はありません",
+        "close": "閉じる"
+      }
+    },
+    "accounts": {
+      "title": "ユーザーアカウント",
+      "description": "ユーザーアカウントとアクセス制限を管理します。",
+      "error": "アカウントを読み込めません。",
+      "errorTitle": "エラーが発生しました",
+      "retry": "再試行",
+      "emptyTitle": "まだアカウントがありません",
+      "emptyDescription": "システムにユーザーアカウントが見つかりません。",
+      "edit": "編集",
+      "tableTitle": "ユーザーアカウント",
+      "tableDescription": "ユーザーアカウントと権限を管理します。",
+      "pageSize": "ページサイズ",
+      "refresh": "更新",
+      "userIdLabel": "ID",
+      "columns": {
+        "no": "番号",
+        "user": "ユーザー",
+        "meritLevel": "メリットレベル",
+        "role": "役割",
+        "gender": "性別",
+        "experience": "XP",
+        "streak": "連続記録",
+        "subscription": "自動更新",
+        "lastLogin": "最終ログイン",
+        "actions": "操作"
+      },
+      "pagination": {
+        "summary": "{total}件中{start}～{end}件を表示",
+        "empty": "表示するアカウントがありません",
+        "previous": "前へ",
+        "page": "{total}ページ中{page}ページ",
+        "next": "次へ"
+      },
+      "meritLevels": {
+        "banned": "禁止",
+        "bannedDesc": "ユーザーはプラットフォームから完全に禁止されています",
+        "restricted": "制限",
+        "restrictedDesc": "ユーザーは機能へのアクセスが制限されています",
+        "monitored": "監視中",
+        "monitoredDesc": "ユーザーのアクティビティが監視されています",
+        "reliable": "信頼",
+        "reliableDesc": "すべてのアクセス権を持つ標準ユーザー",
+        "admin": "管理者",
+        "adminDesc": "すべての権限を持つ管理者"
+      },
+      "form": {
+        "meritLevelLabel": "メリットレベル",
+        "meritLevelPlaceholder": "メリットレベルを選択",
+        "meritLevelHint": "ユーザーのアクセスレベルと制限を設定します。",
+        "cancel": "キャンセル",
+        "submitUpdate": "変更を保存"
+      },
+      "sheet": {
+        "editTitle": "ユーザー制限を編集",
+        "editDescription": "このユーザーアカウントのメリットレベルと制限を更新します。"
+      }
+    },
+    "interests": {
+      "title": "興味",
+      "description": "ユーザーの興味と設定を管理します",
+      "confirmDelete": "{name}を削除してもよろしいですか？",
+      "error": "興味を読み込めません。",
+      "errorTitle": "エラーが発生しました",
+      "retry": "再試行",
+      "emptyTitle": "まだ興味がありません",
+      "emptyDescription": "新しい興味を追加して開始してください。",
+      "createButton": "興味を作成",
+      "edit": "編集",
+      "delete": "削除",
+      "tableTitle": "興味カタログ",
+      "tableDescription": "プラットフォームで利用可能な興味を確認、追加、更新します。",
+      "languageFilter": "ロケール",
+      "pageSize": "ページサイズ",
+      "refresh": "更新",
+      "columns": {
+        "no": "番号",
+        "id": "ID",
+        "name": "興味",
+        "lang": "ロケール",
+        "icon": "アイコン",
+        "locale": "言語",
+        "createdAt": "作成日時",
+        "lastUpdatedAt": "最終更新日時",
+        "actions": "操作",
+        "iconAlt": "興味アイコン画像"
+      },
+      "pagination": {
+        "summary": "{total}件中{start}～{end}件を表示",
+        "empty": "表示する興味がありません",
+        "previous": "前へ",
+        "page": "{total}ページ中{page}ページ",
+        "next": "次へ"
+      },
+      "form": {
+        "langLabel": "言語コード",
+        "langPlaceholder": "例：en",
+        "langHint": "この翻訳の言語コードを使用します。",
+        "nameLabel": "興味名",
+        "namePlaceholder": "例：旅行",
+        "descriptionLabel": "説明",
+        "descriptionPlaceholder": "この興味を説明してください",
+        "iconLabel": "アイコン",
+        "iconPlaceholder": "ファイルが選択されていません",
+        "iconPreviewAlt": "アイコンプレビュー",
+        "iconRemove": "削除",
+        "iconHint": "この興味を表す正方形の画像（PNG、JPG、SVG）をアップロードしてください。",
+        "cancel": "キャンセル",
+        "submitCreate": "作成",
+        "submitUpdate": "変更を保存"
+      },
+      "sheet": {
+        "createTitle": "興味を作成",
+        "createDescription": "新しい興味のロケール、名前、説明を定義します。",
+        "editTitle": "興味を編集",
+        "editDescription": "選択した興味の情報を更新します。"
+      },
+      "deleteDialog": {
+        "title": "興味を削除",
+        "description": "{name}を削除してもよろしいですか？この操作は取り消せません。",
+        "cancel": "キャンセル",
+        "confirm": "削除"
+      }
+    },
+    "badges": {
+      "title": "バッジ",
+      "description": "PolyGoプラットフォームで利用可能なバッジを管理します。",
+      "confirmDelete": "{name}を削除してもよろしいですか？",
+      "error": "バッジを読み込めません。",
+      "errorTitle": "エラーが発生しました",
+      "retry": "再試行",
+      "emptyTitle": "まだバッジがありません",
+      "emptyDescription": "新しいバッジを追加して開始してください。",
+      "createButton": "バッジを作成",
+      "badgeIdLabel": "内部ID",
+      "edit": "編集",
+      "delete": "削除",
+      "viewDetails": "詳細を表示",
+      "tableTitle": "バッジカタログ",
+      "tableDescription": "利用可能なバッジを確認、追加、更新します。",
+      "languageFilter": "ロケール",
+      "pageSize": "ページサイズ",
+      "refresh": "更新",
+      "fallbackName": "このバッジ",
+      "deleting": "削除中...",
+      "columns": {
+        "no": "番号",
+        "name": "バッジ名",
+        "code": "コード",
+        "category": "カテゴリー",
+        "icon": "アイコン",
+        "createdAt": "作成日時",
+        "lastUpdatedAt": "最終更新日時",
+        "actions": "操作",
+        "iconAlt": "バッジアイコン画像"
+      },
+      "pagination": {
+        "summary": "{total}件中{start}～{end}件を表示",
+        "empty": "表示するバッジがありません",
+        "previous": "前へ",
+        "page": "{total}ページ中{page}ページ",
+        "next": "次へ"
+      },
+      "form": {
+        "langLabel": "翻訳ロケール",
+        "langPlaceholder": "例：en",
+        "codeLabel": "バッジコード",
+        "codePlaceholder": "例：FIRST_EVENT",
+        "codeHint": "SCREAMING_SNAKE_CASE形式を使用してください（例：FIRST_EVENT、ACCOUNT_VERIFIED）",
+        "nameLabel": "バッジ名",
+        "namePlaceholder": "例：初回イベント",
+        "descriptionLabel": "説明",
+        "descriptionPlaceholder": "このバッジを説明してください",
+        "categoryLabel": "カテゴリー",
+        "categoryPlaceholder": "カテゴリーを選択",
+        "iconLabel": "バッジアイコン",
+        "iconPlaceholder": "ファイルが選択されていません",
+        "iconPreviewAlt": "アイコンプレビュー",
+        "iconRemove": "削除",
+        "iconHint": "このバッジを表す画像（PNG、JPG、SVG）または絵文字🏆をアップロードしてください。",
+        "cancel": "キャンセル",
+        "submitCreate": "作成",
+        "submitUpdate": "変更を保存"
+      },
+      "categories": {
+        "Account": "アカウント",
+        "Commerce": "コマース",
+        "Social": "ソーシャル",
+        "Event": "イベント",
+        "Progression": "進行",
+        "Exploration": "探索"
+      },
+      "sheet": {
+        "createTitle": "バッジを作成",
+        "createDescription": "新しいバッジのコード、名前、カテゴリー、説明、アイコンを定義します。",
+        "editTitle": "バッジを編集",
+        "editDescription": "選択したバッジの情報を更新するか、新しい翻訳を追加します。"
+      },
+      "deleteDialog": {
+        "title": "バッジを削除",
+        "description": "{name}を削除してもよろしいですか？この操作は取り消せません。",
+        "cancel": "キャンセル",
+        "confirm": "削除"
+      },
+      "detailDialog": {
+        "title": "バッジ詳細",
+        "name": "名前",
+        "code": "コード",
+        "category": "カテゴリー",
+        "description": "説明",
+        "locale": "ロケール",
+        "icon": "アイコン",
+        "createdAt": "作成日時",
+        "lastUpdatedAt": "最終更新日時",
+        "noDescription": "説明はありません",
+        "close": "閉じる"
+      }
+    },
+    "settings": {
+      "title": "管理者設定",
+      "description": "管理者アカウントの設定と環境設定を管理します",
+      "sections": {
+        "personalInfo": "個人情報",
+        "personalInfoDescription": "プロフィール情報とアバターを更新します",
+        "security": "セキュリティ",
+        "securityDescription": "パスワードを変更し、セキュリティ設定を管理します"
+      },
+      "personalInfo": {
+        "name": "フルネーム",
+        "namePlaceholder": "フルネームを入力してください",
+        "avatar": "プロフィール画像",
+        "changeAvatar": "アバターを変更",
+        "uploading": "アップロード中...",
+        "save": "変更を保存",
+        "saving": "保存中..."
+      },
+      "changePassword": {
+        "title": "パスワードを変更",
+        "currentPassword": "現在のパスワード",
+        "currentPasswordPlaceholder": "現在のパスワードを入力してください",
+        "newPassword": "新しいパスワード",
+        "newPasswordPlaceholder": "新しいパスワードを入力してください",
+        "confirmPassword": "パスワードを確認",
+        "confirmPasswordPlaceholder": "新しいパスワードを確認してください",
+        "requirements": {
+          "title": "パスワードの要件：",
+          "minLength": "8文字以上",
+          "uppercase": "大文字と小文字を含む",
+          "number": "数字を少なくとも1つ含む",
+          "special": "特殊文字を少なくとも1つ含む"
+        },
+        "save": "パスワードを変更",
+        "saving": "変更中..."
+      },
+      "errors": {
+        "default": "このフィールドを確認してください。",
+        "name": {
+          "required": "フルネームは必須です。",
+          "min": "フルネームは{length}文字以上である必要があります。",
+          "max": "フルネームは{length}文字以下である必要があります。"
+        },
+        "avatarUrl": {
+          "invalid": "無効なアバターURLです。"
+        },
+        "currentPassword": {
+          "required": "現在のパスワードは必須です。",
+          "min": "現在のパスワードは{length}文字以上である必要があります。",
+          "max": "現在のパスワードは{length}文字以上である必要があります。",
+          "format": "現在のパスワードには大文字、小文字、数字、特殊文字を含める必要があります。"
+        },
+        "newPassword": {
+          "required": "新しいパスワードは必須です。",
+          "min": "新しいパスワードは{length}文字以上である必要があります。",
+          "max": "新しいパスワードは{length}文字以下である必要があります。",
+          "format": "新しいパスワードには大文字、小文字、数字、特殊文字を含める必要があります。"
+        },
+        "confirmPassword": {
+          "required": "新しいパスワードを確認してください。",
+          "min": "確認パスワードは{length}文字以上である必要があります。",
+          "max": "確認パスワードは{length}文字以下である必要があります。",
+          "mismatch": "新しいパスワードと確認パスワードは一致する必要があります。"
+        }
+      }
+    },
+    "subscriptions": {
+      "title": "サブスクリプション",
+      "description": "PolyGoプラットフォームで利用可能なサブスクリプションプランを管理します。",
+      "confirmDelete": "{name}を削除してもよろしいですか？",
+      "error": "サブスクリプションを読み込めません。",
+      "errorTitle": "エラーが発生しました",
+      "retry": "再試行",
+      "emptyTitle": "まだサブスクリプションがありません",
+      "emptyDescription": "新しいサブスクリプションプランを追加して開始してください。",
+      "createButton": "サブスクリプションを作成",
+      "subscriptionIdLabel": "内部ID",
+      "edit": "編集",
+      "delete": "削除",
+      "viewDetails": "詳細を表示",
+      "tableTitle": "サブスクリプションプラン",
+      "tableDescription": "利用可能なサブスクリプションプランを確認、追加、更新します。",
+      "languageFilter": "ロケール",
+      "pageSize": "ページサイズ",
+      "refresh": "更新",
+      "fallbackName": "このサブスクリプション",
+      "deleting": "削除中...",
+      "columns": {
+        "no": "番号",
+        "planType": "プランタイプ",
+        "name": "名前",
+        "description": "説明",
+        "price": "価格",
+        "duration": "期間",
+        "status": "ステータス",
+        "features": "機能",
+        "createdAt": "作成日時",
+        "lastUpdatedAt": "最終更新日時",
+        "actions": "操作"
+      },
+      "planTypes": {
+        "Free": "無料",
+        "Plus": "プラス",
+        "Premium": "プレミアム"
+      },
+      "featureTypes": {
+        "Chat": "チャット",
+        "Translation": "翻訳",
+        "VoiceCall": "音声通話",
+        "VideoCall": "ビデオ通話",
+        "EventParticipation": "イベント参加",
+        "EventCreation": "イベント作成",
+        "PremiumBadges": "プレミアムバッジ",
+        "Analytics": "分析",
+        "PrioritySupport": "優先サポート",
+        "AdvancedMatching": "高度なマッチング"
+      },
+      "limitTypes": {
+        "Daily": "毎日",
+        "Weekly": "毎週",
+        "Monthly": "毎月",
+        "Unlimited": "無制限"
+      },
+      "status": {
+        "active": "有効",
+        "inactive": "無効"
+      },
+      "pagination": {
+        "summary": "{total}件中{start}～{end}件を表示",
+        "empty": "表示するサブスクリプションがありません",
+        "previous": "前へ",
+        "page": "{total}ページ中{page}ページ",
+        "next": "次へ"
+      },
+      "form": {
+        "planTypeLabel": "プランタイプ",
+        "planTypePlaceholder": "プランタイプを選択",
+        "priceLabel": "価格（VND）",
+        "pricePlaceholder": "例：99000",
+        "priceHint": "ベトナムドン（VND）での価格。無料プランの場合は0を使用してください。",
+        "durationLabel": "期間（日）",
+        "durationPlaceholder": "例：30",
+        "durationHint": "このサブスクリプションが有効な日数。",
+        "isActiveLabel": "有効ステータス",
+        "isActiveHint": "このサブスクリプションプランを有効または無効にします。",
+        "translationsLabel": "翻訳",
+        "addTranslation": "翻訳を追加",
+        "removeTranslation": "削除",
+        "translationLangLabel": "言語",
+        "translationLangPlaceholder": "例：en",
+        "translationNameLabel": "プラン名",
+        "translationNamePlaceholder": "例：プレミアム",
+        "translationDescriptionLabel": "説明",
+        "translationDescriptionPlaceholder": "このプランを説明してください",
+        "featuresLabel": "機能",
+        "addFeature": "機能を追加",
+        "removeFeature": "削除",
+        "featureTypeLabel": "機能タイプ",
+        "featureTypePlaceholder": "機能を選択",
+        "limitValueLabel": "制限値",
+        "limitValuePlaceholder": "例：100",
+        "limitTypeLabel": "制限タイプ",
+        "limitTypePlaceholder": "制限タイプを選択",
+        "isEnabledLabel": "有効",
+        "cancel": "キャンセル",
+        "submitCreate": "作成",
+        "submitUpdate": "変更を保存"
+      },
+      "sheet": {
+        "createTitle": "サブスクリプションを作成",
+        "createDescription": "新しいサブスクリプションのプランタイプ、価格、期間、翻訳、機能を定義します。",
+        "editTitle": "サブスクリプションを編集",
+        "editDescription": "選択したサブスクリプションプランの情報を更新します。"
+      },
+      "deleteDialog": {
+        "title": "サブスクリプションを削除",
+        "description": "{name}を削除してもよろしいですか？この操作は取り消せません。",
+        "cancel": "キャンセル",
+        "confirm": "削除"
+      },
+      "detailDialog": {
+        "title": "サブスクリプション詳細",
+        "planType": "プランタイプ",
+        "price": "価格",
+        "duration": "期間",
+        "status": "ステータス",
+        "name": "名前",
+        "description": "説明",
+        "features": "機能",
+        "featureType": "タイプ",
+        "limitValue": "制限",
+        "limitType": "期間",
+        "enabled": "ステータス",
+        "noDescription": "説明はありません",
+        "noFeatures": "機能が設定されていません",
+        "days": "日",
+        "close": "閉じる"
+      }
+    },
+    "events": {
+      "title": "イベント管理",
+      "description": "PolyGoプラットフォームのイベントを管理します。",
+      "pendingTab": "保留中",
+      "approvedTab": "承認済み",
+      "liveTab": "配信中",
+      "cancelledTab": "キャンセル済み",
+      "completedTab": "完了",
+      "rejectedTab": "却下済み",
+      "error": "イベントを読み込めません。",
+      "errorTitle": "エラーが発生しました",
+      "retry": "再試行",
+      "emptyTitle": "まだイベントがありません",
+      "emptyDescription": "利用可能なイベントがここに表示されます。",
+      "tableTitle": "イベントカタログ",
+      "tableDescription": "イベントを確認および管理します。",
+      "refresh": "更新",
+      "deleting": "削除中...",
+      "columns": {
+        "no": "番号",
+        "title": "タイトル",
+        "host": "ホスト",
+        "language": "言語",
+        "status": "ステータス",
+        "startAt": "開始時刻",
+        "capacity": "定員",
+        "participants": "参加者",
+        "fee": "料金",
+        "actions": "操作"
+      },
+      "status": {
+        "Pending": "保留中",
+        "Approved": "承認済み",
+        "Rejected": "却下済み",
+        "Live": "配信中",
+        "Cancelled": "キャンセル済み",
+        "Completed": "完了"
+      },
+      "filters": {
+        "title": "フィルター",
+        "description": "言語、料金、時間でイベントをフィルターします。",
+        "search": "タイトルで検索...",
+        "language": "言語",
+        "fee": "料金",
+        "time": "時間",
+        "selectDateTime": "日時を選択",
+        "allLanguages": "すべての言語",
+        "allFees": "すべての料金",
+        "free": "無料",
+        "paid": "有料",
+        "clearFilters": "フィルターをクリア",
+        "apply": "フィルターを適用"
+      },
+      "pagination": {
+        "summary": "{total}件中{start}～{end}件を表示",
+        "empty": "表示するイベントがありません",
+        "previous": "前へ",
+        "page": "{total}ページ中{page}ページ",
+        "next": "次へ"
+      },
+      "updateStatus": {
+        "title": "イベントステータスを更新",
+        "description": "このイベントのステータスを変更します。",
+        "statusLabel": "新しいステータス",
+        "statusPlaceholder": "ステータスを選択",
+        "noteLabel": "管理者メモ（任意）",
+        "notePlaceholder": "このステータス変更についてメモを追加...",
+        "cancel": "キャンセル",
+        "submit": "ステータスを更新",
+        "submitting": "更新中...",
+        "success": "イベントステータスが正常に更新されました！",
+        "error": "イベントステータスの更新に失敗しました"
+      },
+      "detail": {
+        "title": "イベント詳細",
+        "description": "このイベントの完全な情報を表示します",
+        "viewDetails": "詳細を表示",
+        "loadError": "イベント詳細の読み込みに失敗しました",
+        "host": "ホスト",
+        "language": "言語",
+        "startTime": "開始時刻",
+        "duration": "期間",
+        "minutes": "分",
+        "capacity": "定員",
+        "fee": "料金",
+        "free": "無料",
+        "categories": "カテゴリー",
+        "participants": "参加者",
+        "registeredAt": "登録日時",
+        "roleHost": "ホスト",
+        "roleAttendee": "参加者",
+        "payoutInfo": "支払い情報",
+        "payoutAmount": "支払い額",
+        "payoutStatus": "支払いステータス",
+        "payoutClaimed": "請求済み",
+        "payoutPending": "保留中"
+      }
+    },
+    "wordsets": {
+      "title": "単語セット管理",
+      "description": "ユーザーが投稿した単語セットを表示、フィルタリング、管理します。",
+      "tableTitle": "単語セット一覧",
+      "tableDescription": "投稿されたすべての単語セットの包括的なリスト。",
+      "refresh": "データを更新",
+      "errorTitle": "単語セットの読み込みに失敗しました",
+      "error": "データの取得中にエラーが発生しました。もう一度お試しください。",
+      "retry": "再試行",
+      "emptyTitle": "単語セットが見つかりません",
+      "emptyDescription": "現在のフィルターに一致する単語セットがありません。",
+      "updateStatus": {
+        "title": "単語セットステータスを更新",
+        "description": "単語セットの新しいステータスを選択し、必要に応じて理由を入力してください。",
+        "statusLabel": "新しいステータス",
+        "statusPlaceholder": "ステータスを選択...",
+        "reasonLabel": "理由",
+        "reasonPlaceholder": "ステータス変更の理由を入力してください（例：却下理由）",
+        "reasonOptional": "任意。「却下済み」ステータスの場合は必須です。",
+        "cancel": "キャンセル",
+        "submit": "変更を保存",
+        "submitting": "保存中..."
+      },
+      "filters": {
+        "title": "フィルター",
+        "description": "フィルターを調整して単語セットのリストを絞り込みます。",
+        "search": "タイトルで検索...",
+        "status": "ステータス",
+        "allStatuses": "すべてのステータス",
+        "language": "言語",
+        "allLanguages": "すべての言語",
+        "difficulty": "難易度",
+        "allDifficulties": "すべての難易度",
+        "category": "カテゴリー",
+        "allCategories": "すべてのカテゴリー",
+        "clearFilters": "フィルターをクリア",
+        "apply": "フィルターを適用",
+        "wordset": {
+          "difficulty": {
+            "easy": "簡単",
+            "medium": "中級",
+            "hard": "難しい"
+          },
+          "category": {
+            "SCIENCE": "科学",
+            "HISTORY": "歴史",
+            "TECHNOLOGY": "技術",
+            "LITERATURE": "文学",
+            "GEOGRAPHY": "地理",
+            "OTHERS": "その他"
+          }
+        }
+      },
+      "columns": {
+        "no": "番号",
+        "title": "タイトル",
+        "creator": "作成者",
+        "status": "ステータス",
+        "category": "カテゴリー",
+        "difficulty": "難易度",
+        "words": "単語"
+      },
+      "status": {
+        "Draft": "下書き",
+        "Pending": "保留中",
+        "Approved": "承認済み",
+        "Rejected": "却下済み"
+      },
+      "detail": {
+        "title": "単語セット詳細",
+        "description": "このセットの単語とメタデータを確認します。",
+        "wordsList": "含まれる単語",
+        "words": "単語",
+        "word": "単語",
+        "definition": "定義",
+        "pronunciation": "発音",
+        "hint": "ヒント"
+      }
+    },
+    "transactions": {
+      "title": "トランザクション",
+      "description": "PolyGoプラットフォームのユーザートランザクションを表示および管理します。"
+    }
+  }
+}

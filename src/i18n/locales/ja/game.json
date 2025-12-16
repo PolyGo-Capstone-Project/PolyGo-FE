@@ -1,0 +1,256 @@
+{
+  "wordPuzzle": {
+    "title": "ワードパズルゲーム",
+    "subtitle": "語彙パズルに挑戦して他の人と競争しましょう",
+    "mySets": "マイパズルセット",
+    "createSet": "パズルセットを作成",
+    "areYouNew": "初めてのプレイヤーですか？",
+    "howToPlay": "ワードパズルの遊び方",
+    "rules": "ルール：",
+    "noResultsTitle": "結果が見つかりません",
+    "noResultsDesc": "別の検索語を試してください",
+    "loading": "読み込み中",
+    "loadMore": "さらに表示",
+    "allLoaded": "すべての単語セットが読み込まれました",
+    "deleteTitle": "パズルセットを削除しますか？",
+    "deleteDesc": "この操作は元に戻せません。本当にこのパズルセットを削除しますか？",
+    "deleting": "削除中",
+    "delete": "削除",
+    "rule": {
+      "chooseSet": "お気に入りのトピックで問題セットを選択",
+      "scramble": "単語はランダムにスクランブルされます（例：\"apple\" → \"p/a/l/p/e\"）",
+      "typeAndNext": "正しい単語を入力して次に進みます",
+      "finishAll": "セット内のすべての単語を完了して終了",
+      "timeRecorded": "あなたの完了時間が記録されます"
+    },
+    "scoring": "スコア：",
+    "score": {
+      "bestRank": "最短完了時間 = 最高ランク",
+      "perSet": "各セットには独自のリーダーボードがあります",
+      "replay": "時間を改善するために再プレイできます",
+      "getXP": "パズル完了時に経験値を獲得",
+      "unlockBadges": "マイルストーン達成時にバッジをアンロック"
+    },
+    "searchPlaceholder": "パズルセットを検索..."
+  },
+  "filters": {
+    "language": "言語",
+    "allLanguages": "すべての言語",
+    "difficulty": "難易度",
+    "allDifficulties": "すべての難易度",
+    "category": "カテゴリ",
+    "allCategories": "すべてのカテゴリ",
+    "clearFilters": "フィルターをクリア",
+    "searchPlaceholder": "語彙セットを検索...",
+    "wordset": {
+      "difficulty": {
+        "Easy": "簡単",
+        "Medium": "普通",
+        "Hard": "難しい"
+      },
+      "category": {
+        "Food": "食べ物",
+        "Travel": "旅行",
+        "Business": "ビジネス",
+        "Technology": "テクノロジー",
+        "Culture": "文化",
+        "Daily": "日常",
+        "Education": "教育",
+        "Health": "健康",
+        "Cooking": "料理",
+        "Sports": "スポーツ",
+        "Relaxing": "リラックス",
+        "Reading": "読書",
+        "Gaming": "ゲーム",
+        "Art": "アート",
+        "Music": "音楽",
+        "Traveling": "旅行",
+        "Photography": "写真",
+        "Movies": "映画",
+        "Fashion": "ファッション",
+        "Dancing": "ダンス"
+      }
+    }
+  },
+  "mysets": {
+    "title": "マイパズルセット",
+    "subtitle": "作成したパズルセットを管理し、ゲーム履歴を表示",
+    "createNew": "新しいパズルセットを作成",
+    "createdByMe": "自分が作成",
+    "playedByMe": "自分がプレイ",
+    "totalSets": "総セット数",
+    "approved": "承認済み",
+    "totalPlays": "総プレイ数",
+    "avgRating": "平均評価",
+    "createdTab": "自分が作成",
+    "playedTab": "自分がプレイ",
+    "section": {
+      "mySets": "マイパズルセット",
+      "approved": "承認済み",
+      "pending": "保留中 - 却下"
+    },
+    "noCreatedSets": "まだパズルセットを作成していません。",
+    "noPlayedSets": "まだパズルセットをプレイしていません。"
+  },
+  "played": {
+    "setsPlayed": "プレイしたセット",
+    "completions": "完了数",
+    "bestRank": "最高ランク",
+    "avgRank": "平均ランク",
+    "bestScore": "最高スコア",
+    "avgBestScore": "平均最高スコア",
+    "section": {
+      "history": "ゲーム履歴"
+    },
+    "createdBy": "作成者",
+    "lastPlayed": "最終プレイ",
+    "rank": "ランク",
+    "best": "最高",
+    "completions2": "完了"
+  },
+  "meta": {
+    "words": "単語",
+    "plays": "プレイ",
+    "bestTime": "最高タイム："
+  },
+  "actions": {
+    "playNow": "今すぐプレイ",
+    "leaderboard": "リーダーボード",
+    "stats": "統計",
+    "playAgain": "もう一度プレイ",
+    "quit": "ゲームを終了",
+    "continue": "プレイを続ける",
+    "submit": "答えを提出",
+    "reshuffle": "再シャッフル",
+    "submitEdit": "編集を提出"
+  },
+  "create": {
+    "title": "ワードパズルセットを作成",
+    "subtitle": "コミュニティのための新しい語彙パズルを作成",
+    "mySets": "マイセット",
+    "minRequired": "最低5つの単語を追加してください。",
+    "submitting": "保存中...",
+    "word": {
+      "minRequired": "最低{n}つの単語を追加してください。"
+    },
+    "basicInfo": {
+      "title": "基本情報",
+      "fields": {
+        "name": "パズルセットタイトル",
+        "desc": "説明"
+      },
+      "placeholders": {
+        "name": "例：「ベトナム料理の語彙」",
+        "desc": "このパズルセットでプレイヤーが学ぶことを説明..."
+      }
+    },
+    "language": {
+      "label": "言語"
+    },
+    "catDiff": {
+      "title": "カテゴリ＆難易度",
+      "category": "カテゴリ",
+      "difficulty": "難易度レベル",
+      "estimate": "推定完了時間",
+      "autoEstimate": "自動推定：約{minutes}分",
+      "level": {
+        "easy": "簡単",
+        "medium": "普通",
+        "hard": "難しい"
+      }
+    },
+    "words": {
+      "title": "語彙単語",
+      "min": "分",
+      "empty": "まだ単語がありません。「単語を追加」をクリックして開始してください。",
+      "wordIndex": "単語 #{index}",
+      "removeAria": "単語を削除",
+      "word": "単語",
+      "wordPh": "例：apple",
+      "pron": "発音",
+      "def": "定義",
+      "defPh": "木に生える丸い果物で、通常は赤、緑、または黄色",
+      "hint": "ヒント",
+      "hintPh": "医者を遠ざける果物",
+      "add": "単語を追加"
+    },
+    "common": {
+      "optional": "任意"
+    },
+    "submit": {
+      "title": "提出準備完了",
+      "reviewTitle": "レビュープロセス",
+      "review1": "パズルセットは24〜48時間以内にレビューされます",
+      "review2": "適切なコンテンツと単語の正確性をチェックします",
+      "review3": "承認されたら通知されます",
+      "review4": "承認されたセットはすべてのユーザーがプレイできるようになります",
+      "cancel": "キャンセル",
+      "cta": "レビューのために提出"
+    },
+    "success": {
+      "title": "正常に提出されました",
+      "desc": "パズルセットが作成され、管理者のレビューを待っています。",
+      "status": "ステータス：レビュー待ち",
+      "eta": "公開予定：24〜48時間以内。",
+      "close": "閉じる",
+      "goto": "マイセットへ"
+    }
+  },
+  "play": {
+    "title": "ワードパズルをプレイ",
+    "description": "語彙パズルを解きましょう。",
+    "loading": "パズルセットを読み込み中...",
+    "time": "時間",
+    "progress": "進行状況",
+    "mistakes": "間違い",
+    "hintsUsed": "使用したヒント",
+    "progressBar": "進行状況",
+    "unscramble": "この単語をアンスクランブル：",
+    "definition": "定義：",
+    "pronuciation": "発音",
+    "hint": "ヒント",
+    "typeHere": "ここに単語を入力...",
+    "submit": "答えを提出",
+    "reshuffle": "再シャッフル",
+    "quit": "ゲームを終了",
+    "continue": "プレイを続ける",
+    "currentProgress": "現在の進行状況：",
+    "completed": "完了",
+    "quitTitle": "ゲームを終了しますか？",
+    "quitDesc": "本当に終了しますか？進行状況は失われます。"
+  },
+  "lb": {
+    "title": "リーダーボード",
+    "playNow": "今すぐプレイ",
+    "topPlayers": "トッププレイヤー",
+    "range": "期間",
+    "rangeAll": "全期間",
+    "rangeWeek": "今週",
+    "rangeMonth": "今月",
+    "you": "あなた",
+    "details": "パズル詳細",
+    "words": "単語",
+    "difficulty": "難易度",
+    "estTime": "推定時間",
+    "min": "分",
+    "totalPlays": "総プレイ数",
+    "avgTime": "平均時間",
+    "yourBest": "あなたの最高スコア",
+    "rankOf": "ランク",
+    "score": "スコア",
+    "mistakes": "間違い",
+    "hints": "ヒント",
+    "creator": "作成者",
+    "rating": "評価",
+    "messageCreator": "プロフィールを表示",
+    "createdOn": "作成日",
+    "noRank": "ランクなし",
+    "na": "N/A",
+    "noBestYet": "まだ最高スコアがありません",
+    "noPlayers": "まだこのパズルを完了したプレイヤーはいません。"
+  },
+  "common": {
+    "loading": "読み込み中...",
+    "error": "エラー"
+  }
+}

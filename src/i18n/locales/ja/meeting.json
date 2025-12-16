@@ -1,0 +1,133 @@
+{
+  "meeting": {
+    "waiting": {
+      "title": "参加の準備はできましたか？",
+      "subtitle": "ミーティングに参加する前に音声とビデオを確認してください",
+      "cameraPreview": "カメラプレビュー",
+      "audioSettings": "音声とビデオの設定",
+      "joinButton": "ミーティングに参加",
+      "setupDevices": "デバイスを設定",
+      "testMic": "マイクをテスト",
+      "testCamera": "カメラをテスト",
+      "micEnabled": "マイクがオンです",
+      "micDisabled": "マイクがオフです",
+      "cameraEnabled": "カメラがオンです",
+      "cameraDisabled": "カメラがオフです"
+    },
+    "meeting": {
+      "title": "ミーティングルーム",
+      "waitingForHost": "ホストがイベントを開始するのを待っています...",
+      "eventNotStarted": "イベントはまだ開始されていません"
+    },
+    "controls": {
+      "muteMic": "マイクをミュート",
+      "unmuteMic": "マイクのミュートを解除",
+      "turnCameraOff": "カメラをオフ",
+      "turnCameraOn": "カメラをオン",
+      "raiseHand": "手を挙げる",
+      "lowerHand": "手を下ろす",
+      "chat": "チャット",
+      "participants": "参加者",
+      "settings": "設定",
+      "leave": "ミーティングから退出",
+      "startEvent": "イベントを開始",
+      "endEvent": "イベントを終了"
+    },
+    "participants": {
+      "title": "参加者",
+      "description": "参加者のリストとステータスとコントロール",
+      "you": "あなた",
+      "host": "ホスト",
+      "noParticipants": "まだ参加者がいません",
+      "lowerAllHands": "すべての手を下ろす",
+      "muteParticipant": "参加者をミュート",
+      "disableVideo": "ビデオを無効化",
+      "disableChat": "チャットを無効化",
+      "kickParticipant": "参加者をキック"
+    },
+    "settings": {
+      "title": "設定",
+      "description": "ミーティングの音声とビデオデバイスを設定",
+      "videoPreview": "ビデオプレビュー",
+      "camera": "カメラ",
+      "microphone": "マイク",
+      "speaker": "スピーカー",
+      "selectCamera": "カメラを選択",
+      "selectMicrophone": "マイクを選択",
+      "selectSpeaker": "スピーカーを選択"
+    },
+    "chat": {
+      "title": "チャット",
+      "description": "他の参加者とメッセージを送受信",
+      "noMessages": "まだメッセージがありません",
+      "placeholder": "メッセージを入力...",
+      "send": "送信",
+      "chatDisabled": "ホストによってチャットが無効化されました"
+    },
+    "errors": {
+      "permissionDenied": "カメラ/マイクの許可が拒否されました",
+      "connectionFailed": "ミーティングへの接続に失敗しました",
+      "joinFailed": "ミーティングへの参加に失敗しました",
+      "notAuthorized": "このミーティングに参加する権限がありません",
+      "eventNotFound": "イベントが見つかりません",
+      "eventEnded": "このイベントは終了しました"
+    },
+    "mobile": {
+      "title": "モバイルデバイスが検出されました",
+      "subtitle": "ビデオミーティングはモバイルWebブラウザではサポートされていません",
+      "appTitle": "PolyGoアプリを使用",
+      "appDescription": "ビデオミーティングに参加するには、スマートフォンでPolyGoアプリをダウンロードして使用してください",
+      "downloadButton": "📱 PolyGoアプリをダウンロード",
+      "backButton": "ダッシュボードに戻る",
+      "hint": "またはコンピューターでこのページを開いてWebブラウザから参加してください",
+      "notSupportedTitle": "モバイルはサポートされていません",
+      "notSupportedMessage": "スマートフォンでPolyGoアプリを使用するか、コンピューターからアクセスしてください"
+    },
+    "dialogs": {
+      "leaveTitle": "ミーティングから退出しますか？",
+      "leaveMessage": "本当にこのミーティングから退出しますか？",
+      "leaveConfirm": "退出",
+      "leaveCancel": "留まる",
+      "endEventTitle": "イベントを終了しますか？",
+      "endEventMessage": "これによりすべての参加者のイベントが終了します。よろしいですか？",
+      "endEventConfirm": "イベントを終了",
+      "endEventCancel": "キャンセル"
+    },
+    "aiSummary": {
+      "title": "AIミーティングサマリー＆語彙",
+      "description": "ミーティングの文字起こしからAI生成された洞察",
+      "loading": "サマリーを読み込み中...",
+      "noSummary": {
+        "title": "サマリーがありません",
+        "hostDescription": "ミーティングの文字起こしからAIサマリーを生成します。これにより会話が分析され、主要な語彙が抽出され、アクションアイテムが特定されます。",
+        "guestDescription": "ホストはまだこのミーティングのサマリーを生成していません。後でもう一度確認してください。"
+      },
+      "generate": "AIサマリーを生成",
+      "generating": "生成中...",
+      "regenerate": "再生成",
+      "close": "閉じる",
+      "success": "ミーティングサマリーが正常に生成されました！",
+      "createGame": "ゲームを作成",
+      "summary": {
+        "title": "ミーティングサマリー"
+      },
+      "keyPoints": {
+        "title": "キーポイント"
+      },
+      "vocabulary": {
+        "title": "主要な語彙",
+        "words": "単語",
+        "context": "文脈",
+        "examples": "例"
+      },
+      "actionItems": {
+        "title": "アクションアイテム"
+      },
+      "generatedAt": "サマリー生成日時："
+    },
+    "captions": {
+      "collapse": "折りたたむ",
+      "viewPrevious": "以前の{count}件のキャプションを表示"
+    }
+  }
+}

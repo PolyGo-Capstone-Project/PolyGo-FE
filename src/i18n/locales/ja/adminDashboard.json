@@ -1,0 +1,170 @@
+{
+  "adminDashboard": {
+    "dashboard": {
+      "header": {
+        "title": "ダッシュボード",
+        "subtitle": "システムパフォーマンス指標の概要",
+        "rangeLabel": "期間"
+      },
+      "filters": {
+        "last7Days": "過去7日間",
+        "last30Days": "過去30日間",
+        "lastYear": "過去1年",
+        "customRange": "カスタム期間",
+        "from": "開始日",
+        "to": "終了日",
+        "apply": "適用"
+      },
+      "state": {
+        "loading": "ダッシュボードデータを読み込み中...",
+        "error": "データの読み込みに失敗しました。後でもう一度お試しください。",
+        "empty": "この期間のデータはありません。"
+      },
+      "tabs": {
+        "overview": "概要",
+        "revenue": "収益",
+        "users": "ユーザー",
+        "events": "イベント",
+        "content": "コンテンツ"
+      },
+      "metrics": {
+        "totalRevenue": {
+          "label": "総収益",
+          "changePrefix": "期間内："
+        },
+        "subscriptions": {
+          "label": "サブスクリプション",
+          "changePrefix": "新規："
+        },
+        "users": {
+          "label": "ユーザー",
+          "changePrefix": "新規："
+        },
+        "events": {
+          "label": "イベント",
+          "changePrefix": "完了："
+        }
+      },
+      "overviewChart": {
+        "title": "概要",
+        "description": "選択した期間内の2つの主要KPI",
+        "upcomingEventsLabel": "今後のイベント",
+        "completedEventsLabel": "完了したイベント"
+      },
+      "revenue": {
+        "breakdown": {
+          "title": "収益内訳",
+          "subtitle": "今日 / 今週 / 今月 / 今年",
+          "today": "今日",
+          "thisWeek": "今週",
+          "thisMonth": "今月",
+          "thisYear": "今年"
+        },
+        "metrics": {
+          "total": {
+            "label": "総収益",
+            "changePrefix": "期間内："
+          },
+          "today": {
+            "label": "今日"
+          },
+          "thisMonth": {
+            "label": "今月"
+          }
+        },
+        "trend": {
+          "title": "収益トレンド",
+          "subtitle": "主要な期間における収益"
+        },
+        "trendByRange": {
+          "title": "期間別収益トレンド",
+          "subtitle": "{granularity}ごとの経時的収益"
+        },
+        "trendGranularity": {
+          "daily": "日",
+          "weekly": "週",
+          "monthly": "月"
+        }
+      },
+      "usersChart": {
+        "total": "総ユーザー数",
+        "newRange": "新規ユーザー（期間）",
+        "active7days": "アクティブ（7日間）"
+      },
+      "users": {
+        "metrics": {
+          "total": {
+            "label": "総ユーザー数",
+            "changePrefix": "新規："
+          },
+          "active7days": {
+            "label": "過去7日間のアクティブ"
+          },
+          "newRange": {
+            "label": "新規ユーザー"
+          }
+        },
+        "trend": {
+          "title": "ユーザー増加",
+          "subtitle": "指標全体のユーザーパフォーマンス"
+        },
+        "trendByRange": {
+          "title": "期間別ユーザー増加",
+          "subtitle": "{granularity}ごとの経時的新規ユーザー"
+        },
+        "trendGranularity": {
+          "daily": "日",
+          "weekly": "週",
+          "monthly": "月"
+        }
+      },
+      "eventsChart": {
+        "total": "総イベント数",
+        "upcoming": "今後",
+        "completed": "完了",
+        "registrations": "登録数"
+      },
+      "events": {
+        "metrics": {
+          "total": { "label": "総イベント数" },
+          "upcoming": { "label": "今後" },
+          "completed": { "label": "完了" }
+        },
+        "trend": {
+          "title": "イベントトレンド",
+          "subtitle": "異なるグループのイベントKPI"
+        },
+        "trendByRange": {
+          "title": "期間別イベントトレンド",
+          "subtitle": "{granularity}ごとの経時的新規イベント"
+        },
+        "trendGranularity": {
+          "daily": "日",
+          "weekly": "週",
+          "monthly": "月"
+        }
+      },
+      "content": {
+        "metrics": {
+          "activeSubscriptions": {
+            "label": "アクティブサブスクリプション",
+            "changePrefix": "新規："
+          },
+          "socialPosts": {
+            "label": "ソーシャル投稿",
+            "changePrefix": "期間内："
+          },
+          "reports": {
+            "label": "レポート",
+            "changePrefix": "保留中："
+          }
+        },
+        "subscriptionPlans": {
+          "title": "サブスクリプションプラン",
+          "subtitle": "現在のプランの分布",
+          "mostUsed": "最も使用されているプラン：{name}（{count}件のアクティブサブスクリプション）"
+        }
+      }
+    }
+  }
+}

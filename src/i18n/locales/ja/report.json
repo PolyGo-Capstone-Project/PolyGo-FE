@@ -1,0 +1,169 @@
+{
+  "report": {
+    "title": "報告",
+    "dialog": {
+      "title": "{type}を報告",
+      "step1": {
+        "title": "理由を選択",
+        "description": "この{type}を報告する理由を選択してください",
+        "otherReason": "その他の理由",
+        "continue": "続ける",
+        "cancel": "キャンセル"
+      },
+      "step2": {
+        "title": "追加情報",
+        "description": "問題の理解に役立つ詳細を提供してください（任意）",
+        "descriptionLabel": "説明",
+        "descriptionPlaceholder": "問題を詳しく説明...",
+        "imagesLabel": "画像を添付（任意）",
+        "imagesPlaceholder": "報告をサポートする画像をアップロード",
+        "uploadButton": "画像をアップロード",
+        "maxImages": "最大{max}枚の画像",
+        "back": "戻る",
+        "submit": "報告を提出",
+        "submitting": "提出中..."
+      }
+    },
+    "reasons": {
+      "event": {
+        "negative_content": "ネガティブなコンテンツ（暴力、不適切、差別、攻撃的など）",
+        "spam": "スパム / 広告 / 詐欺",
+        "violation": "法律違反 / プラットフォームポリシー違反（言語文化に関係のないコンテンツなど）",
+        "other": "その他の理由"
+      },
+      "post": {
+        "negative_content": "ネガティブなコンテンツ",
+        "spam": "スパム / 広告 / 詐欺",
+        "misinformation": "誤情報",
+        "copyright": "著作権侵害",
+        "violation": "法律違反 / プラットフォームポリシー違反",
+        "other": "その他の理由"
+      },
+      "user": {
+        "impersonation": "なりすまし",
+        "spam": "スパム / 広告 / 詐欺",
+        "negative_behavior": "ネガティブな行動（嫌がらせ、攻撃的、差別など）",
+        "violation": "法律違反 / プラットフォームポリシー違反",
+        "other": "その他の理由"
+      },
+      "system": {
+        "appeal": "異議申し立て",
+        "bug": "バグ報告",
+        "support": "サポート"
+      }
+    },
+    "status": {
+      "Pending": "保留中",
+      "Processing": "処理中",
+      "Resolved": "解決済み",
+      "Rejected": "却下"
+    },
+    "type": {
+      "Event": "イベント",
+      "Post": "投稿",
+      "User": "ユーザー",
+      "System": "システム"
+    },
+    "admin": {
+      "title": "報告を管理",
+      "description": "ユーザーから提出されたすべての報告を管理およびレビュー",
+      "tabs": {
+        "all": "すべての報告",
+        "allDescription": "システム内のすべての報告を表示",
+        "pending": "保留中",
+        "pendingDescription": "レビュー待ちの報告",
+        "processing": "処理中",
+        "processingDescription": "現在処理中の報告",
+        "resolved": "解決済み",
+        "resolvedDescription": "解決済みの報告",
+        "rejected": "却下",
+        "rejectedDescription": "却下された報告"
+      },
+      "table": {
+        "id": "ID",
+        "type": "タイプ",
+        "reporter": "報告者",
+        "target": "対象",
+        "reason": "理由",
+        "status": "ステータス",
+        "createdAt": "作成日時",
+        "actions": "アクション",
+        "viewDetails": "詳細を表示",
+        "noReports": "報告が見つかりません"
+      },
+      "filters": {
+        "status": "ステータスでフィルター",
+        "type": "タイプでフィルター",
+        "all": "すべて",
+        "refresh": "更新"
+      },
+      "detail": {
+        "title": "報告の詳細",
+        "reportInfo": "報告情報",
+        "reportType": "報告タイプ",
+        "reportStatus": "ステータス",
+        "reporter": "報告者",
+        "reportedAt": "報告日時",
+        "processedBy": "処理者",
+        "processedAt": "処理日時",
+        "reason": "理由",
+        "description": "説明",
+        "images": "添付画像",
+        "targetInfo": "対象情報",
+        "targetUser": "報告されたユーザー",
+        "targetEvent": "報告されたイベント",
+        "targetPost": "報告された投稿",
+        "adminResponse": "管理者の返信",
+        "adminResponsePlaceholder": "報告者への返信を書く...",
+        "adminResponseToTarget": "対象への返信",
+        "adminResponseToTargetPlaceholder": "報告されたユーザー/コンテンツへの返信を書く...",
+        "updateStatus": "ステータスを更新",
+        "processing": "処理中",
+        "close": "閉じる"
+      }
+    },
+    "user": {
+      "title": "マイ報告",
+      "createReport": "報告を作成",
+      "viewReport": "報告を表示",
+      "noReports": "まだ報告を提出していません",
+      "table": {
+        "type": "タイプ",
+        "target": "対象",
+        "reason": "理由",
+        "status": "ステータス",
+        "createdAt": "提出日時",
+        "actions": "アクション"
+      },
+      "pagination": {
+        "page": "ページ{current} / {total}",
+        "previous": "前へ",
+        "next": "次へ"
+      }
+    },
+    "help": {
+      "title": "ヘルプ＆サポート",
+      "description": "問題のヘルプを取得、問題を報告、または報告履歴を表示",
+      "systemReport": {
+        "title": "システム報告",
+        "description": "バグの報告、サポートのリクエスト、または異議申し立ての提出",
+        "createButton": "システム報告を作成"
+      },
+      "myReports": {
+        "title": "マイ報告",
+        "description": "提出したすべての報告とそのステータスを表示"
+      }
+    },
+    "success": {
+      "submitted": "報告が正常に提出されました",
+      "updated": "報告が正常に更新されました"
+    },
+    "error": {
+      "failed": "報告の提出に失敗しました",
+      "loadFailed": "報告の読み込みに失敗しました",
+      "updateFailed": "報告の更新に失敗しました",
+      "invalidImages": "有効な画像ファイルをアップロードしてください",
+      "maxImages": "最大{max}枚の画像が許可されています"
+    }
+  }
+}
