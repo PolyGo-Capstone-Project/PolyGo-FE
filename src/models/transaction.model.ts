@@ -14,7 +14,7 @@ export const WalletSchema = z.object({
   totalEarned: z.number().min(0),
   totalSpent: z.number().min(0),
   totalWithdrawn: z.number().min(0),
-  totalDeposit: z.number().min(0),
+  totalDeposited: z.number().min(0),
 });
 
 export const WalletBankAccountSchema = z.object({

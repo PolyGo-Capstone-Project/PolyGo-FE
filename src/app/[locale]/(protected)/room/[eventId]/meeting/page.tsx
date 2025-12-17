@@ -8,6 +8,7 @@ import {
   ParticipantList,
   VideoGrid,
 } from "@/components/modules/meeting";
+import { MarkdownRenderer } from "@/components/shared/markdown-renderer";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,6 +21,10 @@ import {
   Button,
   Card,
   CardContent,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   Input,
   Label,
   Sheet,
@@ -33,7 +38,11 @@ import { useMobileDevice } from "@/hooks/use-mobile-device";
 import { removeSettingMediaFromLocalStorage } from "@/lib";
 import eventApiRequest from "@/lib/apis/event";
 import { MeetingChatMessage, Participant } from "@/types";
-import { IconDeviceMobile, IconLoader2 } from "@tabler/icons-react";
+import {
+  IconDeviceMobile,
+  IconInfoCircle,
+  IconLoader2,
+} from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -52,6 +61,7 @@ export default function MeetingRoomPage() {
   const eventId = params.eventId as string;
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
   const [showEndEventDialog, setShowEndEventDialog] = useState(false);
+  const [showEventInfo, setShowEventInfo] = useState(false);
   const [hasStartedEvent, setHasStartedEvent] = useState(false);
   const [chatMessages, setChatMessages] = useState<MeetingChatMessage[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -729,6 +739,74 @@ export default function MeetingRoomPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Event Info Button (Bottom Right) */}
+      <Button
+        size="icon"
+        variant="outline"
+        className="fixed bottom-6 right-6 h-10 w-10 z-50"
+        onClick={() => setShowEventInfo(true)}
+      >
+        <IconInfoCircle className="h-5 w-5" />
+      </Button>
+
+      {/* Event Info Dialog */}
+      <Dialog open={showEventInfo} onOpenChange={setShowEventInfo}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">{event.title}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {/* Event Details */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Host</p>
+                <p className="font-medium">{event.host?.name || "Unknown"}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Language</p>
+                <p className="font-medium">
+                  {event.language?.name || "Unknown"}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Start Time</p>
+                <p className="font-medium">
+                  {new Date(event.startAt).toLocaleString()}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Duration</p>
+                <p className="font-medium">
+                  {event.expectedDurationInMinutes} minutes
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Participants</p>
+                <p className="font-medium">
+                  {event.numberOfParticipants} / {event.capacity}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Status</p>
+                <p className="font-medium capitalize">{event.status}</p>
+              </div>
+            </div>
+
+            {/* Description with Markdown */}
+            {event.description && (
+              <div>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Description
+                </p>
+                <div className="p-4 bg-muted rounded-lg">
+                  <MarkdownRenderer content={event.description} />
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -508,7 +508,7 @@ export function useWebRTC({
     // Setup all event handlers
     hubConnection.on(
       "SetRole",
-      (role: string, connId: string, receivedHostId: string) => {
+      async (role: string, connId: string, receivedHostId: string) => {
         console.log(
           "[SignalR] SetRole:",
           role,
@@ -522,6 +522,30 @@ export function useWebRTC({
         // ✅ FIX: Save hostId to state
         setHostId(receivedHostId);
         console.log("[SignalR] ✅ Host ID saved:", receivedHostId);
+
+        // ✅ Load chat history from cache
+        try {
+          const history = await hubConnection.invoke(
+            "GetChatHistory",
+            eventIdRef.current
+          );
+          if (history && Array.isArray(history)) {
+            console.log(
+              `[SignalR] ✓ Loaded ${history.length} chat messages from cache`
+            );
+            setChatMessages(
+              history.map((msg: any) => ({
+                id: msg.id || `${msg.timestamp}-${Math.random()}`,
+                senderId: msg.senderId || "",
+                senderName: msg.senderName,
+                message: msg.message,
+                timestamp: new Date(msg.timestamp),
+              }))
+            );
+          }
+        } catch (error) {
+          console.error("[SignalR] ✗ Failed to load chat history:", error);
+        }
       }
     );
 
@@ -676,16 +700,16 @@ export function useWebRTC({
     // ✅ Chat message handler
     hubConnection.on(
       "ReceiveChatMessage",
-      (userName: string, message: string) => {
+      (id: string, userName: string, message: string, timestamp: string) => {
         console.log(`[SignalR] ReceiveChatMessage from ${userName}:`, message);
         setChatMessages((prev) => [
           ...prev,
           {
-            id: `${Date.now()}-${Math.random()}`,
-            senderId: "", // We don't get sender ID from backend
+            id: id,
+            senderId: "", // Connection ID not sent from backend for privacy
             senderName: userName,
             message,
-            timestamp: new Date(),
+            timestamp: new Date(timestamp),
           },
         ]);
         // Play chat message notification sound
