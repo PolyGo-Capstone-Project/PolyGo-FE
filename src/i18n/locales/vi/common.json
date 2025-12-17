@@ -108,7 +108,8 @@
     "VoiceCallLimitExceeded": "Bạn đã vượt quá giới hạn cuộc gọi thoại. Vui lòng nâng cấp gói đăng ký của bạn.",
     "TranslationLimitExceeded": "Bạn đã vượt quá giới hạn dịch thuật. Vui lòng nâng cấp gói đăng ký của bạn.",
     "EventRegistrationLimitExceeded": "Bạn đã vượt quá giới hạn đăng ký sự kiện. Vui lòng nâng cấp gói đăng ký của bạn.",
-    "VideoCallLimitExceeded": "Bạn đã vượt quá giới hạn cuộc gọi video. Vui lòng nâng cấp gói đăng ký của bạn."
+    "VideoCallLimitExceeded": "Bạn đã vượt quá giới hạn cuộc gọi video. Vui lòng nâng cấp gói đăng ký của bạn.",
+    "Claim": "Nhận thưởng thất bại!"
   },
   "header": {
     "products": "Sản phẩm",
