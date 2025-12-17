@@ -47,7 +47,8 @@
     "SendTransactionInquiry": "Transaction inquiry sent successfully!",
     "ReplyTransactionInquiry": "Transaction inquiry replied successfully!",
     "export": "Data exported successfully!",
-    "translateMessage": "Message translated successfully!"
+    "translateMessage": "Message translated successfully!",
+    "Claim": "Claimed successfully!"
   },
   "Error": {
     "default": "An error occurred.",
