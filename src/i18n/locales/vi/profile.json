@@ -57,7 +57,8 @@
       "label": "XP",
       "untilLevel": "XP để đạt Cấp",
       "unclaimedRewards": "Bạn có quà chưa nhận",
-      "goToLevel": "Xem cấp độ & phần thưởng của bạn"
+      "goToLevel": "Cấp độ & phần thưởng",
+      "goToBadge": "Huy hiệu"
     },
     "streak": {
       "day": "Ngày",

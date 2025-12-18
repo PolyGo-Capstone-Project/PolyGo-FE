@@ -57,7 +57,8 @@
       "label": "経験値",
       "untilLevel": "レベルまでの経験値",
       "unclaimedRewards": "受け取り待ちの報酬",
-      "goToLevel": "レベルと報酬を表示"
+      "goToLevel": "レベル＆報酬を見る",
+      "goToBadge": "バッジを見る"
     },
     "streak": {
       "day": "日",
