@@ -264,7 +264,7 @@ export function ProfileInfoSection({
               <button
                 type="button"
                 onClick={() => router.push(`/${locale}/level`)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-primary/60 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary shadow-sm transition hover:bg-primary/10 hover:shadow md:px-4 md:text-sm"
+                className="inline-flex items-center gap-1.5 rounded-full border border-green-500/60 bg-green-500/5 px-3 py-1 text-xs font-semibold text-green-600 shadow-sm transition hover:bg-green-600/10 hover:shadow md:px-4 md:text-sm"
               >
                 <IconSparkles className="h-4 w-4" />
                 {tXp("xp.goToLevel", { default: "View levels & rewards" })}
@@ -278,7 +278,7 @@ export function ProfileInfoSection({
               <button
                 type="button"
                 onClick={() => router.push(`/${locale}/badge`)}
-                className="inline-flex items-center gap-1.5 rounded-full border border-primary/60 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary shadow-sm transition hover:bg-primary/10 hover:shadow md:px-4 md:text-sm"
+                className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/60 bg-amber-400/5 px-3 py-1 text-xs font-semibold text-amber-600 shadow-sm transition hover:bg-amber-600/10 hover:shadow md:px-4 md:text-sm"
               >
                 <IconSparkles className="h-4 w-4" />
                 {tXp("xp.goToBadge", { default: "View all badges" })}
