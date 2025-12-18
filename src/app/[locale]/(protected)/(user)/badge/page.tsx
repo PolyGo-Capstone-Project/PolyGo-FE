@@ -183,7 +183,7 @@ export default function BadgesPage() {
                     )}
                   </div>
 
-                  <div className="min-w-0 flex-1 space-y-2">
+                  <div className="min-w-0 h-40 flex-1 space-y-2">
                     {/* code/tag */}
                     <div
                       className={`inline-flex max-w-full items-center rounded-full px-3 py-1 text-[11px] font-semibold md:text-xs ${pillClass}`}
