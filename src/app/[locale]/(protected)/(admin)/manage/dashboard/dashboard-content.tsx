@@ -34,11 +34,10 @@ export default function AdminDashboardPage() {
     if (timeRange === "custom") return;
 
     const today = new Date();
-    const end = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    );
+    const end = new Date();
+    // today.getFullYear(),
+    // today.getMonth(),
+    // today.getDate()
     const start = new Date(end);
 
     if (timeRange === "7d") {
