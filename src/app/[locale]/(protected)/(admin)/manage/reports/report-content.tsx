@@ -361,7 +361,6 @@ export default function ReportContent() {
                 onPageChange={setPage}
               />
             )}
-            )
           </>
         )}
       </div>
