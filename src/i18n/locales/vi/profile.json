@@ -18,7 +18,8 @@
     },
     "tabs": {
       "overview": "Tổng Quan",
-      "social": "Mạng Xã Hội"
+      "social": "Mạng Xã Hội",
+      "organized": "Sự Kiện Đã Tổ Chức"
     },
     "social": {
       "noPosts": "Chưa có bài viết"
@@ -206,6 +207,8 @@
       }
     },
     "noData": "Chưa có dữ liệu",
-    "loading": "Đang tải hồ sơ..."
+    "loading": "Đang tải hồ sơ...",
+    "noEventsHosted": "Chưa tổ chức sự kiện nào",
+    "participants": "người tham gia"
   }
 }

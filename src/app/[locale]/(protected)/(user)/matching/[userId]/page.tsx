@@ -19,16 +19,19 @@ import {
 } from "@/components";
 import { ReportDialog } from "@/components/modules/report";
 import { useUserCommunicationHubContext } from "@/components/providers";
+import { MarkdownRenderer } from "@/components/shared/markdown-renderer";
 import { FriendStatus } from "@/constants";
 import {
   useAcceptFriendRequestMutation,
   useAuthMe,
   useGetConversationsByUserId,
+  useGetEventHostById,
   useGetUserProfile,
   useRejectFriendRequestMutation,
   useSendFriendRequestMutation,
 } from "@/hooks";
 import { showErrorToast, showSuccessToast } from "@/lib";
+import { IconCalendar, IconUsers } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -78,6 +81,22 @@ export default function UserProfilePage() {
     enabled:
       !!userId && userData?.payload.data.friendStatus === FriendStatus.Friends,
   });
+
+  // Fetch events hosted by this user
+  const { data: hostedEventsData, isLoading: isLoadingHostedEvents } =
+    useGetEventHostById(
+      userId,
+      { hostId: userId, lang },
+      { enabled: !!userId }
+    );
+
+  // Filter out cancelled and rejected events
+  const filteredHostedEvents = useMemo(() => {
+    if (!hostedEventsData?.payload.data.items) return [];
+    return hostedEventsData.payload.data.items.filter(
+      (event) => event.status !== "Cancelled" && event.status !== "Rejected"
+    );
+  }, [hostedEventsData]);
 
   // Friend mutations
   const sendFriendRequestMutation = useSendFriendRequestMutation({
@@ -235,8 +254,9 @@ export default function UserProfilePage() {
 
         {/* Tabs Section */}
         <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsList className="grid w-full max-w-md grid-cols-3">
             <TabsTrigger value="overview">{t("tabs.overview")}</TabsTrigger>
+            <TabsTrigger value="organized">{t("tabs.organized")}</TabsTrigger>
             <TabsTrigger value="social">{t("tabs.social")}</TabsTrigger>
           </TabsList>
 
@@ -260,6 +280,127 @@ export default function UserProfilePage() {
                 {/* Gifts */}
                 {transformedGifts.length > 0 && (
                   <ProfileGiftsSection gifts={transformedGifts} />
+                )}
+              </div>
+
+              {/* Right Column - Stats & XP */}
+              <div className="space-y-6">
+                {/* XP & Level */}
+                <ProfileInfoSection
+                  experiencePoints={user.experiencePoints ?? 0}
+                  merit={user.merit}
+                  streakDays={user.streakDays ?? 0}
+                  longestStreakDays={user.longestStreakDays ?? 0}
+                  nextUnbannedAt={user.nextUnbannedAt ?? null}
+                  level={user.level}
+                  xpInCurrentLevel={user.xpInCurrentLevel}
+                  xpToNextLevel={user.xpToNextLevel}
+                />
+                {/* Stats */}
+                <ProfileStats
+                  totalSessions={MOCK_STATS.totalSessions}
+                  averageRating={MOCK_STATS.averageRating}
+                  responseRate={MOCK_STATS.responseRate}
+                  totalHours={MOCK_STATS.totalHours}
+                  streakDays={user.streakDays ?? 0}
+                  eventsHosted={MOCK_STATS.eventsHosted}
+                  planType={user.planType}
+                />
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Organized Events Tab */}
+          <TabsContent value="organized" className="mt-6">
+            <div className="grid gap-6 lg:grid-cols-3">
+              {/* Left Column - Event Organized */}
+              <div className="space-y-6 lg:col-span-2">
+                {isLoadingHostedEvents ? (
+                  <div className="flex h-48 items-center justify-center">
+                    <LoadingSpinner size="md" />
+                  </div>
+                ) : filteredHostedEvents.length > 0 ? (
+                  <div className="space-y-4">
+                    <div className="space-y-3">
+                      {filteredHostedEvents.map((event) => (
+                        <div
+                          key={event.id}
+                          className="rounded-lg border bg-card p-4 hover:bg-accent/50 transition-colors cursor-pointer"
+                          onClick={() =>
+                            router.push(`/${locale}/event/${event.id}`)
+                          }
+                        >
+                          <div className="flex gap-4">
+                            {event.bannerUrl && (
+                              <div className="flex-shrink-0">
+                                <img
+                                  src={event.bannerUrl}
+                                  alt={event.title}
+                                  className="h-24 w-24 rounded-md object-cover"
+                                />
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0 flex flex-col">
+                              <div className="flex items-start justify-between gap-2 mb-2">
+                                <h4 className="font-semibold text-base line-clamp-1 flex-1">
+                                  {event.title}
+                                </h4>
+                                {event.status && (
+                                  <span
+                                    className={`px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${
+                                      event.status === "Live"
+                                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                                        : event.status === "Pending"
+                                          ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                          : event.status === "Approved"
+                                            ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                                            : event.status === "Completed"
+                                              ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+                                              : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                                    }`}
+                                  >
+                                    {event.status}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                                <MarkdownRenderer
+                                  content={event.description}
+                                  className="prose-sm max-w-none [&_.mdxeditor]:border-0 [&_.mdxeditor]:p-0 [&_.mdxeditor]:min-h-0"
+                                />
+                              </div>
+                              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground mt-auto">
+                                <span className="flex items-center gap-1.5">
+                                  <IconCalendar className="h-3.5 w-3.5" />
+                                  <span>
+                                    {new Date(event.startAt).toLocaleDateString(
+                                      locale,
+                                      {
+                                        month: "short",
+                                        day: "numeric",
+                                        year: "numeric",
+                                      }
+                                    )}
+                                  </span>
+                                </span>
+                                <span className="flex items-center gap-1.5">
+                                  <IconUsers className="h-3.5 w-3.5" />
+                                  <span>
+                                    {event.numberOfParticipants}/
+                                    {event.capacity}
+                                  </span>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex h-48 items-center justify-center text-muted-foreground">
+                    {t("noEventsHosted")}
+                  </div>
                 )}
               </div>
 
@@ -314,15 +455,6 @@ export default function UserProfilePage() {
 
               {/* Right Column - Stats & XP (same as overview) */}
               <div className="space-y-6">
-                <ProfileStats
-                  totalSessions={MOCK_STATS.totalSessions}
-                  averageRating={MOCK_STATS.averageRating}
-                  responseRate={MOCK_STATS.responseRate}
-                  totalHours={MOCK_STATS.totalHours}
-                  streakDays={user.streakDays ?? 0}
-                  eventsHosted={MOCK_STATS.eventsHosted}
-                  planType={user.planType}
-                />
                 <ProfileInfoSection
                   experiencePoints={user.experiencePoints ?? 0}
                   merit={user.merit ?? 0}
@@ -332,6 +464,15 @@ export default function UserProfilePage() {
                   level={user.level}
                   xpInCurrentLevel={user.xpInCurrentLevel}
                   xpToNextLevel={user.xpToNextLevel}
+                />
+                <ProfileStats
+                  totalSessions={MOCK_STATS.totalSessions}
+                  averageRating={MOCK_STATS.averageRating}
+                  responseRate={MOCK_STATS.responseRate}
+                  totalHours={MOCK_STATS.totalHours}
+                  streakDays={user.streakDays ?? 0}
+                  eventsHosted={MOCK_STATS.eventsHosted}
+                  planType={user.planType}
                 />
               </div>
             </div>

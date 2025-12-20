@@ -3,6 +3,7 @@ export const TransactionTypeEnum = {
   Purchase: "Purchase",
   Refund: "Refund",
   Withdraw: "Withdraw",
+  WithdrawalRevert: "WithdrawalRevert",
   Adjustment: "Adjustment",
   AutoRenew: "AutoRenew",
 } as const;

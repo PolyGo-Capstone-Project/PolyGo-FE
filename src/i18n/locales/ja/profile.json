@@ -18,7 +18,8 @@
     },
     "tabs": {
       "overview": "概要",
-      "social": "ソーシャル"
+      "social": "ソーシャル",
+      "organized": "主催したイベント"
     },
     "social": {
       "noPosts": "まだ投稿がありません"
@@ -206,6 +207,8 @@
       }
     },
     "noData": "データがありません",
-    "loading": "プロフィールを読み込み中..."
+    "loading": "プロフィールを読み込み中...",
+    "noEventsHosted": "まだイベントを主催していません",
+    "participants": "参加者"
   }
 }

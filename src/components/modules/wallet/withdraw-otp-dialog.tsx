@@ -41,6 +41,7 @@ export function WithdrawOTPDialog({
   const t = useTranslations("wallet.withdraw.otp");
   const confirmMutation = useWithdrawalConfirm();
   const [timeLeft, setTimeLeft] = useState(180); // 3 minutes in seconds
+  const [otpString, setOtpString] = useState<string>("");
   const tSuccess = useTranslations("Success");
   const tError = useTranslations("Error");
   const form = useForm<WithdrawalConfirmBodyType>({
@@ -54,8 +55,10 @@ export function WithdrawOTPDialog({
   useEffect(() => {
     if (open) {
       setTimeLeft(180);
+      setOtpString("");
+      form.reset();
     }
-  }, [open]);
+  }, [open, form]);
 
   // Countdown timer
   useEffect(() => {
@@ -81,6 +84,15 @@ export function WithdrawOTPDialog({
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers and max 6 digits
+    if (value === "" || (/^\d+$/.test(value) && value.length <= 6)) {
+      setOtpString(value);
+      form.setValue("otp", value, { shouldValidate: true });
+    }
   };
 
   const handleSubmit = async (data: WithdrawalConfirmBodyType) => {
@@ -129,9 +141,11 @@ export function WithdrawOTPDialog({
                   </FormLabel>
                   <FormControl>
                     <Input
+                      type="text"
                       maxLength={6}
                       placeholder="000000"
-                      {...field}
+                      value={otpString}
+                      onChange={handleOtpChange}
                       disabled={confirmMutation.isPending}
                     />
                   </FormControl>

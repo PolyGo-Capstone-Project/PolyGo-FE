@@ -35,6 +35,7 @@ export default function ForgotPasswordForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
+  const [otpString, setOtpString] = useState<string>("");
   const [countdown, setCountdown] = useState(0);
   const router = useRouter();
 
@@ -62,6 +63,15 @@ export default function ForgotPasswordForm() {
   });
 
   const watchedMail = form.watch("mail");
+
+  const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers and max 6 digits
+    if (value === "" || (/^\d+$/.test(value) && value.length <= 6)) {
+      setOtpString(value);
+      form.setValue("otp", value, { shouldValidate: true });
+    }
+  };
 
   const handleSendOTP = async () => {
     if (!watchedMail) {
@@ -178,7 +188,8 @@ export default function ForgotPasswordForm() {
             placeholder={t("otpPlaceholder")}
             maxLength={6}
             className="pl-10"
-            {...form.register("otp")}
+            value={otpString}
+            onChange={handleOtpChange}
           />
         </div>
         {form.formState.errors.otp && (

@@ -263,6 +263,8 @@
       "hostCanJoinMessage": "イベント開始の1時間前からミーティングルームに参加できます",
       "eventEnded": "このイベントは終了しました",
       "eventPending": "このイベントは承認待ちです",
+      "eventCancelled": "このイベントはキャンセルされました",
+      "eventRejected": "このイベントは却下されました",
       "yourBalance": "あなたの残高",
       "password": {
         "label": "イベントパスワード",
