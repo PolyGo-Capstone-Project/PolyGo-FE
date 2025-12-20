@@ -87,6 +87,7 @@ export const UserBadgeAllItemSchema = BadgeSchema.omit({ badgeCategory: true })
   )
   .extend({
     isClaimed: z.boolean().optional(),
+    has: z.boolean().optional(),
   });
 
 export const GetUserBadgesAllResSchema = z.object({

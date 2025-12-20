@@ -37,13 +37,13 @@ export default function BadgesPage() {
       ?.slice()
       // sort để badge đã mở khóa lên trước (không phụ thuộc badgeCategory/has)
       ?.sort((a, b) => {
-        const aUnlocked = Boolean(a?.isClaimed);
-        const bUnlocked = Boolean(b?.isClaimed);
+        const aUnlocked = Boolean(a?.has ?? a?.isClaimed);
+        const bUnlocked = Boolean(b?.has ?? b?.isClaimed);
         return Number(bUnlocked) - Number(aUnlocked);
       }) ?? [];
 
   const filtered = showOnlyUnlocked
-    ? items.filter((x) => Boolean(x?.isClaimed))
+    ? items.filter((x) => Boolean(x?.has ?? x?.isClaimed))
     : items;
 
   if (isLoading) {
@@ -114,7 +114,7 @@ export default function BadgesPage() {
               {t("summary.unlocked", { default: "Unlocked" })}:
             </span>
             <span className="text-primary">
-              {items.filter((x) => Boolean(x?.isClaimed)).length}
+              {items.filter((x) => Boolean(x?.has ?? x?.isClaimed)).length}
             </span>
             <span className="text-muted-foreground">/</span>
             <span className="text-muted-foreground">{items.length}</span>
@@ -133,7 +133,7 @@ export default function BadgesPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filtered.map((badge) => {
             // ✅ “bỏ qua has” trong UI, nhưng fallback để không sai hiện tại
-            const unlocked = Boolean(badge?.isClaimed);
+            const unlocked = Boolean(badge?.has ?? badge?.isClaimed);
             const state: BadgeState = unlocked ? "unlocked" : "locked";
 
             const cardBase =
