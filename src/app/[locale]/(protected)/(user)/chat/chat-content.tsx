@@ -95,6 +95,7 @@ const mapConversationToChat = (
     hasSeen: conversation.hasSeen,
     isTyping: false,
     updatedAt,
+    isFriend: conversation.isFriend,
   };
 };
 
@@ -855,7 +856,15 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
               onSendImages={handleSendImageMessage}
               onSendAudio={handleSendAudioMessage}
               disabled={
-                !selectedConversationId || !currentUserId || !isConnected
+                !selectedConversationId ||
+                !currentUserId ||
+                !isConnected ||
+                !selectedConversation?.isFriend
+              }
+              placeholder={
+                !selectedConversation?.isFriend
+                  ? t("notFriendsPlaceholder")
+                  : undefined
               }
             />
           </div>
@@ -936,7 +945,15 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
               onSendImages={handleSendImageMessage}
               onSendAudio={handleSendAudioMessage}
               disabled={
-                !selectedConversationId || !currentUserId || !isConnected
+                !selectedConversationId ||
+                !currentUserId ||
+                !isConnected ||
+                !selectedConversation?.isFriend
+              }
+              placeholder={
+                !selectedConversation?.isFriend
+                  ? t("notFriendsPlaceholder")
+                  : undefined
               }
             />
           </>

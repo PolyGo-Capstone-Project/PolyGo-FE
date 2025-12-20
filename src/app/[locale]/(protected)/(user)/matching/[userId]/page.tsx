@@ -33,6 +33,7 @@ import {
 import { showErrorToast, showSuccessToast } from "@/lib";
 import { IconCalendar, IconUsers } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
@@ -332,11 +333,13 @@ export default function UserProfilePage() {
                         >
                           <div className="flex gap-4">
                             {event.bannerUrl && (
-                              <div className="flex-shrink-0">
-                                <img
+                              <div className="relative h-24 w-24 flex-shrink-0">
+                                <Image
                                   src={event.bannerUrl}
                                   alt={event.title}
-                                  className="h-24 w-24 rounded-md object-cover"
+                                  fill
+                                  unoptimized
+                                  className="rounded-md object-cover"
                                 />
                               </div>
                             )}

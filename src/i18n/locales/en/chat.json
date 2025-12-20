@@ -11,6 +11,7 @@
     "typing": "is typing...",
     "multipleTyping": "are typing...",
     "messagePlaceholder": "Type a message...",
+    "notFriendsPlaceholder": "You are no longer friends with this user",
     "send": "Send",
     "today": "Today",
     "yesterday": "Yesterday",
