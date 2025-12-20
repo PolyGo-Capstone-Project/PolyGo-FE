@@ -120,6 +120,7 @@
         "Refund": "Refund",
         "Earn": "Earn",
         "Withdraw": "Withdrawal",
+        "WithdrawalRevert": "Withdrawal Revert",
         "Gift": "Gift",
         "Adjustment": "Adjustment",
         "AutoRenew": "Auto Renew"
@@ -249,7 +250,8 @@
       "errors": {
         "amount": {
           "required": "Please enter withdrawal amount",
-          "min": "Minimum withdrawal is 50,000 VND"
+          "min": "Minimum withdrawal is 50,000 VND",
+          "max": "Insufficient balance for this withdrawal"
         },
         "bankNumber": {
           "required": "Please select a bank account"

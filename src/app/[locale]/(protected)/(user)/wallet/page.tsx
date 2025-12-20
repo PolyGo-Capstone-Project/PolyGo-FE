@@ -87,6 +87,7 @@ export default function WalletPage() {
       Deposit: "text-green-600",
       Purchase: "text-red-600",
       Withdraw: "text-orange-600",
+      WithdrawalRevert: "text-yellow-600",
       Refund: "text-blue-600",
       Adjustment: "text-gray-600",
       AutoRenew: "text-indigo-600",

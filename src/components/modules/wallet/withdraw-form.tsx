@@ -37,7 +37,7 @@ import {
   Info,
   Loader2,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ManageBankAccountDialog } from "./manage-bank-account-dialog";
@@ -120,7 +120,9 @@ export function WithdrawForm({
 }: WithdrawFormProps) {
   const t = useTranslations("wallet.withdraw");
   const errorMessages = useTranslations("wallet.withdraw.errors");
+  const locale = useLocale();
   const [comboboxOpen, setComboboxOpen] = useState(false);
+  const [amountString, setAmountString] = useState<string>("");
   const tSuccess = useTranslations("Success");
   const tError = useTranslations("Error");
   const withdrawalRequestMutation = useWithdrawalRequest();
@@ -170,6 +172,17 @@ export function WithdrawForm({
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers
+    if (value === "" || /^\d+$/.test(value)) {
+      setAmountString(value);
+      form.setValue("amount", value === "" ? 0 : Number(value), {
+        shouldValidate: true,
+      });
+    }
   };
 
   const handleSubmit = async (data: WithdrawalRequestBodyType) => {
@@ -342,12 +355,11 @@ export function WithdrawForm({
                   <FormLabel>{t("form.amount")}</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      step={50000}
-                      max={balance}
+                      type="text"
                       placeholder="50,000"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      value={amountString}
+                      onChange={handleAmountChange}
+                      disabled={withdrawalRequestMutation.isPending}
                     />
                   </FormControl>
                   <FormDescription>
@@ -355,6 +367,11 @@ export function WithdrawForm({
                       min: formatCurrency(50000),
                     })}
                   </FormDescription>
+                  {amountString && !isNaN(Number(amountString)) && (
+                    <p className="text-sm font-medium">
+                      {formatCurrency(Number(amountString))}
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}

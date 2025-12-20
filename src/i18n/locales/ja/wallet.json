@@ -120,6 +120,7 @@
         "Refund": "払い戻し",
         "Earn": "獲得",
         "Withdraw": "出金",
+        "WithdrawalRevert": "出金取り消し",
         "Gift": "ギフト",
         "Adjustment": "調整",
         "AutoRenew": "自動更新"
@@ -249,7 +250,8 @@
       "errors": {
         "amount": {
           "required": "出金額を入力してください",
-          "min": "最低出金額は50,000 VNDです"
+          "min": "最低出金額は50,000 VNDです",
+          "max": "この出金に対する残高が不足しています"
         },
         "bankNumber": {
           "required": "銀行口座を選択してください"

@@ -233,6 +233,7 @@ export function TransactionHistory() {
       Deposit: "text-green-600",
       Purchase: "text-red-600",
       Withdraw: "text-orange-600",
+      WithdrawalRevert: "text-yellow-600",
       Refund: "text-blue-600",
       Adjustment: "text-gray-600",
       AutoRenew: "text-indigo-600",
@@ -418,7 +419,7 @@ export function TransactionHistory() {
                     >
                       <div className="mb-2 flex items-start justify-between gap-2">
                         <div className="flex-1 space-y-1">
-                          <p className="font-medium leading-tight">
+                          <p className="font-medium leading-tight break-words">
                             {transaction.description ||
                               t(`type.${transaction.transactionType}`)}
                           </p>
@@ -515,9 +516,11 @@ export function TransactionHistory() {
                           <TableCell className="whitespace-nowrap">
                             {formatDate(transaction.createdAt)}
                           </TableCell>
-                          <TableCell className="font-medium">
-                            {transaction.description ||
-                              t(`type.${transaction.transactionType}`)}
+                          <TableCell className="font-medium max-w-xs">
+                            <div className="break-words whitespace-normal">
+                              {transaction.description ||
+                                t(`type.${transaction.transactionType}`)}
+                            </div>
                           </TableCell>
                           <TableCell>
                             <span
