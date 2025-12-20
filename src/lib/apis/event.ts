@@ -10,8 +10,10 @@ import {
   EventSummaryResType,
   EventTranscriptionsQueryType,
   EventTranscriptionsResType,
+  GetEventByHostByIdQueryType,
   GetEventByIdQueryType,
   GetEventByIdResType,
+  GetEventHostByIdResType,
   GetEventStatResType,
   GetEventsQueryType,
   HostedEventResType,
@@ -62,6 +64,11 @@ const eventApiRequest = {
   getStatEvent: createGetOne<GetEventStatResType, GetEventByIdQueryType>(
     `${prefix}/stats`
   ),
+  // GET event host by Id
+  getEventHostById: createGetOne<
+    GetEventHostByIdResType,
+    GetEventByHostByIdQueryType
+  >(`${prefix}/hostedby`),
   //Create event - host
   createEvent: (body: CreateEventBodyType) =>
     http.post<MessageResType>(`${prefix}`, body),

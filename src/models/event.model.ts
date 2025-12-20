@@ -108,6 +108,10 @@ export const GetEventsQuerySchema = PaginationLangQuerySchema;
 
 export const GetEventByIdQuerySchema = LangQuerySchema;
 
+export const GetEventByHostByIdQuerySchema = LangQuerySchema.extend({
+  hostId: z.string(),
+});
+
 export const SearchEventsQuerySchema = GetEventsQuerySchema.extend({
   name: z.string().min(1).max(100).optional(),
   isFree: z.boolean().optional(),
@@ -195,6 +199,9 @@ export const GetEventStatResSchema = z.object({
   }),
   message: z.string(),
 });
+
+// GET event host by Id
+export const GetEventHostByIdResSchema = UpcomingEventResSchema;
 
 // METHOD POST =================================================================
 
@@ -362,6 +369,9 @@ export type EventType = z.infer<typeof EventSchema>;
 export type EventInterestsType = z.infer<typeof EventInterestsSchema>;
 export type GetEventsQueryType = z.infer<typeof GetEventsQuerySchema>;
 export type GetEventByIdQueryType = z.infer<typeof GetEventByIdQuerySchema>;
+export type GetEventByHostByIdQueryType = z.infer<
+  typeof GetEventByHostByIdQuerySchema
+>;
 export type SearchEventsQueryType = z.infer<typeof SearchEventsQuerySchema>;
 export type RecommendedEventResType = z.infer<typeof RecommendedEventResSchema>;
 export type UpcomingEventResType = z.infer<typeof UpcomingEventResSchema>;
@@ -372,6 +382,7 @@ export type ParticipatedEventResType = z.infer<
 export type HostedEventResType = z.infer<typeof HostedEventResSchema>;
 export type GetEventByIdResType = z.infer<typeof GetEventByIdResSchema>;
 export type GetEventStatResType = z.infer<typeof GetEventStatResSchema>;
+export type GetEventHostByIdResType = z.infer<typeof GetEventHostByIdResSchema>;
 export type CreateEventBodyType = z.infer<typeof CreateEventBodySchema>;
 export type CancelEventBodyType = z.infer<typeof CancelEventBodySchema>;
 export type RegisterEventBodyType = z.infer<typeof RegisterEventBodySchema>;
