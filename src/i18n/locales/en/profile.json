@@ -18,7 +18,8 @@
     },
     "tabs": {
       "overview": "Overview",
-      "social": "Social"
+      "social": "Social",
+      "organized": "Organized Events"
     },
     "social": {
       "noPosts": "No posts yet"
@@ -206,6 +207,8 @@
       }
     },
     "noData": "No data available",
-    "loading": "Loading profile..."
+    "loading": "Loading profile...",
+    "noEventsHosted": "No events hosted yet",
+    "participants": "participants"
   }
 }

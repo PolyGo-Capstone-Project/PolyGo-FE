@@ -47,7 +47,8 @@
     "SendTransactionInquiry": "取引照会が送信されました！",
     "ReplyTransactionInquiry": "取引照会に返信しました！",
     "export": "データのエクスポートに成功しました！",
-    "translateMessage": "メッセージの翻訳に成功しました！"
+    "translateMessage": "メッセージの翻訳に成功しました！",
+    "Claim": "正常に請求されました！"
   },
   "Error": {
     "default": "エラーが発生しました。",
@@ -107,7 +108,8 @@
     "VoiceCallLimitExceeded": "音声通話の制限を超えました。サブスクリプションをアップグレードしてください。",
     "TranslationLimitExceeded": "翻訳の制限を超えました。サブスクリプションをアップグレードしてください。",
     "EventRegistrationLimitExceeded": "イベント登録の制限を超えました。サブスクリプションをアップグレードしてください。",
-    "VideoCallLimitExceeded": "ビデオ通話の制限を超えました。サブスクリプションをアップグレードしてください。"
+    "VideoCallLimitExceeded": "ビデオ通話の制限を超えました。サブスクリプションをアップグレードしてください。",
+    "Claim": "請求に失敗しました！"
   },
   "header": {
     "products": "製品",

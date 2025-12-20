@@ -299,8 +299,12 @@ export default function EventDetailPage() {
   const isFull = spotsLeft <= 0;
   const hasInsufficientFunds = event.fee > 0 && balance < event.fee;
   const pending = event.status === EventStatus.Pending;
+  const cancel = event.status === EventStatus.Cancelled;
+  const rejected = event.status === EventStatus.Rejected;
 
   const canRegister =
+    !cancel &&
+    !rejected &&
     !pending &&
     !isFull &&
     !hasInsufficientFunds &&
@@ -533,7 +537,7 @@ export default function EventDetailPage() {
                 <div className="flex items-center justify-between">
                   <CardTitle>{t("registrationInfo")}</CardTitle>
                   <div className="flex items-center gap-2">
-                    {!pending && (
+                    {!pending && !cancel && !rejected && (
                       <>
                         <Button
                           variant="outline"
@@ -621,8 +625,17 @@ export default function EventDetailPage() {
                   </div>
                 )}
 
+                {/* Event Cancelled or Rejected Message */}
+                {(cancel || rejected) && (
+                  <div className="w-full py-3 px-4 bg-red-500/10 text-red-700 dark:text-red-400 rounded-lg border border-red-500/20 text-center">
+                    <p className="text-sm font-medium">
+                      {cancel ? t("eventCancelled") : t("eventRejected")}
+                    </p>
+                  </div>
+                )}
+
                 {/* Register Button - Hide if already registered or pending */}
-                {!isRegistered && !pending && (
+                {!isRegistered && !pending && !cancel && !rejected && (
                   <Button
                     className="w-full gap-2"
                     size="lg"
@@ -679,7 +692,9 @@ export default function EventDetailPage() {
                   !showJoinButton &&
                   !isHost &&
                   !eventEnd &&
-                  !pending && (
+                  !pending &&
+                  !cancel &&
+                  !rejected && (
                     <div className="w-full py-3 px-4 bg-muted rounded-lg border text-center">
                       <p className="text-sm text-muted-foreground">
                         {t("waitingForHost")}

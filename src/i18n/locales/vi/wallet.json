@@ -94,6 +94,7 @@
         "deposits": "Nạp tiền",
         "purchases": "Mua hàng",
         "withdrawals": "Rút tiền",
+        "WithdrawalRevert": "Hủy rút tiền",
         "refunds": "Hoàn tiền",
         "adjustments": "Điều chỉnh",
         "allTypes": "Tất cả loại",
@@ -249,7 +250,8 @@
       "errors": {
         "amount": {
           "required": "Vui lòng nhập số tiền rút",
-          "min": "Số tiền rút tối thiểu là 50.000 VND"
+          "min": "Số tiền rút tối thiểu là 50.000 VND",
+          "max": "Số dư không đủ để rút tiền"
         },
         "bankNumber": {
           "required": "Vui lòng chọn tài khoản ngân hàng"

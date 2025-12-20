@@ -47,7 +47,8 @@
     "SendTransactionInquiry": "Transaction inquiry sent successfully!",
     "ReplyTransactionInquiry": "Transaction inquiry replied successfully!",
     "export": "Data exported successfully!",
-    "translateMessage": "Message translated successfully!"
+    "translateMessage": "Message translated successfully!",
+    "Claim": "Claimed successfully!"
   },
   "Error": {
     "default": "An error occurred.",
@@ -107,7 +108,8 @@
     "VoiceCallLimitExceeded": "You have exceeded your voice call limit. Please upgrade your subscription.",
     "TranslationLimitExceeded": "You have exceeded your translation limit. Please upgrade your subscription.",
     "EventRegistrationLimitExceeded": "You have exceeded your event registration limit. Please upgrade your subscription.",
-    "VideoCallLimitExceeded": "You have exceeded your video call limit. Please upgrade your subscription."
+    "VideoCallLimitExceeded": "You have exceeded your video call limit. Please upgrade your subscription.",
+    "Claim": "Claimed failed!"
   },
   "header": {
     "products": "Products",

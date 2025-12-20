@@ -6,6 +6,7 @@ import {
   CreateEventBodyType,
   EventRatingsQueryType,
   EventTranscriptionsQueryType,
+  GetEventByHostByIdQueryType,
   GetEventByIdQueryType,
   GetEventsQueryType,
   KickParticipantBodyType,
@@ -38,6 +39,9 @@ type GetHostedEventsResponse = Awaited<
 >;
 type GetEventByIdResponse = Awaited<
   ReturnType<typeof eventApiRequest.getEventById>
+>;
+type GetEventHostByIdResponse = Awaited<
+  ReturnType<typeof eventApiRequest.getEventHostById>
 >;
 type GetEventStatResponse = Awaited<
   ReturnType<typeof eventApiRequest.getStatEvent>
@@ -171,6 +175,23 @@ export const useGetEventById = (
     queryKey: ["events", "one", id ?? null, query ?? null],
     queryFn: () =>
       eventApiRequest.getEventById(id, query as GetEventByIdQueryType),
+    enabled: options?.enabled,
+    placeholderData: keepPreviousData,
+  });
+};
+
+export const useGetEventHostById = (
+  id: string,
+  query?: GetEventByHostByIdQueryType,
+  options?: { enabled?: boolean }
+) => {
+  return useQuery<GetEventHostByIdResponse>({
+    queryKey: ["events", "hostedby", id ?? null, query ?? null],
+    queryFn: () =>
+      eventApiRequest.getEventHostById(
+        id,
+        query as GetEventByHostByIdQueryType
+      ),
     enabled: options?.enabled,
     placeholderData: keepPreviousData,
   });
