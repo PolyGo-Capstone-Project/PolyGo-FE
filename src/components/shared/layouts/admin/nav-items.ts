@@ -9,6 +9,7 @@ import {
   IconHelpCircle,
   IconLanguage,
   IconLayoutDashboard,
+  IconNews,
   IconSearch,
   IconSettings,
   IconSparkles,
@@ -102,6 +103,11 @@ const buildNavItems = (locale: string, t: TranslateFn): NavConfig => {
         title: t("games"),
         url: `/${locale}/manage/games`,
         icon: IconDeviceNintendo,
+      },
+      {
+        title: t("posts"),
+        url: `/${locale}/manage/posts`,
+        icon: IconNews,
       },
       {
         title: t("reports"),
