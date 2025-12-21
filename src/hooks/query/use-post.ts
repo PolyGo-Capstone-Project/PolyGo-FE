@@ -7,6 +7,7 @@ import {
 
 import postApiRequest from "@/lib/apis/post";
 import {
+  AdminDeletePostBodyType,
   AdminPostsQueryType,
   CreateCommentBodyType,
   CreatePostBodyType,
@@ -295,5 +296,26 @@ export const useAdminPosts = ({
     queryFn: () => postApiRequest.getAdminPosts(params),
     enabled,
     placeholderData: keepPreviousData,
+  });
+};
+
+// delete post for admin
+type AdminDeletePostMutationResponse = Awaited<
+  ReturnType<typeof postApiRequest.adminDeletePost>
+>;
+
+export const useAdminDeletePost = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    AdminDeletePostMutationResponse,
+    Error,
+    { postId: string; body: AdminDeletePostBodyType }
+  >({
+    mutationFn: ({ postId, body }) =>
+      postApiRequest.adminDeletePost(postId, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-posts"] });
+    },
   });
 };
