@@ -7,6 +7,7 @@ import {
 
 import postApiRequest from "@/lib/apis/post";
 import {
+  AdminPostsQueryType,
   CreateCommentBodyType,
   CreatePostBodyType,
   CreateReactionBodyType,
@@ -272,5 +273,27 @@ export const useSharePost = () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["my-posts"] });
     },
+  });
+};
+
+// get all posts for admin
+type AdminPostsQueryResponse = Awaited<
+  ReturnType<typeof postApiRequest.getAdminPosts>
+>;
+
+type UseAdminPostsQueryOptions = {
+  enabled?: boolean;
+  params?: AdminPostsQueryType;
+};
+
+export const useAdminPosts = ({
+  enabled = true,
+  params,
+}: UseAdminPostsQueryOptions = {}) => {
+  return useQuery<AdminPostsQueryResponse>({
+    queryKey: ["admin-posts", params ?? null],
+    queryFn: () => postApiRequest.getAdminPosts(params),
+    enabled,
+    placeholderData: keepPreviousData,
   });
 };
