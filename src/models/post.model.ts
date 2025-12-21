@@ -159,6 +159,83 @@ const SharePostBodySchema = z
 export const UpdatePostBodySchema = CreatePostBodySchema.partial();
 export const UpdateCommentBodySchema = CreateCommentBodySchema.partial();
 
+// Query admin (keyword)
+export const AdminPostsQuerySchema = PaginationQuerySchema.extend({
+  keyword: z.string().min(1).max(100).optional(),
+});
+
+// Item admin
+export const GetAdminPostItemsSchema = PostSchema.extend({
+  isShare: z.boolean().default(false).optional(),
+  shareType: z.enum(ShareEnum).optional(),
+  sharedEvent: z
+    .object({
+      id: z.string(),
+      title: z.string(),
+      description: z.string(),
+      startAt: z.iso.datetime(),
+      endAt: z.iso.datetime(),
+      fee: z.number().nonnegative(),
+      bannerUrl: z.string(),
+      status: z.string(),
+      host: creatorInfor,
+    })
+    .optional(),
+  sharedPost: z
+    .object({
+      id: z.string(),
+      content: z.string(),
+      imageUrls: z.array(z.string()).optional().default([]),
+      createdAt: z.iso.datetime(),
+      creator: creatorInfor,
+    })
+    .optional(),
+
+  creator: creatorInfor,
+  isMyPost: z.boolean().default(false),
+
+  commentsCount: z.number().nonnegative().default(0),
+  reactionsCount: z.number().nonnegative().default(0),
+
+  // admin comments có isMyComment
+  comments: z
+    .array(
+      z.object({
+        id: z.string(),
+        content: z.string().max(1000),
+        createdAt: z.iso.datetime(),
+        isMyComment: z.boolean().default(false),
+        user: creatorInfor,
+      })
+    )
+    .default([]),
+
+  // admin reactions có users[]
+  reactions: z
+    .array(
+      z.object({
+        reactionType: z.enum(ReactionEnum),
+        count: z.number().nonnegative().default(0),
+        users: z.array(creatorInfor).default([]),
+      })
+    )
+    .default([]),
+
+  // response mẫu có
+  isDeleted: z.boolean().default(false),
+
+  // nếu backend có thể trả về myReaction thì giữ optional cho chắc
+  myReaction: z.enum(ReactionEnum).optional(),
+});
+
+export const GetAdminPostsResSchema = z.object({
+  data: z.object({
+    items: z.array(GetAdminPostItemsSchema),
+    ...PaginationMetaSchema.shape,
+  }),
+  message: z.string(),
+});
+
 //types:
 export type PostType = z.infer<typeof PostSchema>;
 export type CommentType = z.infer<typeof CommentSchema>;
@@ -179,3 +256,8 @@ export type CreateReactionBodyType = z.infer<typeof CreateReactionBodySchema>;
 export type SharePostBodyType = z.infer<typeof SharePostBodySchema>;
 export type UpdatePostBodyType = z.infer<typeof UpdatePostBodySchema>;
 export type UpdateCommentBodyType = z.infer<typeof UpdateCommentBodySchema>;
+
+// types for admin
+export type AdminPostsQueryType = z.infer<typeof AdminPostsQuerySchema>;
+export type GetAdminPostItemsType = z.infer<typeof GetAdminPostItemsSchema>;
+export type GetAdminPostsResType = z.infer<typeof GetAdminPostsResSchema>;
