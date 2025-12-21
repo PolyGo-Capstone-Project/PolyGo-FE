@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Button,
   Dialog,
@@ -10,6 +12,7 @@ import {
   Textarea,
 } from "@/components/ui";
 import { useAdminDeletePost } from "@/hooks/query/use-post";
+import { showErrorToast, showSuccessToast } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -23,14 +26,26 @@ export function DeletePostDialog({
   onClose: () => void;
 }) {
   const t = useTranslations("admin.posts.delete");
+  const tSuccess = useTranslations("Success");
+  const tError = useTranslations("Error");
+
   const [reason, setReason] = useState("");
   const deleteMutation = useAdminDeletePost();
 
   const submit = () => {
-    if (!reason.trim()) return;
+    if (!reason.trim() || deleteMutation.isPending) return;
+
     deleteMutation.mutate(
       { postId: post.id, body: { reason } },
-      { onSuccess: onClose }
+      {
+        onSuccess: (res) => {
+          showSuccessToast(res?.payload?.message ?? "Deleted", tSuccess);
+          onClose();
+        },
+        onError: () => {
+          showErrorToast("Delete", tError);
+        },
+      }
     );
   };
 
