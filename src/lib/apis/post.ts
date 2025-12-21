@@ -1,6 +1,7 @@
 import { createGetAll, createGetOne } from "@/lib/apis/factory";
 import http from "@/lib/http";
 import {
+  AdminDeletePostBodyType,
   AdminPostsQueryType,
   CreateCommentBodyType,
   CreateCommentResType,
@@ -65,6 +66,10 @@ const postApiRequest = {
   getAdminPosts: createGetAll<GetAdminPostsResType, AdminPostsQueryType>(
     `${prefix}/admin`
   ),
+
+  //delete post for admin
+  adminDeletePost: (postId: string, body: AdminDeletePostBodyType) =>
+    http.post<MessageResType>(`${prefix}/admin/${postId}`, body),
 };
 
 export default postApiRequest;
