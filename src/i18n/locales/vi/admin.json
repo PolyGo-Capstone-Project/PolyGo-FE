@@ -674,6 +674,42 @@
         "close": "Đóng"
       }
     },
+    "posts": {
+      "title": "Quản lý bài viết",
+      "description": "Xem, tìm kiếm và kiểm duyệt bài viết của người dùng.",
+      "tableTitle": "Danh sách bài viết",
+      "tableDescription": "Danh sách tổng hợp tất cả bài viết trong hệ thống.",
+      "refresh": "Làm mới",
+      "search": "Tìm theo từ khóa...",
+      "empty": "Không có bài viết nào.",
+      "columns": {
+        "content": "Nội dung",
+        "creator": "Người đăng",
+        "createdAt": "Ngày tạo",
+        "status": "Trạng thái"
+      },
+      "status": {
+        "active": "Đang hoạt động",
+        "deleted": "Đã xóa"
+      },
+      "detail": {
+        "title": "Chi tiết bài viết",
+        "description": "Xem đầy đủ thông tin của bài viết.",
+        "content": "Nội dung",
+        "creator": "Người đăng",
+        "createdAt": "Ngày tạo",
+        "comments": "Bình luận",
+        "reactions": "Cảm xúc"
+      },
+      "delete": {
+        "title": "Xóa bài viết",
+        "description": "Vui lòng nhập lý do xóa bài viết. Thao tác này không thể hoàn tác.",
+        "reason": "Lý do",
+        "reasonPlaceholder": "Nhập lý do (bắt buộc)...",
+        "cancel": "Hủy",
+        "confirm": "Xóa"
+      }
+    },
     "events": {
       "title": "Quản lý sự kiện",
       "description": "Quản lý các sự kiện trên nền tảng PolyGo.",

@@ -67,9 +67,9 @@ const postApiRequest = {
     `${prefix}/admin`
   ),
 
-  //delete post for admin
+  // delete post for admin
   adminDeletePost: (postId: string, body: AdminDeletePostBodyType) =>
-    http.post<MessageResType>(`${prefix}/admin/${postId}`, body),
+    http.deleteWithBody<MessageResType>(`${prefix}/admin/${postId}`, body),
 };
 
 export default postApiRequest;
