@@ -236,6 +236,13 @@ export const GetAdminPostsResSchema = z.object({
   message: z.string(),
 });
 
+// ===== ADMIN DELETE POST =====
+export const AdminDeletePostBodySchema = z
+  .object({
+    reason: z.string().min(1).max(500),
+  })
+  .strict();
+
 //types:
 export type PostType = z.infer<typeof PostSchema>;
 export type CommentType = z.infer<typeof CommentSchema>;
@@ -261,3 +268,4 @@ export type UpdateCommentBodyType = z.infer<typeof UpdateCommentBodySchema>;
 export type AdminPostsQueryType = z.infer<typeof AdminPostsQuerySchema>;
 export type GetAdminPostItemsType = z.infer<typeof GetAdminPostItemsSchema>;
 export type GetAdminPostsResType = z.infer<typeof GetAdminPostsResSchema>;
+export type AdminDeletePostBodyType = z.infer<typeof AdminDeletePostBodySchema>;
