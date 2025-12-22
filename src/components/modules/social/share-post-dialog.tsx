@@ -49,10 +49,37 @@ export function SharePostDialog({
 
   const handleShare = async () => {
     try {
-      const id = post.isShare ? post.sharedPostId! : post.id;
+      // Determine the correct targetId
+      // If this is already a shared post, share the original post
+      // Otherwise, share this post itself
+      let targetId: string;
+
+      if (post.isShare && post.sharedPostId) {
+        // This is a shared post, get the original post ID
+        targetId = post.sharedPostId;
+      } else if (post.isShare && post.sharedPost?.id) {
+        // Fallback to sharedPost.id if sharedPostId is missing
+        targetId = post.sharedPost.id;
+      } else {
+        // This is a regular post, use its own ID
+        targetId = post.id;
+      }
+
+      // Validate targetId before sending
+      if (!targetId) {
+        console.error("Share failed - Post data:", {
+          postId: post.id,
+          isShare: post.isShare,
+          sharedPostId: post.sharedPostId,
+          sharedPost: post.sharedPost,
+        });
+        toast.error("Cannot share: Post ID is missing");
+        return;
+      }
+
       await sharePostMutation.mutateAsync({
         shareType: ShareEnum.Post,
-        targetId: id,
+        targetId: targetId,
         content: shareContent.trim() || "",
       });
 
@@ -105,48 +132,102 @@ export function SharePostDialog({
           {/* Original Post Preview */}
           <Card className="border-2 border-muted">
             <CardContent className="p-4">
-              <div className="flex gap-3 mb-3">
-                <Avatar className="h-8 w-8 ring-1 ring-border">
-                  <AvatarImage src={post.creator.avatarUrl} />
-                  <AvatarFallback className="text-xs bg-gradient-to-br from-muted to-accent">
-                    {(post.creator.name || "")
-                      .split(" ")
-                      .map((n: string) => n[0])
-                      .join("")
-                      .toUpperCase()
-                      .slice(0, 2) || "??"}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-semibold text-sm">{post.creator.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(post.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
+              {/* Show shared post if available, otherwise show the current post */}
+              {post.isShare && post.sharedPost ? (
+                <>
+                  <div className="flex gap-3 mb-3">
+                    <Avatar className="h-8 w-8 ring-1 ring-border">
+                      <AvatarImage src={post.sharedPost.creator.avatarUrl} />
+                      <AvatarFallback className="text-xs bg-gradient-to-br from-muted to-accent">
+                        {(post.sharedPost.creator.name || "")
+                          .split(" ")
+                          .map((n: string) => n[0])
+                          .join("")
+                          .toUpperCase()
+                          .slice(0, 2) || "??"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-semibold text-sm">
+                        {post.sharedPost.creator.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(
+                          post.sharedPost.createdAt
+                        ).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-sm mb-3">
+                    <MarkdownRenderer content={post.sharedPost.content} />
+                  </div>
+                  {post.sharedPost.imageUrls &&
+                    post.sharedPost.imageUrls.length > 0 && (
+                      <div className="relative w-full max-h-[200px] overflow-hidden rounded-lg">
+                        <Image
+                          src={post.sharedPost.imageUrls[0]}
+                          alt="Post preview"
+                          width={400}
+                          height={200}
+                          className="w-full h-auto object-cover rounded-lg"
+                          style={{ maxHeight: "200px" }}
+                        />
+                        {post.sharedPost.imageUrls.length > 1 && (
+                          <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                            +{post.sharedPost.imageUrls.length - 1} more
+                          </div>
+                        )}
+                      </div>
+                    )}
+                </>
+              ) : (
+                <>
+                  <div className="flex gap-3 mb-3">
+                    <Avatar className="h-8 w-8 ring-1 ring-border">
+                      <AvatarImage src={post.creator.avatarUrl} />
+                      <AvatarFallback className="text-xs bg-gradient-to-br from-muted to-accent">
+                        {(post.creator.name || "")
+                          .split(" ")
+                          .map((n: string) => n[0])
+                          .join("")
+                          .toUpperCase()
+                          .slice(0, 2) || "??"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-semibold text-sm">
+                        {post.creator.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(post.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
 
-              {/* Original Content */}
-              <div className="text-sm mb-3">
-                <MarkdownRenderer content={post.content} />
-              </div>
+                  {/* Original Content */}
+                  <div className="text-sm mb-3">
+                    <MarkdownRenderer content={post.content} />
+                  </div>
 
-              {/* Original Images (show first image only if multiple) */}
-              {post.imageUrls && post.imageUrls.length > 0 && (
-                <div className="relative w-full max-h-[200px] overflow-hidden rounded-lg">
-                  <Image
-                    src={post.imageUrls[0]}
-                    alt="Post preview"
-                    width={400}
-                    height={200}
-                    className="w-full h-auto object-cover rounded-lg"
-                    style={{ maxHeight: "200px" }}
-                  />
-                  {post.imageUrls.length > 1 && (
-                    <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                      +{post.imageUrls.length - 1} more
+                  {/* Original Images (show first image only if multiple) */}
+                  {post.imageUrls && post.imageUrls.length > 0 && (
+                    <div className="relative w-full max-h-[200px] overflow-hidden rounded-lg">
+                      <Image
+                        src={post.imageUrls[0]}
+                        alt="Post preview"
+                        width={400}
+                        height={200}
+                        className="w-full h-auto object-cover rounded-lg"
+                        style={{ maxHeight: "200px" }}
+                      />
+                      {post.imageUrls.length > 1 && (
+                        <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                          +{post.imageUrls.length - 1} more
+                        </div>
+                      )}
                     </div>
                   )}
-                </div>
+                </>
               )}
             </CardContent>
           </Card>

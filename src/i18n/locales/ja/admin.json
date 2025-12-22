@@ -218,13 +218,35 @@
         "meritLevelLabel": "メリットレベル",
         "meritLevelPlaceholder": "メリットレベルを選択",
         "meritLevelHint": "ユーザーのアクセスレベルと制限を設定します。",
+        "meritChangeLabel": "メリット調整",
+        "meritChangePlaceholder": "プラス数字で追加、マイナス数字で減算 (例: +10, -5)",
+        "meritChangeHint": "プラス数字でポイント追加、マイナス数字でメリットポイント減算します。",
+        "currentMerit": "現在のメリット",
+        "meritChange": "変更",
+        "expectedMerit": "変更後のメリット",
+        "meritStatus": "ステータス",
+        "meritDesc": {
+          "reliable": "71-100: 非常に信頼できるユーザー",
+          "stable": "41-70: 安定したユーザー",
+          "banned": "0-40: 禁止されたユーザー"
+        },
+        "reasonLabel": "調整理由",
+        "reasonPlaceholder": "メリット調整の理由を入力 (任意)",
+        "reasonHint": "このユーザーのメリット調整理由を記録します。",
         "cancel": "キャンセル",
         "submitUpdate": "変更を保存"
+      },
+      "meritLevels": {
+        "reliable": "非常に信頼できる",
+        "stable": "安定",
+        "banned": "禁止"
       },
       "sheet": {
         "editTitle": "ユーザー制限を編集",
         "editDescription": "このユーザーアカウントのメリットレベルと制限を更新します。"
-      }
+      },
+      "userIdLabel": "ID",
+      "currentMeritLabel": "現在のメリット"
     },
     "interests": {
       "title": "興味",

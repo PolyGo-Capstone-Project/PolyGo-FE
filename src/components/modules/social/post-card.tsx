@@ -484,71 +484,86 @@ export default function PostCard({
         </div>
 
         {/* Shared Post - if this is a shared post */}
-        {post.isShare && post.shareType === "Post" && post.sharedPost && (
+        {post.isShare && post.shareType === "Post" && (
           <Card className="mb-4 border-2 border-muted hover:border-primary/30 transition-all cursor-pointer">
-            <CardContent
-              className="p-4"
-              onClick={() =>
-                router.push(`/${locale}/social/post/${post.sharedPost!.id}`)
-              }
-            >
-              <div className="flex gap-3 mb-3">
-                <Avatar className="h-8 w-8 ring-1 ring-border">
-                  <AvatarImage src={post.sharedPost.creator.avatarUrl} />
-                  <AvatarFallback className="text-xs bg-gradient-to-br from-muted to-accent">
-                    {(post.sharedPost.creator.name || "")
-                      .split(" ")
-                      .map((n: string) => n[0])
-                      .join("")
-                      .toUpperCase()
-                      .slice(0, 2) || "??"}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-semibold text-sm">
-                    {post.sharedPost.creator.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(post.sharedPost.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              <div className="text-sm mb-3">
+            <CardContent className="p-4">
+              {post.sharedPost ? (
                 <div
-                  className={`${!isSharedContentExpanded && post.sharedPost.content.length > 300 ? "line-clamp-4" : ""}`}
+                  onClick={() =>
+                    router.push(`/${locale}/social/post/${post.sharedPost!.id}`)
+                  }
                 >
-                  <MarkdownRenderer content={post.sharedPost.content} />
-                </div>
-                {post.sharedPost.content.length > 300 && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsSharedContentExpanded(!isSharedContentExpanded);
-                    }}
-                    className="text-primary hover:underline text-xs font-medium mt-1"
-                  >
-                    {isSharedContentExpanded
-                      ? t("post.seeLess")
-                      : t("post.seeMore")}
-                  </button>
-                )}
-              </div>
-              {post.sharedPost.imageUrls &&
-                post.sharedPost.imageUrls.length > 0 && (
-                  <div className="relative w-full aspect-video overflow-hidden rounded-lg">
-                    <Image
-                      src={post.sharedPost.imageUrls[0]}
-                      alt="Shared post"
-                      fill
-                      className="object-cover rounded-lg"
-                    />
-                    {post.sharedPost.imageUrls.length > 1 && (
-                      <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                        +{post.sharedPost.imageUrls.length - 1} more
-                      </div>
+                  <div className="flex gap-3 mb-3">
+                    <Avatar className="h-8 w-8 ring-1 ring-border">
+                      <AvatarImage src={post.sharedPost.creator.avatarUrl} />
+                      <AvatarFallback className="text-xs bg-gradient-to-br from-muted to-accent">
+                        {(post.sharedPost.creator.name || "")
+                          .split(" ")
+                          .map((n: string) => n[0])
+                          .join("")
+                          .toUpperCase()
+                          .slice(0, 2) || "??"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-semibold text-sm">
+                        {post.sharedPost.creator.name}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(
+                          post.sharedPost.createdAt
+                        ).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-sm mb-3">
+                    <div
+                      className={`${!isSharedContentExpanded && post.sharedPost.content.length > 300 ? "line-clamp-4" : ""}`}
+                    >
+                      <MarkdownRenderer content={post.sharedPost.content} />
+                    </div>
+                    {post.sharedPost.content.length > 300 && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsSharedContentExpanded(!isSharedContentExpanded);
+                        }}
+                        className="text-primary hover:underline text-xs font-medium mt-1"
+                      >
+                        {isSharedContentExpanded
+                          ? t("post.seeLess")
+                          : t("post.seeMore")}
+                      </button>
                     )}
                   </div>
-                )}
+                  {post.sharedPost.imageUrls &&
+                    post.sharedPost.imageUrls.length > 0 && (
+                      <div className="relative w-full aspect-video overflow-hidden rounded-lg">
+                        <Image
+                          src={post.sharedPost.imageUrls[0]}
+                          alt="Shared post"
+                          fill
+                          className="object-cover rounded-lg"
+                        />
+                        {post.sharedPost.imageUrls.length > 1 && (
+                          <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                            +{post.sharedPost.imageUrls.length - 1} more
+                          </div>
+                        )}
+                      </div>
+                    )}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center py-8 text-muted-foreground">
+                  <div className="text-center">
+                    <IconTrash size={32} className="mx-auto mb-2 opacity-50" />
+                    <p className="text-sm font-medium">
+                      {t("post.deletedPost")}
+                    </p>
+                    <p className="text-xs mt-1">{t("post.deletedPostDesc")}</p>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}

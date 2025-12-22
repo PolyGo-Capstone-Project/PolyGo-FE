@@ -40,7 +40,9 @@
         "cancel": "Hủy",
         "success": "Chia sẻ bài viết thành công!",
         "error": "Chia sẻ bài viết thất bại"
-      }
+      },
+      "deletedPost": "Bài viết đã bị xóa",
+      "deletedPostDesc": "Bài viết gốc không còn khả dụng"
     },
     "leftSidebar": {
       "games": {
