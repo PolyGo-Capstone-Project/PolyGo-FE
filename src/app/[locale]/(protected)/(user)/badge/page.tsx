@@ -187,9 +187,11 @@ export default function BadgesPage() {
                     {/* code/tag */}
                     <div
                       className={`inline-flex max-w-full items-center rounded-full px-3 py-1 text-[11px] font-semibold md:text-xs ${pillClass}`}
-                      title={badge.code}
+                      title={badge.badgeCategory}
                     >
-                      <span className="truncate">{badge.code}</span>
+                      <span className="truncate">
+                        {t(`badgeCategory.${badge.badgeCategory}`)}
+                      </span>
                     </div>
 
                     {/* name */}

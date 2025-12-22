@@ -21,6 +21,15 @@
       "unlocked": "Nice! This badge is already in your collection."
     },
     "noDescription": "Complete specific milestones in the app to unlock this badge.",
-    "empty": "No badges found."
+    "empty": "No badges found.",
+    "badgeCategory": {
+      "Account": "ACCOUNT",
+      "Commerce": "COMMERCE",
+      "Exploration": "EXPLORATION",
+      "Event": "EVENT",
+      "Hidden": "HIDDEN",
+      "Social": "SOCIAL",
+      "Progression": "PROGRESSION"
+    }
   }
 }

@@ -21,6 +21,15 @@
       "unlocked": "Tuyệt vời! Huy hiệu này đã thuộc về bạn."
     },
     "noDescription": "Hoàn thành các điều kiện cụ thể trong ứng dụng để mở khóa huy hiệu này.",
-    "empty": "Không tìm thấy huy hiệu nào."
+    "empty": "Không tìm thấy huy hiệu nào.",
+    "badgeCategory": {
+      "Account": "TÀI KHOẢN",
+      "Commerce": "THƯƠNG MẠI",
+      "Exploration": "KHÁM PHÁ",
+      "Event": "SỰ KIỆN",
+      "Hidden": "ẨN",
+      "Social": "XÃ HỘI",
+      "Progression": "TIẾN TRÌNH"
+    }
   }
 }
