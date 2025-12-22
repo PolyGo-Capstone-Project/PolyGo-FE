@@ -14,7 +14,7 @@
         "translation": "{count} translations/day",
         "voiceCall": "{count} voice calls/day",
         "videoCall": "{count} video calls/day",
-        "eventParticipation": "{count} events/week",
+        "eventParticipation": "Participate {count} events/month",
         "basicSupport": "Community support"
       }
     },
@@ -46,8 +46,8 @@
         "translation": "{count} translations/day",
         "voiceCall": "{count} voice calls/day",
         "videoCall": "{count} video calls/day",
-        "eventParticipation": "{count} events/week",
-        "eventCreation": "{count} events/week",
+        "eventParticipation": "Unlimited event participation",
+        "eventCreation": "Create {count} events/month",
         "advancedMatching": "Advanced matching",
         "premiumBadges": "Premium badges",
         "analytics": "Analytics dashboard",

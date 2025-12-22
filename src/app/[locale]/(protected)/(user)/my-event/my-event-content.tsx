@@ -9,7 +9,6 @@ import {
   MyEventCalendar,
   MyEventSidebar,
 } from "@/components/modules/event/my-event";
-import { useRouter } from "next/navigation";
 
 interface ContentProps {
   locale: string;
@@ -20,7 +19,6 @@ export default function MyEventContent({ locale }: ContentProps) {
   const [activeTab, setActiveTab] = useState<"all" | "created" | "joined">(
     "all"
   );
-  const router = useRouter();
 
   return (
     <div className="container mx-auto py-6 px-4">

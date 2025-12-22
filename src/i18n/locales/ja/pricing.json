@@ -46,7 +46,7 @@
         "translation": "1日{count}翻訳",
         "voiceCall": "1日{count}音声通話",
         "videoCall": "1日{count}ビデオ通話",
-        "eventParticipation": "週{count}イベント",
+        "eventParticipation": "無制限のイベント参加",
         "eventCreation": "週{count}イベント作成",
         "advancedMatching": "高度なマッチング",
         "premiumBadges": "プレミアムバッジ",

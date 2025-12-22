@@ -442,6 +442,22 @@
           "viewProfile": "プロフィールを見る",
           "kick": "退出させる",
           "report": "報告",
+          "tabs": {
+            "all": "登録済み",
+            "notAttended": "未参加",
+            "attended": "参加済み",
+            "kicked": "退出済み"
+          },
+          "status": {
+            "notAttended": "未参加",
+            "attended": "参加済み",
+            "kicked": "退出済み"
+          },
+          "noParticipants": {
+            "notAttended": "未参加の参加者はまだいません",
+            "attended": "参加済みの参加者はまだいません",
+            "kicked": "退出済みの参加者はいません"
+          },
           "kickDialog": {
             "title": "参加者を退出させる",
             "description": "この参加者をイベントから退出させてもよろしいですか？",

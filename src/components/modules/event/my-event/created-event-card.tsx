@@ -56,7 +56,7 @@ type CreatedEventCardProps = {
     }>;
   };
   onEdit?: (eventId: string) => void;
-  onCancel?: (eventId: string, reason: string) => void;
+  onCancel?: (eventId: string, reason: string) => Promise<void>;
   onViewDetail?: (eventId: string) => void;
   onViewStats?: (eventId: string) => void;
   isCancelling?: boolean;
@@ -80,9 +80,9 @@ export function CreatedEventCard({
     event.status === EventStatus.Pending ||
     event.status === EventStatus.Approved;
 
-  const handleCancelConfirm = () => {
+  const handleCancelConfirm = async () => {
     if (cancelReason.trim() && onCancel) {
-      onCancel(event.id, cancelReason);
+      await onCancel(event.id, cancelReason);
       setShowCancelDialog(false);
       setCancelReason("");
     }

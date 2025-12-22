@@ -40,7 +40,9 @@
         "cancel": "Cancel",
         "success": "Post shared successfully!",
         "error": "Failed to share post"
-      }
+      },
+      "deletedPost": "This post has been deleted",
+      "deletedPostDesc": "The original post is no longer available"
     },
     "leftSidebar": {
       "games": {
