@@ -306,13 +306,35 @@
         "meritLevelLabel": "Cấp độ uy tín",
         "meritLevelPlaceholder": "Chọn cấp độ uy tín",
         "meritLevelHint": "Thiết lập mức độ truy cập và hạn chế cho người dùng.",
+        "meritChangeLabel": "Điều chỉnh Merit",
+        "meritChangePlaceholder": "Nhập số dương để cộng, số âm để trừ (vd: +10, -5)",
+        "meritChangeHint": "Nhập số dương để cộng điểm, số âm để trừ điểm merit.",
+        "currentMerit": "Merit hiện tại",
+        "meritChange": "Thay đổi",
+        "expectedMerit": "Merit sau thay đổi",
+        "meritStatus": "Trạng thái",
+        "meritDesc": {
+          "reliable": "71-100: Người dùng rất tin cậy",
+          "stable": "41-70: Người dùng ổn định",
+          "banned": "0-40: Người dùng bị cấm"
+        },
+        "reasonLabel": "Lý do điều chỉnh",
+        "reasonPlaceholder": "Nhập lý do điều chỉnh merit (không bắt buộc)",
+        "reasonHint": "Ghi chú lý do điều chỉnh merit cho user này.",
         "cancel": "Huỷ",
         "submitUpdate": "Lưu thay đổi"
+      },
+      "meritLevels": {
+        "reliable": "Rất tin cậy",
+        "stable": "Ổn định",
+        "banned": "Cấm"
       },
       "sheet": {
         "editTitle": "Chỉnh sửa hạn chế người dùng",
         "editDescription": "Cập nhật cấp độ uy tín và hạn chế cho tài khoản người dùng này."
-      }
+      },
+      "userIdLabel": "ID",
+      "currentMeritLabel": "Merit hiện tại"
     },
     "interests": {
       "title": "Sở thích",

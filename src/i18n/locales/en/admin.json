@@ -218,13 +218,35 @@
         "meritLevelLabel": "Merit level",
         "meritLevelPlaceholder": "Select a merit level",
         "meritLevelHint": "Set the user's access level and restrictions.",
+        "meritChangeLabel": "Adjust Merit",
+        "meritChangePlaceholder": "Enter positive number to add, negative to subtract (e.g: +10, -5)",
+        "meritChangeHint": "Enter a positive number to add points, negative to subtract merit points.",
+        "currentMerit": "Current merit",
+        "meritChange": "Change",
+        "expectedMerit": "Merit after change",
+        "meritStatus": "Status",
+        "meritDesc": {
+          "reliable": "71-100: Very reliable user",
+          "stable": "41-70: Stable user",
+          "banned": "0-40: Banned user"
+        },
+        "reasonLabel": "Reason for adjustment",
+        "reasonPlaceholder": "Enter reason for merit adjustment (optional)",
+        "reasonHint": "Note the reason for adjusting merit for this user.",
         "cancel": "Cancel",
         "submitUpdate": "Save changes"
+      },
+      "meritLevels": {
+        "reliable": "Very reliable",
+        "stable": "Stable",
+        "banned": "Banned"
       },
       "sheet": {
         "editTitle": "Edit user restrictions",
         "editDescription": "Update the merit level and restrictions for this user account."
-      }
+      },
+      "userIdLabel": "ID",
+      "currentMeritLabel": "Current merit"
     },
     "interests": {
       "title": "Interests",
