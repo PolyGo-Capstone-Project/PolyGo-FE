@@ -699,7 +699,9 @@
         "creator": "Người đăng",
         "createdAt": "Ngày tạo",
         "comments": "Bình luận",
-        "reactions": "Cảm xúc"
+        "reactions": "Cảm xúc",
+        "allImage": "Tất cả hình ảnh",
+        "sharedPost": "Bài viết được chia sẻ"
       },
       "delete": {
         "title": "Xóa bài viết",

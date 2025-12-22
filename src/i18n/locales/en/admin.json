@@ -610,7 +610,9 @@
         "creator": "Creator",
         "createdAt": "Created at",
         "comments": "Comments",
-        "reactions": "Reactions"
+        "reactions": "Reactions",
+        "allImage": "Images",
+        "sharedPost": "Shared Post"
       },
       "delete": {
         "title": "Delete post",

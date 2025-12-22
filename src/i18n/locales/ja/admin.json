@@ -610,7 +610,9 @@
         "creator": "投稿者",
         "createdAt": "作成日",
         "comments": "コメント",
-        "reactions": "リアクション"
+        "reactions": "リアクション",
+        "allImage": "すべての画像を表示",
+        "sharedPost": "共有された投稿"
       },
       "delete": {
         "title": "投稿を削除",
