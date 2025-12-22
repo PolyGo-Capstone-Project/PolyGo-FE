@@ -442,6 +442,22 @@
           "viewProfile": "Xem hồ sơ",
           "kick": "Xóa",
           "report": "Báo cáo",
+          "tabs": {
+            "all": "Đã đăng ký",
+            "notAttended": "Không tham gia",
+            "attended": "Đã tham gia",
+            "kicked": "Bị xóa"
+          },
+          "status": {
+            "notAttended": "Không tham gia",
+            "attended": "Đã tham gia",
+            "kicked": "Bị xóa"
+          },
+          "noParticipants": {
+            "notAttended": "Chưa có người chưa tham gia",
+            "attended": "Chưa có người tham gia",
+            "kicked": "Chưa có người bị xóa"
+          },
           "kickDialog": {
             "title": "Xóa người tham gia",
             "description": "Bạn có chắc chắn muốn xóa người tham gia này khỏi sự kiện?",
