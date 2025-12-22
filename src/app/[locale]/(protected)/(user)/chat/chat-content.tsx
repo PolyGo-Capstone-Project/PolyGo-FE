@@ -63,7 +63,7 @@ const extractImageUrlsFromContent = (
 const mapConversationToChat = (
   conversation: ConversationType
 ): ChatConversation => {
-  const lastMessage = conversation.lastMessage
+  const lastMessage = conversation.lastMessage?.sentAt
     ? {
         type: conversation.lastMessage.type,
         content: conversation.lastMessage.content,
@@ -76,7 +76,7 @@ const mapConversationToChat = (
       }
     : null;
 
-  const updatedAt = lastMessage?.sentAt ?? new Date(0);
+  const updatedAt = lastMessage?.sentAt ?? null;
 
   return {
     id: conversation.id,

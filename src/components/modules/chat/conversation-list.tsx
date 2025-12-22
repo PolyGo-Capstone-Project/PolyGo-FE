@@ -82,6 +82,11 @@ export function ConversationList({
       if (aIsPinned && !bIsPinned) return -1;
       if (!aIsPinned && bIsPinned) return 1;
 
+      // Handle null updatedAt (conversations with no messages)
+      if (!a.updatedAt && !b.updatedAt) return 0;
+      if (!a.updatedAt) return 1; // Move conversations without messages to bottom
+      if (!b.updatedAt) return -1;
+
       return b.updatedAt.getTime() - a.updatedAt.getTime();
     });
   }, [filteredConversations, pinnedConversationIds]);
@@ -266,9 +271,11 @@ export function ConversationList({
                             {conv.user.name}
                           </h3>
                         </div>
-                        <span className="text-muted-foreground shrink-0 text-[10px] md:text-xs">
-                          {formatTime(conv.updatedAt)}
-                        </span>
+                        {conv.updatedAt && (
+                          <span className="text-muted-foreground shrink-0 text-[10px] md:text-xs">
+                            {formatTime(conv.updatedAt)}
+                          </span>
+                        )}
                       </div>
 
                       <div className="flex items-center justify-between gap-2">

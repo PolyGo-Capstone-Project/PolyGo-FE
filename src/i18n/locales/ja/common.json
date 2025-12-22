@@ -30,7 +30,7 @@
     "SetUpProfile": "プロフィール設定に成功しました！",
     "Subscription": "サブスクリプションに成功しました！",
     "Subscribe": "サブスクリプションのアップグレードに成功しました！",
-    "Cancel": "サブスクリプションがキャンセルされました！",
+    "Cancel": "キャンセルに成功しました！",
     "Kick": "ユーザーのキックに成功しました！",
     "Unregister": "登録解除に成功しました！",
     "friendRequestSent": "友達リクエストの送信に成功しました！",
@@ -48,7 +48,9 @@
     "ReplyTransactionInquiry": "取引照会に返信しました！",
     "export": "データのエクスポートに成功しました！",
     "translateMessage": "メッセージの翻訳に成功しました！",
-    "Claim": "正常に請求されました！"
+    "Claim": "正常に請求されました！",
+    "HostHasOverlappingEvent": "この時間に重複するホストイベントがあります。",
+    "EventEnded": "終了したイベントには登録できません。"
   },
   "Error": {
     "default": "エラーが発生しました。",

@@ -30,7 +30,7 @@
     "SetUpProfile": "Thiết lập hồ sơ thành công!",
     "Subscription": "Đăng ký thành công!",
     "Subscribe": "Nâng cấp gói thành công!",
-    "Cancel": "Hủy đăng ký thành công!",
+    "Cancel": "Hủy thành công!",
     "Kick": "Người dùng đã bị đá ra!",
     "Unregister": "Hủy đăng ký thành công!",
     "friendRequestSent": "Gửi lời mời kết bạn thành công!",
@@ -50,7 +50,9 @@
     "InvalidOtp": "OTP không hợp lệ. Vui lòng thử lại.",
     "export": "Xuất dữ liệu thành công!",
     "translateMessage": "Dịch tin nhắn thành công!",
-    "Claim": "Đã nhận thành công!"
+    "Claim": "Đã nhận thành công!",
+    "HostHasOverlappingEvent": "Bạn có một sự kiện khác trùng thời gian với sự kiện này.",
+    "EventEnded": "Không thể đăng ký sự kiện đã kết thúc."
   },
   "Error": {
     "default": "Đã xảy ra lỗi.",
