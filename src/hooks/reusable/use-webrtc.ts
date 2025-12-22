@@ -550,39 +550,57 @@ export function useWebRTC({
     );
 
     // ✅ FIX: Handle HostInfo event to add host to participants
-    hubConnection.on("HostInfo", (hostName: string, hostConnId: string) => {
-      console.log("[SignalR] ✓ HostInfo:", hostName, "connId:", hostConnId);
+    hubConnection.on(
+      "HostInfo",
+      (hostName: string, hostConnId: string, avatarUrl?: string) => {
+        console.log(
+          "[SignalR] ✓ HostInfo:",
+          hostName,
+          "connId:",
+          hostConnId,
+          "avatar:",
+          avatarUrl
+        );
 
-      setParticipants((prev) => {
-        const newMap = new Map(prev);
-        // Check if host already exists
-        if (!newMap.has(hostConnId)) {
-          newMap.set(hostConnId, {
-            id: hostConnId,
-            name: hostName,
-            role: "host",
-            status: "connecting" as ParticipantStatus,
-            audioEnabled: true,
-            videoEnabled: true,
-            chatEnabled: true,
-            isHandRaised: false,
-          });
-          console.log("[SignalR] ✓ Added host to participants:", hostName);
-        }
-        return newMap;
-      });
-    });
+        setParticipants((prev) => {
+          const newMap = new Map(prev);
+          // Check if host already exists
+          if (!newMap.has(hostConnId)) {
+            newMap.set(hostConnId, {
+              id: hostConnId,
+              name: hostName,
+              role: "host",
+              status: "connecting" as ParticipantStatus,
+              audioEnabled: true,
+              videoEnabled: true,
+              chatEnabled: true,
+              isHandRaised: false,
+              avatarUrl: avatarUrl || undefined,
+            });
+            console.log("[SignalR] ✓ Added host to participants:", hostName);
+          }
+          return newMap;
+        });
+      }
+    );
 
     hubConnection.on(
       "UserJoined",
-      (participantName: string, role: string, connId: string) => {
+      (
+        participantName: string,
+        role: string,
+        connId: string,
+        avatarUrl?: string
+      ) => {
         console.log(
           "[SignalR] ✓ UserJoined:",
           participantName,
           "connId:",
           connId,
           "role:",
-          role
+          role,
+          "avatar:",
+          avatarUrl
         );
 
         setParticipants((prev) => {
@@ -596,6 +614,7 @@ export function useWebRTC({
             videoEnabled: true,
             chatEnabled: true,
             isHandRaised: false,
+            avatarUrl: avatarUrl || undefined,
           });
           return newMap;
         });
@@ -1361,23 +1380,23 @@ export function useWebRTC({
       }
 
       try {
-        const participantList = await conn.invoke<Record<string, string>>(
-          "GetParticipants",
-          eventIdRef.current
-        );
+        const participantList = await conn.invoke<
+          Record<string, { name: string; avatarUrl?: string }>
+        >("GetParticipants", eventIdRef.current);
         if (participantList) {
           const newParticipants = new Map<string, Participant>();
-          Object.entries(participantList).forEach(([connId, name]) => {
+          Object.entries(participantList).forEach(([connId, userInfo]) => {
             if (connId !== myConnectionIdRef.current) {
               newParticipants.set(connId, {
                 id: connId,
-                name,
+                name: userInfo.name,
                 role: "attendee",
                 status: "connecting" as ParticipantStatus,
                 audioEnabled: true,
                 videoEnabled: true,
                 chatEnabled: true,
                 isHandRaised: false,
+                avatarUrl: userInfo.avatarUrl || undefined,
               });
             }
           });
