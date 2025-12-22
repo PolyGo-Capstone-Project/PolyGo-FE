@@ -1,0 +1,35 @@
+{
+  "userBadge": {
+    "title": "バッジ",
+    "subtitle": "PolyGoで利用可能なすべてのバッジを確認しましょう。レベルアップやイベント参加、コミュニティへの貢献で解除できます。",
+    "backToProfile": "プロフィールに戻る",
+    "filters": {
+      "unlockedOnly": "解除済みのみ",
+      "showAll": "すべて表示"
+    },
+    "summary": {
+      "title": "あなたのバッジコレクション",
+      "desc": "バッジは成長の証です。それぞれがあなたの旅の節目を表しています。",
+      "unlocked": "解除済み"
+    },
+    "status": {
+      "locked": "未解除",
+      "unlocked": "解除済み"
+    },
+    "hint": {
+      "locked": "もっと参加して、このバッジを解除しましょう。",
+      "unlocked": "おめでとうございます！このバッジはすでに獲得済みです。"
+    },
+    "noDescription": "アプリ内の特定の条件を達成すると、このバッジが解除されます。",
+    "empty": "バッジが見つかりません。",
+    "badgeCategory": {
+      "Account": "アカウント",
+      "Commerce": "コマース",
+      "Exploration": "探索",
+      "Event": "イベント",
+      "Hidden": "隠し",
+      "Social": "ソーシャル",
+      "Progression": "進行"
+    }
+  }
+}

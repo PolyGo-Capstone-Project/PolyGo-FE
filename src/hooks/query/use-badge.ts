@@ -21,6 +21,10 @@ type UseBadgesQueryOptions = {
   params?: PaginationLangQueryType;
 };
 
+type UserBadgesAllQueryResponse = Awaited<
+  ReturnType<typeof badgeApiRequest.getUserBadgesAll>
+>;
+
 export const useBadgesQuery = ({
   enabled = true,
   params,
@@ -139,5 +143,17 @@ export const useDeleteBadgeMutation = (
       });
       options?.onSuccess?.(data);
     },
+  });
+};
+
+export const useUserBadgesAllQuery = ({
+  enabled = true,
+  params,
+}: UseBadgesQueryOptions = {}) => {
+  return useQuery<UserBadgesAllQueryResponse>({
+    queryKey: ["user-badges-all", params ?? null],
+    queryFn: () => badgeApiRequest.getUserBadgesAll(params),
+    enabled,
+    placeholderData: keepPreviousData,
   });
 };

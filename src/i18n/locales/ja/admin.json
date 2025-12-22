@@ -218,13 +218,35 @@
         "meritLevelLabel": "メリットレベル",
         "meritLevelPlaceholder": "メリットレベルを選択",
         "meritLevelHint": "ユーザーのアクセスレベルと制限を設定します。",
+        "meritChangeLabel": "メリット調整",
+        "meritChangePlaceholder": "プラス数字で追加、マイナス数字で減算 (例: +10, -5)",
+        "meritChangeHint": "プラス数字でポイント追加、マイナス数字でメリットポイント減算します。",
+        "currentMerit": "現在のメリット",
+        "meritChange": "変更",
+        "expectedMerit": "変更後のメリット",
+        "meritStatus": "ステータス",
+        "meritDesc": {
+          "reliable": "71-100: 非常に信頼できるユーザー",
+          "stable": "41-70: 安定したユーザー",
+          "banned": "0-40: 禁止されたユーザー"
+        },
+        "reasonLabel": "調整理由",
+        "reasonPlaceholder": "メリット調整の理由を入力 (任意)",
+        "reasonHint": "このユーザーのメリット調整理由を記録します。",
         "cancel": "キャンセル",
         "submitUpdate": "変更を保存"
+      },
+      "meritLevels": {
+        "reliable": "非常に信頼できる",
+        "stable": "安定",
+        "banned": "禁止"
       },
       "sheet": {
         "editTitle": "ユーザー制限を編集",
         "editDescription": "このユーザーアカウントのメリットレベルと制限を更新します。"
-      }
+      },
+      "userIdLabel": "ID",
+      "currentMeritLabel": "現在のメリット"
     },
     "interests": {
       "title": "興味",
@@ -583,6 +605,44 @@
         "noFeatures": "機能が設定されていません",
         "days": "日",
         "close": "閉じる"
+      }
+    },
+    "posts": {
+      "title": "投稿管理",
+      "description": "ユーザー投稿の確認・検索・モデレーションを行います。",
+      "tableTitle": "投稿一覧",
+      "tableDescription": "システム内のすべての投稿を一覧表示します。",
+      "refresh": "更新",
+      "search": "キーワードで検索...",
+      "empty": "投稿が見つかりません。",
+      "columns": {
+        "content": "内容",
+        "creator": "投稿者",
+        "createdAt": "作成日",
+        "status": "ステータス"
+      },
+      "status": {
+        "active": "有効",
+        "deleted": "削除済み"
+      },
+      "detail": {
+        "title": "投稿詳細",
+        "description": "この投稿の詳細情報を表示します。",
+        "content": "内容",
+        "creator": "投稿者",
+        "createdAt": "作成日",
+        "comments": "コメント",
+        "reactions": "リアクション",
+        "allImage": "すべての画像を表示",
+        "sharedPost": "共有された投稿"
+      },
+      "delete": {
+        "title": "投稿を削除",
+        "description": "削除理由を入力してください。この操作は元に戻せません。",
+        "reason": "理由",
+        "reasonPlaceholder": "理由を入力（必須）...",
+        "cancel": "キャンセル",
+        "confirm": "削除"
       }
     },
     "events": {

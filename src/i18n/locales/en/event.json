@@ -442,6 +442,22 @@
           "viewProfile": "View Profile",
           "kick": "Kick",
           "report": "Report",
+          "tabs": {
+            "all": "All Registered",
+            "notAttended": "Not Attended",
+            "attended": "Attended",
+            "kicked": "Kicked"
+          },
+          "status": {
+            "notAttended": "Not Attended",
+            "attended": "Attended",
+            "kicked": "Kicked"
+          },
+          "noParticipants": {
+            "notAttended": "No participants who haven't attended yet",
+            "attended": "No attended participants yet",
+            "kicked": "No kicked participants"
+          },
           "kickDialog": {
             "title": "Kick Participant",
             "description": "Are you sure you want to remove this participant from the event?",

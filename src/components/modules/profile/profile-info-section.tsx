@@ -34,7 +34,7 @@ type ProfileInfoSectionProps = {
   xpInCurrentLevel: number;
   xpToNextLevel: number;
   hasUnclaimedLevelRewards?: boolean;
-  showLevelLink?: boolean;
+  showLevelandBadgeLink?: boolean;
 };
 
 export function ProfileInfoSection({
@@ -47,7 +47,7 @@ export function ProfileInfoSection({
   xpInCurrentLevel,
   xpToNextLevel,
   hasUnclaimedLevelRewards,
-  showLevelLink = false,
+  showLevelandBadgeLink = false,
 }: ProfileInfoSectionProps) {
   const t = useTranslations("profile");
   const tXp = useTranslations("profile");
@@ -257,19 +257,35 @@ export function ProfileInfoSection({
           </p>
         </div>
 
-        {/* ✅ Nút đi tới trang Level – chỉ hiện nếu showLevelLink = true */}
-        {showLevelLink && (
-          <div className="flex justify-center pt-1">
-            <button
-              type="button"
-              onClick={() => router.push(`/${locale}/level`)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-primary/60 bg-primary/5 px-3 py-1 text-xs font-semibold text-primary shadow-sm transition hover:bg-primary/10 hover:shadow md:px-4 md:text-sm"
-            >
-              <IconSparkles className="h-4 w-4" />
-              {tXp("xp.goToLevel", { default: "View levels & rewards" })}
-            </button>
-          </div>
-        )}
+        <div className="w-full flex gap-5 justify-center">
+          {/* ✅ Nút đi tới trang Level – chỉ hiện nếu showLevelLink = true */}
+          {showLevelandBadgeLink && (
+            <div className="flex justify-center pt-1">
+              <button
+                type="button"
+                onClick={() => router.push(`/${locale}/level`)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-green-500/60 bg-green-500/5 px-3 py-1 text-xs font-semibold text-green-600 shadow-sm transition hover:bg-green-600/10 hover:shadow md:px-4 md:text-sm"
+              >
+                <IconSparkles className="h-4 w-4" />
+                {tXp("xp.goToLevel", { default: "View levels & rewards" })}
+              </button>
+            </div>
+          )}
+
+          {/* ✅ Nút đi tới trang Badge – chỉ hiện nếu showLevelLink = true */}
+          {showLevelandBadgeLink && (
+            <div className="flex justify-center pt-1">
+              <button
+                type="button"
+                onClick={() => router.push(`/${locale}/badge`)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/60 bg-amber-400/5 px-3 py-1 text-xs font-semibold text-amber-600 shadow-sm transition hover:bg-amber-600/10 hover:shadow md:px-4 md:text-sm"
+              >
+                <IconSparkles className="h-4 w-4" />
+                {tXp("xp.goToBadge", { default: "View all badges" })}
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Streak Section - Enhanced Design */}
         <div className="space-y-3 pt-2">

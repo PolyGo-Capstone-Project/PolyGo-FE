@@ -21,9 +21,13 @@ import {
   Label,
   ScrollArea,
   Separator,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
   Textarea,
 } from "@/components/ui";
-import { EventStatus, EventStatusType } from "@/constants";
+import { EventStatus, EventStatusType, UserEventStatus } from "@/constants";
 import {
   useGetEventStats,
   useKickParticipantMutation,
@@ -199,6 +203,33 @@ export function EventStatDialog({
       .toUpperCase()
       .slice(0, 2);
   };
+
+  // Filter participants by status
+  // API returns status as number but type is string: 0 = Registered (not attended), 1 = Attended, 2 = Kicked
+  // Convert to string for comparison
+  const notAttendedParticipants = useMemo(() => {
+    return (
+      event?.participants.filter(
+        (p) => String(p.status) === UserEventStatus.Registered
+      ) || []
+    );
+  }, [event?.participants]);
+
+  const attendedParticipants = useMemo(() => {
+    return (
+      event?.participants.filter(
+        (p) => String(p.status) === UserEventStatus.Attended
+      ) || []
+    );
+  }, [event?.participants]);
+
+  const kickedParticipants = useMemo(() => {
+    return (
+      event?.participants.filter(
+        (p) => String(p.status) === UserEventStatus.Cancelled
+      ) || []
+    );
+  }, [event?.participants]);
 
   return (
     <>
@@ -480,7 +511,7 @@ export function EventStatDialog({
                     </Card>
                   </div>
 
-                  {/* Participants List */}
+                  {/* Participants List with Tabs */}
                   {event.participants && event.participants.length > 0 && (
                     <Card>
                       <CardHeader>
@@ -489,84 +520,384 @@ export function EventStatDialog({
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <ScrollArea className="h-[400px] pr-4">
-                          <div className="space-y-2">
-                            {event.participants.map((participant) => (
-                              <div
-                                key={participant.id}
-                                className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors"
-                              >
-                                <Avatar className="h-10 w-10">
-                                  <AvatarImage
-                                    src={
-                                      isValidUrl(participant.avatarUrl)
-                                        ? participant.avatarUrl!
-                                        : undefined
-                                    }
-                                    alt={participant.name}
-                                  />
-                                  <AvatarFallback>
-                                    {getInitials(participant.name)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium truncate">
-                                    {participant.name}
-                                  </p>
-                                  <p className="text-xs text-muted-foreground">
-                                    {t("registeredAt")}:{" "}
-                                    {format(
-                                      new Date(participant.registeredAt),
-                                      "PPp"
-                                    )}
-                                  </p>
-                                </div>
-                                <div className="flex gap-2">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() =>
-                                      handleViewProfile(participant.id)
-                                    }
+                        <Tabs defaultValue="all" className="w-full">
+                          {showPerformanceMetrics ? (
+                            <TabsList className="grid w-full grid-cols-4 mb-4">
+                              <TabsTrigger value="all">
+                                {t("tabs.all")} ({event.participants.length})
+                              </TabsTrigger>
+                              <TabsTrigger value="notAttended">
+                                {t("tabs.notAttended")} (
+                                {notAttendedParticipants.length})
+                              </TabsTrigger>
+                              <TabsTrigger value="attended">
+                                {t("tabs.attended")} (
+                                {attendedParticipants.length})
+                              </TabsTrigger>
+                              <TabsTrigger value="kicked">
+                                {t("tabs.kicked")} ({kickedParticipants.length})
+                              </TabsTrigger>
+                            </TabsList>
+                          ) : (
+                            <TabsList className="grid w-full grid-cols-1 mb-4">
+                              <TabsTrigger value="all">
+                                {t("tabs.all")} ({event.participants.length})
+                              </TabsTrigger>
+                            </TabsList>
+                          )}
+
+                          <TabsContent value="all">
+                            <ScrollArea className="max-h-[60vh] pr-4">
+                              <div className="space-y-2">
+                                {event.participants.map((participant) => (
+                                  <div
+                                    key={participant.id}
+                                    className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors"
                                   >
-                                    <IconUser className="h-4 w-4 mr-1" />
-                                    {t("viewProfile")}
-                                  </Button>
-                                  {canKickParticipants && (
-                                    <Button
-                                      variant="destructive"
-                                      size="sm"
-                                      onClick={() =>
-                                        handleKickClick({
-                                          id: participant.id,
-                                          name: participant.name,
-                                        })
-                                      }
-                                    >
-                                      <IconX className="h-4 w-4 mr-1" />
-                                      {t("kick")}
-                                    </Button>
-                                  )}
-                                  {!canKickParticipants && (
-                                    <Button
-                                      variant="destructive"
-                                      size="sm"
-                                      onClick={() =>
-                                        handleReportClick({
-                                          id: participant.id,
-                                          name: participant.name,
-                                        })
-                                      }
-                                    >
-                                      <IconFlag2 className="h-4 w-4 mr-1" />
-                                      {t("report")}
-                                    </Button>
-                                  )}
-                                </div>
+                                    <Avatar className="h-10 w-10">
+                                      <AvatarImage
+                                        src={
+                                          isValidUrl(participant.avatarUrl)
+                                            ? participant.avatarUrl!
+                                            : undefined
+                                        }
+                                        alt={participant.name}
+                                      />
+                                      <AvatarFallback>
+                                        {getInitials(participant.name)}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-center gap-2">
+                                        <p className="text-sm font-medium truncate">
+                                          {participant.name}
+                                        </p>
+                                        {String(participant.status) ===
+                                          UserEventStatus.Registered && (
+                                          <Badge
+                                            variant="outline"
+                                            className="text-xs"
+                                          >
+                                            {t("status.notAttended")}
+                                          </Badge>
+                                        )}
+                                        {String(participant.status) ===
+                                          UserEventStatus.Attended && (
+                                          <Badge
+                                            variant="default"
+                                            className="text-xs"
+                                          >
+                                            {t("status.attended")}
+                                          </Badge>
+                                        )}
+                                        {String(participant.status) ===
+                                          UserEventStatus.Cancelled && (
+                                          <Badge
+                                            variant="destructive"
+                                            className="text-xs"
+                                          >
+                                            {t("status.kicked")}
+                                          </Badge>
+                                        )}
+                                      </div>
+                                      <p className="text-xs text-muted-foreground">
+                                        {t("registeredAt")}:{" "}
+                                        {format(
+                                          new Date(participant.registeredAt),
+                                          "PPp"
+                                        )}
+                                      </p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() =>
+                                          handleViewProfile(participant.id)
+                                        }
+                                      >
+                                        <IconUser className="h-4 w-4 mr-1" />
+                                        {t("viewProfile")}
+                                      </Button>
+                                      {canKickParticipants &&
+                                        String(participant.status) !==
+                                          UserEventStatus.Cancelled && (
+                                          <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            onClick={() =>
+                                              handleKickClick({
+                                                id: participant.id,
+                                                name: participant.name,
+                                              })
+                                            }
+                                          >
+                                            <IconX className="h-4 w-4 mr-1" />
+                                            {t("kick")}
+                                          </Button>
+                                        )}
+                                      {!canKickParticipants && (
+                                        <Button
+                                          variant="destructive"
+                                          size="sm"
+                                          onClick={() =>
+                                            handleReportClick({
+                                              id: participant.id,
+                                              name: participant.name,
+                                            })
+                                          }
+                                        >
+                                          <IconFlag2 className="h-4 w-4 mr-1" />
+                                          {t("report")}
+                                        </Button>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
                               </div>
-                            ))}
-                          </div>
-                        </ScrollArea>
+                            </ScrollArea>
+                          </TabsContent>
+
+                          {showPerformanceMetrics && (
+                            <>
+                              <TabsContent value="notAttended">
+                                <ScrollArea className="max-h-[60vh] pr-4">
+                                  {notAttendedParticipants.length > 0 ? (
+                                    <div className="space-y-2">
+                                      {notAttendedParticipants.map(
+                                        (participant) => (
+                                          <div
+                                            key={participant.id}
+                                            className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors"
+                                          >
+                                            <Avatar className="h-10 w-10">
+                                              <AvatarImage
+                                                src={
+                                                  isValidUrl(
+                                                    participant.avatarUrl
+                                                  )
+                                                    ? participant.avatarUrl!
+                                                    : undefined
+                                                }
+                                                alt={participant.name}
+                                              />
+                                              <AvatarFallback>
+                                                {getInitials(participant.name)}
+                                              </AvatarFallback>
+                                            </Avatar>
+                                            <div className="flex-1 min-w-0">
+                                              <p className="text-sm font-medium truncate">
+                                                {participant.name}
+                                              </p>
+                                              <p className="text-xs text-muted-foreground">
+                                                {t("registeredAt")}:{" "}
+                                                {format(
+                                                  new Date(
+                                                    participant.registeredAt
+                                                  ),
+                                                  "PPp"
+                                                )}
+                                              </p>
+                                            </div>
+                                            <div className="flex gap-2">
+                                              <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() =>
+                                                  handleViewProfile(
+                                                    participant.id
+                                                  )
+                                                }
+                                              >
+                                                <IconUser className="h-4 w-4 mr-1" />
+                                                {t("viewProfile")}
+                                              </Button>
+                                              {canKickParticipants && (
+                                                <Button
+                                                  variant="destructive"
+                                                  size="sm"
+                                                  onClick={() =>
+                                                    handleKickClick({
+                                                      id: participant.id,
+                                                      name: participant.name,
+                                                    })
+                                                  }
+                                                >
+                                                  <IconX className="h-4 w-4 mr-1" />
+                                                  {t("kick")}
+                                                </Button>
+                                              )}
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <p className="text-sm text-muted-foreground text-center py-8">
+                                      {t("noParticipants.notAttended")}
+                                    </p>
+                                  )}
+                                </ScrollArea>
+                              </TabsContent>
+
+                              <TabsContent value="attended">
+                                <ScrollArea className="max-h-[60vh] pr-4">
+                                  {attendedParticipants.length > 0 ? (
+                                    <div className="space-y-2">
+                                      {attendedParticipants.map(
+                                        (participant) => (
+                                          <div
+                                            key={participant.id}
+                                            className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors"
+                                          >
+                                            <Avatar className="h-10 w-10">
+                                              <AvatarImage
+                                                src={
+                                                  isValidUrl(
+                                                    participant.avatarUrl
+                                                  )
+                                                    ? participant.avatarUrl!
+                                                    : undefined
+                                                }
+                                                alt={participant.name}
+                                              />
+                                              <AvatarFallback>
+                                                {getInitials(participant.name)}
+                                              </AvatarFallback>
+                                            </Avatar>
+                                            <div className="flex-1 min-w-0">
+                                              <p className="text-sm font-medium truncate">
+                                                {participant.name}
+                                              </p>
+                                              <p className="text-xs text-muted-foreground">
+                                                {t("registeredAt")}:{" "}
+                                                {format(
+                                                  new Date(
+                                                    participant.registeredAt
+                                                  ),
+                                                  "PPp"
+                                                )}
+                                              </p>
+                                            </div>
+                                            <div className="flex gap-2">
+                                              <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() =>
+                                                  handleViewProfile(
+                                                    participant.id
+                                                  )
+                                                }
+                                              >
+                                                <IconUser className="h-4 w-4 mr-1" />
+                                                {t("viewProfile")}
+                                              </Button>
+                                              {!canKickParticipants && (
+                                                <Button
+                                                  variant="destructive"
+                                                  size="sm"
+                                                  onClick={() =>
+                                                    handleReportClick({
+                                                      id: participant.id,
+                                                      name: participant.name,
+                                                    })
+                                                  }
+                                                >
+                                                  <IconFlag2 className="h-4 w-4 mr-1" />
+                                                  {t("report")}
+                                                </Button>
+                                              )}
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <p className="text-sm text-muted-foreground text-center py-8">
+                                      {t("noParticipants.attended")}
+                                    </p>
+                                  )}
+                                </ScrollArea>
+                              </TabsContent>
+
+                              <TabsContent value="kicked">
+                                <ScrollArea className="max-h-[60vh] pr-4">
+                                  {kickedParticipants.length > 0 ? (
+                                    <div className="space-y-2">
+                                      {kickedParticipants.map((participant) => (
+                                        <div
+                                          key={participant.id}
+                                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors"
+                                        >
+                                          <Avatar className="h-10 w-10">
+                                            <AvatarImage
+                                              src={
+                                                isValidUrl(
+                                                  participant.avatarUrl
+                                                )
+                                                  ? participant.avatarUrl!
+                                                  : undefined
+                                              }
+                                              alt={participant.name}
+                                            />
+                                            <AvatarFallback>
+                                              {getInitials(participant.name)}
+                                            </AvatarFallback>
+                                          </Avatar>
+                                          <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-medium truncate">
+                                              {participant.name}
+                                            </p>
+                                            <p className="text-xs text-muted-foreground">
+                                              {t("registeredAt")}:{" "}
+                                              {format(
+                                                new Date(
+                                                  participant.registeredAt
+                                                ),
+                                                "PPp"
+                                              )}
+                                            </p>
+                                          </div>
+                                          <div className="flex gap-2">
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              onClick={() =>
+                                                handleViewProfile(
+                                                  participant.id
+                                                )
+                                              }
+                                            >
+                                              <IconUser className="h-4 w-4 mr-1" />
+                                              {t("viewProfile")}
+                                            </Button>
+                                            <Button
+                                              variant="destructive"
+                                              size="sm"
+                                              onClick={() =>
+                                                handleReportClick({
+                                                  id: participant.id,
+                                                  name: participant.name,
+                                                })
+                                              }
+                                            >
+                                              <IconFlag2 className="h-4 w-4 mr-1" />
+                                              {t("report")}
+                                            </Button>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  ) : (
+                                    <p className="text-sm text-muted-foreground text-center py-8">
+                                      {t("noParticipants.kicked")}
+                                    </p>
+                                  )}
+                                </ScrollArea>
+                              </TabsContent>
+                            </>
+                          )}
+                        </Tabs>
                       </CardContent>
                     </Card>
                   )}
@@ -581,7 +912,7 @@ export function EventStatDialog({
                       </CardHeader>
                       <CardContent>
                         {event.reviews.length > 0 ? (
-                          <ScrollArea className="h-[400px] pr-4">
+                          <ScrollArea className="max-h-[60vh] pr-4">
                             <div className="space-y-4">
                               {event.reviews.map((feedback) => (
                                 <div

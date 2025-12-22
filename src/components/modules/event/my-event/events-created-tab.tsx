@@ -27,7 +27,7 @@ import {
   useCancelEventMutation,
   useGetHostedEvents,
 } from "@/hooks/query/use-event";
-import { handleErrorApi, showErrorToast, showSuccessToast } from "@/lib/utils";
+import { handleErrorApi, showErrorToast } from "@/lib/utils";
 import {
   IconCalendarEvent,
   IconCheck,
@@ -41,6 +41,7 @@ import {
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 const PAGE_SIZE = 8;
 
@@ -78,7 +79,7 @@ export function EventsCreatedTab() {
 
   const cancelEventMutation = useCancelEventMutation({
     onSuccess: (data) => {
-      showSuccessToast(t("cancelDialog.success"), tSuccess);
+      toast.success(t("cancelDialog.success"));
       refetchEvents();
     },
     onError: (error) => {
@@ -168,8 +169,8 @@ export function EventsCreatedTab() {
     router.push(`/${locale}/event/edit/${eventId}`);
   };
 
-  const handleCancel = (eventId: string, reason: string) => {
-    cancelEventMutation.mutate({
+  const handleCancel = async (eventId: string, reason: string) => {
+    await cancelEventMutation.mutateAsync({
       eventId,
       reason,
     });

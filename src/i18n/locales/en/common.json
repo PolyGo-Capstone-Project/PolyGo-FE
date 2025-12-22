@@ -186,6 +186,7 @@
     "subscriptions": "Subscriptions Management",
     "events": "Events Management",
     "games": "Games Management",
+    "posts": "Posts Management",
     "reports": "Reports Management",
     "transactions": "Transactions Management"
   },

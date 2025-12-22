@@ -35,6 +35,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui";
 import { useGetHostedEvents, useGetParticipatedEvents } from "@/hooks";
+import { useAuthMe } from "@/hooks/query/use-auth";
 import { cn } from "@/lib/utils";
 
 type MyEventCalendarProps = {
@@ -48,6 +49,10 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Get current user info
+  const { data: authMeData } = useAuthMe();
+  const currentUserId = authMeData?.payload.data.id;
 
   // Fetch created events
   const {
@@ -80,7 +85,12 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
   // Get events based on active tab
   const events = useMemo(() => {
     const created = createdData?.payload?.data?.items || [];
-    const joined = joinedData?.payload?.data?.items || [];
+    let joined = joinedData?.payload?.data?.items || [];
+
+    // Filter out events where current user is the host from joined events
+    if (currentUserId) {
+      joined = joined.filter((event) => event.host.id !== currentUserId);
+    }
 
     if (activeTab === "created") return created;
     if (activeTab === "joined") return joined;
@@ -91,7 +101,7 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
       (event, index, self) => index === self.findIndex((e) => e.id === event.id)
     );
     return uniqueEvents;
-  }, [createdData, joinedData, activeTab]);
+  }, [createdData, joinedData, activeTab, currentUserId]);
 
   const isLoading = isLoadingCreated || isLoadingJoined;
   const isError = isErrorCreated || isErrorJoined;
@@ -137,6 +147,18 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
   const selectedDayEvents = selectedDay ? getEventsForDay(selectedDay) : [];
 
   const getEventColor = (event: any) => {
+    // Check event status first
+    const status = event.status?.toUpperCase();
+
+    if (status === "CANCELLED" || status === "REJECTED") {
+      return "bg-red-500 hover:bg-red-600 border-red-600";
+    }
+
+    if (status === "PENDING") {
+      return "bg-yellow-500 hover:bg-yellow-600 border-yellow-600";
+    }
+
+    // Default color based on date
     const startDate = new Date(event.startAt);
     if (isToday(startDate))
       return "bg-blue-500 hover:bg-blue-600 border-blue-600";

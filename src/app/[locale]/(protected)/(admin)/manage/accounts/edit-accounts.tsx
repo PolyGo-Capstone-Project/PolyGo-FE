@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { TranslationValues } from "next-intl";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -18,13 +18,14 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  ScrollArea,
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   Spinner,
+  Textarea,
 } from "@/components/ui";
 import { handleErrorApi } from "@/lib/utils";
 import {
@@ -53,6 +54,7 @@ type EditAccountsProps = {
 
 const DEFAULT_VALUES: SetRestrictionsBodyType = {
   merit: 0, // Đổi default thành 0 vì giờ là cộng/trừ
+  reason: "",
 };
 
 export function EditAccounts({
@@ -66,6 +68,8 @@ export function EditAccounts({
   isSubmitting,
   tError,
 }: EditAccountsProps) {
+  const [inputValue, setInputValue] = useState("");
+
   const form = useForm<SetRestrictionsBodyType>({
     resolver: zodResolver(SetRestrictionsBodySchema),
     defaultValues: DEFAULT_VALUES,
@@ -84,6 +88,7 @@ export function EditAccounts({
   useEffect(() => {
     if (!open) {
       form.reset(DEFAULT_VALUES);
+      setInputValue("");
       return;
     }
 
@@ -91,7 +96,9 @@ export function EditAccounts({
     if (user && userId) {
       form.reset({
         merit: 0,
+        reason: "",
       });
+      setInputValue("");
     }
   }, [form, user, userId, open]);
 
@@ -116,8 +123,8 @@ export function EditAccounts({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="sm:max-w-md">
-        <SheetHeader>
+      <SheetContent side="right" className="sm:max-w-md flex flex-col h-full">
+        <SheetHeader className="shrink-0">
           <SheetTitle>
             {safeTranslate("sheet.editTitle", "Edit user restrictions")}
           </SheetTitle>
@@ -129,180 +136,258 @@ export function EditAccounts({
           </SheetDescription>
         </SheetHeader>
 
-        {user && (
-          <div className="mx-4 my-4 flex items-center gap-3 rounded-lg border p-4">
-            <Avatar className="h-12 w-12">
-              <AvatarImage src={user.avatarUrl ?? undefined} alt={user.name} />
-              <AvatarFallback>
-                {user.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .toUpperCase()
-                  .slice(0, 2)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <span className="font-semibold">{user.name}</span>
-              <span className="text-muted-foreground text-sm">{user.mail}</span>
-              <span className="text-muted-foreground text-xs">
-                {safeTranslate("userIdLabel", "ID")}: {user.id}
-              </span>
-              <span className="text-muted-foreground text-xs">
-                {safeTranslate("currentMeritLabel", "Merit hiện tại")}:{" "}
-                {user.merit}
-              </span>
+        <ScrollArea className="flex-1 overflow-auto">
+          {user && (
+            <div className="mx-4 my-4 flex items-center gap-3 rounded-lg border p-4">
+              <Avatar className="h-12 w-12">
+                <AvatarImage
+                  src={user.avatarUrl ?? undefined}
+                  alt={user.name}
+                />
+                <AvatarFallback>
+                  {user.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()
+                    .slice(0, 2)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col">
+                <span className="font-semibold">{user.name}</span>
+                <span className="text-muted-foreground text-sm">
+                  {user.mail}
+                </span>
+                <span className="text-muted-foreground text-xs">
+                  {safeTranslate("userIdLabel", "ID")}: {user.id}
+                </span>
+                <span className="text-muted-foreground text-xs">
+                  {safeTranslate("currentMeritLabel", "Merit hiện tại")}:{" "}
+                  {user.merit}
+                </span>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        <Form {...form}>
-          <form
-            onSubmit={(e) => {
-              form.handleSubmit(onFormSubmit)(e);
-            }}
-            className="flex flex-1 flex-col gap-6 px-4 pb-6"
-          >
-            <FormField
-              control={form.control}
-              name="merit"
-              render={({ field }) => {
-                const meritLabel = getMeritLabel(expectedMerit);
-                return (
-                  <FormItem>
-                    <FormLabel className="mb-2">
-                      {safeTranslate(
-                        "form.meritChangeLabel",
-                        "Điều chỉnh Merit"
-                      )}
-                    </FormLabel>
-                    <FormControl>
-                      <div className="flex flex-col gap-2">
-                        <Input
-                          type="number"
-                          min={-100}
-                          max={100}
+          <div className="px-6">
+            <Form {...form}>
+              <div className="flex flex-col gap-6 py-4">
+                <FormField
+                  control={form.control}
+                  name="merit"
+                  render={({ field }) => {
+                    const meritLabel = getMeritLabel(expectedMerit);
+                    return (
+                      <FormItem>
+                        <FormLabel className="mb-2">
+                          {safeTranslate(
+                            "form.meritChangeLabel",
+                            "Điều chỉnh Merit"
+                          )}
+                        </FormLabel>
+                        <FormControl>
+                          <div className="flex flex-col gap-2">
+                            <Input
+                              type="text"
+                              placeholder={safeTranslate(
+                                "form.meritChangePlaceholder",
+                                "Nhập số dương để cộng, số âm để trừ (vd: +10, -5)"
+                              )}
+                              disabled={isFormDisabled}
+                              value={inputValue}
+                              onChange={(e) => {
+                                const value = e.target.value;
+
+                                // Cho phép để trống
+                                if (value === "") {
+                                  setInputValue("");
+                                  field.onChange(0);
+                                  return;
+                                }
+
+                                // Cho phép nhập dấu - hoặc + ở đầu
+                                if (value === "-" || value === "+") {
+                                  setInputValue(value);
+                                  return;
+                                }
+
+                                // Validate ký tự nhập vào (chỉ cho phép số, dấu - và +)
+                                if (!/^[+-]?\d*$/.test(value)) {
+                                  return;
+                                }
+
+                                // Validate số
+                                const numValue = Number(value);
+                                if (
+                                  !isNaN(numValue) &&
+                                  numValue >= -100 &&
+                                  numValue <= 100
+                                ) {
+                                  setInputValue(value);
+                                  field.onChange(numValue);
+                                }
+                              }}
+                              className="w-full"
+                            />
+                            <div className="rounded-md border bg-muted/40 p-3">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium">
+                                  {safeTranslate(
+                                    "form.currentMerit",
+                                    "Merit hiện tại"
+                                  )}
+                                  :
+                                </span>
+                                <span className="text-sm">{currentMerit}</span>
+                              </div>
+                              <div className="flex items-center justify-between mt-1">
+                                <span className="text-sm font-medium">
+                                  {safeTranslate(
+                                    "form.meritChange",
+                                    "Thay đổi"
+                                  )}
+                                  :
+                                </span>
+                                <span
+                                  className={`text-sm font-semibold ${meritChange > 0 ? "text-green-600" : meritChange < 0 ? "text-red-600" : ""}`}
+                                >
+                                  {meritChange > 0
+                                    ? `+${meritChange}`
+                                    : meritChange}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between mt-1 pt-1 border-t">
+                                <span className="text-sm font-medium">
+                                  {safeTranslate(
+                                    "form.expectedMerit",
+                                    "Merit sau thay đổi"
+                                  )}
+                                  :
+                                </span>
+                                <span className="text-sm font-bold">
+                                  {expectedMerit}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between mt-2">
+                                <span className="text-sm font-medium">
+                                  {safeTranslate(
+                                    "form.meritStatus",
+                                    "Trạng thái"
+                                  )}
+                                  :
+                                </span>
+                                <span className="text-sm font-semibold">
+                                  {meritLabel}
+                                </span>
+                              </div>
+                              <div className="mt-2 text-xs text-muted-foreground">
+                                {expectedMerit >= 71 &&
+                                  expectedMerit <= 100 && (
+                                    <span>
+                                      {safeTranslate(
+                                        "form.meritDesc.reliable",
+                                        "71-100: Người dùng rất tin cậy"
+                                      )}
+                                    </span>
+                                  )}
+                                {expectedMerit >= 41 && expectedMerit <= 70 && (
+                                  <span>
+                                    {safeTranslate(
+                                      "form.meritDesc.stable",
+                                      "41-70: Người dùng ổn định"
+                                    )}
+                                  </span>
+                                )}
+                                {expectedMerit >= 0 && expectedMerit <= 40 && (
+                                  <span>
+                                    {safeTranslate(
+                                      "form.meritDesc.banned",
+                                      "0-40: Người dùng bị cấm"
+                                    )}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormDescription className="mt-2">
+                          {safeTranslate(
+                            "form.meritChangeHint",
+                            "Nhập số dương để cộng điểm, số âm để trừ điểm merit."
+                          )}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="reason"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {safeTranslate("form.reasonLabel", "Lý do điều chỉnh")}
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
                           placeholder={safeTranslate(
-                            "form.meritChangePlaceholder",
-                            "Nhập số dương để cộng, số âm để trừ"
+                            "form.reasonPlaceholder",
+                            "Nhập lý do điều chỉnh merit (không bắt buộc)"
                           )}
                           disabled={isFormDisabled}
                           {...field}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            field.onChange(value === "" ? 0 : Number(value));
-                          }}
-                          className="w-full"
+                          className="w-full resize-none"
+                          rows={3}
                         />
-                        <div className="rounded-md border bg-muted/40 p-3">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium">
-                              {safeTranslate(
-                                "form.currentMerit",
-                                "Merit hiện tại"
-                              )}
-                              :
-                            </span>
-                            <span className="text-sm">{currentMerit}</span>
-                          </div>
-                          <div className="flex items-center justify-between mt-1">
-                            <span className="text-sm font-medium">
-                              {safeTranslate("form.meritChange", "Thay đổi")}:
-                            </span>
-                            <span
-                              className={`text-sm font-semibold ${meritChange > 0 ? "text-green-600" : meritChange < 0 ? "text-red-600" : ""}`}
-                            >
-                              {meritChange > 0
-                                ? `+${meritChange}`
-                                : meritChange}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between mt-1 pt-1 border-t">
-                            <span className="text-sm font-medium">
-                              {safeTranslate(
-                                "form.expectedMerit",
-                                "Merit sau thay đổi"
-                              )}
-                              :
-                            </span>
-                            <span className="text-sm font-bold">
-                              {expectedMerit}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between mt-2">
-                            <span className="text-sm font-medium">
-                              {safeTranslate("form.meritStatus", "Trạng thái")}:
-                            </span>
-                            <span className="text-sm font-semibold">
-                              {meritLabel}
-                            </span>
-                          </div>
-                          <div className="mt-2 text-xs text-muted-foreground">
-                            {expectedMerit >= 71 && expectedMerit <= 100 && (
-                              <span>
-                                {safeTranslate(
-                                  "form.meritDesc.reliable",
-                                  "71-100: Người dùng rất tin cậy"
-                                )}
-                              </span>
-                            )}
-                            {expectedMerit >= 41 && expectedMerit <= 70 && (
-                              <span>
-                                {safeTranslate(
-                                  "form.meritDesc.stable",
-                                  "41-70: Người dùng ổn định"
-                                )}
-                              </span>
-                            )}
-                            {expectedMerit >= 0 && expectedMerit <= 40 && (
-                              <span>
-                                {safeTranslate(
-                                  "form.meritDesc.banned",
-                                  "0-40: Người dùng bị cấm"
-                                )}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </FormControl>
-                    <FormDescription className="mt-2">
-                      {safeTranslate(
-                        "form.meritChangeHint",
-                        "Nhập số dương để cộng điểm, số âm để trừ điểm merit."
-                      )}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                );
-              }}
-            />
+                      </FormControl>
+                      <FormDescription>
+                        {safeTranslate(
+                          "form.reasonHint",
+                          "Ghi chú lý do điều chỉnh merit cho user này."
+                        )}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <SheetFooter className="gap-2 px-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isFormDisabled}
-              >
-                {safeTranslate("form.cancel", "Cancel")}
-              </Button>
-              <Button type="submit" disabled={isFormDisabled}>
-                {isSubmitting ? (
-                  <Spinner className="size-4" />
-                ) : (
-                  safeTranslate("form.submitUpdate", "Save changes")
+                {isLoading && (
+                  <div className="flex items-center justify-center">
+                    <Spinner className="size-5" />
+                  </div>
                 )}
-              </Button>
-            </SheetFooter>
-
-            {isLoading && (
-              <div className="flex items-center justify-center">
-                <Spinner className="size-5" />
               </div>
+            </Form>
+          </div>
+        </ScrollArea>
+
+        <div className="flex items-center gap-2 px-6 py-4 border-t shrink-0">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isFormDisabled}
+            className="flex-1"
+          >
+            {safeTranslate("form.cancel", "Cancel")}
+          </Button>
+          <Button
+            disabled={isFormDisabled}
+            onClick={(e) => {
+              e.preventDefault();
+              form.handleSubmit(onFormSubmit)();
+            }}
+            className="flex-1"
+          >
+            {isSubmitting ? (
+              <Spinner className="size-4" />
+            ) : (
+              safeTranslate("form.submitUpdate", "Save changes")
             )}
-          </form>
-        </Form>
+          </Button>
+        </div>
       </SheetContent>
     </Sheet>
   );

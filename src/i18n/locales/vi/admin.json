@@ -306,13 +306,35 @@
         "meritLevelLabel": "Cấp độ uy tín",
         "meritLevelPlaceholder": "Chọn cấp độ uy tín",
         "meritLevelHint": "Thiết lập mức độ truy cập và hạn chế cho người dùng.",
+        "meritChangeLabel": "Điều chỉnh Merit",
+        "meritChangePlaceholder": "Nhập số dương để cộng, số âm để trừ (vd: +10, -5)",
+        "meritChangeHint": "Nhập số dương để cộng điểm, số âm để trừ điểm merit.",
+        "currentMerit": "Merit hiện tại",
+        "meritChange": "Thay đổi",
+        "expectedMerit": "Merit sau thay đổi",
+        "meritStatus": "Trạng thái",
+        "meritDesc": {
+          "reliable": "71-100: Người dùng rất tin cậy",
+          "stable": "41-70: Người dùng ổn định",
+          "banned": "0-40: Người dùng bị cấm"
+        },
+        "reasonLabel": "Lý do điều chỉnh",
+        "reasonPlaceholder": "Nhập lý do điều chỉnh merit (không bắt buộc)",
+        "reasonHint": "Ghi chú lý do điều chỉnh merit cho user này.",
         "cancel": "Huỷ",
         "submitUpdate": "Lưu thay đổi"
+      },
+      "meritLevels": {
+        "reliable": "Rất tin cậy",
+        "stable": "Ổn định",
+        "banned": "Cấm"
       },
       "sheet": {
         "editTitle": "Chỉnh sửa hạn chế người dùng",
         "editDescription": "Cập nhật cấp độ uy tín và hạn chế cho tài khoản người dùng này."
-      }
+      },
+      "userIdLabel": "ID",
+      "currentMeritLabel": "Merit hiện tại"
     },
     "interests": {
       "title": "Sở thích",
@@ -672,6 +694,44 @@
         "noFeatures": "Chưa cấu hình tính năng",
         "days": "ngày",
         "close": "Đóng"
+      }
+    },
+    "posts": {
+      "title": "Quản lý bài viết",
+      "description": "Xem, tìm kiếm và kiểm duyệt bài viết của người dùng.",
+      "tableTitle": "Danh sách bài viết",
+      "tableDescription": "Danh sách tổng hợp tất cả bài viết trong hệ thống.",
+      "refresh": "Làm mới",
+      "search": "Tìm theo từ khóa...",
+      "empty": "Không có bài viết nào.",
+      "columns": {
+        "content": "Nội dung",
+        "creator": "Người đăng",
+        "createdAt": "Ngày tạo",
+        "status": "Trạng thái"
+      },
+      "status": {
+        "active": "Đang hoạt động",
+        "deleted": "Đã xóa"
+      },
+      "detail": {
+        "title": "Chi tiết bài viết",
+        "description": "Xem đầy đủ thông tin của bài viết.",
+        "content": "Nội dung",
+        "creator": "Người đăng",
+        "createdAt": "Ngày tạo",
+        "comments": "Bình luận",
+        "reactions": "Cảm xúc",
+        "allImage": "Tất cả hình ảnh",
+        "sharedPost": "Bài viết được chia sẻ"
+      },
+      "delete": {
+        "title": "Xóa bài viết",
+        "description": "Vui lòng nhập lý do xóa bài viết. Thao tác này không thể hoàn tác.",
+        "reason": "Lý do",
+        "reasonPlaceholder": "Nhập lý do (bắt buộc)...",
+        "cancel": "Hủy",
+        "confirm": "Xóa"
       }
     },
     "events": {

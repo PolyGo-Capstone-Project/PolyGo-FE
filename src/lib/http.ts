@@ -230,6 +230,13 @@ const http = {
   ) {
     return request<Response>("DELETE", url, { ...options });
   },
+  deleteWithBody<Response>(
+    url: string,
+    body: any,
+    options?: Omit<CustomOptions, "body"> | undefined
+  ) {
+    return request<Response>("DELETE", url, { ...options, body });
+  },
 };
 
 export default http;

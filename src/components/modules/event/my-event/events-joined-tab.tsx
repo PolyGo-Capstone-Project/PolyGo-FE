@@ -33,6 +33,7 @@ import {
   Separator,
   Skeleton,
 } from "@/components/ui";
+import { useAuthMe } from "@/hooks/query/use-auth";
 import {
   useGetParticipatedEvents,
   useUnregisterEventMutation,
@@ -53,6 +54,10 @@ export function EventsJoinedTab() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"date" | "name">("date");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  // Get current user info
+  const { data: authMeData } = useAuthMe();
+  const currentUserId = authMeData?.payload.data.id;
 
   // Fetch ALL participated events with a large page size
   // We'll filter and paginate on the client side
@@ -82,10 +87,13 @@ export function EventsJoinedTab() {
   // Memoize current time to avoid recreating Date object on every render
   const now = useMemo(() => new Date(), []);
 
-  const allEvents = useMemo(
-    () => allEventsData?.payload.data.items || [],
-    [allEventsData?.payload.data.items]
-  );
+  const allEvents = useMemo(() => {
+    const events = allEventsData?.payload.data.items || [];
+    // Filter out events where current user is the host
+    return currentUserId
+      ? events.filter((event) => event.host.id !== currentUserId)
+      : events;
+  }, [allEventsData?.payload.data.items, currentUserId]);
 
   // Filter and separate upcoming vs history events
   const { upcomingEvents, historyEvents } = useMemo(() => {

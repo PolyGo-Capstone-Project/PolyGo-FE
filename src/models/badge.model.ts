@@ -78,6 +78,27 @@ export const UpdateBadgeBodySchema = CreateBadgeBodySchema;
 //USER ==============================
 export const UserBadgeResSchema = GetBadgesResSchema;
 
+// USER get all badges
+
+// item trả về từ /badges/me-all
+export const UserBadgeAllItemSchema = BadgeSchema.omit({ badgeCategory: true })
+  .merge(
+    BadgeTranslationsSchema.pick({ name: true, lang: true, description: true })
+  )
+  .extend({
+    isClaimed: z.boolean().optional(),
+    has: z.boolean().optional(),
+    badgeCategory: z.enum(BadgeCategory).optional(),
+  });
+
+export const GetUserBadgesAllResSchema = z.object({
+  data: z.object({
+    items: z.array(UserBadgeAllItemSchema),
+    ...PaginationMetaSchema.shape,
+  }),
+  message: z.string(),
+});
+
 //types
 export type BadgeType = z.infer<typeof BadgeSchema>;
 export type BadgeTranslationsType = z.infer<typeof BadgeTranslationsSchema>;
@@ -89,3 +110,6 @@ export type GetBadgeByIdResType = z.infer<typeof GetBadgeByIdResSchema>;
 export type CreateBadgeBodyType = z.infer<typeof CreateBadgeBodySchema>;
 export type UpdateBadgeBodyType = z.infer<typeof UpdateBadgeBodySchema>;
 export type UserBadgeResType = z.infer<typeof UserBadgeResSchema>;
+//user get all badges
+export type UserBadgeAllItemType = z.infer<typeof UserBadgeAllItemSchema>;
+export type GetUserBadgesAllResType = z.infer<typeof GetUserBadgesAllResSchema>;
