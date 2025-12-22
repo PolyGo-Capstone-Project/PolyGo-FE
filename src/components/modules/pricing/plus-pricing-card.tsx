@@ -236,7 +236,7 @@ function getFeatureText(
   ];
 
   if (featuresWithCount.includes(featureKey)) {
-    if (limitValue > 0) {
+    if (limitValue >= 0) {
       return t(`${planKey}.features.${getFeatureTranslationKey(featureKey)}`, {
         count: limitValue,
       });

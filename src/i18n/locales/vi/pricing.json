@@ -46,7 +46,7 @@
         "translation": "{count} bản dịch/ngày",
         "voiceCall": "{count} cuộc gọi thoại/ngày",
         "videoCall": "{count} cuộc gọi video/ngày",
-        "eventParticipation": "Tham gia {count} sự kiện/tuần",
+        "eventParticipation": "Tham gia sự kiện không giới hạn",
         "eventCreation": "Tạo {count} sự kiện/tháng",
         "advancedMatching": "Tìm kiếm nâng cao",
         "premiumBadges": "Huy hiệu cao cấp",
