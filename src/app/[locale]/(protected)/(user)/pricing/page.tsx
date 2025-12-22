@@ -38,7 +38,7 @@ export default function PricingPage() {
     const free = plans.find((p) => p.planType === PlanTypeEnum.FREE);
     const plus = plans
       .filter((p) => p.planType === PlanTypeEnum.PLUS)
-      .sort((a, b) => a.durationInDays - b.durationInDays); // Sort by duration: monthly, quarterly, yearly
+      .sort((a, b) => a.durationInDays - b.durationInDays);
 
     return { freePlan: free, plusPlans: plus };
   }, [plansData]);
@@ -52,26 +52,31 @@ export default function PricingPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 md:py-12 md:px-6">
+    <div className="container mx-auto py-12 px-4 md:py-16 md:px-6 max-w-7xl">
       {/* Header */}
-      <div className="mb-8 space-y-4">
+      <div className="mb-12 space-y-6">
         <Link href={`/${locale}/wallet`}>
-          <Button variant="ghost" size="sm" className="gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-2 hover:gap-3 transition-all"
+          >
             <IconArrowLeft className="size-4" />
             {t("backToWallet")}
           </Button>
         </Link>
 
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
+        <div className="text-center space-y-4 max-w-3xl mx-auto">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-transparent p-3">
             {t("title")}
           </h1>
-          <p className="text-muted-foreground text-lg">{t("subtitle")}</p>
+          <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+            {t("subtitle")}
+          </p>
         </div>
       </div>
 
-      {/* Pricing Cards */}
-      <div className="grid gap-6 md:gap-8 lg:grid-cols-2 max-w-6xl mx-auto">
+      <div className="grid gap-8 lg:grid-cols-2 max-w-6xl mx-auto">
         {/* Free Plan */}
         {freePlan && (
           <PricingCard
@@ -81,7 +86,7 @@ export default function PricingPage() {
           />
         )}
 
-        {/* Plus Plans - Show as one card with tabs */}
+        {/* Plus Plans */}
         {plusPlans.length > 0 && (
           <PlusPricingCard
             plans={plusPlans}
