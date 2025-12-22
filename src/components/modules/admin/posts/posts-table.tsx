@@ -3,7 +3,6 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-  Badge,
   Button,
   Table,
   TableBody,
@@ -49,7 +48,7 @@ export function PostsTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-12">No.</TableHead>
-            <TableHead className="min-w-[260px]">
+            <TableHead className="min-w-[620px]">
               {t("columns.content")}
             </TableHead>
             <TableHead className="min-w-[160px]">
@@ -58,9 +57,9 @@ export function PostsTable({
             <TableHead className="min-w-[120px]">
               {t("columns.createdAt")}
             </TableHead>
-            <TableHead className="min-w-[100px]">
+            {/* <TableHead className="min-w-[100px]">
               {t("columns.status")}
-            </TableHead>
+            </TableHead> */}
             <TableHead className="min-w-[120px]" />
           </TableRow>
         </TableHeader>
@@ -113,11 +112,11 @@ export function PostsTable({
                 </TableCell>
 
                 {/* Status */}
-                <TableCell>
+                {/* <TableCell>
                   <Badge variant={statusBadge(p.isDeleted)}>
                     {p.isDeleted ? t("status.deleted") : t("status.active")}
                   </Badge>
-                </TableCell>
+                </TableCell> */}
 
                 {/* Actions */}
                 <TableCell className="text-right whitespace-nowrap">

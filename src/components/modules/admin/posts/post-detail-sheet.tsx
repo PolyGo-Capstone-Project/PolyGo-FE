@@ -1,5 +1,8 @@
 import { MarkdownRenderer } from "@/components/shared";
 import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
   Separator,
   Sheet,
   SheetContent,
@@ -109,6 +112,50 @@ export function PostDetailSheet({
           )}
 
           <Separator />
+
+          {/* ===== COMMENTS ===== */}
+          {post.comments?.length > 0 && (
+            <>
+              <Separator />
+
+              <div className="space-y-3">
+                <div className="font-semibold">
+                  {t("comments")} ({post.comments.length})
+                </div>
+
+                <div className="space-y-3">
+                  {post.comments.map((comment: any) => (
+                    <div
+                      key={comment.id}
+                      className="flex gap-3 rounded-md border p-3 text-sm"
+                    >
+                      {comment.user?.avatarUrl && (
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage
+                            src={comment.user.avatarUrl}
+                            alt={comment.user.name}
+                          />
+                          <AvatarFallback>
+                            {comment.user.name?.charAt(0)?.toUpperCase() ?? "U"}
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+
+                      <div className="flex-1">
+                        <div className="font-medium">{comment.user?.name}</div>
+                        <div className="text-muted-foreground">
+                          {comment.content}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {new Date(comment.createdAt).toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
 
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
