@@ -180,7 +180,7 @@ export default function ProfilePage() {
                 xpInCurrentLevel={user.xpInCurrentLevel}
                 xpToNextLevel={user.xpToNextLevel}
                 hasUnclaimedLevelRewards={hasUnclaimedLevelRewards}
-                showLevelLink
+                showLevelandBadgeLink
               />
               <ProfileStats
                 totalSessions={MOCK_STATS.totalSessions}
@@ -237,7 +237,7 @@ export default function ProfilePage() {
                 xpInCurrentLevel={user.xpInCurrentLevel}
                 xpToNextLevel={user.xpToNextLevel}
                 hasUnclaimedLevelRewards={hasUnclaimedLevelRewards}
-                showLevelLink
+                showLevelandBadgeLink
               />
             </div>
           </div>

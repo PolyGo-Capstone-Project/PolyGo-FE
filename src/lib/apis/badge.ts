@@ -6,6 +6,7 @@ import {
   GetBadgeByIdResType,
   GetBadgesQueryType,
   GetBadgesResType,
+  GetUserBadgesAllResType,
   MessageResType,
   UpdateBadgeBodyType,
   UserBadgeResType,
@@ -27,6 +28,10 @@ const badgeApiRequest = {
   //User
   getUserBadges: createGetAll<UserBadgeResType, GetBadgesParams>(
     `${prefix}/me`
+  ),
+
+  getUserBadgesAll: createGetAll<GetUserBadgesAllResType, GetBadgesParams>(
+    `${prefix}/me-all`
   ),
 };
 

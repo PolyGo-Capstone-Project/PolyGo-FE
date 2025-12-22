@@ -1,0 +1,26 @@
+{
+  "userBadge": {
+    "title": "Huy hiệu",
+    "subtitle": "Khám phá toàn bộ huy hiệu trong PolyGo — mở khóa bằng cách tăng cấp, tham gia sự kiện và đóng góp cho cộng đồng.",
+    "backToProfile": "Quay lại hồ sơ",
+    "filters": {
+      "unlockedOnly": "Đã mở khóa",
+      "showAll": "Xem tất cả"
+    },
+    "summary": {
+      "title": "Bộ sưu tập huy hiệu",
+      "desc": "Huy hiệu là minh chứng cho hành trình của bạn — mỗi huy hiệu đánh dấu một cột mốc đáng nhớ.",
+      "unlocked": "Đã mở"
+    },
+    "status": {
+      "locked": "Chưa mở",
+      "unlocked": "Đã mở"
+    },
+    "hint": {
+      "locked": "Tiếp tục tham gia và hoạt động nhiều hơn để mở khóa huy hiệu này.",
+      "unlocked": "Tuyệt vời! Huy hiệu này đã thuộc về bạn."
+    },
+    "noDescription": "Hoàn thành các điều kiện cụ thể trong ứng dụng để mở khóa huy hiệu này.",
+    "empty": "Không tìm thấy huy hiệu nào."
+  }
+}
