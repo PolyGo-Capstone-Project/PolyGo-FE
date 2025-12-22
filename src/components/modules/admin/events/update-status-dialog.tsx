@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconEdit } from "@tabler/icons-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -24,7 +24,10 @@ import {
   Spinner,
 } from "@/components/ui";
 import { EventStatus } from "@/constants";
-import { useUpdateEventStatusMutation } from "@/hooks/query/use-event";
+import {
+  useCancelEventMutation,
+  useUpdateEventStatusMutation,
+} from "@/hooks/query/use-event";
 import { handleErrorApi, showSuccessToast } from "@/lib/utils";
 import {
   UpdateEventStatusBodySchema,
@@ -33,14 +36,19 @@ import {
 
 type UpdateStatusDialogProps = {
   eventId: string;
+  currentStatus: string;
+  startAt: string;
 };
 
-export function UpdateStatusDialog({ eventId }: UpdateStatusDialogProps) {
+export function UpdateStatusDialog({
+  eventId,
+  currentStatus,
+  startAt,
+}: UpdateStatusDialogProps) {
   const t = useTranslations("admin.events.updateStatus");
   const tStatus = useTranslations("admin.events.status");
   const tSuccess = useTranslations("Success");
   const tError = useTranslations("Error");
-  const locale = useLocale();
   const [open, setOpen] = useState(false);
 
   const form = useForm<UpdateEventStatusBodyType>({
@@ -67,19 +75,67 @@ export function UpdateStatusDialog({ eventId }: UpdateStatusDialogProps) {
     },
   });
 
+  const cancelEventMutation = useCancelEventMutation({
+    onSuccess: (data) => {
+      showSuccessToast(data.payload?.message, tSuccess);
+      setOpen(false);
+      form.reset();
+    },
+    onError: (error) => {
+      handleErrorApi({
+        error,
+        setError: form.setError,
+        tError,
+      });
+    },
+  });
+
   const onSubmit = async (data: UpdateEventStatusBodyType) => {
-    if (updateStatusMutation.isPending) return;
-    await updateStatusMutation.mutateAsync({ body: data });
+    if (updateStatusMutation.isPending || cancelEventMutation.isPending) return;
+
+    // If status is Cancelled, use cancelEventMutation
+    if (data.status === EventStatus.Cancelled) {
+      await cancelEventMutation.mutateAsync({
+        eventId: data.eventId,
+        reason: data.adminNote || "",
+      });
+    } else {
+      // Otherwise use updateStatusMutation
+      await updateStatusMutation.mutateAsync({ body: data });
+    }
   };
 
-  const statusOptions = [
-    EventStatus.Pending,
-    EventStatus.Approved,
-    EventStatus.Rejected,
-    // EventStatus.Live,
-    EventStatus.Cancelled,
-    EventStatus.Completed,
-  ];
+  // Filter status options based on current status
+  const getAvailableStatusOptions = () => {
+    switch (currentStatus) {
+      case EventStatus.Pending:
+        // Pending can only transition to Approved or Rejected
+        return [EventStatus.Approved, EventStatus.Rejected];
+      case EventStatus.Approved:
+        // Approved can only transition to Live, Completed or Cancelled
+        return [EventStatus.Live, EventStatus.Completed, EventStatus.Cancelled];
+      case EventStatus.Live:
+        // Live can only transition to Completed
+        return [EventStatus.Completed];
+      case EventStatus.Rejected:
+        // Rejected can transition to Pending if current date is at least 3 days before startAt
+        const eventStartDate = new Date(startAt);
+        const currentDate = new Date();
+        const daysDifference =
+          (eventStartDate.getTime() - currentDate.getTime()) /
+          (1000 * 60 * 60 * 24);
+
+        if (daysDifference >= 3) {
+          return [EventStatus.Pending];
+        }
+        return [];
+      default:
+        // For other statuses (Cancelled, Completed), no transitions allowed
+        return [];
+    }
+  };
+
+  const statusOptions = getAvailableStatusOptions();
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -147,12 +203,22 @@ export function UpdateStatusDialog({ eventId }: UpdateStatusDialogProps) {
                 setOpen(false);
                 form.reset();
               }}
-              disabled={updateStatusMutation.isPending}
+              disabled={
+                updateStatusMutation.isPending || cancelEventMutation.isPending
+              }
             >
               {t("cancel")}
             </Button>
-            <Button type="submit" disabled={updateStatusMutation.isPending}>
-              {updateStatusMutation.isPending ? (
+            <Button
+              type="submit"
+              disabled={
+                updateStatusMutation.isPending ||
+                cancelEventMutation.isPending ||
+                !form.watch("status")
+              }
+            >
+              {updateStatusMutation.isPending ||
+              cancelEventMutation.isPending ? (
                 <>
                   <Spinner className="mr-2 size-4" />
                   {t("submitting")}
