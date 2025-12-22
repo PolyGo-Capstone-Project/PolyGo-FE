@@ -607,6 +607,44 @@
         "close": "Close"
       }
     },
+    "posts": {
+      "title": "Manage Posts",
+      "description": "Review, search, and moderate user posts.",
+      "tableTitle": "Post List",
+      "tableDescription": "A comprehensive list of all posts in the system.",
+      "refresh": "Refresh",
+      "search": "Search by keyword...",
+      "empty": "No posts found.",
+      "columns": {
+        "content": "Content",
+        "creator": "Creator",
+        "createdAt": "Created at",
+        "status": "Status"
+      },
+      "status": {
+        "active": "Active",
+        "deleted": "Deleted"
+      },
+      "detail": {
+        "title": "Post Details",
+        "description": "View complete information about this post.",
+        "content": "Content",
+        "creator": "Creator",
+        "createdAt": "Created at",
+        "comments": "Comments",
+        "reactions": "Reactions",
+        "allImage": "Images",
+        "sharedPost": "Shared Post"
+      },
+      "delete": {
+        "title": "Delete post",
+        "description": "Please provide a reason for deleting this post. This action cannot be undone.",
+        "reason": "Reason",
+        "reasonPlaceholder": "Enter the reason (required)...",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      }
+    },
     "events": {
       "title": "Events Management",
       "description": "Manage events on the PolyGo platform.",
