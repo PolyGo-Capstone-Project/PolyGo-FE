@@ -20,7 +20,7 @@ type NotificationItem = {
   content: string;
   isRead: boolean;
   createdAt: string;
-  type: "Post" | "Friend" | "Event" | "Gift" | string;
+  type: "Post" | "Friend" | "Event" | "Gift" | "Badge" | string;
   objectId: string;
   imageUrl?: string | null;
 };
@@ -149,6 +149,10 @@ export default function NotificationPage() {
       }
       case "Gift": {
         router.push(`${base}/gifts`);
+        break;
+      }
+      case "Badge": {
+        router.push(`${base}/badge`);
         break;
       }
       default: {

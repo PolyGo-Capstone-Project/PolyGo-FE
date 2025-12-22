@@ -1,0 +1,26 @@
+{
+  "userBadge": {
+    "title": "Badges",
+    "subtitle": "Explore all badges available in PolyGo — unlock them by leveling up, joining events, and contributing to the community.",
+    "backToProfile": "Back to profile",
+    "filters": {
+      "unlockedOnly": "Unlocked only",
+      "showAll": "Show all"
+    },
+    "summary": {
+      "title": "Your Badge Collection",
+      "desc": "Badges are proof of progress — each one celebrates a milestone in your journey.",
+      "unlocked": "Unlocked"
+    },
+    "status": {
+      "locked": "Locked",
+      "unlocked": "Unlocked"
+    },
+    "hint": {
+      "locked": "Keep going — participate more and you’ll unlock this badge soon.",
+      "unlocked": "Nice! This badge is already in your collection."
+    },
+    "noDescription": "Complete specific milestones in the app to unlock this badge.",
+    "empty": "No badges found."
+  }
+}

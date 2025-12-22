@@ -56,6 +56,7 @@ export const MediaListResSchema = z.object({
 
 export const ConversationSchema = z.object({
   id: z.string(),
+  isFriend: z.boolean(),
   hasSeen: z.boolean(),
   lastMessage: LastMessageSchema.nullable(),
   user: UserInfoSchema,

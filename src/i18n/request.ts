@@ -31,6 +31,7 @@ const messageNamespaces = [
   "notification",
   "adminDashboard",
   "level",
+  "badge",
 ];
 
 async function loadMessages(locale: string): Promise<AbstractIntlMessages> {

@@ -27,6 +27,7 @@ interface MessageInputProps {
   onSendImages: (files: File[]) => Promise<void> | void;
   onSendAudio: (file: File) => Promise<void> | void;
   disabled?: boolean;
+  placeholder?: string;
 }
 
 export function MessageInput({
@@ -34,6 +35,7 @@ export function MessageInput({
   onSendImages,
   onSendAudio,
   disabled = false,
+  placeholder,
 }: MessageInputProps) {
   const t = useTranslations("chat");
   const tError = useTranslations("chat.error");
@@ -363,7 +365,7 @@ export function MessageInput({
 
             <Input
               type="text"
-              placeholder={t("messagePlaceholder")}
+              placeholder={placeholder ?? t("messagePlaceholder")}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}

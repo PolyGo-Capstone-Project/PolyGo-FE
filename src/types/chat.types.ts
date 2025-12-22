@@ -43,6 +43,7 @@ export interface ChatConversation {
   hasSeen: boolean; // Changed from unreadCount to match backend
   isTyping?: boolean;
   updatedAt: Date;
+  isFriend: boolean;
 }
 
 export interface TypingUser {
