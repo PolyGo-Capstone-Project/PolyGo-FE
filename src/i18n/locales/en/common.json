@@ -30,7 +30,7 @@
     "SetUpProfile": "Profile setup successful!",
     "Subscription": "Subscription successful!",
     "Subscribe": "Subscription upgraded successfully!",
-    "Cancel": "Subscription cancelled successfully!",
+    "Cancel": "Cancelled successfully!",
     "Kick": "User kicked successfully!",
     "Unregister": "Unregistered successfully!",
     "friendRequestSent": "Friend request sent successfully!",
@@ -109,7 +109,9 @@
     "TranslationLimitExceeded": "You have exceeded your translation limit. Please upgrade your subscription.",
     "EventRegistrationLimitExceeded": "You have exceeded your event registration limit. Please upgrade your subscription.",
     "VideoCallLimitExceeded": "You have exceeded your video call limit. Please upgrade your subscription.",
-    "Claim": "Claimed failed!"
+    "Claim": "Claimed failed!",
+    "HostHasOverlappingEvent": "You have another hosted event that overlaps with this time.",
+    "EventEnded": "Cannot register for an event that has ended."
   },
   "header": {
     "products": "Products",

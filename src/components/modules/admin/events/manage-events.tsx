@@ -165,6 +165,28 @@ export default function ManageEvents() {
   const hasActiveFilters =
     searchTerm || selectedLanguage || selectedFee || selectedTime;
 
+  // Check if status can be updated based on current status and startAt
+  const canUpdateStatus = (currentStatus: string, startAt: string) => {
+    switch (currentStatus) {
+      case EventStatus.Pending:
+      case EventStatus.Approved:
+      case EventStatus.Live:
+        // These statuses can always be updated
+        return true;
+      case EventStatus.Rejected:
+        // Rejected can only be updated if at least 3 days before event start
+        const eventStartDate = new Date(startAt);
+        const currentDate = new Date();
+        const daysDifference =
+          (eventStartDate.getTime() - currentDate.getTime()) /
+          (1000 * 60 * 60 * 24);
+        return daysDifference >= 3;
+      default:
+        // Cancelled and Completed cannot be updated
+        return false;
+    }
+  };
+
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case EventStatus.Approved:
@@ -478,10 +500,12 @@ export default function ManageEvents() {
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-1">
                             <EventStats eventId={event.id} />
-                            {(activeTab === "pending" ||
-                              activeTab === "approved" ||
-                              activeTab === "live") && (
-                              <UpdateStatusDialog eventId={event.id} />
+                            {canUpdateStatus(event.status, event.startAt) && (
+                              <UpdateStatusDialog
+                                eventId={event.id}
+                                currentStatus={event.status}
+                                startAt={event.startAt}
+                              />
                             )}
                           </div>
                         </TableCell>

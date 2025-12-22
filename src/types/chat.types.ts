@@ -42,7 +42,7 @@ export interface ChatConversation {
   lastMessage: ChatLastMessage | null;
   hasSeen: boolean; // Changed from unreadCount to match backend
   isTyping?: boolean;
-  updatedAt: Date;
+  updatedAt: Date | null;
   isFriend: boolean;
 }
 

@@ -703,7 +703,7 @@ export default function EventDetailPage() {
                   )}
 
                 {/* Time until host can join */}
-                {isHost && !canHostJoin && !pending && (
+                {isHost && !canHostJoin && !pending && !cancel && !rejected && (
                   <div className="w-full py-3 px-4 bg-muted rounded-lg border text-center">
                     <p className="text-sm text-muted-foreground">
                       {t("hostCanJoinMessage")}
