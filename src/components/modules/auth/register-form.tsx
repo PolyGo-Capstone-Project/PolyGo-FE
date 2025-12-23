@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input, Label, Separator } from "@/components";
+import { Button, Input, Label } from "@/components";
 import { TypeOfVerificationCode } from "@/constants";
 import {
   useAuthStore,
@@ -341,16 +341,16 @@ export default function RegisterForm() {
       </Button>
 
       {/* Divider */}
-      <div className="relative">
+      {/* <div className="relative">
         <Separator />
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="bg-background px-2 text-xs text-muted-foreground">
             {t("orContinueWith")}
           </span>
         </div>
-      </div>
+      </div> */}
 
-      <Button
+      {/* <Button
         type="button"
         variant="outline"
         className="w-full flex items-center gap-2"
@@ -371,7 +371,7 @@ export default function RegisterForm() {
             />
           </svg>
         )}
-        {isGoogleLoading ? "Đang kết nối..." : "Đăng ký bằng Google"} */}
+        {isGoogleLoading ? "Đang kết nối..." : "Đăng ký bằng Google"} 
 
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -384,7 +384,7 @@ export default function RegisterForm() {
           />
         </svg>
         {t("googleRegister")}
-      </Button>
+      </Button> */}
 
       {/* Login Link */}
       <div className="text-center">

@@ -24,7 +24,6 @@ import {
   DialogTitle,
   Input,
   Label,
-  Separator,
 } from "@/components/ui";
 import { Role } from "@/constants";
 import { useAuthStore, useLoginMutation, useSearchParamsLoader } from "@/hooks";
@@ -252,7 +251,7 @@ export default function LoginForm() {
       </Button>
 
       {/* Divider */}
-      <div className="relative">
+      {/* <div className="relative">
         <Separator />
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="bg-background px-2 text-xs text-muted-foreground">
@@ -282,7 +281,7 @@ export default function LoginForm() {
           </svg>
         )}
         {isGoogleLoading ? t("connecting") : t("googleLogin")}
-      </Button>
+      </Button> */}
 
       {/* Register Link */}
       <div className="text-center">

@@ -296,7 +296,7 @@ export default function SocialContent({ locale }: ContentProps) {
     <div className="min-h-screen bg-background">
       {/* 3 columns */}
       <div className="max-w-8xl mx-auto w-full px-4 py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,380px)_1fr_minmax(300px,380px)] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,340px)_1fr_minmax(300px,340px)] gap-6">
           {/* Left - Sticky */}
           <div className="hidden lg:block">
             <div className="sticky top-20">

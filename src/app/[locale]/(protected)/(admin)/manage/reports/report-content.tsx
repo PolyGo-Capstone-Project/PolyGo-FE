@@ -372,7 +372,7 @@ export default function ReportContent() {
       <div className="">
         <div>
           <h1 className="text-3xl font-bold">{t("admin.title")}</h1>
-          <p className="text-muted-foreground mt-1">{t("admin.description")}</p>
+          <p className="text-muted-foreground my-2">{t("admin.description")}</p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>

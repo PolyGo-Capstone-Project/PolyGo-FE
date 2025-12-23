@@ -30,7 +30,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   // Render admin content
   return (
     <div className="min-h-screen flex flex-col">
-      {/* TODO: Add AdminHeader component here when ready */}
       <main className="flex-1">{children}</main>
     </div>
   );
