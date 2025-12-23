@@ -48,8 +48,8 @@ export function ImagePreviewModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="min-w-[65vw] max-h-[70vh] p-0 bg-black/85 border-none dark:bg-white/85">
-        <div className="relative flex h-[70vh] w-full items-center justify-center">
+      <DialogContent className="min-w-[65vw] max-h-[85vh] p-0 bg-black/85 border-none dark:bg-white/85">
+        <div className="relative flex h-[85vh] w-full items-center justify-center overflow-hidden">
           {/* Close Button */}
           <Button
             size="icon"
@@ -90,7 +90,7 @@ export function ImagePreviewModal({
                 alt={`Preview ${currentIndex + 1}`}
                 width={1200}
                 height={800}
-                className="max-h-[85vh] w-auto object-contain"
+                className="max-h-[calc(85vh-2rem)] w-auto object-contain"
                 unoptimized
               />
             </div>

@@ -220,7 +220,6 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
 
   // User presence management from context
   const {
-    isUserOnline,
     getOnlineStatus,
     setOnUserStatusChangedCallback,
     isConnected: isPresenceConnected,

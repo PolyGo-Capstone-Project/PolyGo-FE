@@ -663,13 +663,15 @@ export function TransactionHistory() {
                 <Label className="mb-2 block text-muted-foreground">
                   {t("receiptDialog.transferReceipt")}
                 </Label>
-                <Image
-                  src={selectedTransaction.withdrawalApprovedImageUrl}
-                  alt={t("receiptDialog.title")}
-                  width={600}
-                  height={400}
-                  className="w-full rounded-lg border"
-                />
+                <div className="relative w-full max-h-[60vh] overflow-auto rounded-lg border">
+                  <Image
+                    src={selectedTransaction.withdrawalApprovedImageUrl}
+                    alt={t("receiptDialog.title")}
+                    width={600}
+                    height={400}
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
               </div>
             )}
           </div>

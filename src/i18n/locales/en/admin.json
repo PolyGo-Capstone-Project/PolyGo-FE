@@ -824,7 +824,160 @@
     },
     "transactions": {
       "title": "Transactions",
-      "description": "View and manage user transactions on the PolyGo platform."
+      "description": "View and manage user transactions on the PolyGo platform.",
+      "inquiries": {
+        "title": "Transaction Inquiries",
+        "description": "Transactions with inquiry requests ({totalItems} total)",
+        "searchFilter": {
+          "title": "Search & Filter",
+          "description": "Filter inquiry transactions by description, type, and status",
+          "searchPlaceholder": "Search by description...",
+          "transactionType": "Transaction Type",
+          "allTypes": "All Types",
+          "status": "Status",
+          "allStatus": "All Status",
+          "reset": "Reset",
+          "refresh": "Refresh"
+        },
+        "table": {
+          "id": "ID",
+          "description": "Description",
+          "amount": "Amount",
+          "type": "Type",
+          "status": "Status",
+          "created": "Created",
+          "actions": "Actions",
+          "noData": "No inquiries found",
+          "noDataDescription": "There are no transaction inquiries matching your filters."
+        },
+        "actions": {
+          "view": "View",
+          "respond": "Respond"
+        },
+        "respondDialog": {
+          "title": "Respond to Transaction Inquiry",
+          "description": "Review the inquiry details and provide a response to the user.",
+          "transactionId": "Transaction ID",
+          "amount": "Amount",
+          "transactionType": "Transaction Type",
+          "status": "Status",
+          "descriptionLabel": "Description",
+          "userInquiry": "User Inquiry",
+          "noNotes": "No notes provided",
+          "createdAt": "Created At",
+          "lastUpdated": "Last Updated",
+          "responseLabel": "Admin Response (Optional)",
+          "responsePlaceholder": "Provide a response or update for this inquiry...",
+          "responseHint": "This response will be visible to the user and update the inquiry status.",
+          "cancel": "Cancel",
+          "update": "Update Inquiry",
+          "updating": "Updating..."
+        },
+        "pagination": {
+          "rowsPerPage": "Rows per page:",
+          "pageOf": "Page {current} of {total}"
+        }
+      },
+      "transactionLogs": {
+        "title": "Transaction Logs",
+        "description": "All transactions in the system ({totalItems} total)",
+        "searchFilter": {
+          "title": "Search & Filter",
+          "description": "Filter transactions by description, type, method, and status",
+          "searchPlaceholder": "Search by description...",
+          "transactionType": "Transaction Type",
+          "allTypes": "All Types",
+          "paymentMethod": "Payment Method",
+          "allMethods": "All Methods",
+          "status": "Status",
+          "allStatus": "All Status",
+          "reset": "Reset",
+          "refresh": "Refresh"
+        },
+        "table": {
+          "id": "ID",
+          "description": "Description",
+          "amount": "Amount",
+          "type": "Type",
+          "method": "Method",
+          "status": "Status",
+          "inquiry": "Inquiry",
+          "created": "Created",
+          "actions": "Actions",
+          "noData": "No transactions found",
+          "noDataDescription": "There are no transactions matching your filters.",
+          "inquiryYes": "Yes",
+          "inquiryNo": "No"
+        },
+        "actions": {
+          "view": "View"
+        },
+        "pagination": {
+          "rowsPerPage": "Rows per page:",
+          "pageOf": "Page {current} of {total}"
+        }
+      },
+      "withdrawalRequests": {
+        "title": "Withdrawal Requests",
+        "description": "Manage withdrawal requests ({totalItems} total)",
+        "searchFilter": {
+          "title": "Search & Filter",
+          "description": "Filter withdrawal requests by description and status",
+          "searchPlaceholder": "Search by description...",
+          "statusPlaceholder": "Status",
+          "allStatus": "All Status",
+          "reset": "Reset",
+          "refresh": "Refresh"
+        },
+        "table": {
+          "id": "ID",
+          "description": "Description",
+          "amount": "Amount",
+          "bankInfo": "Bank Info",
+          "status": "Status",
+          "created": "Created",
+          "actions": "Actions",
+          "noData": "No withdrawal requests found",
+          "noDataDescription": "There are no withdrawal requests matching your filters."
+        },
+        "actions": {
+          "viewDetails": "View Details",
+          "approve": "Approve",
+          "cancel": "Cancel"
+        },
+        "approveDialog": {
+          "title": "Approve Withdrawal Request",
+          "description": "Review and approve this withdrawal request. Upload a receipt image if available.",
+          "transactionId": "Transaction ID",
+          "amount": "Amount",
+          "bankName": "Bank Name",
+          "bankNumber": "Bank Number",
+          "accountName": "Account Name",
+          "description": "Description",
+          "uploadReceipt": "Upload Receipt Image",
+          "chooseFile": "Choose File",
+          "cancel": "Cancel",
+          "approve": "Approve",
+          "processing": "Processing..."
+        },
+        "cancelDialog": {
+          "title": "Cancel Withdrawal Request",
+          "description": "Cancel this withdrawal request. You can provide a reason for cancellation.",
+          "reasonLabel": "Cancellation Reason (Optional)",
+          "reasonPlaceholder": "Provide a reason for cancelling this withdrawal request...",
+          "cancel": "Cancel",
+          "cancelRequest": "Cancel Request",
+          "processing": "Processing..."
+        },
+        "pagination": {
+          "rowsPerPage": "Rows per page:",
+          "pageOf": "Page {current} of {total}"
+        },
+        "successMessages": {
+          "approved": "Withdrawal request approved successfully",
+          "cancelled": "Withdrawal request cancelled successfully"
+        }
+      }
     }
   }
 }

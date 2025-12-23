@@ -5,7 +5,6 @@ import {
   IconCrown,
   IconLoader2,
   IconSettings,
-  IconX,
 } from "@tabler/icons-react";
 import { format } from "date-fns";
 import { useLocale, useTranslations } from "next-intl";
@@ -93,7 +92,7 @@ export function SubscriptionCard() {
               <IconCrown className="size-5" />
               {t("title")}
             </CardTitle>
-            {!isFreeplan && (
+            {/* {!isFreeplan && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -105,7 +104,7 @@ export function SubscriptionCard() {
                   {t("cancelSubscription")}
                 </span>
               </Button>
-            )}
+            )} */}
           </div>
         </CardHeader>
 

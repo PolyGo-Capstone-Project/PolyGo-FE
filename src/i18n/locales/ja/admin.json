@@ -824,7 +824,160 @@
     },
     "transactions": {
       "title": "トランザクション",
-      "description": "PolyGoプラットフォームのユーザートランザクションを表示および管理します。"
+      "description": "PolyGoプラットフォームのユーザートランザクションを表示および管理します。",
+      "inquiries": {
+        "title": "取引問い合わせ",
+        "description": "問い合わせリクエストのある取引（合計{totalItems}件）",
+        "searchFilter": {
+          "title": "検索とフィルター",
+          "description": "説明、種類、ステータスで問い合わせ取引をフィルター",
+          "searchPlaceholder": "説明で検索...",
+          "transactionType": "取引種類",
+          "allTypes": "すべての種類",
+          "status": "ステータス",
+          "allStatus": "すべてのステータス",
+          "reset": "リセット",
+          "refresh": "更新"
+        },
+        "table": {
+          "id": "ID",
+          "description": "説明",
+          "amount": "金額",
+          "type": "種類",
+          "status": "ステータス",
+          "created": "作成日",
+          "actions": "アクション",
+          "noData": "問い合わせが見つかりません",
+          "noDataDescription": "フィルターに一致する取引問い合わせがありません。"
+        },
+        "actions": {
+          "view": "表示",
+          "respond": "応答"
+        },
+        "respondDialog": {
+          "title": "取引問い合わせに応答",
+          "description": "問い合わせの詳細を確認し、ユーザーに応答を提供します。",
+          "transactionId": "取引ID",
+          "amount": "金額",
+          "transactionType": "取引種類",
+          "status": "ステータス",
+          "descriptionLabel": "説明",
+          "userInquiry": "ユーザーの問い合わせ",
+          "noNotes": "メモなし",
+          "createdAt": "作成日時",
+          "lastUpdated": "最終更新",
+          "responseLabel": "管理者の応答（オプション）",
+          "responsePlaceholder": "この問い合わせへの応答または更新を入力...",
+          "responseHint": "この応答はユーザーに表示され、問い合わせステータスが更新されます。",
+          "cancel": "キャンセル",
+          "update": "問い合わせを更新",
+          "updating": "更新中..."
+        },
+        "pagination": {
+          "rowsPerPage": "ページあたりの行数:",
+          "pageOf": "ページ {current} / {total}"
+        }
+      },
+      "transactionLogs": {
+        "title": "取引ログ",
+        "description": "システム内のすべての取引（合計{totalItems}件）",
+        "searchFilter": {
+          "title": "検索とフィルター",
+          "description": "説明、種類、方法、ステータスで取引をフィルター",
+          "searchPlaceholder": "説明で検索...",
+          "transactionType": "取引種類",
+          "allTypes": "すべての種類",
+          "paymentMethod": "支払方法",
+          "allMethods": "すべての方法",
+          "status": "ステータス",
+          "allStatus": "すべてのステータス",
+          "reset": "リセット",
+          "refresh": "更新"
+        },
+        "table": {
+          "id": "ID",
+          "description": "説明",
+          "amount": "金額",
+          "type": "種類",
+          "method": "方法",
+          "status": "ステータス",
+          "inquiry": "問い合わせ",
+          "created": "作成日",
+          "actions": "アクション",
+          "noData": "取引が見つかりません",
+          "noDataDescription": "フィルターに一致する取引がありません。",
+          "inquiryYes": "あり",
+          "inquiryNo": "なし"
+        },
+        "actions": {
+          "view": "表示"
+        },
+        "pagination": {
+          "rowsPerPage": "ページあたりの行数:",
+          "pageOf": "ページ {current} / {total}"
+        }
+      },
+      "withdrawalRequests": {
+        "title": "出金リクエスト",
+        "description": "出金リクエストを管理（合計 {totalItems}）",
+        "searchFilter": {
+          "title": "検索とフィルター",
+          "description": "説明とステータスで出金リクエストをフィルター",
+          "searchPlaceholder": "説明で検索...",
+          "statusPlaceholder": "ステータス",
+          "allStatus": "すべてのステータス",
+          "reset": "リセット",
+          "refresh": "更新"
+        },
+        "table": {
+          "id": "ID",
+          "description": "説明",
+          "amount": "金額",
+          "bankInfo": "銀行情報",
+          "status": "ステータス",
+          "created": "作成日",
+          "actions": "アクション",
+          "noData": "出金リクエストが見つかりません",
+          "noDataDescription": "フィルターに一致する出金リクエストがありません。"
+        },
+        "actions": {
+          "viewDetails": "詳細を表示",
+          "approve": "承認",
+          "cancel": "キャンセル"
+        },
+        "approveDialog": {
+          "title": "出金リクエストを承認",
+          "description": "この出金リクエストを確認して承認します。利用可能な場合は領収書画像をアップロードしてください。",
+          "transactionId": "トランザクションID",
+          "amount": "金額",
+          "bankName": "銀行名",
+          "bankNumber": "口座番号",
+          "accountName": "口座名",
+          "description": "説明",
+          "uploadReceipt": "領収書画像をアップロード",
+          "chooseFile": "ファイルを選択",
+          "cancel": "キャンセル",
+          "approve": "承認",
+          "processing": "処理中..."
+        },
+        "cancelDialog": {
+          "title": "出金リクエストをキャンセル",
+          "description": "この出金リクエストをキャンセルします。キャンセルの理由を入力できます。",
+          "reasonLabel": "キャンセル理由（オプション）",
+          "reasonPlaceholder": "この出金リクエストをキャンセルする理由を入力してください...",
+          "cancel": "キャンセル",
+          "cancelRequest": "リクエストをキャンセル",
+          "processing": "処理中..."
+        },
+        "pagination": {
+          "rowsPerPage": "ページあたりの行数:",
+          "pageOf": "ページ {current} / {total}"
+        },
+        "successMessages": {
+          "approved": "出金リクエストが正常に承認されました",
+          "cancelled": "出金リクエストが正常にキャンセルされました"
+        }
+      }
     }
   }
 }
