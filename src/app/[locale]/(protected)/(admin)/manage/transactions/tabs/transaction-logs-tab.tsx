@@ -9,6 +9,7 @@ import {
   IconSearch,
 } from "@tabler/icons-react";
 import { format } from "date-fns";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
 import { TransactionDetailDialog } from "@/components/modules/wallet";
@@ -50,6 +51,7 @@ const DEFAULT_PAGE_SIZE = 10;
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 
 export function TransactionLogsTab() {
+  const t = useTranslations("admin.transactions.transactionLogs");
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [description, setDescription] = useState("");
@@ -178,17 +180,15 @@ export function TransactionLogsTab() {
       <div className="flex flex-col gap-4">
         <Card>
           <CardHeader>
-            <CardTitle>Search & Filter</CardTitle>
-            <CardDescription>
-              Filter transactions by description, type, method, and status
-            </CardDescription>
+            <CardTitle>{t("searchFilter.title")}</CardTitle>
+            <CardDescription>{t("searchFilter.description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               <div className="relative flex-1 min-w-[200px]">
                 <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search by description..."
+                  placeholder={t("searchFilter.searchPlaceholder")}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="pl-9"
@@ -200,10 +200,14 @@ export function TransactionLogsTab() {
                 onValueChange={setTransactionType}
               >
                 <SelectTrigger className=" w-[160px]">
-                  <SelectValue placeholder="Transaction Type" />
+                  <SelectValue
+                    placeholder={t("searchFilter.transactionType")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="all">
+                    {t("searchFilter.allTypes")}
+                  </SelectItem>
                   {Object.values(TransactionTypeEnum).map((type) => (
                     <SelectItem key={type} value={type}>
                       {type}
@@ -217,10 +221,12 @@ export function TransactionLogsTab() {
                 onValueChange={setTransactionMethod}
               >
                 <SelectTrigger className=" w-[160px]">
-                  <SelectValue placeholder="Payment Method" />
+                  <SelectValue placeholder={t("searchFilter.paymentMethod")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Methods</SelectItem>
+                  <SelectItem value="all">
+                    {t("searchFilter.allMethods")}
+                  </SelectItem>
                   {Object.values(TransactionMethod).map((method) => (
                     <SelectItem key={method} value={method}>
                       {method}
@@ -234,10 +240,12 @@ export function TransactionLogsTab() {
                 onValueChange={setTransactionStatus}
               >
                 <SelectTrigger className=" w-[160px]">
-                  <SelectValue placeholder="Status" />
+                  <SelectValue placeholder={t("searchFilter.status")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="all">
+                    {t("searchFilter.allStatus")}
+                  </SelectItem>
                   {Object.values(TransactionStatus).map((status) => (
                     <SelectItem key={status} value={status}>
                       {status}
@@ -248,7 +256,7 @@ export function TransactionLogsTab() {
 
               <Button onClick={handleReset} variant="outline">
                 <IconFilter className="mr-2 h-4 w-4" />
-                Reset
+                {t("searchFilter.reset")}
               </Button>
               <Button onClick={() => refetch()} variant="outline" size="icon">
                 <IconRefresh className="h-4 w-4" />
@@ -261,9 +269,9 @@ export function TransactionLogsTab() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Transaction Logs</CardTitle>
+                <CardTitle>{t("title")}</CardTitle>
                 <CardDescription>
-                  All transactions in the system ({totalItems} total)
+                  {t("description", { totalItems })}
                 </CardDescription>
               </div>
             </div>
@@ -279,9 +287,9 @@ export function TransactionLogsTab() {
               {!isLoading && transactions.length === 0 ? (
                 <Empty>
                   <EmptyHeader>
-                    <EmptyTitle>No transactions found</EmptyTitle>
+                    <EmptyTitle>{t("table.noData")}</EmptyTitle>
                     <EmptyDescription>
-                      There are no transactions matching your filters.
+                      {t("table.noDataDescription")}
                     </EmptyDescription>
                   </EmptyHeader>
                 </Empty>
@@ -289,15 +297,15 @@ export function TransactionLogsTab() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Method</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Inquiry</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>{t("table.id")}</TableHead>
+                      <TableHead>{t("table.description")}</TableHead>
+                      <TableHead>{t("table.amount")}</TableHead>
+                      <TableHead>{t("table.type")}</TableHead>
+                      <TableHead>{t("table.method")}</TableHead>
+                      <TableHead>{t("table.status")}</TableHead>
+                      <TableHead>{t("table.inquiry")}</TableHead>
+                      <TableHead>{t("table.created")}</TableHead>
+                      <TableHead>{t("table.actions")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -333,9 +341,13 @@ export function TransactionLogsTab() {
                         </TableCell>
                         <TableCell>
                           {transaction.isInquiry ? (
-                            <Badge variant="destructive">Yes</Badge>
+                            <Badge variant="destructive">
+                              {t("table.inquiryYes")}
+                            </Badge>
                           ) : (
-                            <span className="text-muted-foreground">No</span>
+                            <span className="text-muted-foreground">
+                              {t("table.inquiryNo")}
+                            </span>
                           )}
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">
@@ -362,7 +374,7 @@ export function TransactionLogsTab() {
               <div className="flex items-center justify-between mt-4 pt-4 border-t">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">
-                    Rows per page:
+                    {t("pagination.rowsPerPage")}
                   </span>
                   <Select
                     value={String(pageSize)}
@@ -383,7 +395,10 @@ export function TransactionLogsTab() {
 
                 <div className="flex items-center gap-4">
                   <span className="text-sm text-muted-foreground">
-                    Page {currentPage} of {totalPages}
+                    {t("pagination.pageOf", {
+                      current: currentPage,
+                      total: totalPages,
+                    })}
                   </span>
                   <div className="flex gap-2">
                     <Button

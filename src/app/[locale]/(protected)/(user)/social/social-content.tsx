@@ -145,7 +145,7 @@ export default function SocialContent({ locale }: ContentProps) {
 
     return suggestedUsersData.payload.data.items
       .filter((user: any) => user.friendStatus === FriendStatus.None)
-      .slice(0, 5)
+      .slice(0, 3)
       .map((user: any) => ({
         id: user.id,
         name: user.name || "Unknown",
@@ -296,7 +296,7 @@ export default function SocialContent({ locale }: ContentProps) {
     <div className="min-h-screen bg-background">
       {/* 3 columns */}
       <div className="max-w-8xl mx-auto w-full px-4 py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_4fr_1fr] xl:grid-cols-[1fr_2.5fr_1fr] gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(300px,380px)_1fr_minmax(300px,380px)] gap-6">
           {/* Left - Sticky */}
           <div className="hidden lg:block">
             <div className="sticky top-20">

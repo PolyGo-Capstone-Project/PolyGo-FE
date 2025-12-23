@@ -261,17 +261,20 @@ export function MessageInput({
         <div className="border-b p-3 md:p-4">
           <div className="flex flex-wrap gap-2">
             {imagePreviews.map((preview, index) => (
-              <div key={index} className="relative size-20 md:size-24">
+              <div
+                key={index}
+                className="relative size-20 md:size-24 overflow-hidden rounded-lg"
+              >
                 <Image
                   src={preview}
                   alt={`Preview ${index + 1}`}
                   fill
-                  className="rounded-lg object-cover"
+                  className="object-cover"
                   unoptimized
                 />
                 <button
                   onClick={() => handleRemoveImage(index)}
-                  className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground hover:bg-destructive/90"
+                  className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground hover:bg-destructive/90 z-10"
                   type="button"
                 >
                   <X className="size-3 md:size-4" />
