@@ -913,7 +913,160 @@
     },
     "transactions": {
       "title": "Quản lý giao dịch",
-      "description": "Xem và quản lý các giao dịch của người dùng trên nền tảng PolyGo."
+      "description": "Xem và quản lý các giao dịch của người dùng trên nền tảng PolyGo.",
+      "inquiries": {
+        "title": "Yêu cầu hỗ trợ giao dịch",
+        "description": "Các giao dịch có yêu cầu hỗ trợ ({totalItems} tổng)",
+        "searchFilter": {
+          "title": "Tìm kiếm & Lọc",
+          "description": "Lọc yêu cầu hỗ trợ theo mô tả, loại và trạng thái",
+          "searchPlaceholder": "Tìm kiếm theo mô tả...",
+          "transactionType": "Loại giao dịch",
+          "allTypes": "Tất cả loại",
+          "status": "Trạng thái",
+          "allStatus": "Tất cả trạng thái",
+          "reset": "Đặt lại",
+          "refresh": "Làm mới"
+        },
+        "table": {
+          "id": "ID",
+          "description": "Mô tả",
+          "amount": "Số tiền",
+          "type": "Loại",
+          "status": "Trạng thái",
+          "created": "Ngày tạo",
+          "actions": "Thao tác",
+          "noData": "Không tìm thấy yêu cầu hỗ trợ",
+          "noDataDescription": "Không có yêu cầu hỗ trợ giao dịch nào phù hợp với bộ lọc của bạn."
+        },
+        "actions": {
+          "view": "Xem",
+          "respond": "Phản hồi"
+        },
+        "respondDialog": {
+          "title": "Phản hồi yêu cầu hỗ trợ giao dịch",
+          "description": "Xem xét chi tiết yêu cầu và cung cấp phản hồi cho người dùng.",
+          "transactionId": "Mã giao dịch",
+          "amount": "Số tiền",
+          "transactionType": "Loại giao dịch",
+          "status": "Trạng thái",
+          "descriptionLabel": "Mô tả",
+          "userInquiry": "Yêu cầu của người dùng",
+          "noNotes": "Không có ghi chú",
+          "createdAt": "Ngày tạo",
+          "lastUpdated": "Cập nhật cuối",
+          "responseLabel": "Phản hồi quản trị (Tùy chọn)",
+          "responsePlaceholder": "Cung cấp phản hồi hoặc cập nhật cho yêu cầu này...",
+          "responseHint": "Phản hồi này sẽ hiển thị cho người dùng và cập nhật trạng thái yêu cầu.",
+          "cancel": "Hủy",
+          "update": "Cập nhật yêu cầu",
+          "updating": "Đang cập nhật..."
+        },
+        "pagination": {
+          "rowsPerPage": "Số dòng mỗi trang:",
+          "pageOf": "Trang {current} / {total}"
+        }
+      },
+      "transactionLogs": {
+        "title": "Nhật ký giao dịch",
+        "description": "Tất cả giao dịch trong hệ thống ({totalItems} tổng)",
+        "searchFilter": {
+          "title": "Tìm kiếm & Lọc",
+          "description": "Lọc giao dịch theo mô tả, loại, phương thức và trạng thái",
+          "searchPlaceholder": "Tìm kiếm theo mô tả...",
+          "transactionType": "Loại giao dịch",
+          "allTypes": "Tất cả loại",
+          "paymentMethod": "Phương thức thanh toán",
+          "allMethods": "Tất cả phương thức",
+          "status": "Trạng thái",
+          "allStatus": "Tất cả trạng thái",
+          "reset": "Đặt lại",
+          "refresh": "Làm mới"
+        },
+        "table": {
+          "id": "ID",
+          "description": "Mô tả",
+          "amount": "Số tiền",
+          "type": "Loại",
+          "method": "Phương thức",
+          "status": "Trạng thái",
+          "inquiry": "Yêu cầu hỗ trợ",
+          "created": "Ngày tạo",
+          "actions": "Thao tác",
+          "noData": "Không tìm thấy giao dịch",
+          "noDataDescription": "Không có giao dịch nào phù hợp với bộ lọc của bạn.",
+          "inquiryYes": "Có",
+          "inquiryNo": "Không"
+        },
+        "actions": {
+          "view": "Xem"
+        },
+        "pagination": {
+          "rowsPerPage": "Số dòng mỗi trang:",
+          "pageOf": "Trang {current} / {total}"
+        }
+      },
+      "withdrawalRequests": {
+        "title": "Yêu cầu rút tiền",
+        "description": "Quản lý yêu cầu rút tiền ({totalItems} tổng)",
+        "searchFilter": {
+          "title": "Tìm kiếm & Lọc",
+          "description": "Lọc yêu cầu rút tiền theo mô tả và trạng thái",
+          "searchPlaceholder": "Tìm kiếm theo mô tả...",
+          "statusPlaceholder": "Trạng thái",
+          "allStatus": "Tất cả trạng thái",
+          "reset": "Đặt lại",
+          "refresh": "Làm mới"
+        },
+        "table": {
+          "id": "ID",
+          "description": "Mô tả",
+          "amount": "Số tiền",
+          "bankInfo": "Thông tin ngân hàng",
+          "status": "Trạng thái",
+          "created": "Ngày tạo",
+          "actions": "Thao tác",
+          "noData": "Không tìm thấy yêu cầu rút tiền",
+          "noDataDescription": "Không có yêu cầu rút tiền nào phù hợp với bộ lọc của bạn."
+        },
+        "actions": {
+          "viewDetails": "Xem chi tiết",
+          "approve": "Phê duyệt",
+          "cancel": "Hủy"
+        },
+        "approveDialog": {
+          "title": "Phê duyệt yêu cầu rút tiền",
+          "description": "Xem xét và phê duyệt yêu cầu rút tiền này. Tải lên hình ảnh biên lai nếu có.",
+          "transactionId": "Mã giao dịch",
+          "amount": "Số tiền",
+          "bankName": "Tên ngân hàng",
+          "bankNumber": "Số tài khoản",
+          "accountName": "Tên tài khoản",
+          "description": "Mô tả",
+          "uploadReceipt": "Tải lên hình biên lai",
+          "chooseFile": "Chọn tệp",
+          "cancel": "Hủy",
+          "approve": "Phê duyệt",
+          "processing": "Đang xử lý..."
+        },
+        "cancelDialog": {
+          "title": "Hủy yêu cầu rút tiền",
+          "description": "Hủy yêu cầu rút tiền này. Bạn có thể cung cấp lý do hủy.",
+          "reasonLabel": "Lý do hủy (Tùy chọn)",
+          "reasonPlaceholder": "Cung cấp lý do hủy yêu cầu rút tiền này...",
+          "cancel": "Hủy",
+          "cancelRequest": "Hủy yêu cầu",
+          "processing": "Đang xử lý..."
+        },
+        "pagination": {
+          "rowsPerPage": "Số dòng mỗi trang:",
+          "pageOf": "Trang {current} / {total}"
+        },
+        "successMessages": {
+          "approved": "Phê duyệt yêu cầu rút tiền thành công",
+          "cancelled": "Hủy yêu cầu rút tiền thành công"
+        }
+      }
     }
   }
 }

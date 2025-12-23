@@ -64,6 +64,7 @@ const DEFAULT_PAGE_SIZE = 10;
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 
 export function InquiriesTab() {
+  const t = useTranslations("admin.transactions.inquiries");
   const tSuccess = useTranslations("Success");
   const tError = useTranslations("Error");
 
@@ -164,14 +165,14 @@ export function InquiriesTab() {
     if (!selectedTransaction || !transactionDetail?.userNotes?.[0]?.id) return;
 
     try {
-      await updateInquiryMutation.mutateAsync({
+      const result = await updateInquiryMutation.mutateAsync({
         id: selectedTransaction.id,
         body: {
           userNotesId: transactionDetail.userNotes[0].id,
           systemNotes: responseNotes.trim(),
         },
       });
-      showSuccessToast("Inquiry updated successfully", tSuccess);
+      showSuccessToast(result.payload.message, tSuccess);
       handleCloseDialog();
       refetch();
     } catch (error) {
@@ -231,17 +232,15 @@ export function InquiriesTab() {
       <div className="flex flex-col gap-4">
         <Card>
           <CardHeader>
-            <CardTitle>Search & Filter</CardTitle>
-            <CardDescription>
-              Filter inquiry transactions by description, type, and status
-            </CardDescription>
+            <CardTitle>{t("searchFilter.title")}</CardTitle>
+            <CardDescription>{t("searchFilter.description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               <div className="relative flex-1 min-w-[200px]">
                 <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search by description..."
+                  placeholder={t("searchFilter.searchPlaceholder")}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="pl-9"
@@ -253,10 +252,14 @@ export function InquiriesTab() {
                 onValueChange={setTransactionType}
               >
                 <SelectTrigger className="w-[160px]">
-                  <SelectValue placeholder="Transaction Type" />
+                  <SelectValue
+                    placeholder={t("searchFilter.transactionType")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="all">
+                    {t("searchFilter.allTypes")}
+                  </SelectItem>
                   {Object.values(TransactionTypeEnum).map((type) => (
                     <SelectItem key={type} value={type}>
                       {type}
@@ -270,10 +273,12 @@ export function InquiriesTab() {
                 onValueChange={setTransactionStatus}
               >
                 <SelectTrigger className="w-[160px]">
-                  <SelectValue placeholder="Status" />
+                  <SelectValue placeholder={t("searchFilter.status")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="all">
+                    {t("searchFilter.allStatus")}
+                  </SelectItem>
                   {Object.values(TransactionStatus).map((status) => (
                     <SelectItem key={status} value={status}>
                       {status}
@@ -284,7 +289,7 @@ export function InquiriesTab() {
 
               <Button onClick={handleReset} variant="outline">
                 <IconFilter className="mr-2 h-4 w-4" />
-                Reset
+                {t("searchFilter.reset")}
               </Button>
               <Button onClick={() => refetch()} variant="outline" size="icon">
                 <IconRefresh className="h-4 w-4" />
@@ -297,9 +302,9 @@ export function InquiriesTab() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Transaction Inquiries</CardTitle>
+                <CardTitle>{t("title")}</CardTitle>
                 <CardDescription>
-                  Transactions with inquiry requests ({totalItems} total)
+                  {t("description", { totalItems })}
                 </CardDescription>
               </div>
             </div>
@@ -315,9 +320,9 @@ export function InquiriesTab() {
               {!isLoading && transactions.length === 0 ? (
                 <Empty>
                   <EmptyHeader>
-                    <EmptyTitle>No inquiries found</EmptyTitle>
+                    <EmptyTitle>{t("table.noData")}</EmptyTitle>
                     <EmptyDescription>
-                      There are no transaction inquiries matching your filters.
+                      {t("table.noDataDescription")}
                     </EmptyDescription>
                   </EmptyHeader>
                 </Empty>
@@ -325,13 +330,13 @@ export function InquiriesTab() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Amount</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead>{t("table.id")}</TableHead>
+                      <TableHead>{t("table.description")}</TableHead>
+                      <TableHead>{t("table.amount")}</TableHead>
+                      <TableHead>{t("table.type")}</TableHead>
+                      <TableHead>{t("table.status")}</TableHead>
+                      <TableHead>{t("table.created")}</TableHead>
+                      <TableHead>{t("table.actions")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -382,7 +387,7 @@ export function InquiriesTab() {
                               onClick={() => handleOpenDialog(transaction)}
                             >
                               <IconMessageCircle className="h-4 w-4 mr-1" />
-                              Respond
+                              {t("actions.respond")}
                             </Button>
                           </div>
                         </TableCell>
@@ -398,7 +403,7 @@ export function InquiriesTab() {
               <div className="flex items-center justify-between mt-4 pt-4 border-t">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">
-                    Rows per page:
+                    {t("pagination.rowsPerPage")}
                   </span>
                   <Select
                     value={String(pageSize)}
@@ -419,7 +424,10 @@ export function InquiriesTab() {
 
                 <div className="flex items-center gap-4">
                   <span className="text-sm text-muted-foreground">
-                    Page {currentPage} of {totalPages}
+                    {t("pagination.pageOf", {
+                      current: currentPage,
+                      total: totalPages,
+                    })}
                   </span>
                   <div className="flex gap-2">
                     <Button
@@ -450,9 +458,9 @@ export function InquiriesTab() {
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Respond to Transaction Inquiry</DialogTitle>
+            <DialogTitle>{t("respondDialog.title")}</DialogTitle>
             <DialogDescription>
-              Review the inquiry details and provide a response to the user.
+              {t("respondDialog.description")}
             </DialogDescription>
           </DialogHeader>
 
@@ -461,13 +469,13 @@ export function InquiriesTab() {
               <div className="grid grid-cols-2 gap-4 p-4 bg-muted rounded-lg">
                 <div>
                   <Label className="text-xs text-muted-foreground">
-                    Transaction ID
+                    {t("respondDialog.transactionId")}
                   </Label>
                   <p className="font-mono text-sm">{selectedTransaction.id}</p>
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">
-                    Amount
+                    {t("respondDialog.amount")}
                   </Label>
                   <p className="font-semibold">
                     {formatCurrency(selectedTransaction.amount)}
@@ -475,7 +483,7 @@ export function InquiriesTab() {
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">
-                    Transaction Type
+                    {t("respondDialog.transactionType")}
                   </Label>
                   <Badge
                     variant={getTypeBadgeVariant(
@@ -487,7 +495,7 @@ export function InquiriesTab() {
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">
-                    Status
+                    {t("respondDialog.status")}
                   </Label>
                   <Badge
                     variant={getStatusBadgeVariant(
@@ -500,14 +508,14 @@ export function InquiriesTab() {
                 {selectedTransaction.description && (
                   <div className="col-span-2">
                     <Label className="text-xs text-muted-foreground">
-                      Description
+                      {t("respondDialog.descriptionLabel")}
                     </Label>
                     <p>{selectedTransaction.description}</p>
                   </div>
                 )}
                 <div className="col-span-2">
                   <Label className="text-xs text-muted-foreground">
-                    User Inquiry
+                    {t("respondDialog.userInquiry")}
                   </Label>
                   {transactionDetail?.userNotes &&
                   transactionDetail.userNotes.length > 0 ? (
@@ -526,13 +534,13 @@ export function InquiriesTab() {
                     </div>
                   ) : (
                     <p className="text-sm bg-background p-3 rounded border">
-                      No notes provided
+                      {t("respondDialog.noNotes")}
                     </p>
                   )}
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">
-                    Created At
+                    {t("respondDialog.createdAt")}
                   </Label>
                   <p className="text-sm">
                     {formatDateTime(selectedTransaction.createdAt)}
@@ -540,7 +548,7 @@ export function InquiriesTab() {
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">
-                    Last Updated
+                    {t("respondDialog.lastUpdated")}
                   </Label>
                   <p className="text-sm">
                     {formatDateTime(selectedTransaction.lastUpdatedAt)}
@@ -549,18 +557,19 @@ export function InquiriesTab() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="responseNotes">Admin Response (Optional)</Label>
+                <Label htmlFor="responseNotes">
+                  {t("respondDialog.responseLabel")}
+                </Label>
                 <Textarea
                   id="responseNotes"
-                  placeholder="Provide a response or update for this inquiry..."
+                  placeholder={t("respondDialog.responsePlaceholder")}
                   value={responseNotes}
                   onChange={(e) => setResponseNotes(e.target.value)}
                   rows={5}
                   disabled={isSubmitting}
                 />
                 <p className="text-xs text-muted-foreground">
-                  This response will be visible to the user and update the
-                  inquiry status.
+                  {t("respondDialog.responseHint")}
                 </p>
               </div>
             </div>
@@ -572,16 +581,16 @@ export function InquiriesTab() {
               onClick={handleCloseDialog}
               disabled={isSubmitting}
             >
-              Cancel
+              {t("respondDialog.cancel")}
             </Button>
             <Button onClick={handleSubmit} disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Spinner className="mr-2 h-4 w-4" />
-                  Updating...
+                  {t("respondDialog.updating")}
                 </>
               ) : (
-                "Update Inquiry"
+                t("respondDialog.update")
               )}
             </Button>
           </DialogFooter>

@@ -61,7 +61,7 @@ export default function SuggestedGamesCard({ t, games }: Props) {
                 >
                   <Gamepad className="h-5 w-5" />
                 </div>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 overflow-hidden">
                   <div className="text-sm font-semibold truncate group-hover:text-primary transition-colors">
                     {game.title}
                   </div>
