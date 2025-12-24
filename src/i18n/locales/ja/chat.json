@@ -73,6 +73,26 @@
     "currentLanguage": "現在の言語",
     "selectLanguage": "言語を選択",
     "saveLanguage": "保存",
+    "call": {
+      "voiceCall": "音声通話",
+      "videoCall": "ビデオ通話",
+      "missedCall": {
+        "outgoing": "不在着信",
+        "incoming": "不在着信"
+      },
+      "declined": {
+        "outgoing": "通話拒否",
+        "incoming": "通話拒否"
+      },
+      "failed": {
+        "outgoing": "通話失敗",
+        "incoming": "通話失敗"
+      },
+      "cancelled": {
+        "outgoing": "通話キャンセル",
+        "incoming": "通話キャンセル"
+      }
+    },
     "error": {
       "loadConversations": "会話の読み込みに失敗しました",
       "loadMessages": "メッセージの読み込みに失敗しました",

@@ -43,6 +43,7 @@ interface ChatHeaderProps {
   locale: string;
   hideActions?: boolean;
   conversationId?: string;
+  isFriend?: boolean;
 }
 
 export function ChatHeader({
@@ -53,6 +54,7 @@ export function ChatHeader({
   locale,
   hideActions = false,
   conversationId,
+  isFriend = true,
 }: ChatHeaderProps) {
   const t = useTranslations("chat");
   const router = useRouter();
@@ -175,6 +177,7 @@ export function ChatHeader({
               title={t("voiceCall")}
               className="md:size-9"
               onClick={handleVoiceCall}
+              disabled={!isFriend}
             >
               <Phone className="size-4 md:size-5" />
             </Button>
@@ -184,6 +187,7 @@ export function ChatHeader({
               title={t("videoCall")}
               className="md:size-9"
               onClick={handleVideoCall}
+              disabled={!isFriend}
             >
               <Video className="size-4 md:size-5" />
             </Button>

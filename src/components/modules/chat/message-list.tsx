@@ -21,6 +21,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { AudioPlayer } from "./audio-player";
+import { CallMessage } from "./call-message";
 import { ImagePreviewModal } from "./image-preview-modal";
 
 interface MessageListProps {
@@ -37,6 +38,7 @@ interface MessageListProps {
   onCopyMessage?: (content: string) => void;
   onTranslateMessage?: (messageId: string) => void;
   scrollToMessageId?: string;
+  isFriend?: boolean;
 }
 
 export function MessageList({
@@ -53,6 +55,7 @@ export function MessageList({
   onCopyMessage,
   onTranslateMessage,
   scrollToMessageId,
+  isFriend = true,
 }: MessageListProps) {
   const t = useTranslations("chat");
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -238,6 +241,24 @@ export function MessageList({
       return <AudioPlayer src={message.content} isOwn={isOwn} />;
     }
 
+    if (message.type === "VoiceCall" || message.type === "VideoCall") {
+      try {
+        const callData = JSON.parse(message.content);
+        return (
+          <CallMessage
+            type={message.type}
+            status={callData.status}
+            durationSeconds={callData.durationSeconds}
+          />
+        );
+      } catch {
+        // Fallback for old format (just status string)
+        return (
+          <CallMessage type={message.type} status={message.content as any} />
+        );
+      }
+    }
+
     return (
       <p className="break-all whitespace-pre-wrap text-xs md:text-sm">
         {message.content}
@@ -392,40 +413,43 @@ export function MessageList({
                   )}
 
                   {/* Message actions - left side for own messages */}
-                  {isOwn && (onDeleteMessage || onCopyMessage) && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 self-center opacity-0 transition-opacity group-hover:opacity-100 hover:bg-muted"
-                        >
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start">
-                        {onCopyMessage && !isAudioMessage && (
-                          <>
-                            <DropdownMenuItem
-                              onClick={() => onCopyMessage(message.content)}
-                            >
-                              <Copy className="mr-2 h-4 w-4" />
-                              {t("copyMessage")}
-                            </DropdownMenuItem>
-                          </>
-                        )}
-                        {onDeleteMessage && (
-                          <DropdownMenuItem
-                            className="text-destructive focus:text-destructive"
-                            onClick={() => onDeleteMessage(message.id)}
+                  {isOwn &&
+                    (onDeleteMessage || onCopyMessage) &&
+                    message.type !== "VoiceCall" &&
+                    message.type !== "VideoCall" && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 self-center opacity-0 transition-opacity group-hover:opacity-100 hover:bg-muted"
                           >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            {t("deleteMessage")}
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start">
+                          {onCopyMessage && !isAudioMessage && (
+                            <>
+                              <DropdownMenuItem
+                                onClick={() => onCopyMessage(message.content)}
+                              >
+                                <Copy className="mr-2 h-4 w-4" />
+                                {t("copyMessage")}
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                          {onDeleteMessage && (
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive"
+                              onClick={() => onDeleteMessage(message.id)}
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              {t("deleteMessage")}
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
 
                   {/* Message Bubble */}
                   <div
@@ -490,8 +514,11 @@ export function MessageList({
 
                   {/* Message actions - right side for other user's messages */}
                   {!isOwn &&
+                    isFriend &&
                     (onCopyMessage || onTranslateMessage) &&
-                    !isAudioMessage && (
+                    !isAudioMessage &&
+                    message.type !== "VoiceCall" &&
+                    message.type !== "VideoCall" && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
