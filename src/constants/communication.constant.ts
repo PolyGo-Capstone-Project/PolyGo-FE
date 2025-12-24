@@ -3,6 +3,8 @@ export const MessageEnum = {
   Image: "Image",
   Images: "Images",
   Audio: "Audio",
+  VoiceCall: "VoiceCall",
+  VideoCall: "VideoCall",
 } as const;
 
 export const MessageTypeNumber = {
@@ -10,6 +12,16 @@ export const MessageTypeNumber = {
   Image: 1,
   Images: 2,
   Audio: 3,
+  VoiceCall: 4,
+  VideoCall: 5,
+} as const;
+
+export const CallStatusEnum = {
+  Completed: "Completed",
+  Missed: "Missed",
+  Declined: "Declined",
+  Failed: "Failed",
+  Cancelled: "Cancelled",
 } as const;
 
 export const MESSAGE_IMAGE_SEPARATOR = "<<~IMG~>>"; // Must match BE: CoreHelper.ImageSeparator

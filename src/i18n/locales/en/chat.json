@@ -73,6 +73,26 @@
     "currentLanguage": "Current Language",
     "selectLanguage": "Select Language",
     "saveLanguage": "Save",
+    "call": {
+      "voiceCall": "Voice call",
+      "videoCall": "Video call",
+      "missedCall": {
+        "outgoing": "Missed call",
+        "incoming": "Missed call"
+      },
+      "declined": {
+        "outgoing": "Call declined",
+        "incoming": "Declined call"
+      },
+      "failed": {
+        "outgoing": "Call failed",
+        "incoming": "Call failed"
+      },
+      "cancelled": {
+        "outgoing": "Call cancelled",
+        "incoming": "Call cancelled"
+      }
+    },
     "error": {
       "loadConversations": "Failed to load conversations",
       "loadMessages": "Failed to load messages",

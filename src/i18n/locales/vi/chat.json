@@ -73,6 +73,26 @@
     "currentLanguage": "Ngôn ngữ hiện tại",
     "selectLanguage": "Chọn ngôn ngữ",
     "saveLanguage": "Lưu",
+    "call": {
+      "voiceCall": "Cuộc gọi thoại",
+      "videoCall": "Cuộc gọi video",
+      "missedCall": {
+        "outgoing": "Cuộc gọi nhỡ",
+        "incoming": "Cuộc gọi nhỡ"
+      },
+      "declined": {
+        "outgoing": "Đã từ chối",
+        "incoming": "Từ chối cuộc gọi"
+      },
+      "failed": {
+        "outgoing": "Cuộc gọi thất bại",
+        "incoming": "Cuộc gọi thất bại"
+      },
+      "cancelled": {
+        "outgoing": "Đã hủy cuộc gọi",
+        "incoming": "Cuộc gọi đã bị hủy"
+      }
+    },
     "error": {
       "loadConversations": "Không thể tải danh sách cuộc trò chuyện",
       "loadMessages": "Không thể tải tin nhắn",

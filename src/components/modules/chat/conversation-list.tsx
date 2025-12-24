@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
+  CallStatusEnum,
   MessageEnum,
   MessageTypeNumber,
 } from "@/constants/communication.constant";
@@ -155,6 +156,32 @@ export function ConversationList({
       return (
         <span className="text-muted-foreground text-xs md:text-sm">
           🎵 {t("audioMessage")}
+        </span>
+      );
+    }
+
+    if (
+      type === MessageEnum.VoiceCall ||
+      numericType === MessageTypeNumber.VoiceCall
+    ) {
+      const callStatus = content as keyof typeof CallStatusEnum;
+      const icon = "📞";
+      return (
+        <span className="text-muted-foreground text-xs md:text-sm">
+          {icon} {t("voiceCall")}
+        </span>
+      );
+    }
+
+    if (
+      type === MessageEnum.VideoCall ||
+      numericType === MessageTypeNumber.VideoCall
+    ) {
+      const callStatus = content as keyof typeof CallStatusEnum;
+      const icon = "📹";
+      return (
+        <span className="text-muted-foreground text-xs md:text-sm">
+          {icon} {t("videoCall")}
         </span>
       );
     }
