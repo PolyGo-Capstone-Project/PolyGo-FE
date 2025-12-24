@@ -9,11 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  IconHeadphones,
-  IconLanguage,
-  IconMicrophone,
-} from "@tabler/icons-react";
+import { IconBadgeCc, IconLanguage, IconMicrophone } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
 interface LanguageSelectorProps {
@@ -124,7 +120,8 @@ export function LanguageSelector({
           {/* Target Language (Listening) */}
           <div className="p-2">
             <div className="flex items-center gap-2 mb-2 text-sm font-medium">
-              <IconHeadphones className="h-4 w-4" />I want to hear:
+              <IconBadgeCc className="h-4 w-4" />
+              Subtitles:
             </div>
             <div className="grid grid-cols-2 gap-1 max-h-48 overflow-y-auto">
               {LANGUAGES.map((lang) => (
