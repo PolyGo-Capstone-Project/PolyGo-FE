@@ -37,6 +37,7 @@ interface MessageListProps {
   onCopyMessage?: (content: string) => void;
   onTranslateMessage?: (messageId: string) => void;
   scrollToMessageId?: string;
+  isFriend?: boolean;
 }
 
 export function MessageList({
@@ -53,6 +54,7 @@ export function MessageList({
   onCopyMessage,
   onTranslateMessage,
   scrollToMessageId,
+  isFriend = true,
 }: MessageListProps) {
   const t = useTranslations("chat");
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -490,6 +492,7 @@ export function MessageList({
 
                   {/* Message actions - right side for other user's messages */}
                   {!isOwn &&
+                    isFriend &&
                     (onCopyMessage || onTranslateMessage) &&
                     !isAudioMessage && (
                       <DropdownMenu>
