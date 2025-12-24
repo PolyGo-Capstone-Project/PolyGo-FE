@@ -825,6 +825,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                   onDeleteConversation={() => handleDeleteConversation()}
                   locale={locale}
                   conversationId={selectedConversationId ?? undefined}
+                  isFriend={selectedConversation.isFriend}
                 />
               </div>
             </div>
@@ -848,6 +849,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                 onDeleteMessage={handleDeleteMessage}
                 onTranslateMessage={handleTranslateMessage}
                 onCopyMessage={handleCopyMessage}
+                isFriend={selectedConversation.isFriend}
               />
             </div>
             <MessageInput
@@ -914,6 +916,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
               onDeleteConversation={() => handleDeleteConversation()}
               locale={locale}
               conversationId={selectedConversationId ?? undefined}
+              isFriend={selectedConversation.isFriend}
             />
 
             <div className="flex-1 overflow-hidden">
@@ -936,6 +939,7 @@ export function ChatPageContent({ locale }: ChatPageContentProps) {
                 onTranslateMessage={handleTranslateMessage}
                 onCopyMessage={handleCopyMessage}
                 scrollToMessageId={scrollToMessageId}
+                isFriend={selectedConversation.isFriend}
               />
             </div>
 
