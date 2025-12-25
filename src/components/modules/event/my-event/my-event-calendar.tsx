@@ -12,6 +12,7 @@ import {
   startOfMonth,
   startOfWeek,
 } from "date-fns";
+import { enUS, ja, vi } from "date-fns/locale";
 import { CalendarIcon, ChevronLeft, ChevronRight, Clock } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -50,6 +51,9 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  // Get date-fns locale
+  const dateLocale = locale === "vi" ? vi : locale === "ja" ? ja : enUS;
+
   // Get current user info
   const { data: authMeData } = useAuthMe();
   const currentUserId = authMeData?.payload.data.id;
@@ -65,7 +69,7 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
       pageSize: 100,
       lang: locale,
     },
-    { enabled: activeTab === "created" }
+    { enabled: activeTab === "all" || activeTab === "created" }
   );
 
   // Fetch joined events
@@ -183,7 +187,7 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <CardTitle className="text-2xl font-bold">
-              {format(currentDate, "MMMM yyyy")}
+              {format(currentDate, "MMMM yyyy", { locale: dateLocale })}
             </CardTitle>
             {/* Navigation */}
             <div className="flex items-center gap-1">
@@ -375,7 +379,8 @@ export function MyEventCalendar({ activeTab }: MyEventCalendarProps) {
             <DialogTitle>
               {selectedDay && (
                 <>
-                  {t("eventsOn")} {format(selectedDay, "MMMM d, yyyy")}
+                  {t("eventsOn")}{" "}
+                  {format(selectedDay, "MMMM d, yyyy", { locale: dateLocale })}
                 </>
               )}
             </DialogTitle>

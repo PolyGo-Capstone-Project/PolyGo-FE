@@ -67,6 +67,7 @@ import {
   IconVideo,
 } from "@tabler/icons-react";
 import { format } from "date-fns";
+import { enUS, ja, vi } from "date-fns/locale";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -78,6 +79,9 @@ export default function EventDetailPage() {
   const locale = useLocale();
   const t = useTranslations("event.detail");
   const tError = useTranslations("Error");
+
+  // Get date-fns locale
+  const dateLocale = locale === "vi" ? vi : locale === "ja" ? ja : enUS;
 
   const eventId = params.id as string;
   const [password, setPassword] = useState("");
@@ -473,7 +477,9 @@ export default function EventDetailPage() {
                         {t("startTime")}
                       </p>
                       <p className="text-base font-medium mt-1">
-                        {format(new Date(event.startAt), "PPPp")}
+                        {format(new Date(event.startAt), "PPPp", {
+                          locale: dateLocale,
+                        })}
                       </p>
                     </div>
                   </div>
@@ -569,7 +575,9 @@ export default function EventDetailPage() {
                   <div>
                     <p className="font-semibold mb-1">{t("registerBy")}</p>
                     <p className="text-muted-foreground">
-                      {format(new Date(event.registerDeadline), "PPP")}
+                      {format(new Date(event.registerDeadline), "PPP", {
+                        locale: dateLocale,
+                      })}
                     </p>
                     {event.allowLateRegister && (
                       <p className="text-xs text-muted-foreground mt-1">

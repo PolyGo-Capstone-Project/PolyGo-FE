@@ -72,6 +72,34 @@
       "eventNotFound": "Không tìm thấy sự kiện",
       "eventEnded": "Sự kiện này đã kết thúc"
     },
+    "toast": {
+      "kickSuccess": "{name} đã bị xóa khỏi sự kiện",
+      "kickFailed": "Không thể xóa người dùng khỏi sự kiện",
+      "muteAllSuccess": "Đã tắt tiếng tất cả người tham gia",
+      "turnOffAllCamerasSuccess": "Đã tắt tất cả camera",
+      "startEventFailed": "Không thể bắt đầu sự kiện"
+    },
+    "access": {
+      "deniedTitle": "Truy cập Bị từ chối",
+      "eventNotFound": "Không tìm thấy sự kiện.",
+      "notRegistered": "Bạn chưa đăng ký cho sự kiện này. Vui lòng đăng ký trước để tham gia cuộc họp.",
+      "goToDashboard": "Về Dashboard",
+      "viewEventDetails": "Xem Chi tiết Sự kiện"
+    },
+    "loading": {
+      "connecting": "Đang kết nối..."
+    },
+    "eventInfo": {
+      "host": "Người tổ chức",
+      "language": "Ngôn ngữ",
+      "startTime": "Thời gian Bắt đầu",
+      "duration": "Thời lượng",
+      "participants": "Người tham gia",
+      "status": "Trạng thái",
+      "description": "Mô tả",
+      "minutes": "phút",
+      "unknown": "Không rõ"
+    },
     "mobile": {
       "title": "Phát hiện Thiết bị Di động",
       "subtitle": "Cuộc họp video không được hỗ trợ trên trình duyệt di động",
@@ -91,7 +119,14 @@
       "endEventTitle": "Kết thúc sự kiện?",
       "endEventMessage": "Điều này sẽ kết thúc sự kiện cho tất cả người tham gia. Bạn có chắc chắn?",
       "endEventConfirm": "Kết thúc Sự kiện",
-      "endEventCancel": "Hủy"
+      "endEventCancel": "Hủy",
+      "kickTitle": "Xóa Người tham gia",
+      "kickMessage": "Bạn có chắc chắn muốn xóa <strong>{name}</strong> khỏi sự kiện này?",
+      "kickWarning": "Họ sẽ không thể tham gia lại sau khi bị xóa.",
+      "kickReasonLabel": "Lý do (không bắt buộc)",
+      "kickReasonPlaceholder": "Nhập lý do xóa...",
+      "kickConfirm": "Xóa Người tham gia",
+      "kickCancel": "Hủy"
     },
     "aiSummary": {
       "title": "Tóm tắt & Từ vựng AI",
@@ -137,6 +172,13 @@
     "captions": {
       "collapse": "Thu gọn",
       "viewPrevious": "Xem {count} caption trước"
+    },
+    "language": {
+      "title": "Cài đặt Ngôn ngữ",
+      "speaking": "Tôi đang nói:",
+      "subtitles": "Phụ đề:",
+      "restartWarning": "Vui lòng khởi động lại Dịch Trực tiếp để áp dụng ngôn ngữ nói mới",
+      "footer": "Mỗi người tham gia có thể nói và nghe bằng các ngôn ngữ khác nhau"
     }
   }
 }

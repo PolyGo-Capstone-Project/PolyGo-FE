@@ -72,6 +72,34 @@
       "eventNotFound": "イベントが見つかりません",
       "eventEnded": "このイベントは終了しました"
     },
+    "toast": {
+      "kickSuccess": "{name}はイベントから削除されました",
+      "kickFailed": "ユーザーをイベントから削除できませんでした",
+      "muteAllSuccess": "すべての参加者をミュートしました",
+      "turnOffAllCamerasSuccess": "すべてのカメラをオフにしました",
+      "startEventFailed": "イベントを開始できませんでした"
+    },
+    "access": {
+      "deniedTitle": "アクセス拒否",
+      "eventNotFound": "イベントが見つかりません。",
+      "notRegistered": "このイベントに登録されていません。ミーティングに参加するには、まず登録してください。",
+      "goToDashboard": "ダッシュボードに移動",
+      "viewEventDetails": "イベント詳細を表示"
+    },
+    "loading": {
+      "connecting": "接続中..."
+    },
+    "eventInfo": {
+      "host": "ホスト",
+      "language": "言語",
+      "startTime": "開始時刻",
+      "duration": "時間",
+      "participants": "参加者",
+      "status": "ステータス",
+      "description": "説明",
+      "minutes": "分",
+      "unknown": "不明"
+    },
     "mobile": {
       "title": "モバイルデバイスが検出されました",
       "subtitle": "ビデオミーティングはモバイルWebブラウザではサポートされていません",
@@ -91,7 +119,14 @@
       "endEventTitle": "イベントを終了しますか？",
       "endEventMessage": "これによりすべての参加者のイベントが終了します。よろしいですか？",
       "endEventConfirm": "イベントを終了",
-      "endEventCancel": "キャンセル"
+      "endEventCancel": "キャンセル",
+      "kickTitle": "参加者を削除",
+      "kickMessage": "本当に<strong>{name}</strong>をこのイベントから削除しますか？",
+      "kickWarning": "削除後は再参加できません。",
+      "kickReasonLabel": "理由（任意）",
+      "kickReasonPlaceholder": "削除の理由を入力...",
+      "kickConfirm": "参加者を削除",
+      "kickCancel": "キャンセル"
     },
     "aiSummary": {
       "title": "AIミーティングサマリー＆語彙",
@@ -137,6 +172,13 @@
     "captions": {
       "collapse": "折りたたむ",
       "viewPrevious": "以前の{count}件のキャプションを表示"
+    },
+    "language": {
+      "title": "言語設定",
+      "speaking": "話している言語：",
+      "subtitles": "字幕：",
+      "restartWarning": "新しい話し言葉を適用するには、ライブ翻訳を再起動してください",
+      "footer": "各参加者は異なる言語で話したり聞いたりできます"
     }
   }
 }
