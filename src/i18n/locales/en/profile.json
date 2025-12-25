@@ -26,12 +26,12 @@
     },
     "stats": {
       "title": "Statistics",
-      "totalSessions": "Total Sessions",
-      "averageRating": "Average Rating",
-      "responseRate": "Response Rate",
-      "totalHours": "Total Hours",
+      "merit": "Merit Score",
       "streakDays": "Day Streak",
-      "eventsHosted": "Events Hosted"
+      "friendsCount": "Friends",
+      "postsCount": "Posts",
+      "createdEventsCount": "Events Hosted",
+      "joinedEventsCount": "Events Joined"
     },
     "sections": {
       "introduction": "Introduction",

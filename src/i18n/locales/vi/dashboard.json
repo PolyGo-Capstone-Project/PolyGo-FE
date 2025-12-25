@@ -13,7 +13,10 @@
       "hours": "Giờ đã học",
       "streak": "Chuỗi ngày",
       "rating": "Đánh giá cộng đồng",
-      "levelProgress": "Tiến trình Cấp độ"
+      "levelProgress": "Tiến trình Cấp độ",
+      "merit": "Điểm uy tín",
+      "createdEventsCount": "Sự kiện đã tạo",
+      "postsCount": "Bài đăng đã tạo"
     },
     "quickActions": {
       "title": "Hành động Nhanh",

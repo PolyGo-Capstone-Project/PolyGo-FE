@@ -23,6 +23,7 @@ import { useUserCommunicationHubContext } from "@/components/providers";
 import {
   useAuthMe,
   useCurrentSubscriptionQuery,
+  useGetUserStatById,
   useMyPurchasedGiftsQuery,
   useUserBadgesQuery,
   useUserInterestsQuery,
@@ -30,14 +31,6 @@ import {
   useUserLanguagesSpeakingQuery,
 } from "@/hooks";
 import { useUserLevelsQuery } from "@/hooks/query/use-level";
-
-const MOCK_STATS = {
-  totalSessions: 0,
-  averageRating: 0,
-  responseRate: 0,
-  totalHours: 0,
-  eventsHosted: 0,
-};
 
 export default function ProfilePage() {
   const t = useTranslations("profile");
@@ -49,6 +42,14 @@ export default function ProfilePage() {
 
   // Fetch user data
   const { data: authData, isLoading: isLoadingAuth } = useAuthMe();
+  const user = authData?.payload.data;
+
+  // Fetch user stats
+  const { data: userStatsData, isLoading: isLoadingStats } = useGetUserStatById(
+    user?.id ?? "",
+    { enabled: !!user?.id }
+  );
+
   const { data: nativeLanguagesData, isLoading: isLoadingNative } =
     useUserLanguagesSpeakingQuery({ params: { lang } });
   const { data: learningLanguagesData, isLoading: isLoadingLearning } =
@@ -87,7 +88,8 @@ export default function ProfilePage() {
     isLoadingGifts ||
     isLoadingSubscription ||
     isLoadingBadges ||
-    isLoadingLevels;
+    isLoadingLevels ||
+    isLoadingStats;
 
   if (isLoading) {
     return (
@@ -97,7 +99,6 @@ export default function ProfilePage() {
     );
   }
 
-  const user = authData?.payload.data;
   const nativeLanguages = nativeLanguagesData?.payload.data?.items || [];
   const learningLanguages = learningLanguagesData?.payload.data?.items || [];
   const interests = interestsData?.payload.data?.items || [];
@@ -183,12 +184,16 @@ export default function ProfilePage() {
                 showLevelandBadgeLink
               />
               <ProfileStats
-                totalSessions={MOCK_STATS.totalSessions}
-                averageRating={MOCK_STATS.averageRating}
-                responseRate={MOCK_STATS.responseRate}
-                totalHours={MOCK_STATS.totalHours}
-                streakDays={user.streakDays}
-                eventsHosted={MOCK_STATS.eventsHosted}
+                merit={userStatsData?.payload?.data?.merit ?? 0}
+                streakDays={userStatsData?.payload?.data?.streakDays ?? 0}
+                friendsCount={userStatsData?.payload?.data?.friendsCount ?? 0}
+                postsCount={userStatsData?.payload?.data?.postsCount ?? 0}
+                createdEventsCount={
+                  userStatsData?.payload?.data?.createdEventsCount ?? 0
+                }
+                joinedEventsCount={
+                  userStatsData?.payload?.data?.joinedEventsCount ?? 0
+                }
                 planType={planType}
               />
             </div>
@@ -219,12 +224,16 @@ export default function ProfilePage() {
             {/* Right Column - Stats & XP */}
             <div className="space-y-6">
               <ProfileStats
-                totalSessions={MOCK_STATS.totalSessions}
-                averageRating={MOCK_STATS.averageRating}
-                responseRate={MOCK_STATS.responseRate}
-                totalHours={MOCK_STATS.totalHours}
-                streakDays={user.streakDays}
-                eventsHosted={MOCK_STATS.eventsHosted}
+                merit={userStatsData?.payload?.data?.merit ?? 0}
+                streakDays={userStatsData?.payload?.data?.streakDays ?? 0}
+                friendsCount={userStatsData?.payload?.data?.friendsCount ?? 0}
+                postsCount={userStatsData?.payload?.data?.postsCount ?? 0}
+                createdEventsCount={
+                  userStatsData?.payload?.data?.createdEventsCount ?? 0
+                }
+                joinedEventsCount={
+                  userStatsData?.payload?.data?.joinedEventsCount ?? 0
+                }
                 planType={planType}
               />
               <ProfileInfoSection

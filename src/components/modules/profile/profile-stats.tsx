@@ -2,12 +2,11 @@
 
 import {
   IconCalendarEvent,
-  IconChartBar,
-  IconClock,
   IconCrown,
+  IconFileText,
   IconFlame,
-  IconStar,
-  IconTrendingUp,
+  IconTrophy,
+  IconUsers,
 } from "@tabler/icons-react";
 import { useTranslations } from "next-intl";
 
@@ -19,26 +18,27 @@ type StatItem = {
   label: string;
   value: string | number;
   icon: React.ReactNode;
+  iconBg: string;
   description?: string;
 };
 
 type ProfileStatsProps = {
-  totalSessions: number;
-  averageRating: number;
-  responseRate: number;
-  totalHours: number;
+  merit: number;
   streakDays: number;
-  eventsHosted: number;
+  friendsCount: number;
+  postsCount: number;
+  createdEventsCount: number;
+  joinedEventsCount: number;
   planType?: string;
 };
 
 export function ProfileStats({
-  totalSessions,
-  averageRating,
-  responseRate,
-  totalHours,
+  merit,
   streakDays,
-  eventsHosted,
+  friendsCount,
+  postsCount,
+  createdEventsCount,
+  joinedEventsCount,
   planType,
 }: ProfileStatsProps) {
   const t = useTranslations("profile");
@@ -49,38 +49,40 @@ export function ProfileStats({
 
   const stats: StatItem[] = [
     {
-      label: t("stats.totalSessions"),
-      value: "--",
-      icon: <IconChartBar className="h-4 w-4" />,
-    },
-    {
-      label: t("stats.averageRating"),
-      // value: averageRating.toFixed(1),
-      value: "--",
-      icon: <IconStar className="h-4 w-4" />,
-    },
-    {
-      label: t("stats.responseRate"),
-      // value: `${responseRate}%`,
-      value: `--`,
-      icon: <IconTrendingUp className="h-4 w-4" />,
-    },
-    {
-      label: t("stats.totalHours"),
-      // value: `${totalHours}h`,
-      value: `--`,
-      icon: <IconClock className="h-4 w-4" />,
+      label: t("stats.merit"),
+      value: merit,
+      icon: <IconTrophy className="h-4 w-4" />,
+      iconBg: "from-amber-500 to-yellow-600",
     },
     {
       label: t("stats.streakDays"),
       value: streakDays,
       icon: <IconFlame className="h-4 w-4" />,
+      iconBg: "from-orange-500 to-red-600",
     },
     {
-      label: t("stats.eventsHosted"),
-      // value: eventsHosted,
-      value: `--`,
+      label: t("stats.friendsCount"),
+      value: friendsCount,
+      icon: <IconUsers className="h-4 w-4" />,
+      iconBg: "from-blue-500 to-cyan-600",
+    },
+    {
+      label: t("stats.postsCount"),
+      value: postsCount,
+      icon: <IconFileText className="h-4 w-4" />,
+      iconBg: "from-purple-500 to-pink-600",
+    },
+    {
+      label: t("stats.createdEventsCount"),
+      value: createdEventsCount,
       icon: <IconCalendarEvent className="h-4 w-4" />,
+      iconBg: "from-green-500 to-emerald-600",
+    },
+    {
+      label: t("stats.joinedEventsCount"),
+      value: joinedEventsCount,
+      icon: <IconCalendarEvent className="h-4 w-4" />,
+      iconBg: "from-indigo-500 to-purple-600",
     },
   ];
 
@@ -110,8 +112,15 @@ export function ProfileStats({
               key={stat.label}
               className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                {stat.icon}
+              <div className="relative">
+                <div
+                  className={`absolute inset-0 rounded-full bg-gradient-to-br ${stat.iconBg} opacity-50 blur-md animate-pulse`}
+                />
+                <div
+                  className={`relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br ${stat.iconBg} shadow-lg`}
+                >
+                  <div className="text-white">{stat.icon}</div>
+                </div>
               </div>
               <div className="flex-1">
                 <p className="text-sm text-muted-foreground">{stat.label}</p>

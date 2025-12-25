@@ -18,6 +18,7 @@ import {
   useGetConversations,
   useGetUpcomingEvents,
   useGetUsersMatching,
+  useGetUserStatById,
 } from "@/hooks";
 import { UserMatchingItemType } from "@/models";
 import { format, formatDistanceToNow } from "date-fns";
@@ -32,9 +33,6 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
-
-const MOCK_TOTAL_HOURS = 15;
-const MOCK_RATING = 4.8;
 
 /* ✅ Dùng icon lucide thay cho emoji, giữ nguyên color/title/id */
 const mockQuickActions: QuickActionItemType[] = [
@@ -127,6 +125,9 @@ const useRecentChats = (locale: string) => {
             locale: dateFnsLocale,
           })
         : "",
+      messageType: conversation.lastMessage?.type,
+      imageUrls: undefined,
+      isTyping: false,
     }));
   }, [data, dateFnsLocale]);
 
@@ -143,6 +144,12 @@ export default function DashboardContent({ locale }: ContentProps) {
   const { suggestedPartners, isLoading: isLoadingPartners } =
     useSuggestedPartners();
   const { recentChats, isLoading: isLoadingChats } = useRecentChats(locale);
+
+  // Get user stats
+  const { data: userStatsData, isLoading: isLoadingStats } = useGetUserStatById(
+    authData?.payload.data?.id ?? "",
+    { enabled: !!authData?.payload.data?.id }
+  );
 
   // Check subscription plan
   const { data: subscriptionData } = useCurrentSubscriptionQuery({
@@ -197,8 +204,6 @@ export default function DashboardContent({ locale }: ContentProps) {
   const userName = user.name;
   const xpPoints = user.experiencePoints;
   const streakDays = user.streakDays;
-  const totalHours = MOCK_TOTAL_HOURS;
-  const rating = MOCK_RATING;
 
   // ✅ Dùng đúng API level / XP
   const level = user.level ?? 1;
@@ -227,7 +232,6 @@ export default function DashboardContent({ locale }: ContentProps) {
               userName={userName}
               xpPoints={xpPoints}
               streakDays={streakDays}
-              totalHours={totalHours}
             />
 
             <QuickActionsGrid t={t} actions={quickActions} locale={locale} />
@@ -239,8 +243,8 @@ export default function DashboardContent({ locale }: ContentProps) {
                 name: p.name,
                 avatarUrl: p.avatarUrl,
                 speakingLanguages: p.speakingLanguages || [],
+                merit: p.merit ? p.merit : "N/A",
               }))}
-              rating={rating}
               getInitials={getInitials}
               isValidAvatarUrl={isValidAvatarUrl}
               locale={locale}
@@ -258,12 +262,23 @@ export default function DashboardContent({ locale }: ContentProps) {
           <div className="space-y-6">
             <StatsOverviewCard
               xpPoints={xpPoints}
-              totalHours={totalHours}
               streakDays={streakDays}
-              rating={rating}
               progressPct={progressPct}
               currentXP={currentXPBar}
               totalXP={totalXPBar}
+              createdEventsCount={
+                isLoadingStats
+                  ? 0
+                  : (userStatsData?.payload.data?.createdEventsCount ?? 0)
+              }
+              postsCount={
+                isLoadingStats
+                  ? 0
+                  : (userStatsData?.payload.data?.postsCount ?? 0)
+              }
+              merit={
+                isLoadingStats ? 0 : (userStatsData?.payload.data?.merit ?? 0)
+              }
               t={t}
             />
 

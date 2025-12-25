@@ -7,13 +7,11 @@ export function WelcomeBanner({
   userName,
   xpPoints,
   streakDays,
-  totalHours,
   t,
 }: {
   userName: string;
   xpPoints: number;
   streakDays: number;
-  totalHours: number;
   t: ReturnType<typeof useTranslations>;
 }) {
   return (

@@ -27,6 +27,7 @@ import {
   useGetConversationsByUserId,
   useGetEventHostById,
   useGetUserProfile,
+  useGetUserStatById,
   useRejectFriendRequestMutation,
   useSendFriendRequestMutation,
 } from "@/hooks";
@@ -36,15 +37,6 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-
-// Mock data for features not yet implemented
-const MOCK_STATS = {
-  totalSessions: 0,
-  averageRating: 0,
-  responseRate: 0,
-  totalHours: 0,
-  eventsHosted: 0,
-};
 
 export default function UserProfilePage() {
   const params = useParams();
@@ -76,6 +68,11 @@ export default function UserProfilePage() {
     error: userError,
     refetch,
   } = useGetUserProfile(userId, lang, { enabled: !!userId });
+
+  // Fetch user stats
+  const { data: userStatsData } = useGetUserStatById(userId, {
+    enabled: !!userId,
+  });
 
   // Fetch conversation with this user (only enabled when they are friends)
   const { data: conversationData } = useGetConversationsByUserId(userId, {
@@ -299,12 +296,16 @@ export default function UserProfilePage() {
                 />
                 {/* Stats */}
                 <ProfileStats
-                  totalSessions={MOCK_STATS.totalSessions}
-                  averageRating={MOCK_STATS.averageRating}
-                  responseRate={MOCK_STATS.responseRate}
-                  totalHours={MOCK_STATS.totalHours}
-                  streakDays={user.streakDays ?? 0}
-                  eventsHosted={MOCK_STATS.eventsHosted}
+                  merit={userStatsData?.payload?.data?.merit ?? 0}
+                  streakDays={userStatsData?.payload?.data?.streakDays ?? 0}
+                  friendsCount={userStatsData?.payload?.data?.friendsCount ?? 0}
+                  postsCount={userStatsData?.payload?.data?.postsCount ?? 0}
+                  createdEventsCount={
+                    userStatsData?.payload?.data?.createdEventsCount ?? 0
+                  }
+                  joinedEventsCount={
+                    userStatsData?.payload?.data?.joinedEventsCount ?? 0
+                  }
                   planType={user.planType}
                 />
               </div>
@@ -422,12 +423,16 @@ export default function UserProfilePage() {
                 />
                 {/* Stats */}
                 <ProfileStats
-                  totalSessions={MOCK_STATS.totalSessions}
-                  averageRating={MOCK_STATS.averageRating}
-                  responseRate={MOCK_STATS.responseRate}
-                  totalHours={MOCK_STATS.totalHours}
-                  streakDays={user.streakDays ?? 0}
-                  eventsHosted={MOCK_STATS.eventsHosted}
+                  merit={userStatsData?.payload?.data?.merit ?? 0}
+                  streakDays={userStatsData?.payload?.data?.streakDays ?? 0}
+                  friendsCount={userStatsData?.payload?.data?.friendsCount ?? 0}
+                  postsCount={userStatsData?.payload?.data?.postsCount ?? 0}
+                  createdEventsCount={
+                    userStatsData?.payload?.data?.createdEventsCount ?? 0
+                  }
+                  joinedEventsCount={
+                    userStatsData?.payload?.data?.joinedEventsCount ?? 0
+                  }
                   planType={user.planType}
                 />
               </div>
@@ -469,12 +474,16 @@ export default function UserProfilePage() {
                   xpToNextLevel={user.xpToNextLevel}
                 />
                 <ProfileStats
-                  totalSessions={MOCK_STATS.totalSessions}
-                  averageRating={MOCK_STATS.averageRating}
-                  responseRate={MOCK_STATS.responseRate}
-                  totalHours={MOCK_STATS.totalHours}
-                  streakDays={user.streakDays ?? 0}
-                  eventsHosted={MOCK_STATS.eventsHosted}
+                  merit={userStatsData?.payload?.data?.merit ?? 0}
+                  streakDays={userStatsData?.payload?.data?.streakDays ?? 0}
+                  friendsCount={userStatsData?.payload?.data?.friendsCount ?? 0}
+                  postsCount={userStatsData?.payload?.data?.postsCount ?? 0}
+                  createdEventsCount={
+                    userStatsData?.payload?.data?.createdEventsCount ?? 0
+                  }
+                  joinedEventsCount={
+                    userStatsData?.payload?.data?.joinedEventsCount ?? 0
+                  }
                   planType={user.planType}
                 />
               </div>
