@@ -141,6 +141,10 @@ const eventApiRequest = {
       `${prefix}/${eventId}/transcriptions${queryString ? `?${queryString}` : ""}`
     );
   },
+
+  // Publish ai summary
+  publishEventSummary: (eventId: string) =>
+    http.post<MessageResType>(`${prefix}/${eventId}/summary/send-mail`, null),
 };
 
 export default eventApiRequest;
