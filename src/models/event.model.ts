@@ -429,6 +429,7 @@ export const EventSummarySchema = z.object({
   id: z.string().nullable().optional(),
   eventId: z.string(),
   hasSummary: z.boolean(),
+  isPublic: z.boolean().optional().default(false),
   summary: z.string(),
   keyPoints: z.array(z.string()).default([]),
   vocabulary: z.array(VocabularyItemSchema).default([]),

@@ -105,9 +105,18 @@
       "generate": "Generate AI Summary",
       "generating": "Generating...",
       "regenerate": "Regenerate",
+      "publish": "Publish",
+      "publishing": "Publishing...",
       "close": "Close",
       "success": "Meeting summary generated successfully!",
+      "publishSuccess": "Summary published and sent to participants!",
       "createGame": "Create Game",
+      "publishConfirm": {
+        "title": "Publish Summary?",
+        "description": "This will send the AI summary via email to all participants who attended the meeting. Are you sure?",
+        "confirm": "Publish",
+        "cancel": "Cancel"
+      },
       "summary": {
         "title": "Meeting Summary"
       },
