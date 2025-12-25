@@ -36,27 +36,27 @@ export function CallMessage({
           icon: isVideoCall ? Video : Phone,
           text: isVideoCall ? t("videoCall") : t("voiceCall"),
           duration: durationSeconds ? formatDuration(durationSeconds) : null,
-          iconColor: "text-emerald-400",
-          textColor: "text-white/95",
-          bg: "bg-white/10",
+          iconColor: "text-emerald-600 dark:text-emerald-400",
+          textColor: "text-emerald-900 dark:text-foreground",
+          bg: "bg-emerald-100 dark:bg-white/10",
         };
       case CallStatusEnum.Missed:
         return {
           icon: isVideoCall ? VideoOff : PhoneMissed,
           text: t("missedCall.incoming"),
           duration: null,
-          iconColor: "text-red-400",
-          textColor: "text-red-100",
-          bg: "bg-red-500/10",
+          iconColor: "text-red-600 dark:text-red-400",
+          textColor: "text-red-900 dark:text-red-100",
+          bg: "bg-red-100 dark:bg-red-500/10",
         };
       case CallStatusEnum.Declined:
         return {
           icon: isVideoCall ? VideoOff : PhoneMissed,
           text: t("declined.incoming"),
           duration: null,
-          iconColor: "text-orange-400",
-          textColor: "text-orange-100",
-          bg: "bg-orange-500/10",
+          iconColor: "text-orange-600 dark:text-orange-400",
+          textColor: "text-orange-900 dark:text-orange-100",
+          bg: "bg-orange-100 dark:bg-orange-500/10",
         };
       case CallStatusEnum.Failed:
       case CallStatusEnum.Cancelled:
@@ -67,18 +67,18 @@ export function CallMessage({
               ? t("failed.incoming")
               : t("cancelled.incoming"),
           duration: null,
-          iconColor: "text-white/50",
-          textColor: "text-white/70",
-          bg: "bg-white/5",
+          iconColor: "text-muted-foreground",
+          textColor: "text-muted-foreground",
+          bg: "bg-muted/50",
         };
       default:
         return {
           icon: isVideoCall ? Video : Phone,
           text: isVideoCall ? t("videoCall") : t("voiceCall"),
           duration: null,
-          iconColor: "text-white/90",
-          textColor: "text-white/95",
-          bg: "bg-white/10",
+          iconColor: "text-foreground",
+          textColor: "text-foreground",
+          bg: "bg-muted",
         };
     }
   };
@@ -89,7 +89,7 @@ export function CallMessage({
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 rounded-full px-2.5 py-1.5 backdrop-blur-sm",
+        "inline-flex items-center gap-2 rounded-full px-2.5 py-1.5",
         callInfo.bg
       )}
     >
@@ -99,8 +99,10 @@ export function CallMessage({
       </span>
       {callInfo.duration && (
         <>
-          <span className="text-xs text-white/60">·</span>
-          <span className="text-xs text-white/70">{callInfo.duration}</span>
+          <span className="text-xs text-muted-foreground/60">·</span>
+          <span className="text-xs text-muted-foreground">
+            {callInfo.duration}
+          </span>
         </>
       )}
     </div>

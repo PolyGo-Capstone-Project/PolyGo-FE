@@ -7,14 +7,16 @@
     "seeAll": "すべて表示",
     "profile": "プロフィール",
     "chat": "チャット",
-
     "stats": {
       "title": "統計情報",
       "xp": "合計XP",
       "hours": "総学習時間",
       "streak": "現在の連続記録",
       "rating": "コミュニティ評価",
-      "levelProgress": "レベル進行状況"
+      "levelProgress": "レベル進行状況",
+      "merit": "メリットポイント",
+      "createdEventsCount": "作成したイベント",
+      "postsCount": "作成した投稿"
     },
     "quickActions": {
       "title": "クイックアクション",

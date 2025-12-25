@@ -1,6 +1,10 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  MessageEnum,
+  MessageTypeNumber,
+} from "@/constants/communication.constant";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
@@ -10,6 +14,9 @@ export interface RecentChatItemType {
   avatarUrl?: string | null;
   last: string;
   ago: string;
+  messageType?: string | number;
+  imageUrls?: string[];
+  isTyping?: boolean;
 }
 
 interface RecentChatsProps {
@@ -26,10 +33,95 @@ export function RecentChats({
   locale,
 }: RecentChatsProps) {
   const t = useTranslations("dashboard");
+  const tChat = useTranslations("chat");
   const router = useRouter();
 
   const handleChatClick = (conversationId: string | number) => {
     router.push(`/${locale}/chat?conversationId=${conversationId}`);
+  };
+
+  const renderLastMessage = (chat: RecentChatItemType) => {
+    if (chat.isTyping) {
+      return (
+        <span className="text-primary text-xs italic">{tChat("typing")}</span>
+      );
+    }
+
+    if (!chat.messageType) {
+      return (
+        <span className="text-muted-foreground truncate text-xs">
+          {chat.last}
+        </span>
+      );
+    }
+
+    const type = chat.messageType;
+    const content = chat.last;
+
+    // Convert to number for comparison to handle both string and number from API
+    const numericType =
+      typeof type === "number" ? type : parseInt(String(type), 10);
+
+    if (type === MessageEnum.Image || numericType === MessageTypeNumber.Image) {
+      return (
+        <span className="text-muted-foreground text-xs">
+          🖼 {tChat("imageMessage")}
+        </span>
+      );
+    }
+
+    if (
+      type === MessageEnum.Images ||
+      numericType === MessageTypeNumber.Images
+    ) {
+      return (
+        <span className="text-muted-foreground text-xs">
+          🖼 {tChat("imageMessage")}
+        </span>
+      );
+    }
+
+    if (type === MessageEnum.Audio || numericType === MessageTypeNumber.Audio) {
+      return (
+        <span className="text-muted-foreground text-xs">
+          🎵 {tChat("audioMessage")}
+        </span>
+      );
+    }
+
+    if (
+      type === MessageEnum.VoiceCall ||
+      numericType === MessageTypeNumber.VoiceCall
+    ) {
+      return (
+        <span className="text-muted-foreground text-xs">
+          📞 {tChat("voiceCall")}
+        </span>
+      );
+    }
+
+    if (
+      type === MessageEnum.VideoCall ||
+      numericType === MessageTypeNumber.VideoCall
+    ) {
+      return (
+        <span className="text-muted-foreground text-xs">
+          📹 {tChat("videoCall")}
+        </span>
+      );
+    }
+
+    const maxLength = 50;
+    const displayContent =
+      content && content.length > maxLength
+        ? `${content.substring(0, maxLength)}...`
+        : content;
+
+    return (
+      <span className="text-muted-foreground truncate text-xs">
+        {displayContent}
+      </span>
+    );
   };
 
   return (
@@ -73,7 +165,7 @@ export function RecentChats({
               <div className="flex-1 min-w-0">
                 <div className="font-medium text-sm truncate">{c.name}</div>
                 <div className="text-xs text-muted-foreground truncate">
-                  {c.last}
+                  {renderLastMessage(c)}
                 </div>
               </div>
 

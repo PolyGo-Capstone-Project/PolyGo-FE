@@ -7,14 +7,16 @@
     "seeAll": "See All",
     "profile": "Profile",
     "chat": "Chat",
-
     "stats": {
       "title": "Your Statistics",
       "xp": "Total XP",
       "hours": "Total Study Hours",
       "streak": "Current Streak",
       "rating": "Community Rating",
-      "levelProgress": "Level Progress"
+      "levelProgress": "Level Progress",
+      "merit": "Merit Points",
+      "createdEventsCount": "Events Created",
+      "postsCount": "Posts Created"
     },
     "quickActions": {
       "title": "Quick Actions",

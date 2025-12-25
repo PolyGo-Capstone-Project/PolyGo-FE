@@ -155,3 +155,17 @@ export const useSearchUsers = (
     refetchOnMount: true,
   });
 };
+
+// GET /users/stat/:userId - Get user statistics by ID
+export const useGetUserStatById = (
+  userId: string,
+  options?: {
+    enabled?: boolean;
+  }
+) => {
+  return useQuery({
+    queryKey: ["user", "stat", userId],
+    queryFn: () => userApiRequest.getUserStatById(userId),
+    enabled: options?.enabled,
+  });
+};
