@@ -44,7 +44,8 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
-import { useLocale } from "next-intl";
+import { FileX } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -80,6 +81,7 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
   const locale = useLocale();
   const searchParams = useSearchParams();
   const imageIndex = parseInt(searchParams.get("imageIndex") || "0");
+  const t = useTranslations("social.post");
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(imageIndex);
   const [commentInput, setCommentInput] = useState("");
@@ -257,8 +259,15 @@ export default function PostDetailContent({ postId }: PostDetailContentProps) {
 
   if (!post || !currentUserAuthor) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <p>Post not found</p>
+      <div className="flex h-screen flex-col items-center justify-center gap-3 text-center text-muted-foreground">
+        {/* Icon */}
+        <FileX className="h-30 w-30 text-muted-foreground/70" />
+
+        {/* Text chính */}
+        <p className="text-2xl font-medium">{t("deletedPost")}</p>
+
+        {/* Text phụ phía dưới */}
+        <p className="text-2xl font-medium">{t("deletedPostDesc")}</p>
       </div>
     );
   }

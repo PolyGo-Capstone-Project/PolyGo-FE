@@ -29,7 +29,7 @@
       "perSet": "Each set has its own leaderboard",
       "replay": "You can replay to improve your time",
       "getXP": "Earn XP when finishing a puzzle",
-      "unlockBadges": "Unlock badges when achieving milestones"
+      "unlockBadges": "Use hint and wrong entries will deduct points"
     },
     "searchPlaceholder": "Search puzzle sets..."
   },

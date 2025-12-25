@@ -634,7 +634,9 @@
         "comments": "コメント",
         "reactions": "リアクション",
         "allImage": "すべての画像を表示",
-        "sharedPost": "共有された投稿"
+        "sharedPost": "共有された投稿",
+        "sharedEvent": "共有されたイベント",
+        "eventDescription": "イベント説明"
       },
       "delete": {
         "title": "投稿を削除",

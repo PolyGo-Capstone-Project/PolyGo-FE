@@ -41,8 +41,8 @@
         "success": "投稿が正常に共有されました！",
         "error": "投稿の共有に失敗しました"
       },
-      "deletedPost": "この投稿は削除されました",
-      "deletedPostDesc": "元の投稿はもう利用できません"
+      "deletedPost": "このコンテンツは利用できなくなったか、",
+      "deletedPostDesc": "ポリシー違反のために削除されました。"
     },
     "leftSidebar": {
       "games": {

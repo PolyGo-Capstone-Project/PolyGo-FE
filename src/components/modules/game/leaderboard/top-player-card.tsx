@@ -3,13 +3,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Medal, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -82,7 +75,7 @@ export default function TopPlayersCard({
         <CardTitle className="text-base md:text-lg">
           {t("lb.topPlayers", { default: "Top Players" })}
         </CardTitle>
-        <Select value={range} onValueChange={(v) => setRange(v as any)}>
+        {/* <Select value={range} onValueChange={(v) => setRange(v as any)}>
           <SelectTrigger className="w-36">
             <SelectValue placeholder={t("lb.range", { default: "All Time" })} />
           </SelectTrigger>
@@ -97,7 +90,7 @@ export default function TopPlayersCard({
               {t("lb.rangeMonth", { default: "This Month" })}
             </SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </CardHeader>
 
       <CardContent className="space-y-3">
@@ -126,9 +119,13 @@ export default function TopPlayersCard({
             <div className="flex items-center gap-3 min-w-0">
               <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
                 {i === 0 ? (
-                  <Medal className="h-4 w-4 text-amber-500" />
-                ) : (
+                  <Medal className="h-4 w-4 text-amber-400" />
+                ) : i === 1 ? (
                   <Medal className="h-4 w-4 text-slate-400" />
+                ) : i === 2 ? (
+                  <Medal className="h-4 w-4 text-amber-600" />
+                ) : (
+                  <div> {i + 1} </div>
                 )}
               </div>
 

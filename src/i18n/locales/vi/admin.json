@@ -723,7 +723,9 @@
         "comments": "Bình luận",
         "reactions": "Cảm xúc",
         "allImage": "Tất cả hình ảnh",
-        "sharedPost": "Bài viết được chia sẻ"
+        "sharedPost": "Bài viết được chia sẻ",
+        "sharedEvent": "Sự kiện được chia sẻ",
+        "eventDescription": "Xem thông tin đầy đủ về sự kiện này"
       },
       "delete": {
         "title": "Xóa bài viết",

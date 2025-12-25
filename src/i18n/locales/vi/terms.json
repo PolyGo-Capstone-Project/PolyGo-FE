@@ -14,8 +14,8 @@
       "items": {
         "requiredTitle": "Yêu cầu Đăng ký",
         "required": "Người dùng phải cung cấp thông tin chính xác và đầy đủ để tạo tài khoản. Bất kỳ thông tin sai lệch nào đều có thể dẫn đến việc đình chỉ tài khoản.",
-        "verificationTitle": "Xác minh Email/Điện thoại",
-        "verification": "Chúng tôi yêu cầu xác minh email hoặc số điện thoại để đảm bảo tính xác thực của người dùng và bảo mật hệ thống.",
+        "verificationTitle": "Xác minh Email",
+        "verification": "Chúng tôi yêu cầu xác minh email để đảm bảo tính xác thực của người dùng và bảo mật hệ thống.",
         "ageTitle": "Chính sách Tuổi",
         "age": "Dịch vụ chỉ dành cho những người từ 18 tuổi trở lên, hoặc từ 13 tuổi trở lên có sự đồng ý của phụ huynh/người giám hộ."
       }
@@ -24,9 +24,9 @@
       "title": "Gói Dịch vụ và Thanh toán",
       "items": {
         "freeTitle": "Gói Miễn phí (Free)",
-        "free": "Cung cấp quyền truy cập vào các tính năng cơ bản, bao gồm tham gia các phòng sự kiện công cộng và ghép đôi ngôn ngữ ngẫu nhiên có giới hạn.",
+        "free": "Cung cấp quyền truy cập vào các tính năng cơ bản, bao gồm tham gia các phòng sự kiện công cộng và ghép đôi theo ngôn ngữ và sở thích.",
         "plusTitle": "Gói Plus",
-        "plus": "Cung cấp các lợi ích nâng cao như truy cập không giới hạn vào các sự kiện riêng tư, ưu tiên ghép đôi và không có quảng cáo."
+        "plus": "Cung cấp các lợi ích nâng cao như truy cập không giới hạn vào các sự kiện, tạo sự kiện, thêm lượt dịch thuật và gọi video/thoại"
       }
     },
     "communication": {
@@ -41,18 +41,43 @@
         "callDurationTitle": "Thời lượng Cuộc gọi",
         "callDuration": "Thời lượng cuộc gọi video/thoại ngẫu nhiên có thể bị giới hạn trong Gói Miễn phí.",
         "matchingRulesTitle": "Quy tắc Ghép đôi",
-        "matchingRules": "Hệ thống ghép đôi dựa trên sở thích, ngôn ngữ, và mục tiêu học tập. Nghiêm cấm các hành vi lạm dụng tính năng ghép đôi.",
+        "matchingRules": "Hệ thống ghép đôi dựa trên sở thích, ngôn ngữ, và sở thích. Nghiêm cấm các hành vi lạm dụng tính năng ghép đôi.",
         "cancellationTitle": "Huỷ Sự kiện",
-        "cancellation": "Người dùng phải thông báo hủy sự kiện đã tạo trước 24 giờ. Hủy bỏ quá gần có thể dẫn đến hình phạt."
+        "cancellation": "Người dùng không được hủy sự kiện đã tạo trong vòng 24 giờ trước khi sự kiện bắt đầu. Người tham gia sự kiện phải hủy tham gia trước 12 giờ so với giờ bắt đầu."
       }
     },
     "payments": {
       "title": "Điều khoản Thanh toán và Hoàn tiền",
       "items": {
         "billingCycleTitle": "Chu kỳ Thanh toán Gói Plus",
-        "billingCycle": "Đăng ký Gói Plus được thanh toán hàng tháng hoặc hàng năm và sẽ tự động gia hạn trừ khi bị hủy.",
+        "billingCycle": "Đăng ký Gói Plus được thanh toán hàng tháng hoặc hàng năm và sẽ tự động gia hạn.",
         "balanceTitle": "Yêu cầu Số dư",
         "balance": "Người dùng phải duy trì số dư hợp lệ để truy cập các dịch vụ trả phí. Không có hoàn tiền cho các khoản phí đã thanh toán."
+      }
+    },
+    "merit": {
+      "title": "Điểm Merit và Quy định phạt",
+      "intro": "Merit là hệ thống đánh giá mức độ đóng góp, uy tín và hành vi của người dùng trên nền tảng. Điểm Merit và XP có thể được cộng hoặc trừ dựa trên các hành động cụ thể.",
+      "admin": {
+        "title": "Quyền điều chỉnh của Admin",
+        "content": "Admin có quyền gán mức cộng hoặc trừ Merit cụ thể đối với người dùng trong các trường hợp vi phạm hoặc đóng góp đặc biệt."
+      },
+      "positive": {
+        "title": "Hành vi tích cực",
+        "dailyLogin": "Đăng nhập hằng ngày giúp duy trì streak và nhận Merit + XP.",
+        "createEvent": "Tạo sự kiện hoặc game sẽ nhận thêm XP.",
+        "approvedEvent": "Sự kiện hoặc game được admin duyệt sẽ nhận thêm Merit và XP.",
+        "joinEvent": "Tham gia sự kiện đúng quy định giúp tăng Merit.",
+        "friend": "Kết bạn với người dùng khác sẽ được cộng Merit và XP.",
+        "review": "Nhận hoặc thực hiện đánh giá (đặc biệt là đánh giá 5 sao) sẽ được cộng Merit.",
+        "game": "Hoàn thành game giúp nhận XP dựa trên mức độ chính xác và việc sử dụng hint."
+      },
+      "penalty": {
+        "title": "Vi phạm & trừ điểm",
+        "cancelEvent": "Hủy sự kiện sau khi đã tạo sẽ bị trừ Merit.",
+        "lateEvent": "Sự kiện quá thời gian quy định nhưng chưa bắt đầu sẽ bị trừ Merit nặng.",
+        "noShow": "Đăng ký nhưng không tham gia sự kiện sẽ bị trừ Merit.",
+        "adminPenalty": "Các hành vi vi phạm khác có thể bị admin áp dụng mức trừ Merit tương ứng."
       }
     },
     "administration": {

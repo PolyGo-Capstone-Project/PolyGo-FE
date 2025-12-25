@@ -25,7 +25,7 @@ export default function PolicyPage() {
       </div>
 
       {/* Metadata */}
-      <div className="flex flex-wrap items-center justify-center gap-4 mb-8 text-sm text-muted-foreground">
+      {/* <div className="flex flex-wrap items-center justify-center gap-4 mb-8 text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
           <span>📅</span>
           <span>{t("lastUpdated")}: 01 Tháng 1, 2025</span>
@@ -34,7 +34,7 @@ export default function PolicyPage() {
           <span>⏰</span>
           <span>{t("effectiveDate")}: 01 Tháng 1, 2025</span>
         </div>
-      </div>
+      </div> */}
 
       {/* Warning Box */}
       <Card className="mb-8 border-2 border-blue-500/50 bg-blue-50 dark:bg-blue-950/20">

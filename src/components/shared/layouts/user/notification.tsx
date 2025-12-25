@@ -101,7 +101,7 @@ export function NotificationBell() {
         break;
       }
       case "Friend": {
-        router.push(`${base}/matching`);
+        router.push(`${base}/matching/${n.objectId}`);
         break;
       }
       case "Event": {

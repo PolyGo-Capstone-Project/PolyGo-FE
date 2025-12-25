@@ -33,7 +33,6 @@ import {
   Clock,
   Pencil,
   Plus,
-  Star,
   Swords,
   Target,
   Trash2,
@@ -163,7 +162,7 @@ export default function CreatedTab() {
   return (
     <>
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
         <StatCard
           title={t("mysets.totalSets", { default: "Total Sets" })}
           value={total}
@@ -182,12 +181,12 @@ export default function CreatedTab() {
           Icon={Users2}
           color="text-purple-600"
         />
-        <StatCard
+        {/* <StatCard
           title={t("mysets.avgRating", { default: "Avg Rating" })}
           value={avgRating.toFixed(1)}
           Icon={Star}
           color="text-yellow-600"
-        />
+        /> */}
       </div>
 
       {/* Approved list */}

@@ -16,7 +16,7 @@ export default function HowToPlay() {
   const [open, setOpen] = useState(false);
 
   return (
-    <Card className="border-violet-200 dark:border-violet-800 bg-violet-50/70 dark:bg-violet-950/30">
+    <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/70 dark:bg-blue-950/30">
       <Collapsible open={open} onOpenChange={setOpen}>
         {!open && (
           <CollapsibleTrigger asChild>

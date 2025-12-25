@@ -199,7 +199,7 @@ export default function PlayCard({
               {tSubmit}
             </Button>
 
-            {word.hint && (
+            {word.hint && !showHint ? (
               <Button
                 variant="default"
                 size="sm"
@@ -208,6 +208,19 @@ export default function PlayCard({
              text-white font-semibold 
              shadow-md"
                 onClick={handleShowHint}
+              >
+                <Info className="h-4 w-4" />
+                {tHint}
+              </Button>
+            ) : (
+              <Button
+                variant="default"
+                size="sm"
+                className="flex-1 gap-2 h-11 
+             bg-amber-500 hover:bg-amber-600 
+             text-white font-semibold 
+             shadow-md"
+                disabled
               >
                 <Info className="h-4 w-4" />
                 {tHint}

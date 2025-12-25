@@ -14,8 +14,8 @@
       "items": {
         "requiredTitle": "Registration Requirement",
         "required": "Users must provide accurate and complete information to create an account. Any false information may lead to account suspension.",
-        "verificationTitle": "Email/Phone Verification",
-        "verification": "We require email or phone number verification to ensure user authenticity and system security.",
+        "verificationTitle": "Email Verification",
+        "verification": "We require email verification to ensure user authenticity and system security.",
         "ageTitle": "Age Policy",
         "age": "The service is intended only for individuals 18 years of age or older, or 13 and older with parental/guardian consent."
       }
@@ -24,9 +24,9 @@
       "title": "Service Plans and Payment",
       "items": {
         "freeTitle": "Free Plan",
-        "free": "Provides access to basic features, including limited public event rooms and restricted random language matching.",
+        "free": "Provides access to basic features, including limited public event rooms and matching by language and interests.",
         "plusTitle": "Plus Plan",
-        "plus": "Offers premium benefits such as unlimited access to private events, priority matching, and an ad-free experience."
+        "plus": "Offers premium benefits such as unlimited access to private events, creating events, adding translation credits, and video/voice calls."
       }
     },
     "communication": {
@@ -41,18 +41,46 @@
         "callDurationTitle": "Call Duration",
         "callDuration": "The duration of random video/voice calls may be limited under the Free Plan.",
         "matchingRulesTitle": "Matching Rules",
-        "matchingRules": "The matching system is based on interests, languages, and learning goals. Abuse of the matching feature is prohibited.",
+        "matchingRules": "The matching system is based on interests, languages, and interests. Abuse of the matching feature is prohibited.",
         "cancellationTitle": "Event Cancellation",
-        "cancellation": "Users must give 24 hours' notice to cancel a created event. Late cancellations may incur penalties."
+        "cancellation": "Users must notify 24 hours in advance to cancel events they created. Participants must cancel their attendance at least 12 hours before the start time."
       }
     },
     "payments": {
       "title": "Payment and Refund Terms",
       "items": {
         "billingCycleTitle": "Plus Plan Billing Cycle",
-        "billingCycle": "Plus Plan subscriptions are billed monthly or annually and will automatically renew unless canceled.",
+        "billingCycle": "Plus Plan subscriptions are billed monthly or annually and will automatically renew.",
         "balanceTitle": "Balance Requirement",
         "balance": "Users must maintain a valid balance to access paid services. No refunds are provided for fees already paid."
+      }
+    },
+    "merit": {
+      "title": "Merit & Penalty System",
+      "intro": "Merit is a system used to evaluate user contribution, reputation, and compliance on the platform. Merit and XP may be added or deducted based on specific actions.",
+
+      "admin": {
+        "title": "Admin Adjustments",
+        "content": "Administrators have the authority to assign specific Merit increases or penalties in cases of violations or exceptional contributions."
+      },
+
+      "positive": {
+        "title": "Positive Behaviors",
+        "dailyLogin": "Daily logins help maintain streaks and reward users with Merit and XP.",
+        "createEvent": "Creating events or games grants XP rewards.",
+        "approvedEvent": "Events or games approved by administrators receive additional Merit and XP.",
+        "joinEvent": "Participating in events according to the rules increases Merit.",
+        "friend": "Adding friends grants Merit and XP.",
+        "review": "Giving or receiving reviews, especially 5-star ratings, grants Merit.",
+        "game": "Completing games grants XP based on accuracy and hint usage."
+      },
+
+      "penalty": {
+        "title": "Violations & Penalties",
+        "cancelEvent": "Canceling an event after creation will result in a Merit deduction.",
+        "lateEvent": "Events that exceed the allowed start time without beginning will receive a significant Merit penalty.",
+        "noShow": "Registering for an event but failing to participate will result in a Merit deduction.",
+        "adminPenalty": "Other violations may result in Merit penalties at the administrator’s discretion."
       }
     },
     "administration": {

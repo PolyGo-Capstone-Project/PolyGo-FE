@@ -51,12 +51,7 @@ import {
 import { WordsetDifficulty, WordsetStatus } from "@/models";
 
 /* ----------------- helpers ----------------- */
-const statusList: WordsetStatus[] = [
-  "Draft",
-  "Pending",
-  "Approved",
-  "Rejected",
-];
+const statusList: WordsetStatus[] = ["Pending", "Approved", "Rejected"];
 
 const difficultyList: (keyof typeof WordsetDifficulty)[] = [
   "EASY",

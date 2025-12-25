@@ -15,7 +15,7 @@ import { CreateWordsetBodyType, WordsetDifficulty } from "@/models";
 
 /* ===== helpers ===== */
 const estimateMinutes = (vocabCount: number, difficulty: WordsetDifficulty) => {
-  const base = 2,
+  const base = 0,
     per = 1,
     diff = difficulty === "Easy" ? 0 : difficulty === "Medium" ? 2 : 4;
   return base + per * vocabCount + diff;
@@ -197,15 +197,15 @@ export default function CreateWordPuzzleSetPage() {
         onCategoryChange={setCategoryId}
         difficulty={difficulty}
         onDifficultyChange={setDifficulty}
-        autoEstimate={autoEstimate}
-        onAutoEstimateChange={setAutoEstimate}
+        // autoEstimate={autoEstimate}
+        // onAutoEstimateChange={setAutoEstimate}
         estimatedMin={estimatedMin}
         onEstimatedMinChange={setEstimatedMin}
         vocabCount={wordCount}
       />
 
       <WordsEditor
-        minutes={displayMinutes}
+        // minutes={displayMinutes}
         onChange={setVocabs}
         minRequired={5}
         initialVocabs={initialVocabs}
@@ -213,7 +213,7 @@ export default function CreateWordPuzzleSetPage() {
 
       <SubmitPanel
         wordCount={wordCount}
-        minutes={displayMinutes}
+        // minutes={displayMinutes}
         canSubmit={canSubmit}
         onBack={() => router.back()}
         onSubmit={handleSubmit}

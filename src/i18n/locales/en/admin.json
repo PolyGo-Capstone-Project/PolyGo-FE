@@ -634,7 +634,9 @@
         "comments": "Comments",
         "reactions": "Reactions",
         "allImage": "Images",
-        "sharedPost": "Shared Post"
+        "sharedPost": "Shared Post",
+        "sharedEvent": "Shared Event",
+        "eventDescription": "View complete information about this event."
       },
       "delete": {
         "title": "Delete post",

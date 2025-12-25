@@ -41,8 +41,8 @@
         "success": "Post shared successfully!",
         "error": "Failed to share post"
       },
-      "deletedPost": "This post has been deleted",
-      "deletedPostDesc": "The original post is no longer available"
+      "deletedPost": "This content is no longer available or has been",
+      "deletedPostDesc": "removed due to policy violations."
     },
     "leftSidebar": {
       "games": {

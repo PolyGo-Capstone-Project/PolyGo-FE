@@ -33,8 +33,8 @@ export default function CatDiff({
   onCategoryChange,
   difficulty,
   onDifficultyChange,
-  autoEstimate,
-  onAutoEstimateChange,
+  // autoEstimate,
+  // onAutoEstimateChange,
   estimatedMin,
   onEstimatedMinChange,
   vocabCount,
@@ -43,8 +43,8 @@ export default function CatDiff({
   onCategoryChange: (c: string) => void;
   difficulty: WordsetDifficulty;
   onDifficultyChange: (d: WordsetDifficulty) => void;
-  autoEstimate: boolean;
-  onAutoEstimateChange: (v: boolean) => void;
+  // autoEstimate: boolean;
+  // onAutoEstimateChange: (v: boolean) => void;
   estimatedMin: number;
   onEstimatedMinChange: (n: number) => void;
   vocabCount: number;

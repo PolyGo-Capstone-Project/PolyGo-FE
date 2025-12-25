@@ -24,6 +24,7 @@ export function PostDetailSheet({
 }) {
   const t = useTranslations("admin.posts.detail");
   const sharedPost = post.sharedPost;
+  const shareEvent = post.sharedEvent;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -105,6 +106,51 @@ export function PostDetailSheet({
                   <div>
                     <span className="font-medium">{t("createdAt")}:</span>{" "}
                     {new Date(sharedPost.createdAt).toLocaleString()}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {shareEvent && (
+            <>
+              <Separator />
+
+              <div className="rounded-md border bg-muted/30 p-4 space-y-4">
+                <div className="text-sm font-semibold text-muted-foreground">
+                  {t("sharedEvent")}
+                </div>
+
+                {/* Content bài gốc */}
+                <MarkdownRenderer content={shareEvent.title} />
+
+                <div className="text-sm font-semibold text-muted-foreground">
+                  {t("eventDescription")}
+                </div>
+
+                <MarkdownRenderer content={shareEvent.description} />
+
+                {/* Ảnh bài gốc */}
+                {shareEvent.bannerUrl && (
+                  <div className="relative aspect-square overflow-hidden rounded-md border">
+                    <Image
+                      src={shareEvent.bannerUrl}
+                      alt="event-banner"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+
+                {/* Meta bài gốc */}
+                <div className="text-xs text-muted-foreground grid grid-cols-2 gap-2">
+                  <div>
+                    <span className="font-medium">{t("creator")}:</span>{" "}
+                    {shareEvent.host?.name}
+                  </div>
+                  <div>
+                    <span className="font-medium">{t("createdAt")}:</span>{" "}
+                    {new Date(shareEvent.startAt).toLocaleString()}
                   </div>
                 </div>
               </div>

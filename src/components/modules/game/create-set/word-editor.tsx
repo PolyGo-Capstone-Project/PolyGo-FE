@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { AlertCircle, CircleHelp, Plus, Timer, Trash2 } from "lucide-react";
+import { AlertCircle, CircleHelp, Plus, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
@@ -21,12 +21,12 @@ type Vocab = {
 const uid = () => Math.random().toString(36).slice(2, 9);
 
 export default function WordsEditor({
-  minutes,
+  // minutes,
   onChange,
   minRequired = 5,
   initialVocabs,
 }: {
-  minutes: number;
+  // minutes: number;
   onChange: (vocabs: Vocab[]) => void;
   minRequired?: number;
   initialVocabs?: Omit<Vocab, "id">[];
@@ -78,9 +78,9 @@ export default function WordsEditor({
             ({wordCount} {t("meta.words")})
           </span>
         </CardTitle>
-        <div className="text-sm text-muted-foreground flex items-center gap-2">
+        {/* <div className="text-sm text-muted-foreground flex items-center gap-2">
           <Timer className="h-4 w-4" />~{minutes} {t("create.words.min")}
-        </div>
+        </div> */}
       </CardHeader>
 
       <CardContent className="space-y-4">

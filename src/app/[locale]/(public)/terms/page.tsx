@@ -24,18 +24,18 @@ export default function TermsPage() {
       </div>
 
       {/* Metadata */}
-      <div className="flex flex-wrap items-center justify-center gap-4 mb-8 text-sm text-muted-foreground">
+      {/* <div className="flex flex-wrap items-center justify-center gap-4 mb-8 text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
           <span>📅</span>
           <span>{t("lastUpdated")}: 01 Tháng 1, 2025</span>{" "}
-          {/* Metadata: Sử dụng t() cho nhãn */}
+          
         </div>
         <div className="flex items-center gap-2">
           <span>⏰</span>
           <span>{t("effectiveDate")}: 01 Tháng 1, 2025</span>{" "}
-          {/* Metadata: Sử dụng t() cho nhãn */}
+          
         </div>
-      </div>
+      </div> */}
 
       {/* Warning Box */}
       <Card className="mb-8 border-2 border-yellow-500/50 bg-yellow-50 dark:bg-yellow-950/20">
@@ -164,14 +164,14 @@ export default function TermsPage() {
                 </p>
               </div>
 
-              <div className="p-4 rounded-lg border bg-card">
+              {/* <div className="p-4 rounded-lg border bg-card">
                 <div className="font-semibold text-foreground mb-2">
                   • {t("communication.items.callDurationTitle")}
                 </div>{" "}
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {t("communication.items.callDuration")}
                 </p>
-              </div>
+              </div> */}
 
               <div className="p-4 rounded-lg border bg-card">
                 <div className="font-semibold text-foreground mb-2">
@@ -274,11 +274,69 @@ export default function TermsPage() {
           </CardContent>
         </Card>
 
-        {/* Section 6: Security */}
+        {/* Section: Merit System */}
         <Card className="border-2">
           <CardHeader className="pb-4">
             <CardTitle className="text-xl flex items-start gap-3">
               <span className="text-primary shrink-0">6.</span>
+              <span>{t("merit.title")}</span>
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent className="space-y-6">
+            {/* Intro */}
+            <p className="text-sm text-muted-foreground leading-relaxed pl-8">
+              {t("merit.intro")}
+            </p>
+
+            <div className="space-y-4 pl-8">
+              {/* Admin controlled */}
+              <div className="p-4 rounded-lg border bg-card">
+                <div className="font-semibold text-foreground mb-2">
+                  {t("merit.admin.title")}
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {t("merit.admin.content")}
+                </p>
+              </div>
+
+              {/* Positive behaviors */}
+              <div className="p-4 rounded-lg border bg-card">
+                <div className="font-semibold text-foreground mb-2">
+                  {t("merit.positive.title")}
+                </div>
+                <ul className="text-sm text-muted-foreground list-disc pl-5 space-y-1">
+                  <li>{t("merit.positive.dailyLogin")}</li>
+                  <li>{t("merit.positive.createEvent")}</li>
+                  <li>{t("merit.positive.approvedEvent")}</li>
+                  <li>{t("merit.positive.joinEvent")}</li>
+                  <li>{t("merit.positive.friend")}</li>
+                  <li>{t("merit.positive.review")}</li>
+                  <li>{t("merit.positive.game")}</li>
+                </ul>
+              </div>
+
+              {/* Violations & penalties */}
+              <div className="p-4 rounded-lg border border-red-500/40 bg-red-50 dark:bg-red-950/20">
+                <div className="font-semibold text-red-700 dark:text-red-300 mb-2">
+                  {t("merit.penalty.title")}
+                </div>
+                <ul className="text-sm text-red-700 dark:text-red-300 list-disc pl-5 space-y-1">
+                  <li>{t("merit.penalty.cancelEvent")}</li>
+                  <li>{t("merit.penalty.lateEvent")}</li>
+                  <li>{t("merit.penalty.noShow")}</li>
+                  <li>{t("merit.penalty.adminPenalty")}</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Section 8: Security */}
+        <Card className="border-2">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-xl flex items-start gap-3">
+              <span className="text-primary shrink-0">7.</span>
               <span>{t("security.title")}</span>
             </CardTitle>
           </CardHeader>

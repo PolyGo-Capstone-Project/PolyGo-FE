@@ -2,18 +2,18 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, CheckCircle2, Timer } from "lucide-react";
+import { BookOpen, CheckCircle2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function SubmitPanel({
   wordCount,
-  minutes,
+  // minutes,
   canSubmit,
   onBack,
   onSubmit,
 }: {
   wordCount: number;
-  minutes: number;
+  // minutes: number;
   canSubmit: boolean;
   onBack: () => void;
   onSubmit: () => void;
@@ -45,10 +45,10 @@ export default function SubmitPanel({
             <BookOpen className="inline h-4 w-4 mr-1" />
             {wordCount} {t("meta.words")}
           </div>
-          <div className="text-muted-foreground">
+          {/* <div className="text-muted-foreground">
             <Timer className="inline h-4 w-4 mr-1" /> ~{minutes}{" "}
             {t("create.words.min")}
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-end pt-2">
