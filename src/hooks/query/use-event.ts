@@ -97,6 +97,9 @@ type GetEventSummaryResponse = Awaited<
 type GenerateEventSummaryResponse = Awaited<
   ReturnType<typeof eventApiRequest.generateEventSummary>
 >;
+type PublishEventSummaryResponse = Awaited<
+  ReturnType<typeof eventApiRequest.publishEventSummary>
+>;
 type GetEventTranscriptionsResponse = Awaited<
   ReturnType<typeof eventApiRequest.getEventTranscriptions>
 >;
@@ -534,5 +537,25 @@ export const useGetEventTranscriptions = (
     queryFn: () => eventApiRequest.getEventTranscriptions(eventId, query),
     enabled: options?.enabled && !!eventId,
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+};
+
+// Publish event summary mutation (Host only)
+export const usePublishEventSummaryMutation = (options?: {
+  onSuccess?: (data: PublishEventSummaryResponse) => void;
+  onError?: (error: unknown) => void;
+}) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (eventId: string) =>
+      eventApiRequest.publishEventSummary(eventId),
+    onSuccess: (data, eventId) => {
+      // Invalidate summary cache if needed
+      queryClient.invalidateQueries({
+        queryKey: ["events", "summary", eventId],
+      });
+      options?.onSuccess?.(data);
+    },
+    onError: options?.onError,
   });
 };

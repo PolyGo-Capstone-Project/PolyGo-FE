@@ -105,9 +105,18 @@
       "generate": "AIサマリーを生成",
       "generating": "生成中...",
       "regenerate": "再生成",
+      "publish": "サマリーを公開",
+      "publishing": "公開中...",
       "close": "閉じる",
       "success": "ミーティングサマリーが正常に生成されました！",
+      "publishSuccess": "サマリーが公開され、参加者に送信されました！",
       "createGame": "ゲームを作成",
+      "publishConfirm": {
+        "title": "サマリーを公開しますか？",
+        "description": "これによりミーティングに参加したすべての参加者にAIサマリーがメールで送信されます。よろしいですか？",
+        "confirm": "公開",
+        "cancel": "キャンセル"
+      },
       "summary": {
         "title": "ミーティングサマリー"
       },

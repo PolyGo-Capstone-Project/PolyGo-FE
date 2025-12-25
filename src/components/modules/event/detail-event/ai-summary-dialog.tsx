@@ -1,6 +1,14 @@
 "use client";
 
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
   Badge,
   Button,
   Card,
@@ -15,7 +23,11 @@ import {
   DialogTitle,
   Separator,
 } from "@/components";
-import { useGenerateEventSummaryMutation, useGetEventSummary } from "@/hooks";
+import {
+  useGenerateEventSummaryMutation,
+  useGetEventSummary,
+  usePublishEventSummaryMutation,
+} from "@/hooks";
 import { handleErrorApi } from "@/lib/utils";
 import { VocabularyItemType } from "@/models";
 import {
@@ -28,6 +40,8 @@ import {
   IconFileText,
   IconListCheck,
   IconLoader2,
+  IconRefresh,
+  IconSend,
   IconSparkles,
 } from "@tabler/icons-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -125,6 +139,7 @@ export function AISummaryDialog({
   const tError = useTranslations("Error");
   const router = useRouter();
   const locale = useLocale();
+  const [showPublishConfirm, setShowPublishConfirm] = useState(false);
 
   // Fetch existing summary
   const {
@@ -142,241 +157,307 @@ export function AISummaryDialog({
     onError: (err) => handleErrorApi({ error: err, tError }),
   });
 
+  // Publish summary mutation
+  const publishMutation = usePublishEventSummaryMutation({
+    onSuccess: () => {
+      toast.success(t("publishSuccess"));
+      setShowPublishConfirm(false);
+      refetchSummary();
+    },
+    onError: (err) => handleErrorApi({ error: err, tError }),
+  });
+
   const summary = summaryData?.payload?.data;
   const hasSummary = summary?.hasSummary ?? false;
+  const isPublic = summary?.isPublic ?? false;
 
   const handleGenerateSummary = () => {
     generateMutation.mutate(eventId);
   };
 
+  const handlePublishSummary = () => {
+    publishMutation.mutate(eventId);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[85vh]">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <IconSparkles className="h-5 w-5 text-primary" />
-            {t("title")}
-          </DialogTitle>
-          <DialogDescription>{t("description")}</DialogDescription>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-4xl max-h-[85vh]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <IconSparkles className="h-5 w-5 text-primary" />
+              {t("title")}
+            </DialogTitle>
+            <DialogDescription>{t("description")}</DialogDescription>
+          </DialogHeader>
 
-        <div className="space-y-6 overflow-y-auto max-h-[60vh] pr-2">
-          {/* Loading State */}
-          {isLoadingSummary && (
-            <div className="flex items-center justify-center ">
-              <IconLoader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="ml-3 text-muted-foreground">{t("loading")}</span>
-            </div>
-          )}
+          <div className="space-y-6 overflow-y-auto max-h-[60vh] pr-2">
+            {/* Loading State */}
+            {isLoadingSummary && (
+              <div className="flex items-center justify-center ">
+                <IconLoader2 className="h-8 w-8 animate-spin text-primary" />
+                <span className="ml-3 text-muted-foreground">
+                  {t("loading")}
+                </span>
+              </div>
+            )}
 
-          {/* No Summary Yet */}
-          {!isLoadingSummary && !hasSummary && (
-            <Card className="border-dashed">
-              <CardContent className=" text-center">
-                <IconFileText className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
-                  {t("noSummary.title")}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-                  {isHost
-                    ? t("noSummary.hostDescription")
-                    : t("noSummary.guestDescription")}
-                </p>
-                {isHost && (
-                  <Button
-                    onClick={handleGenerateSummary}
-                    disabled={generateMutation.isPending}
-                    className="gap-2"
-                  >
-                    {generateMutation.isPending ? (
-                      <>
-                        <IconLoader2 className="h-4 w-4 animate-spin" />
-                        {t("generating")}
-                      </>
-                    ) : (
-                      <>
-                        <IconSparkles className="h-4 w-4" />
-                        {t("generate")}
-                      </>
-                    )}
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Summary Content */}
-          {!isLoadingSummary && hasSummary && summary && (
-            <>
-              {/* Main Summary */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <IconFileText className="h-5 w-5 text-blue-500" />
-                    {t("summary.title")}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm leading-relaxed text-foreground/90">
-                    {summary.summary}
+            {/* No Summary Yet */}
+            {!isLoadingSummary && !hasSummary && (
+              <Card className="border-dashed">
+                <CardContent className=" text-center">
+                  <IconFileText className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">
+                    {t("noSummary.title")}
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
+                    {isHost
+                      ? t("noSummary.hostDescription")
+                      : t("noSummary.guestDescription")}
                   </p>
+                  {isHost && (
+                    <Button
+                      onClick={handleGenerateSummary}
+                      disabled={generateMutation.isPending}
+                      className="gap-2"
+                    >
+                      {generateMutation.isPending ? (
+                        <>
+                          <IconLoader2 className="h-4 w-4 animate-spin" />
+                          {t("generating")}
+                        </>
+                      ) : (
+                        <>
+                          <IconSparkles className="h-4 w-4" />
+                          {t("generate")}
+                        </>
+                      )}
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
+            )}
 
-              {/* Key Points */}
-              {summary.keyPoints && summary.keyPoints.length > 0 && (
+            {/* Summary Content */}
+            {!isLoadingSummary && hasSummary && summary && (
+              <>
+                {/* Main Summary */}
                 <Card>
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <IconBulb className="h-5 w-5 text-yellow-500" />
-                      {t("keyPoints.title")}
-                      <Badge variant="secondary" className="ml-2">
-                        {summary.keyPoints.length}
-                      </Badge>
+                      <IconFileText className="h-5 w-5 text-blue-500" />
+                      {t("summary.title")}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <ul className="space-y-2">
-                      {summary.keyPoints.map((point, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                          <div className="mt-1 h-5 w-5 rounded-full bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
-                            <IconCheck className="h-3 w-3 text-yellow-600" />
-                          </div>
-                          <span className="text-sm">{point}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    <p className="text-sm leading-relaxed text-foreground/90">
+                      {summary.summary}
+                    </p>
                   </CardContent>
                 </Card>
-              )}
 
-              {/* Vocabulary */}
-              {summary.vocabulary && summary.vocabulary.length > 0 && (
-                <Card>
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
+                {/* Key Points */}
+                {summary.keyPoints && summary.keyPoints.length > 0 && (
+                  <Card>
+                    <CardHeader className="pb-3">
                       <CardTitle className="text-lg flex items-center gap-2">
-                        <IconBook2 className="h-5 w-5 text-purple-500" />
-                        {t("vocabulary.title")}
+                        <IconBulb className="h-5 w-5 text-yellow-500" />
+                        {t("keyPoints.title")}
                         <Badge variant="secondary" className="ml-2">
-                          {summary.vocabulary.length} {t("vocabulary.words")}
+                          {summary.keyPoints.length}
                         </Badge>
                       </CardTitle>
-                      {isHost && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="gap-2"
-                          onClick={() => {
-                            // Encode vocabulary data to pass via URL
-                            const vocabData = summary.vocabulary.map((v) => ({
-                              word: v.word,
-                              definition: v.meaning,
-                              hint: v.context || undefined,
-                            }));
-                            const params = new URLSearchParams();
-                            params.set("fromEvent", eventId);
-                            if (eventTitle) params.set("title", eventTitle);
-                            if (languageId)
-                              params.set("languageId", languageId);
-                            if (interestId)
-                              params.set("interestId", interestId);
-                            params.set("vocabs", JSON.stringify(vocabData));
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2">
+                        {summary.keyPoints.map((point, index) => (
+                          <li key={index} className="flex items-start gap-3">
+                            <div className="mt-1 h-5 w-5 rounded-full bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
+                              <IconCheck className="h-3 w-3 text-yellow-600" />
+                            </div>
+                            <span className="text-sm">{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                )}
 
-                            router.push(
-                              `/${locale}/game/create-set?${params.toString()}`
-                            );
-                            onOpenChange(false);
-                          }}
-                        >
-                          <IconDeviceGamepad className="h-4 w-4" />
-                          {t("createGame")}
-                        </Button>
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-3">
-                      {summary.vocabulary.map((item, index) => (
-                        <VocabularyCard
-                          key={index}
-                          item={item}
-                          index={index}
-                          t={t}
-                        />
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* Vocabulary */}
+                {summary.vocabulary && summary.vocabulary.length > 0 && (
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <IconBook2 className="h-5 w-5 text-purple-500" />
+                          {t("vocabulary.title")}
+                          <Badge variant="secondary" className="ml-2">
+                            {summary.vocabulary.length} {t("vocabulary.words")}
+                          </Badge>
+                        </CardTitle>
+                        {isHost && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="gap-2"
+                            onClick={() => {
+                              // Encode vocabulary data to pass via URL
+                              const vocabData = summary.vocabulary.map((v) => ({
+                                word: v.word,
+                                definition: v.meaning,
+                                hint: v.context || undefined,
+                              }));
+                              const params = new URLSearchParams();
+                              params.set("fromEvent", eventId);
+                              if (eventTitle) params.set("title", eventTitle);
+                              if (languageId)
+                                params.set("languageId", languageId);
+                              if (interestId)
+                                params.set("interestId", interestId);
+                              params.set("vocabs", JSON.stringify(vocabData));
+
+                              router.push(
+                                `/${locale}/game/create-set?${params.toString()}`
+                              );
+                              onOpenChange(false);
+                            }}
+                          >
+                            <IconDeviceGamepad className="h-4 w-4" />
+                            {t("createGame")}
+                          </Button>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-3">
+                        {summary.vocabulary.map((item, index) => (
+                          <VocabularyCard
+                            key={index}
+                            item={item}
+                            index={index}
+                            t={t}
+                          />
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Action Items */}
+                {summary.actionItems && summary.actionItems.length > 0 && (
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <IconListCheck className="h-5 w-5 text-green-500" />
+                        {t("actionItems.title")}
+                        <Badge variant="secondary" className="ml-2">
+                          {summary.actionItems.length}
+                        </Badge>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-2">
+                        {summary.actionItems.map((action, index) => (
+                          <li key={index} className="flex items-start gap-3">
+                            <div className="mt-0.5 h-5 w-5 rounded border-2 border-green-500 flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs font-semibold text-green-600">
+                                {index + 1}
+                              </span>
+                            </div>
+                            <span className="text-sm">{action}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Metadata */}
+                {summary.createdAt && (
+                  <div className="text-xs text-muted-foreground text-center pt-2">
+                    {t("generatedAt")}{" "}
+                    {new Date(summary.createdAt).toLocaleString()}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
+          <Separator />
+
+          <DialogFooter className="gap-4 sm:gap-0 sm:justify-between">
+            {isHost && hasSummary && !isPublic && (
+              <Button
+                variant="default"
+                onClick={() => setShowPublishConfirm(true)}
+                disabled={
+                  publishMutation.isPending || generateMutation.isPending
+                }
+                className="gap-2 bg-green-600 hover:bg-green-700"
+              >
+                {publishMutation.isPending ? (
+                  <IconLoader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <IconSend className="h-4 w-4" />
+                )}
+                {t("publish")}
+              </Button>
+            )}
+            <div className="flex gap-2">
+              {isHost && hasSummary && !isPublic && (
+                <Button
+                  variant="default"
+                  onClick={handleGenerateSummary}
+                  disabled={
+                    generateMutation.isPending || publishMutation.isPending
+                  }
+                  className="gap-2"
+                >
+                  {generateMutation.isPending ? (
+                    <IconLoader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <IconRefresh className="h-4 w-4" />
+                  )}
+                  {t("regenerate")}
+                </Button>
               )}
+              <Button
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={
+                  generateMutation.isPending || publishMutation.isPending
+                }
+              >
+                {t("close")}
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-              {/* Action Items */}
-              {summary.actionItems && summary.actionItems.length > 0 && (
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <IconListCheck className="h-5 w-5 text-green-500" />
-                      {t("actionItems.title")}
-                      <Badge variant="secondary" className="ml-2">
-                        {summary.actionItems.length}
-                      </Badge>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {summary.actionItems.map((action, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                          <div className="mt-0.5 h-5 w-5 rounded border-2 border-green-500 flex items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-semibold text-green-600">
-                              {index + 1}
-                            </span>
-                          </div>
-                          <span className="text-sm">{action}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* Metadata */}
-              {summary.createdAt && (
-                <div className="text-xs text-muted-foreground text-center pt-2">
-                  {t("generatedAt")}{" "}
-                  {new Date(summary.createdAt).toLocaleString()}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        <Separator />
-
-        <DialogFooter className="gap-4 sm:gap-0">
-          {/* {isHost && hasSummary && (
-            <Button
-              variant="default"
-              onClick={handleGenerateSummary}
-              disabled={generateMutation.isPending}
-              className="gap-2"
+      {/* Publish Confirmation Dialog */}
+      <AlertDialog
+        open={showPublishConfirm}
+        onOpenChange={setShowPublishConfirm}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("publishConfirm.title")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("publishConfirm.description")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t("publishConfirm.cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handlePublishSummary}
+              className="bg-green-600 hover:bg-green-700"
             >
-              {generateMutation.isPending ? (
-                <IconLoader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <IconRefresh className="h-4 w-4" />
-              )}
-              {t("regenerate")}
-            </Button>
-          )} */}
-          <Button
-            className="ml-4"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-          >
-            {t("close")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+              {t("publishConfirm.confirm")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

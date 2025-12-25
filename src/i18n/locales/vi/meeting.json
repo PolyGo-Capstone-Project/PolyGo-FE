@@ -105,9 +105,18 @@
       "generate": "Tạo Tóm tắt AI",
       "generating": "Đang tạo...",
       "regenerate": "Tạo lại",
+      "publish": "Công bố Tóm tắt",
+      "publishing": "Đang công bố...",
       "close": "Đóng",
       "success": "Tạo tóm tắt cuộc họp thành công!",
+      "publishSuccess": "Tóm tắt đã được công bố và gửi đến người tham gia!",
       "createGame": "Tạo Game",
+      "publishConfirm": {
+        "title": "Công bố Tóm tắt?",
+        "description": "Điều này sẽ gửi tóm tắt AI qua email đến tất cả người tham gia đã tham dự cuộc họp. Bạn có chắc chắn?",
+        "confirm": "Công bố",
+        "cancel": "Hủy"
+      },
       "summary": {
         "title": "Tóm tắt Cuộc họp"
       },
