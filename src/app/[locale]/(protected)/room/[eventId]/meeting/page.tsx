@@ -57,6 +57,10 @@ export default function MeetingRoomPage() {
   const tDialogs = useTranslations("meeting.dialogs");
   const tError = useTranslations("meeting.errors");
   const tMobile = useTranslations("meeting.mobile");
+  const tToast = useTranslations("meeting.toast");
+  const tAccess = useTranslations("meeting.access");
+  const tLoading = useTranslations("meeting.loading");
+  const tEventInfo = useTranslations("meeting.eventInfo");
 
   const eventId = params.eventId as string;
   const [showLeaveDialog, setShowLeaveDialog] = useState(false);
@@ -66,7 +70,7 @@ export default function MeetingRoomPage() {
   const [chatMessages, setChatMessages] = useState<MeetingChatMessage[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // ✅ Kick user dialog state
+  // Kick user dialog state
   const [showKickDialog, setShowKickDialog] = useState(false);
   const [kickTarget, setKickTarget] = useState<{
     id: string;
@@ -123,6 +127,8 @@ export default function MeetingRoomPage() {
     userName: currentUser?.name || "Guest",
     isHost: isHost || false,
     userId: currentUser?.id,
+    eventLanguage: event?.language?.code,
+    userLanguage: locale,
     onRoomEnded: () => {
       toast.error(tError("eventEnded"));
       removeSettingMediaFromLocalStorage();
@@ -163,12 +169,12 @@ export default function MeetingRoomPage() {
     webrtcParticipants.values()
   );
 
-  // ✅ Initialize meeting ONCE
+  // Initialize meeting ONCE
   useEffect(() => {
     if (!isLoading && event && currentUser && canJoin && !isInitialized) {
       const init = async () => {
         try {
-          // ✅ Check if event has started (only for attendees)
+          // Check if event has started (only for attendees)
           if (!isHost && event.status !== EventStatus.Live) {
             toast.error(
               "Event has not started yet. Please wait for the host to start the event."
@@ -225,7 +231,7 @@ export default function MeetingRoomPage() {
         "participants"
       );
 
-      // ✅ REMOVED callInitiatedRef check - allow startCall to run whenever participants change
+      // REMOVED callInitiatedRef check - allow startCall to run whenever participants change
       // This ensures all participants (including late joiners) can establish peer connections
 
       const timer = setTimeout(() => {
@@ -279,7 +285,7 @@ export default function MeetingRoomPage() {
       toast.success(tControls("startEvent"));
     } catch (error) {
       console.error("[Meeting] Start event error:", error);
-      toast.error("Failed to start event");
+      toast.error(tToast("startEventFailed"));
     }
   };
 
@@ -291,11 +297,11 @@ export default function MeetingRoomPage() {
     setShowEndEventDialog(false);
 
     try {
-      // ✅ FIX: End room via SignalR FIRST - this validates minimum duration
+      // FIX: End room via SignalR FIRST - this validates minimum duration
       // If it fails (too early), it will throw error and stop execution
       await endRoom();
 
-      // ✅ Only proceed if endRoom succeeded (didn't throw)
+      // Only proceed if endRoom succeeded (didn't throw)
       console.log("[Meeting] ✓ EndRoom successful, updating status...");
 
       // 2. Update event status in database
@@ -313,7 +319,7 @@ export default function MeetingRoomPage() {
       router.push(`/${locale}/event/${eventId}`);
     } catch (error) {
       console.error("[Meeting] End event error:", error);
-      // ✅ Error toast already shown by endRoom() function
+      // Error toast already shown by endRoom() function
     }
   };
 
@@ -361,22 +367,22 @@ export default function MeetingRoomPage() {
     );
     const participantName = participant?.name || "this participant";
 
-    // ✅ Show confirmation dialog (shadcn AlertDialog)
+    // Show confirmation dialog (shadcn AlertDialog)
     setKickTarget({ id: participantId, name: participantName });
     setKickReason("");
     setShowKickDialog(true);
   };
 
-  // ✅ Confirm kick action
+  // Confirm kick action
   const confirmKickParticipant = async () => {
     if (!kickTarget) return;
 
     try {
-      // ✅ Call kickUser with optional reason
+      // Call kickUser with optional reason
       await kickUser(kickTarget.id, kickReason || undefined);
 
-      // ✅ Show success toast
-      toast.success(`${kickTarget.name} has been removed from the event`);
+      // Show success toast
+      toast.success(tToast("kickSuccess", { name: kickTarget.name }));
 
       // Close dialog
       setShowKickDialog(false);
@@ -384,7 +390,7 @@ export default function MeetingRoomPage() {
       setKickReason("");
     } catch (error) {
       console.error("Failed to kick user:", error);
-      toast.error("Failed to remove user from event");
+      toast.error(tToast("kickFailed"));
     }
   };
 
@@ -397,14 +403,14 @@ export default function MeetingRoomPage() {
   const handleMuteAll = async () => {
     if (!isHost) return;
     await muteAllParticipants();
-    toast.success("Muted all participants");
+    toast.success(tToast("muteAllSuccess"));
   };
 
   // Handle Turn Off All Cameras (Host only)
   const handleTurnOffAllCameras = async () => {
     if (!isHost) return;
     await turnOffAllCameras();
-    toast.success("Turned off all cameras");
+    toast.success(tToast("turnOffAllCamerasSuccess"));
   };
 
   // Handle captions toggle (viewing only)
@@ -429,7 +435,6 @@ export default function MeetingRoomPage() {
     }
   };
 
-  // ✅ FIX: Check authorization BEFORE checking initialization
   // This prevents stuck "Connecting..." for unauthorized users
   if (!isLoading && (!event || !currentUser || !canJoin)) {
     return (
@@ -457,12 +462,14 @@ export default function MeetingRoomPage() {
               </div>
             </div>
             <div className="text-center space-y-2">
-              <h3 className="text-lg font-semibold">Access Denied</h3>
+              <h3 className="text-lg font-semibold">
+                {tAccess("deniedTitle")}
+              </h3>
               <p className="text-sm text-muted-foreground">
                 {!event
-                  ? "Event not found."
+                  ? tAccess("eventNotFound")
                   : !canJoin
-                    ? "You are not registered for this event. Please register first to join the meeting."
+                    ? tAccess("notRegistered")
                     : tError("notAuthorized")}
               </p>
             </div>
@@ -472,14 +479,14 @@ export default function MeetingRoomPage() {
                 className="flex-1"
                 onClick={() => router.push(`/${locale}/dashboard`)}
               >
-                Go to Dashboard
+                {tAccess("goToDashboard")}
               </Button>
               {event && !canJoin && (
                 <Button
                   className="flex-1"
                   onClick={() => router.push(`/${locale}/event/${eventId}`)}
                 >
-                  View Event Details
+                  {tAccess("viewEventDetails")}
                 </Button>
               )}
             </div>
@@ -489,19 +496,17 @@ export default function MeetingRoomPage() {
     );
   }
 
-  // ✅ Show loading state AFTER authorization check
   if (isLoading || !isInitialized) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-4">
           <IconLoader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-          <p className="text-muted-foreground">Connecting...</p>
+          <p className="text-muted-foreground">{tLoading("connecting")}</p>
         </div>
       </div>
     );
   }
 
-  // ✅ NEW: Block mobile devices in meeting room
   if (isMobileDevice) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -529,8 +534,6 @@ export default function MeetingRoomPage() {
     );
   }
 
-  // ✅ TypeScript assertion: At this point, event and currentUser are guaranteed to exist
-  // because we already checked authorization above
   if (!event || !currentUser) {
     return null; // This should never happen due to earlier checks
   }
@@ -564,7 +567,7 @@ export default function MeetingRoomPage() {
           localAudioEnabled={controls.audioEnabled}
           localVideoEnabled={controls.videoEnabled}
           myConnectionId={myConnectionId}
-          hostId={hostId} // ✅ ADD: Pass hostId prop
+          hostId={hostId}
           isHost={isHost}
         />
       </div>
@@ -699,22 +702,21 @@ export default function MeetingRoomPage() {
       <AlertDialog open={showKickDialog} onOpenChange={setShowKickDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Remove Participant</AlertDialogTitle>
+            <AlertDialogTitle>{tDialogs("kickTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to remove{" "}
-              <strong>{kickTarget?.name}</strong> from this event?
+              {tDialogs("kickMessage", { name: kickTarget?.name || "" })}
               <br />
               <br />
-              They will not be able to rejoin after being removed.
+              {tDialogs("kickWarning")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="py-4">
             <Label htmlFor="kickReason" className="text-sm font-medium">
-              Reason (optional)
+              {tDialogs("kickReasonLabel")}
             </Label>
             <Input
               id="kickReason"
-              placeholder="Enter reason for removal..."
+              placeholder={tDialogs("kickReasonPlaceholder")}
               value={kickReason}
               onChange={(e) => setKickReason(e.target.value)}
               className="mt-2"
@@ -728,13 +730,13 @@ export default function MeetingRoomPage() {
                 setKickReason("");
               }}
             >
-              Cancel
+              {tDialogs("kickCancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmKickParticipant}
               className="bg-destructive hover:bg-destructive/90"
             >
-              Remove Participant
+              {tDialogs("kickConfirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -760,35 +762,49 @@ export default function MeetingRoomPage() {
             {/* Event Details */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-muted-foreground">Host</p>
-                <p className="font-medium">{event.host?.name || "Unknown"}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Language</p>
+                <p className="text-sm text-muted-foreground">
+                  {tEventInfo("host")}
+                </p>
                 <p className="font-medium">
-                  {event.language?.name || "Unknown"}
+                  {event.host?.name || tEventInfo("unknown")}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Start Time</p>
+                <p className="text-sm text-muted-foreground">
+                  {tEventInfo("language")}
+                </p>
+                <p className="font-medium">
+                  {event.language?.name || tEventInfo("unknown")}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  {tEventInfo("startTime")}
+                </p>
                 <p className="font-medium">
                   {new Date(event.startAt).toLocaleString()}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Duration</p>
+                <p className="text-sm text-muted-foreground">
+                  {tEventInfo("duration")}
+                </p>
                 <p className="font-medium">
-                  {event.expectedDurationInMinutes} minutes
+                  {event.expectedDurationInMinutes} {tEventInfo("minutes")}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Participants</p>
+                <p className="text-sm text-muted-foreground">
+                  {tEventInfo("participants")}
+                </p>
                 <p className="font-medium">
                   {event.numberOfParticipants} / {event.capacity}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Status</p>
+                <p className="text-sm text-muted-foreground">
+                  {tEventInfo("status")}
+                </p>
                 <p className="font-medium capitalize">{event.status}</p>
               </div>
             </div>
@@ -797,7 +813,7 @@ export default function MeetingRoomPage() {
             {event.description && (
               <div>
                 <p className="text-sm text-muted-foreground mb-2">
-                  Description
+                  {tEventInfo("description")}
                 </p>
                 <div className="p-4 bg-muted rounded-lg">
                   <MarkdownRenderer content={event.description} />

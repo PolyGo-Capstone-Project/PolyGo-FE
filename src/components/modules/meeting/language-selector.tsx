@@ -66,7 +66,7 @@ export function LanguageSelector({
             variant="outline"
             size="sm"
             className="gap-2"
-            title="Language Settings"
+            title={t("title")}
           >
             <IconLanguage className="h-4 w-4" />
             <span className="hidden md:inline">
@@ -77,7 +77,7 @@ export function LanguageSelector({
         <DropdownMenuContent align="end" className="w-80">
           <DropdownMenuLabel className="flex items-center gap-2">
             <IconLanguage className="h-4 w-4" />
-            Language Settings
+            {t("title")}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
 
@@ -85,7 +85,7 @@ export function LanguageSelector({
           <div className="p-2">
             <div className="flex items-center gap-2 mb-2 text-sm font-medium">
               <IconMicrophone className="h-4 w-4" />
-              I&apos;m speaking:
+              {t("speaking")}
             </div>
             <div className="grid grid-cols-2 gap-1 max-h-48 overflow-y-auto">
               {LANGUAGES.map((lang) => (
@@ -96,9 +96,7 @@ export function LanguageSelector({
                     if (isTranscriptionEnabled) {
                       // Show warning that they need to restart transcription
                       import("sonner").then(({ toast }) => {
-                        toast.info(
-                          "Please restart Live Translation to apply the new speaking language"
-                        );
+                        toast.info(t("restartWarning"));
                       });
                     }
                   }}
@@ -121,7 +119,7 @@ export function LanguageSelector({
           <div className="p-2">
             <div className="flex items-center gap-2 mb-2 text-sm font-medium">
               <IconBadgeCc className="h-4 w-4" />
-              Subtitles:
+              {t("subtitles")}
             </div>
             <div className="grid grid-cols-2 gap-1 max-h-48 overflow-y-auto">
               {LANGUAGES.map((lang) => (
@@ -142,9 +140,7 @@ export function LanguageSelector({
           </div>
 
           <DropdownMenuSeparator />
-          <div className="p-2 text-xs text-muted-foreground">
-            Each participant can speak and listen in different languages
-          </div>
+          <div className="p-2 text-xs text-muted-foreground">{t("footer")}</div>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
