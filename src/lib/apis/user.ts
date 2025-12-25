@@ -7,6 +7,7 @@ import {
   GetUsersMatchingQueryType,
   GetUsersQueryType,
   GetUsersResType,
+  GetUserStatByIdResType,
   MessageResType,
   SearchUserQueryType,
   SearchUserResType,
@@ -49,5 +50,8 @@ const userApiRequest = {
   searchUsers: createGetAll<SearchUserResType, SearchUserQueryType>(
     `${prefix}`
   ),
+  // GET user stat by userId
+  getUserStatById: (userId: string) =>
+    http.get<GetUserStatByIdResType>(`${prefix}/${userId}/stats`),
 };
 export default userApiRequest;

@@ -10,18 +10,17 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
+  MeritBadge,
 } from "@/components";
 import communicationApiRequest from "@/lib/apis/communication";
 import { showErrorToast } from "@/lib/utils";
 import { IconEye } from "@tabler/icons-react";
-import { Star } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function SuggestedPartnersGrid({
   partners,
-  rating,
   getInitials,
   isValidAvatarUrl,
   locale,
@@ -32,8 +31,8 @@ export function SuggestedPartnersGrid({
     name: string;
     avatarUrl?: string | null;
     speakingLanguages: Array<{ id: string; name: string }>;
+    merit: number | string;
   }>;
-  rating: number;
   getInitials: (name: string) => string;
   isValidAvatarUrl: (url?: string | null) => boolean;
   locale: string;
@@ -108,8 +107,12 @@ export function SuggestedPartnersGrid({
                         {p.name}
                       </div>
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        <span>{rating}</span>
+                        {/* MErit */}
+                        <MeritBadge
+                          merit={Number(p.merit)}
+                          showValue={false}
+                        />{" "}
+                        {p.merit}
                       </div>
                     </div>
                   </div>

@@ -145,6 +145,19 @@ export const GetUserByIdResSchema = z.object({
   message: z.string(),
 });
 
+// GET user stat by userId
+export const GetUserStatByIdResSchema = z.object({
+  data: z.object({
+    merit: z.number(),
+    streakDays: z.number(),
+    friendsCount: z.number(),
+    postsCount: z.number(),
+    createdEventsCount: z.number(),
+    joinedEventsCount: z.number(),
+  }),
+  message: z.string(),
+});
+
 // ===================
 // FOR USER not admin - matching
 export const GetUsersMatchingQuerySchema = GetUsersQuerySchema;
@@ -178,6 +191,7 @@ export type GetUsersQueryType = z.infer<typeof GetUsersQuerySchema>;
 export type GetUsersResType = z.infer<typeof GetUsersResSchema>;
 export type GetUserByIdBodyType = z.infer<typeof GetUserByIdBodySchema>;
 export type GetUserByIdResType = z.infer<typeof GetUserByIdResSchema>;
+export type GetUserStatByIdResType = z.infer<typeof GetUserStatByIdResSchema>;
 
 export type GetUsersMatchingQueryType = z.infer<
   typeof GetUsersMatchingQuerySchema

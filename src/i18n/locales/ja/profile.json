@@ -26,12 +26,12 @@
     },
     "stats": {
       "title": "統計",
-      "totalSessions": "総セッション数",
-      "averageRating": "平均評価",
-      "responseRate": "応答率",
-      "totalHours": "総時間",
+      "merit": "信頼スコア",
       "streakDays": "連続日数",
-      "eventsHosted": "ホストしたイベント"
+      "friendsCount": "友達",
+      "postsCount": "投稿",
+      "createdEventsCount": "主催イベント",
+      "joinedEventsCount": "参加イベント"
     },
     "sections": {
       "introduction": "自己紹介",

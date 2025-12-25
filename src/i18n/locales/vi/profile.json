@@ -26,12 +26,12 @@
     },
     "stats": {
       "title": "Thống kê",
-      "totalSessions": "Tổng buổi học",
-      "averageRating": "Đánh giá trung bình",
-      "responseRate": "Tỷ lệ phản hồi",
-      "totalHours": "Tổng số giờ",
-      "streakDays": "Chuỗi ngày",
-      "eventsHosted": "Sự kiện đã tổ chức"
+      "merit": "Điểm Uy Tín",
+      "streakDays": "Chuỗi Ngày",
+      "friendsCount": "Bạn Bè",
+      "postsCount": "Bài Viết",
+      "createdEventsCount": "Sự Kiện Đã Tổ Chức",
+      "joinedEventsCount": "Sự Kiện Đã Tham Gia"
     },
     "sections": {
       "introduction": "Giới thiệu",

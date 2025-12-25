@@ -6,21 +6,23 @@ import { useTranslations } from "next-intl";
 
 export function StatsOverviewCard({
   xpPoints,
-  totalHours,
   streakDays,
-  rating,
   progressPct,
   currentXP,
   totalXP,
+  createdEventsCount,
+  postsCount,
+  merit,
   t,
 }: {
   xpPoints: number;
-  totalHours: number | string;
   streakDays: number;
-  rating: number;
   progressPct: number;
   currentXP: number;
   totalXP: number;
+  createdEventsCount: number;
+  postsCount: number;
+  merit: number;
   t: ReturnType<typeof useTranslations>;
 }) {
   return (
@@ -35,18 +37,24 @@ export function StatsOverviewCard({
           label={t("stats.xp", { defaultValue: "XP" })}
           value={xpPoints}
         />
-        {/* <RowStat
-          label={t("stats.hours", { defaultValue: "Giờ đã học" })}
-          value={totalHours}
-        /> */}
+        <RowStat
+          label={t("stats.merit", { defaultValue: "Điểm uy tín" })}
+          value={merit}
+        />
         <RowStat
           label={t("stats.streak", { defaultValue: "Chuỗi ngày" })}
           value={streakDays}
         />
-        {/* <RowStat
-          label={t("stats.rating", { defaultValue: "Đánh giá" })}
-          value={rating}
-        /> */}
+        <RowStat
+          label={t("stats.createdEventsCount", {
+            defaultValue: "Sự kiện đã tạo",
+          })}
+          value={createdEventsCount}
+        />
+        <RowStat
+          label={t("stats.postsCount", { defaultValue: "Bài viết đã tạo" })}
+          value={postsCount}
+        />
 
         <div className="pt-4 border-t space-y-2">
           <div className="flex items-center justify-between text-sm">
