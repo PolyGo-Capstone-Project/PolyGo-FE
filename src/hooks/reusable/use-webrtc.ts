@@ -46,6 +46,8 @@ interface UseWebRTCProps {
   userName: string;
   isHost: boolean;
   userId?: string;
+  eventLanguage?: string;
+  userLanguage?: string;
   onRoomEnded?: () => void;
 }
 
@@ -83,6 +85,8 @@ export function useWebRTC({
   userName,
   isHost,
   userId,
+  eventLanguage,
+  userLanguage,
   onRoomEnded,
 }: UseWebRTCProps) {
   const [isConnected, setIsConnected] = useState(false);
@@ -112,8 +116,8 @@ export function useWebRTC({
   );
   const [isTranscriptionEnabled, setIsTranscriptionEnabled] = useState(false); // Microphone transcription (sending)
   const [isCaptionsEnabled, setIsCaptionsEnabled] = useState(false); // Live captions (receiving)
-  const [sourceLanguage, setSourceLanguage] = useState("en"); // Language user is SPEAKING
-  const [targetLanguage, setTargetLanguage] = useState("vi"); // Language user wants to HEAR
+  const [sourceLanguage, setSourceLanguage] = useState(eventLanguage || "en"); // Language user is SPEAKING
+  const [targetLanguage, setTargetLanguage] = useState(userLanguage || "vi"); // Language user wants to HEAR
   const [meetingSummary, setMeetingSummary] = useState<MeetingSummary | null>(
     null
   );
@@ -130,8 +134,8 @@ export function useWebRTC({
   const myConnectionIdRef = useRef<string>("");
   const callStartedRef = useRef<boolean>(false);
   const recognitionRef = useRef<any>(null);
-  const targetLanguageRef = useRef<string>("vi");
-  const sourceLanguageRef = useRef<string>("en"); // User's speaking language for speech recognition
+  const targetLanguageRef = useRef<string>(userLanguage || "vi");
+  const sourceLanguageRef = useRef<string>(eventLanguage || "en"); // User's speaking language for speech recognition
   const isTranscriptionEnabledRef = useRef<boolean>(false);
 
   const connectionInitializedRef = useRef<boolean>(false);

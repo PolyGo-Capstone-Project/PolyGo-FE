@@ -300,6 +300,9 @@ export function AISummaryDialog({
                             variant="outline"
                             size="sm"
                             className="gap-2"
+                            disabled={
+                              summary.vocabulary.length === 0 || !isPublic
+                            }
                             onClick={() => {
                               // Encode vocabulary data to pass via URL
                               const vocabData = summary.vocabulary.map((v) => ({

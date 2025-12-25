@@ -72,6 +72,34 @@
       "eventNotFound": "Event not found",
       "eventEnded": "This event has ended"
     },
+    "toast": {
+      "kickSuccess": "{name} has been removed from the event",
+      "kickFailed": "Failed to remove user from event",
+      "muteAllSuccess": "Muted all participants",
+      "turnOffAllCamerasSuccess": "Turned off all cameras",
+      "startEventFailed": "Failed to start event"
+    },
+    "access": {
+      "deniedTitle": "Access Denied",
+      "eventNotFound": "Event not found.",
+      "notRegistered": "You are not registered for this event. Please register first to join the meeting.",
+      "goToDashboard": "Go to Dashboard",
+      "viewEventDetails": "View Event Details"
+    },
+    "loading": {
+      "connecting": "Connecting..."
+    },
+    "eventInfo": {
+      "host": "Host",
+      "language": "Language",
+      "startTime": "Start Time",
+      "duration": "Duration",
+      "participants": "Participants",
+      "status": "Status",
+      "description": "Description",
+      "minutes": "minutes",
+      "unknown": "Unknown"
+    },
     "mobile": {
       "title": "Mobile Device Detected",
       "subtitle": "Video meetings are not supported on mobile web browsers",
@@ -91,7 +119,14 @@
       "endEventTitle": "End event?",
       "endEventMessage": "This will end the event for all participants. Are you sure?",
       "endEventConfirm": "End Event",
-      "endEventCancel": "Cancel"
+      "endEventCancel": "Cancel",
+      "kickTitle": "Remove Participant",
+      "kickMessage": "Are you sure you want to remove <strong>{name}</strong> from this event?",
+      "kickWarning": "They will not be able to rejoin after being removed.",
+      "kickReasonLabel": "Reason (optional)",
+      "kickReasonPlaceholder": "Enter reason for removal...",
+      "kickConfirm": "Remove Participant",
+      "kickCancel": "Cancel"
     },
     "aiSummary": {
       "title": "AI Meeting Summary & Vocabulary",
@@ -137,6 +172,13 @@
     "captions": {
       "collapse": "Collapse",
       "viewPrevious": "View {count} previous captions"
+    },
+    "language": {
+      "title": "Language Settings",
+      "speaking": "I'm speaking:",
+      "subtitles": "Subtitles:",
+      "restartWarning": "Please restart Live Translation to apply the new speaking language",
+      "footer": "Each participant can speak and listen in different languages"
     }
   }
 }

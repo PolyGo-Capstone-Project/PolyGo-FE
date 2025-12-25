@@ -223,6 +223,19 @@ export default function ProfilePage() {
 
             {/* Right Column - Stats & XP */}
             <div className="space-y-6">
+              <ProfileInfoSection
+                experiencePoints={user.experiencePoints}
+                merit={user.merit}
+                streakDays={user.streakDays}
+                longestStreakDays={user.longestStreakDays}
+                nextUnbannedAt={user.nextUnbannedAt}
+                level={user.level}
+                xpInCurrentLevel={user.xpInCurrentLevel}
+                xpToNextLevel={user.xpToNextLevel}
+                hasUnclaimedLevelRewards={hasUnclaimedLevelRewards}
+                showLevelandBadgeLink
+              />
+
               <ProfileStats
                 merit={userStatsData?.payload?.data?.merit ?? 0}
                 streakDays={userStatsData?.payload?.data?.streakDays ?? 0}
@@ -235,18 +248,6 @@ export default function ProfilePage() {
                   userStatsData?.payload?.data?.joinedEventsCount ?? 0
                 }
                 planType={planType}
-              />
-              <ProfileInfoSection
-                experiencePoints={user.experiencePoints}
-                merit={user.merit}
-                streakDays={user.streakDays}
-                longestStreakDays={user.longestStreakDays}
-                nextUnbannedAt={user.nextUnbannedAt}
-                level={user.level}
-                xpInCurrentLevel={user.xpInCurrentLevel}
-                xpToNextLevel={user.xpToNextLevel}
-                hasUnclaimedLevelRewards={hasUnclaimedLevelRewards}
-                showLevelandBadgeLink
               />
             </div>
           </div>
